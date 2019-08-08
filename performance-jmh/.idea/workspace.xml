@@ -2,23 +2,8 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="0e1584f6-4d86-4d34-9539-64d7002532f5" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/../concurrency/.idea/vcs.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../concurrency/src/main/java/victor/training/concurrency/pools/CommandSpringApp.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../concurrency/.idea/inspectionProfiles/Project_Default.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../concurrency/.idea/inspectionProfiles/Project_Default.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../concurrency/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../concurrency/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../concurrency/src/main/java/TheEternalBuilderProblem.java" beforeDir="false" afterPath="$PROJECT_DIR$/../concurrency/src/main/java/TheEternalBuilderProblem.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../concurrency/src/main/java/victor/training/concurrency/InlantuireDeApeluriAsincrone.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../concurrency/src/main/java/victor/training/concurrency/LockPhilosophers.java" beforeDir="false" afterPath="$PROJECT_DIR$/../concurrency/src/main/java/victor/training/concurrency/LockPhilosophers.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../concurrency/src/main/java/victor/training/concurrency/Magie.java" beforeDir="false" afterPath="$PROJECT_DIR$/../concurrency/src/main/java/victor/training/concurrency/Magic.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../concurrency/src/main/java/victor/training/concurrency/ThreadPool.java" beforeDir="false" afterPath="$PROJECT_DIR$/../concurrency/src/main/java/victor/training/concurrency/pools/ThreadPool.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../concurrency/src/main/java/victor/training/concurrency/db/LaBar.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../concurrency/src/main/java/victor/training/concurrency/db/ParallelStream.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../concurrency/src/main/java/victor/training/concurrency/db/StapanDeSclavi.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../concurrency/src/main/java/victor/training/concurrency/db/StringBuilderPlay.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../concurrency/src/main/java/victor/training/concurrency/db/nplus1.sql" beforeDir="false" afterPath="$PROJECT_DIR$/../concurrency/src/main/java/victor/training/concurrency/nplus1.sql" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../concurrency/src/main/java/victor/training/concurrency/pools/Executori.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../concurrency/src/main/java/victor/training/concurrency/primitives/Barrier.java" beforeDir="false" afterPath="$PROJECT_DIR$/../concurrency/src/main/java/victor/training/concurrency/primitives/Barrier.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../concurrency/src/main/java/victor/training/concurrency/tricks/Pointer.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../concurrency/src/main/java/victor/training/concurrency/Magie.java" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
     </list>
     <ignored path="$PROJECT_DIR$/classes/" />
@@ -192,7 +177,7 @@
       <window_info anchor="bottom" id="Messages" />
       <window_info anchor="bottom" id="Message" order="0" />
       <window_info anchor="bottom" id="Find" order="1" />
-      <window_info active="true" anchor="bottom" id="Run" order="2" visible="true" weight="0.18082191" />
+      <window_info anchor="bottom" id="Run" order="2" weight="0.18082191" />
       <window_info anchor="bottom" id="Debug" order="3" weight="0.4" />
       <window_info anchor="bottom" id="Cvs" order="4" weight="0.25" />
       <window_info anchor="bottom" id="Inspection" order="5" weight="0.4" />
