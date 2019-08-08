@@ -28,6 +28,14 @@ public class ConcurrencyUtil {
 			e.printStackTrace();
 		}
 	}
+
+	public static void useCPU(long millis) {
+		long tEnd = System.currentTimeMillis() + millis;
+		while (System.currentTimeMillis() < tEnd) {
+			Math.sqrt(Math.random());
+		}
+	}
+
 	
 	static List<String> position = new ArrayList<>();
 	public static void log(String message) {

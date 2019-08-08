@@ -19,6 +19,8 @@ public class APlusPlus {
         }
     }
 
+    // TODO (bonus): ConcurrencyUtil.useCPU(1)
+
 
     public static void main(String[] args) throws InterruptedException {
         ThreadA threadA = new ThreadA();
