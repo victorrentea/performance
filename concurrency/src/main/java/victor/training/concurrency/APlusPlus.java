@@ -1,51 +1,20 @@
 package victor.training.concurrency;
 
-import java.util.concurrent.atomic.AtomicInteger;
-
-/** Thread safe */
-class Suspect {
-    private int date;
-//    private final Object monitor = new Object();
-
-    void m() {
-        int date2;
-    }
-    synchronized void inc() {
-        date++;
-    }
-}
-
-
 public class APlusPlus {
-    private static int populatie;
-    private static final Object monitor = new Object();
-    private static Suspect s = new Suspect();
-    private static Suspect s2 = new Suspect();
-
-
+    private static int population;
 
     public static class ThreadA extends Thread {
         public void run() {
-            s.inc();
-            int populatieLocala = 0;
-            for (int i = 0; i < 1000000; i++) {
-                populatieLocala++;
-            }
-            synchronized (monitor) {
-                populatie+=populatieLocala;
+            for (int i = 0; i < 10_000; i++) {
+                population++;
             }
         }
     }
 
     public static class ThreadB extends Thread {
         public void run() {
-            s2.inc();
-            int populatieLocala = 0;
-            for (int i = 0; i < 1000000; i++) {
-                populatieLocala++;
-            }
-            synchronized (monitor) {
-                populatie += populatieLocala;
+            for (int i = 0; i < 10_000; i++) {
+                population++;
             }
         }
     }
@@ -56,12 +25,14 @@ public class APlusPlus {
         ThreadB threadB = new ThreadB();
 
         long t0 = System.currentTimeMillis();
+
         threadA.start();
         threadB.start();
         threadA.join();
         threadB.join();
+
         long t1 = System.currentTimeMillis();
-        System.out.println(populatie);
-        System.out.println("Delta = " + (t1 - t0));
+        System.out.println("Total = " + population);
+        System.out.println("Took = " + (t1 - t0));
     }
 }

@@ -1,7 +1,26 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="0e1584f6-4d86-4d34-9539-64d7002532f5" name="Default Changelist" comment="" />
+    <list default="true" id="0e1584f6-4d86-4d34-9539-64d7002532f5" name="Default Changelist" comment="">
+      <change afterPath="$PROJECT_DIR$/../concurrency/.idea/vcs.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../concurrency/src/main/java/victor/training/concurrency/pools/CommandSpringApp.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../concurrency/.idea/inspectionProfiles/Project_Default.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../concurrency/.idea/inspectionProfiles/Project_Default.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../concurrency/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../concurrency/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../concurrency/src/main/java/TheEternalBuilderProblem.java" beforeDir="false" afterPath="$PROJECT_DIR$/../concurrency/src/main/java/TheEternalBuilderProblem.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../concurrency/src/main/java/victor/training/concurrency/InlantuireDeApeluriAsincrone.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../concurrency/src/main/java/victor/training/concurrency/LockPhilosophers.java" beforeDir="false" afterPath="$PROJECT_DIR$/../concurrency/src/main/java/victor/training/concurrency/LockPhilosophers.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../concurrency/src/main/java/victor/training/concurrency/Magie.java" beforeDir="false" afterPath="$PROJECT_DIR$/../concurrency/src/main/java/victor/training/concurrency/Magic.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../concurrency/src/main/java/victor/training/concurrency/ThreadPool.java" beforeDir="false" afterPath="$PROJECT_DIR$/../concurrency/src/main/java/victor/training/concurrency/pools/ThreadPool.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../concurrency/src/main/java/victor/training/concurrency/db/LaBar.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../concurrency/src/main/java/victor/training/concurrency/db/ParallelStream.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../concurrency/src/main/java/victor/training/concurrency/db/StapanDeSclavi.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../concurrency/src/main/java/victor/training/concurrency/db/StringBuilderPlay.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../concurrency/src/main/java/victor/training/concurrency/db/nplus1.sql" beforeDir="false" afterPath="$PROJECT_DIR$/../concurrency/src/main/java/victor/training/concurrency/nplus1.sql" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../concurrency/src/main/java/victor/training/concurrency/pools/Executori.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../concurrency/src/main/java/victor/training/concurrency/primitives/Barrier.java" beforeDir="false" afterPath="$PROJECT_DIR$/../concurrency/src/main/java/victor/training/concurrency/primitives/Barrier.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../concurrency/src/main/java/victor/training/concurrency/tricks/Pointer.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+    </list>
     <ignored path="$PROJECT_DIR$/classes/" />
     <ignored path="$PROJECT_DIR$/target/" />
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
@@ -24,13 +43,16 @@
       <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/src/main/java/victor/proxy/ProxyPerformanceTest.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="234">
-              <caret line="40" column="13" selection-start-line="40" selection-start-column="13" selection-end-line="40" selection-end-column="13" />
+            <state relative-caret-position="402">
+              <caret line="54" column="4" lean-forward="true" selection-start-line="54" selection-start-column="4" selection-end-line="54" selection-end-column="4" />
             </state>
           </provider>
         </entry>
       </file>
     </leaf>
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$/.." />
   </component>
   <component name="ProjectFrameBounds" extendedState="6">
     <option name="x" value="174" />
@@ -38,6 +60,7 @@
     <option name="width" value="800" />
     <option name="height" value="812" />
   </component>
+  <component name="ProjectLevelVcsManager" settingsEditedManually="true" />
   <component name="ProjectView">
     <navigator proportions="" version="1">
       <foldersAlwaysOnTop value="true" />
@@ -92,6 +115,7 @@
     </panes>
   </component>
   <component name="PropertiesComponent">
+    <property name="SHARE_PROJECT_CONFIGURATION_FILES" value="true" />
     <property name="WebServerToolWindowFactoryState" value="false" />
     <property name="aspect.path.notification.shown" value="true" />
     <property name="last_opened_file_path" value="$PROJECT_DIR$/pom.xml" />
@@ -141,12 +165,12 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1565267148271</updated>
-      <workItem from="1565267150020" duration="1004000" />
+      <workItem from="1565267150020" duration="2731000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="1004000" />
+    <option name="totallyTimeSpent" value="2731000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="-8" y="-8" width="1616" height="886" extended-state="6" />
@@ -168,7 +192,7 @@
       <window_info anchor="bottom" id="Messages" />
       <window_info anchor="bottom" id="Message" order="0" />
       <window_info anchor="bottom" id="Find" order="1" />
-      <window_info active="true" anchor="bottom" id="Run" order="2" visible="true" weight="0.32876712" />
+      <window_info active="true" anchor="bottom" id="Run" order="2" visible="true" weight="0.18082191" />
       <window_info anchor="bottom" id="Debug" order="3" weight="0.4" />
       <window_info anchor="bottom" id="Cvs" order="4" weight="0.25" />
       <window_info anchor="bottom" id="Inspection" order="5" weight="0.4" />
@@ -190,8 +214,8 @@
   <component name="editorHistoryManager">
     <entry file="file://$PROJECT_DIR$/src/main/java/victor/proxy/ProxyPerformanceTest.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="234">
-          <caret line="40" column="13" selection-start-line="40" selection-start-column="13" selection-end-line="40" selection-end-column="13" />
+        <state relative-caret-position="402">
+          <caret line="54" column="4" lean-forward="true" selection-start-line="54" selection-start-column="4" selection-end-line="54" selection-end-column="4" />
         </state>
       </provider>
     </entry>

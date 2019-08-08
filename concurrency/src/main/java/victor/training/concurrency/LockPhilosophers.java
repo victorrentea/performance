@@ -22,30 +22,19 @@ public class LockPhilosophers {
 		}
 	}
 	
-	static class Phylosopher extends Thread {
+	static class Philosopher extends Thread {
 		private final Fork leftFork;
 		private final Fork rightFork;
 		
-		public Phylosopher(String name, Fork leftFork, Fork rightFork) {
+		public Philosopher(String name, Fork leftFork, Fork rightFork) {
 			super(name);
 			this.leftFork = leftFork;
 			this.rightFork = rightFork;
 		}
 
 		public void run() {
-//			Fork firstFork = leftFork.id < rightFork.id ? leftFork : rightFork;
-//			Fork secondFork = leftFork.id < rightFork.id ? rightFork : leftFork;
-
-			Fork firstFork;
-			Fork secondFork;
-
-			if (leftFork.id < rightFork.id) {
-				firstFork = leftFork;
-				secondFork = rightFork;
-			} else {
-				firstFork = rightFork;
-				secondFork = leftFork;
-			}
+			Fork firstFork = leftFork;
+			Fork secondFork = rightFork;
 
 			for (int i=0;i<50;i++) {
 				sleepSomeTime();
@@ -75,19 +64,13 @@ public class LockPhilosophers {
 	}
 	
 	public static void main(String[] args) {
-
-//		sleep2(7_000);
 		log("Start");
 		Fork[] forks = new Fork[] {new Fork(1), new Fork(2), new Fork(3), new Fork(4), new Fork(5)};
-		new Phylosopher("Plato", forks[0], forks[1]).start();
-		new Phylosopher("Konfuzius", forks[1], forks[2]).start();
-		new Phylosopher("Socrates", forks[2], forks[3]).start();
-		new Phylosopher("Voltaire", forks[3], forks[4]).start();
+		new Philosopher("Plato", forks[0], forks[1]).start();
+		new Philosopher("Konfuzius", forks[1], forks[2]).start();
+		new Philosopher("Socrates", forks[2], forks[3]).start();
+		new Philosopher("Voltaire", forks[3], forks[4]).start();
 		sleep2(1000);
-		new Phylosopher("Descartes", forks[4], forks[0]).start();
-
-
-
-//		sleep2(1000000);
+		new Philosopher("Descartes", forks[4], forks[0]).start();
 	}
 }

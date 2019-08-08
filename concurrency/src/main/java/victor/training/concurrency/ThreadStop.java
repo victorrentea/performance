@@ -3,7 +3,7 @@ package victor.training.concurrency;
 import static victor.training.concurrency.ConcurrencyUtil.log;
 import static victor.training.concurrency.ConcurrencyUtil.sleepSomeTime;
 
-public class StopThread {
+public class ThreadStop {
 
 	static class MyTask implements Runnable {
 		private boolean running = true;

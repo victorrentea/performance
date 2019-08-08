@@ -1,4 +1,6 @@
-package victor.training.concurrency;
+package victor.training.concurrency.waitnotify;
+
+import victor.training.concurrency.ConcurrencyUtil;
 
 public class OddEvenIncrementer {
 	static int n = 0; 

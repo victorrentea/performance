@@ -6,7 +6,7 @@ public class StringPool {
         System.out.println("a" == "a");
         int v = 1;
         String a1 = "a" + v;
-        a1 =a1.intern(); // nu -l folosim la servici.
+//        a1 =a1.intern(); // nu -l folosim la servici.
         System.out.println("a1" == a1);
 
     }

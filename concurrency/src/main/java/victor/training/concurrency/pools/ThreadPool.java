@@ -1,4 +1,4 @@
-package victor.training.concurrency;
+package victor.training.concurrency.pools;
 
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.ExecutorService;

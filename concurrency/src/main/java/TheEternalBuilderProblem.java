@@ -1,3 +1,5 @@
+import org.apache.commons.lang.NotImplementedException;
+
 import java.io.IOException;
 import java.io.Writer;
 import java.util.List;
@@ -15,29 +17,16 @@ public class TheEternalBuilderProblem {
 		
 		String ab2 = "a" + "b"; // faster :P
 		String ab3 = new StringBuilder()
-				.append("a")
-				.append("b")
+				.append(a)
+				.append(b)
 				.toString();
-		
-		
-		
+
 	}
 	
 	String concatenateAll(List<Integer> numbers) {
-		String s ="";
-		for (Integer number : numbers) {
-			s += number + " ";
-		}
-		return s;
+		throw new NotImplementedException(); // TODO
 	}
-	
-	void concatenateAll(Stream<Integer> numbers, Writer writer) {
-		numbers.forEach(n -> {
-			try {
-				writer.write(n + " ");
-			} catch (IOException e) {
-				throw new RuntimeException(e);
-			}
-		});
-	}
+
+
+	// TODO: a smarter solution ?
 }
