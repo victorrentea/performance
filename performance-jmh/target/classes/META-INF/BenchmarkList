@@ -1,0 +1,6 @@
+JMH S 33 victor.proxy.ProxyPerformanceTest S 61 victor.proxy.generated.ProxyPerformanceTest_decorator_jmhTest S 9 decorator S 11 AverageTime E A 1 1 1 E E E E E E E E E E E E E E U 12 MICROSECONDS E E 
+JMH S 33 victor.proxy.ProxyPerformanceTest S 62 victor.proxy.generated.ProxyPerformanceTest_classProxy_jmhTest S 10 classProxy S 11 AverageTime E A 1 1 1 E E E E E E E E E E E E E E U 12 MICROSECONDS E E 
+JMH S 33 victor.proxy.ProxyPerformanceTest S 66 victor.proxy.generated.ProxyPerformanceTest_interfaceProxy_jmhTest S 14 interfaceProxy S 11 AverageTime E A 1 1 1 E E E E E E E E E E E E E E U 12 MICROSECONDS E E 
+JMH S 33 victor.proxy.ProxyPerformanceTest S 70 victor.proxy.generated.ProxyPerformanceTest_springCachedViaBPP_jmhTest S 18 springCachedViaBPP S 11 AverageTime E A 1 1 1 E E E E E E E E E E E E E E U 12 MICROSECONDS E E 
+JMH S 33 victor.proxy.ProxyPerformanceTest S 63 victor.proxy.generated.ProxyPerformanceTest_cacheMethod_jmhTest S 11 cacheMethod S 11 AverageTime E A 1 1 1 E E E E E E E E E E E E E E U 12 MICROSECONDS E E 
+JMH S 33 victor.proxy.ProxyPerformanceTest S 67 victor.proxy.generated.ProxyPerformanceTest_springCacheable_jmhTest S 15 springCacheable S 11 AverageTime E A 1 1 1 E E E E E E E E E E E E E E U 12 MICROSECONDS E E 
