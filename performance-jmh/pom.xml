@@ -22,12 +22,6 @@
 
   <name>Proxy Fairy (+JMH)</name>
 
-  <parent>
-    <groupId>org.springframework.boot</groupId>
-    <artifactId>spring-boot-starter-parent</artifactId>
-    <version>2.0.5.RELEASE</version>
-  </parent>
-
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
@@ -39,11 +33,6 @@
   </properties>
 
   <dependencies>
-    <dependency>
-      <groupId>org.springframework.boot</groupId>
-      <artifactId>spring-boot-starter-aop</artifactId>
-      <version>2.0.5.RELEASE</version>
-    </dependency>
     <dependency>
       <groupId>org.openjdk.jmh</groupId>
       <artifactId>jmh-core</artifactId>
@@ -82,7 +71,7 @@
         <artifactId>spring-boot-maven-plugin</artifactId>
         <version>2.0.5.RELEASE</version>
       </plugin>
-      <!--  <plugin>
+        <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
                 <version>3.1</version>
@@ -91,24 +80,9 @@
                     <source>${java.version}</source>
                     <target>${java.version}</target>
                 </configuration>
-            </plugin> -->
-            
-             <plugin>
-                <groupId>org.springframework.boot</groupId>
-                <artifactId>spring-boot-maven-plugin</artifactId>
-                <configuration>
-                    <fork>true</fork>
-                    <mainClass>${start-class}</mainClass>
-                </configuration>
-                  <executions>
-                    <execution>
-                      <goals>
-                        <goal>repackage</goal>
-                      </goals>
-                    </execution>
-                </executions>
             </plugin>
-            <!-- <plugin>
+
+             <plugin>
               <artifactId>maven-assembly-plugin</artifactId>
               <version>2.2-beta-5</version>
               <configuration>
@@ -131,8 +105,8 @@
                   </goals>
                 </execution>
               </executions>
-            </plugin> -->
-     <!--  <plugin>
+            </plugin>
+       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-shade-plugin</artifactId>
         <version>2.2</version>
@@ -166,9 +140,9 @@
             </configuration>
           </execution>
         </executions>
-      </plugin> -->
+      </plugin>
       
-      <!-- <plugin>
+       <plugin>
     <groupId>org.codehaus.mojo</groupId>
     <artifactId>exec-maven-plugin</artifactId>
     <executions>
@@ -190,7 +164,7 @@
             </configuration>
         </execution>
     </executions>
-</plugin> -->
+</plugin>
     </plugins>
     <pluginManagement>
       <plugins>

@@ -3,10 +3,9 @@ dontinline,*.*_avgt_jmhStub
 dontinline,*.*_sample_jmhStub
 dontinline,*.*_ss_jmhStub
 dontinline,*.*_thrpt_jmhStub
-inline,victor/proxy/ProxyPerformanceTest.cacheMethod
-inline,victor/proxy/ProxyPerformanceTest.classProxy
-inline,victor/proxy/ProxyPerformanceTest.decorator
-inline,victor/proxy/ProxyPerformanceTest.initialize
-inline,victor/proxy/ProxyPerformanceTest.interfaceProxy
-inline,victor/proxy/ProxyPerformanceTest.springCacheable
-inline,victor/proxy/ProxyPerformanceTest.springCachedViaBPP
+inline,victor/proxy/StreamsCPUMixedTest.closeThreadPool
+inline,victor/proxy/StreamsCPUMixedTest.forClassic
+inline,victor/proxy/StreamsCPUMixedTest.oneMilliCpuTask
+inline,victor/proxy/StreamsCPUMixedTest.startThreadPool
+inline,victor/proxy/StreamsCPUMixedTest.streamParallel
+inline,victor/proxy/StreamsCPUMixedTest.streamSerial

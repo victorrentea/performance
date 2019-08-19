@@ -15,7 +15,7 @@
   </component>
   <component name="JavacSettings">
     <option name="ADDITIONAL_OPTIONS_OVERRIDE">
-      <module name="performance-jmh" options="-parameters" />
+      <module name="performance-jmh" options="" />
     </option>
   </component>
 </project>
