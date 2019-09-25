@@ -73,6 +73,7 @@
     <orderEntry type="library" name="Maven: org.springframework.batch:spring-batch-infrastructure:4.0.1.RELEASE" level="project" />
     <orderEntry type="library" name="Maven: org.springframework.retry:spring-retry:1.2.2.RELEASE" level="project" />
     <orderEntry type="library" name="Maven: org.springframework:spring-tx:5.0.9.RELEASE" level="project" />
+    <orderEntry type="library" name="Maven: org.jooq:jool:0.9.12" level="project" />
     <orderEntry type="library" scope="RUNTIME" name="Maven: com.h2database:h2:1.4.197" level="project" />
     <orderEntry type="library" name="Maven: org.projectlombok:lombok:1.16.22" level="project" />
   </component>

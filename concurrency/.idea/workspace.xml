@@ -2,26 +2,11 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="2b04acf9-df94-4b01-a6d8-6f900829c14a" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/src/main/java/victor/training/concurrency/batch/BatchApp.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/victor/training/concurrency/batch/DummyTasklet.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../performance-jmh/.idea/codeStyles/codeStyleConfig.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/../.gitignore" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/concurrency.iml" beforeDir="false" afterPath="$PROJECT_DIR$/concurrency.iml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/pom.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../performance-jmh/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../performance-jmh/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../performance-jmh/target/classes/META-INF/BenchmarkList" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../performance-jmh/target/classes/META-INF/CompilerHints" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../performance-jmh/target/generated-sources/annotations/victor/proxy/generated/ProxyPerformanceTest_cacheMethod_jmhTest.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../performance-jmh/target/generated-sources/annotations/victor/proxy/generated/ProxyPerformanceTest_classProxy_jmhTest.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../performance-jmh/target/generated-sources/annotations/victor/proxy/generated/ProxyPerformanceTest_decorator_jmhTest.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../performance-jmh/target/generated-sources/annotations/victor/proxy/generated/ProxyPerformanceTest_interfaceProxy_jmhTest.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../performance-jmh/target/generated-sources/annotations/victor/proxy/generated/ProxyPerformanceTest_jmhType.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../performance-jmh/target/generated-sources/annotations/victor/proxy/generated/ProxyPerformanceTest_jmhType_B1.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../performance-jmh/target/generated-sources/annotations/victor/proxy/generated/ProxyPerformanceTest_jmhType_B2.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../performance-jmh/target/generated-sources/annotations/victor/proxy/generated/ProxyPerformanceTest_jmhType_B3.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../performance-jmh/target/generated-sources/annotations/victor/proxy/generated/ProxyPerformanceTest_springCacheable_jmhTest.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../performance-jmh/target/generated-sources/annotations/victor/proxy/generated/ProxyPerformanceTest_springCachedViaBPP_jmhTest.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/victor/training/concurrency/ConcurrencyUtil.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/victor/training/concurrency/ConcurrencyUtil.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/victor/training/concurrency/pools/WorkeriCareIntorcDate.java" beforeDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -46,15 +31,6 @@
         <option value="Class" />
       </list>
     </option>
-  </component>
-  <component name="FindInProjectRecents">
-    <findStrings>
-      <find>Pong</find>
-      <find>Pong::</find>
-      <find>UserRights</find>
-      <find>leak1</find>
-      <find>BigObject20MB</find>
-    </findStrings>
   </component>
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$/.." />
@@ -119,9 +95,22 @@
       </list>
     </option>
   </component>
-  <component name="RunManager" selected="Spring Boot.CommandSpringApp">
+  <component name="RunManager" selected="Application.ConcurrencyUtil">
     <configuration name="APlusPlus" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
       <option name="MAIN_CLASS_NAME" value="victor.training.concurrency.APlusPlus" />
+      <module name="concurrency" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="victor.training.concurrency.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="ConcurrencyUtil" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
+      <option name="MAIN_CLASS_NAME" value="victor.training.concurrency.ConcurrencyUtil" />
       <module name="concurrency" />
       <extension name="coverage">
         <pattern>
@@ -139,19 +128,6 @@
       <extension name="coverage">
         <pattern>
           <option name="PATTERN" value="victor.training.concurrency.*" />
-          <option name="ENABLED" value="true" />
-        </pattern>
-      </extension>
-      <method v="2">
-        <option name="Make" enabled="true" />
-      </method>
-    </configuration>
-    <configuration name="Throttling" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
-      <option name="MAIN_CLASS_NAME" value="victor.training.concurrency.pools.Throttling" />
-      <module name="concurrency" />
-      <extension name="coverage">
-        <pattern>
-          <option name="PATTERN" value="victor.training.concurrency.pools.*" />
           <option name="ENABLED" value="true" />
         </pattern>
       </extension>
@@ -186,19 +162,19 @@
       </method>
     </configuration>
     <list>
-      <item itemvalue="Application.Throttling" />
       <item itemvalue="Application.APlusPlus" />
       <item itemvalue="Application.LockPhilosophers" />
       <item itemvalue="Spring Boot.CommandSpringApp" />
       <item itemvalue="Spring Boot.BatchApp" />
+      <item itemvalue="Application.ConcurrencyUtil" />
     </list>
     <recent_temporary>
       <list>
+        <item itemvalue="Application.ConcurrencyUtil" />
         <item itemvalue="Spring Boot.CommandSpringApp" />
         <item itemvalue="Spring Boot.BatchApp" />
         <item itemvalue="Application.LockPhilosophers" />
         <item itemvalue="Application.APlusPlus" />
-        <item itemvalue="Application.Throttling" />
       </list>
     </recent_temporary>
   </component>
@@ -214,7 +190,7 @@
       <updated>1565244393574</updated>
       <workItem from="1565244394965" duration="17651000" />
       <workItem from="1565291223764" duration="3045000" />
-      <workItem from="1569438486779" duration="5397000" />
+      <workItem from="1569438486779" duration="6367000" />
     </task>
     <task id="LOCAL-00001" summary="undo solution">
       <created>1565277558908</created>
@@ -244,7 +220,14 @@
       <option name="project" value="LOCAL" />
       <updated>1569442544527</updated>
     </task>
-    <option name="localTasksCounter" value="5" />
+    <task id="LOCAL-00005" summary="added parallel spring batch">
+      <created>1569445261685</created>
+      <option name="number" value="00005" />
+      <option name="presentableId" value="LOCAL-00005" />
+      <option name="project" value="LOCAL" />
+      <updated>1569445261685</updated>
+    </task>
+    <option name="localTasksCounter" value="6" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -268,6 +251,7 @@
     <MESSAGE value="Throttling using a thread pool" />
     <MESSAGE value="add CPU intense task dummy" />
     <MESSAGE value="Add command as HTTP request" />
-    <option name="LAST_COMMIT_MESSAGE" value="Add command as HTTP request" />
+    <MESSAGE value="added parallel spring batch" />
+    <option name="LAST_COMMIT_MESSAGE" value="added parallel spring batch" />
   </component>
 </project>

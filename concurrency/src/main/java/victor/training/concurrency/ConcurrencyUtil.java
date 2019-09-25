@@ -1,10 +1,15 @@
 package victor.training.concurrency;
 
+import org.jooq.lambda.Unchecked;
+
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Random;
+import java.util.*;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
+import java.util.concurrent.atomic.AtomicInteger;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 public class ConcurrencyUtil {
 	static Random random = new Random();
@@ -34,6 +39,30 @@ public class ConcurrencyUtil {
 		while (System.currentTimeMillis() < tEnd) {
 			Math.sqrt(Math.random());
 		}
+	}
+
+	private static AtomicInteger concurrentCalls = new AtomicInteger(0);
+	public static void saturatableExternalSystem() {
+		int concurrent = concurrentCalls.incrementAndGet();
+		int delta = 1000;
+		if (concurrent > 3) delta += (concurrent - 3) * 300;
+		sleep2(delta);
+		concurrentCalls.decrementAndGet();
+	}
+	public static int measureCall() {
+		long t0 = System.currentTimeMillis();
+		saturatableExternalSystem();
+		long t1 = System.currentTimeMillis();
+		return (int) (t1-t0);
+	}
+
+	public static void main(String[] args) {
+		ExecutorService pool = Executors.newFixedThreadPool(5);
+
+		List<Future<Integer>> futures = IntStream.range(0, 10).mapToObj(i -> pool.submit(() -> measureCall())).collect(Collectors.toList());
+
+		double avg = futures.stream().map(Unchecked.function(Future::get)).mapToInt(Integer::intValue).average().getAsDouble();
+		System.out.println(avg);
 	}
 
 	
