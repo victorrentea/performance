@@ -1,9 +1,7 @@
-package victor.proxy;
+package victor.perf;
 
 import org.openjdk.jmh.annotations.*;
 
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.IntStream;
 

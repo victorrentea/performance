@@ -2,15 +2,42 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="2b04acf9-df94-4b01-a6d8-6f900829c14a" name="Default Changelist" comment="">
+      <change afterPath="$PROJECT_DIR$/../.idea/performance.iml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/codeStyles/codeStyleConfig.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/libraries/Maven__org_projectlombok_lombok_1_16_22.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/sonarlint/issuestore/b/1/b199c48dc393908f1bedb74a9f7df7890ebeb8e2" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/sonarlint/issuestore/index.pb" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../performance-jmh/.idea/codeStyles/codeStyleConfig.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../performance-jmh/src/main/java/victor/perf/StringBuilderPlay.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/concurrency.iml" beforeDir="false" afterPath="$PROJECT_DIR$/concurrency.iml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/pom.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/victor/training/concurrency/pools/CommandSpringApp.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/victor/training/concurrency/pools/CommandSpringApp.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/META-INF/concurrency.kotlin_module" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../performance-jmh/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../performance-jmh/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../performance-jmh/src/main/java/victor/proxy/StreamsCPUMixedTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/../performance-jmh/src/main/java/victor/perf/StreamsCPUMixedTest.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../performance-jmh/src/main/java/victor/proxy/StreamsCPUOnlyTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/../performance-jmh/src/main/java/victor/perf/StreamsCPUOnlyTest.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../performance-jmh/target/classes/META-INF/BenchmarkList" beforeDir="false" afterPath="$PROJECT_DIR$/../performance-jmh/target/classes/META-INF/BenchmarkList" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../performance-jmh/target/classes/META-INF/CompilerHints" beforeDir="false" afterPath="$PROJECT_DIR$/../performance-jmh/target/classes/META-INF/CompilerHints" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../performance-jmh/target/generated-sources/annotations/victor/proxy/generated/ProxyPerformanceTest_cacheMethod_jmhTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/../performance-jmh/target/generated-sources/annotations/victor/perf/generated/ProxyPerformanceTest_cacheMethod_jmhTest.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../performance-jmh/target/generated-sources/annotations/victor/proxy/generated/ProxyPerformanceTest_classProxy_jmhTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/../performance-jmh/target/generated-sources/annotations/victor/perf/generated/ProxyPerformanceTest_classProxy_jmhTest.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../performance-jmh/target/generated-sources/annotations/victor/proxy/generated/ProxyPerformanceTest_decorator_jmhTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/../performance-jmh/target/generated-sources/annotations/victor/perf/generated/ProxyPerformanceTest_decorator_jmhTest.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../performance-jmh/target/generated-sources/annotations/victor/proxy/generated/ProxyPerformanceTest_interfaceProxy_jmhTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/../performance-jmh/target/generated-sources/annotations/victor/perf/generated/ProxyPerformanceTest_interfaceProxy_jmhTest.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../performance-jmh/target/generated-sources/annotations/victor/proxy/generated/ProxyPerformanceTest_jmhType.java" beforeDir="false" afterPath="$PROJECT_DIR$/../performance-jmh/target/generated-sources/annotations/victor/perf/generated/ProxyPerformanceTest_jmhType.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../performance-jmh/target/generated-sources/annotations/victor/proxy/generated/ProxyPerformanceTest_jmhType_B1.java" beforeDir="false" afterPath="$PROJECT_DIR$/../performance-jmh/target/generated-sources/annotations/victor/perf/generated/ProxyPerformanceTest_jmhType_B1.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../performance-jmh/target/generated-sources/annotations/victor/proxy/generated/ProxyPerformanceTest_jmhType_B2.java" beforeDir="false" afterPath="$PROJECT_DIR$/../performance-jmh/target/generated-sources/annotations/victor/perf/generated/ProxyPerformanceTest_jmhType_B2.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../performance-jmh/target/generated-sources/annotations/victor/proxy/generated/ProxyPerformanceTest_jmhType_B3.java" beforeDir="false" afterPath="$PROJECT_DIR$/../performance-jmh/target/generated-sources/annotations/victor/perf/generated/ProxyPerformanceTest_jmhType_B3.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../performance-jmh/target/generated-sources/annotations/victor/proxy/generated/ProxyPerformanceTest_springCacheable_jmhTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/../performance-jmh/target/generated-sources/annotations/victor/perf/generated/ProxyPerformanceTest_springCacheable_jmhTest.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../performance-jmh/target/generated-sources/annotations/victor/proxy/generated/ProxyPerformanceTest_springCachedViaBPP_jmhTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/../performance-jmh/target/generated-sources/annotations/victor/perf/generated/ProxyPerformanceTest_springCachedViaBPP_jmhTest.java" afterDir="false" />
     </list>
-    <ignored path="$PROJECT_DIR$/classes/" />
-    <ignored path="$PROJECT_DIR$/target/" />
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
     <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="CodeStyleSettingsInfer">
+    <option name="done" value="true" />
   </component>
   <component name="ComposerSettings">
     <execution>
@@ -19,108 +46,6 @@
   </component>
   <component name="DefaultGradleProjectSettings">
     <option name="isMigrated" value="true" />
-  </component>
-  <component name="FileEditorManager">
-    <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/main/java/victor/training/concurrency/LockPhilosophers.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="168">
-              <caret line="12" column="26" selection-start-line="12" selection-start-column="22" selection-end-line="12" selection-end-column="26" />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/main/java/victor/training/concurrency/StringPool.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="120">
-              <caret line="5" column="30" selection-start-line="5" selection-start-column="30" selection-end-line="5" selection-end-column="30" />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/main/java/victor/training/concurrency/waitnotify/OddEvenIncrementer.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="24">
-              <caret line="4" column="13" selection-start-line="4" selection-start-column="13" selection-end-line="4" selection-end-column="13" />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/main/java/victor/training/concurrency/pools/Throttling.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="120">
-              <caret line="14" selection-start-line="14" selection-end-line="14" />
-              <folding>
-                <element signature="imports" expanded="true" />
-                <element signature="e#737#738#0" expanded="true" />
-                <element signature="e#768#769#0" expanded="true" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/main/java/victor/training/concurrency/waitnotify/PingPong.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="1200">
-              <caret line="53" column="6" selection-start-line="53" selection-start-column="6" selection-end-line="53" selection-end-column="6" />
-              <folding>
-                <element signature="imports" expanded="true" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/main/java/victor/training/concurrency/ConcurrencyUtil.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="-241">
-              <caret line="33" column="43" selection-start-line="33" selection-start-column="43" selection-end-line="33" selection-end-column="43" />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="true">
-        <entry file="file://$PROJECT_DIR$/src/main/java/victor/training/concurrency/APlusPlus.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="46">
-              <caret line="7" column="36" selection-start-line="7" selection-start-column="36" selection-end-line="7" selection-end-column="36" />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/main/java/TheEternalBuilderProblem.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="480">
-              <caret line="27" column="5" selection-start-line="27" selection-start-column="5" selection-end-line="27" selection-end-column="5" />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/main/java/victor/training/concurrency/ThreadLocals.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="96">
-              <caret line="4" column="25" selection-start-line="4" selection-start-column="25" selection-end-line="4" selection-end-column="25" />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/main/java/victor/training/concurrency/ThreadStop.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="264">
-              <caret line="12" column="16" selection-start-line="12" selection-start-column="16" selection-end-line="12" selection-end-column="16" />
-            </state>
-          </provider>
-        </entry>
-      </file>
-    </leaf>
   </component>
   <component name="FileTemplateManagerImpl">
     <option name="RECENT_TEMPLATES">
@@ -141,63 +66,6 @@
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$/.." />
   </component>
-  <component name="IdeDocumentHistory">
-    <option name="CHANGED_PATHS">
-      <list>
-        <option value="$PROJECT_DIR$/src/main/java/victor/training/concurrency/primitives/ReadersWriterLock.java" />
-        <option value="$PROJECT_DIR$/src/main/java/victor/training/concurrency/primitives/MonitorDeadlock.java" />
-        <option value="$PROJECT_DIR$/src/main/java/victor/training/concurrency/PingPong.java" />
-        <option value="$PROJECT_DIR$/pom.xml" />
-        <option value="$PROJECT_DIR$/src/main/java/victor/training/concurrency/leaks/BigObject20MB.java" />
-        <option value="$PROJECT_DIR$/src/main/java/victor/training/concurrency/leaks/LeaksApp.java" />
-        <option value="$PROJECT_DIR$/src/main/java/victor/training/concurrency/leaks/BigObject80MB.java" />
-        <option value="$PROJECT_DIR$/src/main/java/victor/training/concurrency/leaks/BigObject200KB.java" />
-        <option value="$PROJECT_DIR$/src/main/java/victor/training/concurrency/leaks/BigObject200KBApprox.java" />
-        <option value="$PROJECT_DIR$/src/main/java/victor/training/concurrency/leaks/Leak4Resource.java" />
-        <option value="$PROJECT_DIR$/src/main/java/victor/training/concurrency/leaks/SessionContext.java" />
-        <option value="$PROJECT_DIR$/src/main/java/victor/training/concurrency/primitives/LockTry.java" />
-        <option value="$PROJECT_DIR$/src/main/java/victor/training/concurrency/tricks/Pointer.java" />
-        <option value="$PROJECT_DIR$/src/main/java/victor/training/concurrency/pools/WorkeriCareIntorcDate.java" />
-        <option value="$PROJECT_DIR$/src/main/java/victor/training/concurrency/pools/Executori.java" />
-        <option value="$PROJECT_DIR$/src/main/java/victor/training/concurrency/Nou.java" />
-        <option value="$PROJECT_DIR$/src/main/java/victor/training/concurrency/Galuste.java" />
-        <option value="$PROJECT_DIR$/src/main/java/victor/training/concurrency/pools/Galuste.java" />
-        <option value="$PROJECT_DIR$/src/main/java/victor/training/concurrency/pools/GalusteFJP.java" />
-        <option value="$PROJECT_DIR$/src/main/java/victor/training/concurrency/leaks/Leak1Resource.java" />
-        <option value="$PROJECT_DIR$/src/main/java/victor/training/concurrency/leaks/Leak2Resource.java" />
-        <option value="$PROJECT_DIR$/src/main/java/victor/training/concurrency/leaks/CachingMethodObject.java" />
-        <option value="$PROJECT_DIR$/src/main/java/victor/training/concurrency/leaks/Leak3Resource.java" />
-        <option value="$PROJECT_DIR$/src/main/java/victor/training/concurrency/leaks/Leak6Resource_TheMostCommong.java" />
-        <option value="$PROJECT_DIR$/src/main/java/victor/training/concurrency/leaks/Leak6Resource_TheMostCommon.java" />
-        <option value="$PROJECT_DIR$/src/main/java/victor/training/concurrency/leaks/Leak5Resource.java" />
-        <option value="$PROJECT_DIR$/src/main/java/victor/training/concurrency/leaks/KillOne.java" />
-        <option value="$PROJECT_DIR$/src/main/java/victor/training/concurrency/leaks/Leak7Resource_RealLife.java" />
-        <option value="$PROJECT_DIR$/src/main/java/victor/training/concurrency/leaks/Leak1.java" />
-        <option value="$PROJECT_DIR$/src/main/java/victor/training/concurrency/leaks/Leak4.java" />
-        <option value="$PROJECT_DIR$/src/main/java/victor/training/concurrency/leaks/Leak5.java" />
-        <option value="$PROJECT_DIR$/src/main/java/victor/training/concurrency/leaks/Leak6_TheMostCommon.java" />
-        <option value="$PROJECT_DIR$/src/main/java/victor/training/concurrency/leaks/Leak7_RealLife.java" />
-        <option value="$PROJECT_DIR$/src/main/java/victor/training/concurrency/leaks/RequestContext.java" />
-        <option value="$PROJECT_DIR$/src/main/java/victor/training/concurrency/leaks/Leak2.java" />
-        <option value="$PROJECT_DIR$/src/main/java/victor/training/concurrency/leaks/Leak3.java" />
-        <option value="$PROJECT_DIR$/src/main/java/victor/training/concurrency/primitives/Barrier.java" />
-        <option value="$PROJECT_DIR$/src/main/java/victor/training/concurrency/LockPhilosophers.java" />
-        <option value="$PROJECT_DIR$/src/main/java/victor/training/concurrency/Magie.java" />
-        <option value="$PROJECT_DIR$/src/main/java/victor/training/concurrency/pools/ThreadPool.java" />
-        <option value="$PROJECT_DIR$/src/main/java/victor/training/concurrency/pools/CommandSpringApp.java" />
-        <option value="$PROJECT_DIR$/src/main/java/TheEternalBuilderProblem.java" />
-        <option value="$PROJECT_DIR$/src/main/java/victor/training/concurrency/StopThread.java" />
-        <option value="$PROJECT_DIR$/src/main/java/victor/training/concurrency/ThreadStop.java" />
-        <option value="$PROJECT_DIR$/src/main/java/victor/training/concurrency/Magic.java" />
-        <option value="$PROJECT_DIR$/src/main/java/victor/training/concurrency/ThreadLocals.java" />
-        <option value="$PROJECT_DIR$/src/main/java/victor/training/concurrency/waitnotify/OddEvenIncrementer.java" />
-        <option value="$PROJECT_DIR$/src/main/java/victor/training/concurrency/StringPool.java" />
-        <option value="$PROJECT_DIR$/src/main/java/victor/training/concurrency/pools/Throttling.java" />
-        <option value="$PROJECT_DIR$/src/main/java/victor/training/concurrency/ConcurrencyUtil.java" />
-        <option value="$PROJECT_DIR$/src/main/java/victor/training/concurrency/APlusPlus.java" />
-      </list>
-    </option>
-  </component>
   <component name="MavenImportPreferences">
     <option name="importingSettings">
       <MavenImportingSettings>
@@ -205,111 +73,11 @@
       </MavenImportingSettings>
     </option>
   </component>
-  <component name="ProjectFrameBounds" extendedState="6">
-    <option name="x" value="174" />
-    <option name="y" value="65" />
-    <option name="width" value="800" />
-    <option name="height" value="812" />
+  <component name="ProjectCodeStyleSettingsMigration">
+    <option name="version" value="1" />
   </component>
+  <component name="ProjectId" id="1RLFUS7VagW64kTeg9QPYN2dQju" />
   <component name="ProjectLevelVcsManager" settingsEditedManually="true" />
-  <component name="ProjectView">
-    <navigator proportions="" version="1">
-      <foldersAlwaysOnTop value="true" />
-    </navigator>
-    <panes>
-      <pane id="PackagesPane" />
-      <pane id="Scope" />
-      <pane id="ProjectPane">
-        <subPane>
-          <expand>
-            <path>
-              <item name="concurrency" type="b2602c69:ProjectViewProjectNode" />
-              <item name="concurrency" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="concurrency" type="b2602c69:ProjectViewProjectNode" />
-              <item name="concurrency" type="462c0819:PsiDirectoryNode" />
-              <item name="src" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="concurrency" type="b2602c69:ProjectViewProjectNode" />
-              <item name="concurrency" type="462c0819:PsiDirectoryNode" />
-              <item name="src" type="462c0819:PsiDirectoryNode" />
-              <item name="main" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="concurrency" type="b2602c69:ProjectViewProjectNode" />
-              <item name="concurrency" type="462c0819:PsiDirectoryNode" />
-              <item name="src" type="462c0819:PsiDirectoryNode" />
-              <item name="main" type="462c0819:PsiDirectoryNode" />
-              <item name="java" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="concurrency" type="b2602c69:ProjectViewProjectNode" />
-              <item name="concurrency" type="462c0819:PsiDirectoryNode" />
-              <item name="src" type="462c0819:PsiDirectoryNode" />
-              <item name="main" type="462c0819:PsiDirectoryNode" />
-              <item name="java" type="462c0819:PsiDirectoryNode" />
-              <item name="concurrency" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="concurrency" type="b2602c69:ProjectViewProjectNode" />
-              <item name="concurrency" type="462c0819:PsiDirectoryNode" />
-              <item name="src" type="462c0819:PsiDirectoryNode" />
-              <item name="main" type="462c0819:PsiDirectoryNode" />
-              <item name="java" type="462c0819:PsiDirectoryNode" />
-              <item name="concurrency" type="462c0819:PsiDirectoryNode" />
-              <item name="parallelpipe" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="concurrency" type="b2602c69:ProjectViewProjectNode" />
-              <item name="concurrency" type="462c0819:PsiDirectoryNode" />
-              <item name="src" type="462c0819:PsiDirectoryNode" />
-              <item name="main" type="462c0819:PsiDirectoryNode" />
-              <item name="java" type="462c0819:PsiDirectoryNode" />
-              <item name="concurrency" type="462c0819:PsiDirectoryNode" />
-              <item name="parallelpipe" type="462c0819:PsiDirectoryNode" />
-              <item name="WithSemaphore.java" type="529ef68f:ClassesTreeStructureProvider$PsiClassOwnerTreeNode" />
-            </path>
-            <path>
-              <item name="concurrency" type="b2602c69:ProjectViewProjectNode" />
-              <item name="concurrency" type="462c0819:PsiDirectoryNode" />
-              <item name="src" type="462c0819:PsiDirectoryNode" />
-              <item name="main" type="462c0819:PsiDirectoryNode" />
-              <item name="java" type="462c0819:PsiDirectoryNode" />
-              <item name="concurrency" type="462c0819:PsiDirectoryNode" />
-              <item name="pools" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="concurrency" type="b2602c69:ProjectViewProjectNode" />
-              <item name="concurrency" type="462c0819:PsiDirectoryNode" />
-              <item name="src" type="462c0819:PsiDirectoryNode" />
-              <item name="main" type="462c0819:PsiDirectoryNode" />
-              <item name="java" type="462c0819:PsiDirectoryNode" />
-              <item name="concurrency" type="462c0819:PsiDirectoryNode" />
-              <item name="waitnotify" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="concurrency" type="b2602c69:ProjectViewProjectNode" />
-              <item name="concurrency" type="462c0819:PsiDirectoryNode" />
-              <item name="target" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="concurrency" type="b2602c69:ProjectViewProjectNode" />
-              <item name="concurrency" type="462c0819:PsiDirectoryNode" />
-              <item name="target" type="462c0819:PsiDirectoryNode" />
-              <item name="classes" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="concurrency" type="b2602c69:ProjectViewProjectNode" />
-              <item name="External Libraries" type="cb654da1:ExternalLibrariesNode" />
-            </path>
-          </expand>
-          <select />
-        </subPane>
-      </pane>
-    </panes>
-  </component>
   <component name="PropertiesComponent">
     <property name="RequestMappingsPanelOrder0" value="0" />
     <property name="RequestMappingsPanelOrder1" value="1" />
@@ -318,7 +86,7 @@
     <property name="SHARE_PROJECT_CONFIGURATION_FILES" value="true" />
     <property name="WebServerToolWindowFactoryState" value="false" />
     <property name="aspect.path.notification.shown" value="true" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$/pom.xml" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$" />
     <property name="nodejs_interpreter_path.stuck_in_default_project" value="undefined stuck path" />
     <property name="nodejs_npm_path_reset_for_default_project" value="true" />
     <property name="nodejs_package_manager_path" value="npm" />
@@ -351,7 +119,7 @@
       </list>
     </option>
   </component>
-  <component name="RunManager" selected="Application.APlusPlus">
+  <component name="RunManager" selected="Spring Boot.CommandSpringApp">
     <configuration name="APlusPlus" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
       <option name="MAIN_CLASS_NAME" value="victor.training.concurrency.APlusPlus" />
       <module name="concurrency" />
@@ -378,12 +146,12 @@
         <option name="Make" enabled="true" />
       </method>
     </configuration>
-    <configuration name="PingPong" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
-      <option name="MAIN_CLASS_NAME" value="victor.training.concurrency.waitnotify.PingPong" />
+    <configuration name="LockPhilosophers" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
+      <option name="MAIN_CLASS_NAME" value="victor.training.concurrency.LockPhilosophers" />
       <module name="concurrency" />
       <extension name="coverage">
         <pattern>
-          <option name="PATTERN" value="victor.training.concurrency.primitives.*" />
+          <option name="PATTERN" value="victor.training.concurrency.*" />
           <option name="ENABLED" value="true" />
         </pattern>
       </extension>
@@ -404,33 +172,33 @@
         <option name="Make" enabled="true" />
       </method>
     </configuration>
-    <configuration name="LeaksApp" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot" temporary="true" nameIsGenerated="true">
+    <configuration name="CommandSpringApp" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot" temporary="true" nameIsGenerated="true">
       <module name="concurrency" />
       <extension name="coverage">
         <pattern>
-          <option name="PATTERN" value="victor.training.concurrency.leaks.*" />
+          <option name="PATTERN" value="victor.training.concurrency.pools.*" />
           <option name="ENABLED" value="true" />
         </pattern>
       </extension>
-      <option name="SPRING_BOOT_MAIN_CLASS" value="victor.training.concurrency.leaks.LeaksApp" />
+      <option name="SPRING_BOOT_MAIN_CLASS" value="victor.training.concurrency.pools.CommandSpringApp" />
       <method v="2">
         <option name="Make" enabled="true" />
       </method>
     </configuration>
     <list>
-      <item itemvalue="Application.PingPong" />
       <item itemvalue="Application.Barrier" />
-      <item itemvalue="Spring Boot.LeaksApp" />
       <item itemvalue="Application.Throttling" />
       <item itemvalue="Application.APlusPlus" />
+      <item itemvalue="Application.LockPhilosophers" />
+      <item itemvalue="Spring Boot.CommandSpringApp" />
     </list>
     <recent_temporary>
       <list>
+        <item itemvalue="Spring Boot.CommandSpringApp" />
+        <item itemvalue="Application.LockPhilosophers" />
         <item itemvalue="Application.APlusPlus" />
         <item itemvalue="Application.Throttling" />
         <item itemvalue="Application.Barrier" />
-        <item itemvalue="Spring Boot.LeaksApp" />
-        <item itemvalue="Application.PingPong" />
       </list>
     </recent_temporary>
   </component>
@@ -446,6 +214,7 @@
       <updated>1565244393574</updated>
       <workItem from="1565244394965" duration="17651000" />
       <workItem from="1565291223764" duration="3045000" />
+      <workItem from="1569438486779" duration="2861000" />
     </task>
     <task id="LOCAL-00001" summary="undo solution">
       <created>1565277558908</created>
@@ -471,51 +240,19 @@
     <option name="localTasksCounter" value="4" />
     <servers />
   </component>
-  <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="20696000" />
-  </component>
-  <component name="ToolWindowManager">
-    <frame x="-8" y="-8" width="1616" height="886" extended-state="6" />
-    <editor active="true" />
-    <layout>
-      <window_info content_ui="combo" id="Project" order="0" sideWeight="0.4989605" visible="true" weight="0.31169665" />
-      <window_info id="Structure" order="1" sideWeight="0.5010395" side_tool="true" weight="0.31169665" />
-      <window_info id="Designer" order="2" />
-      <window_info id="Image Layers" order="3" />
-      <window_info id="Capture Tool" order="4" />
-      <window_info id="UI Designer" order="5" />
-      <window_info id="Favorites" order="6" side_tool="true" />
-      <window_info id="Web" order="7" side_tool="true" />
-      <window_info anchor="bottom" id="Message" order="0" />
-      <window_info anchor="bottom" id="Find" order="1" weight="0.32919255" />
-      <window_info active="true" anchor="bottom" id="Run" order="2" visible="true" weight="0.3410959" />
-      <window_info anchor="bottom" id="Debug" order="3" weight="0.4" />
-      <window_info anchor="bottom" id="Cvs" order="4" weight="0.25" />
-      <window_info anchor="bottom" id="Inspection" order="5" weight="0.4" />
-      <window_info anchor="bottom" id="TODO" order="6" />
-      <window_info anchor="bottom" id="Spring" order="7" />
-      <window_info anchor="bottom" id="Terminal" order="8" />
-      <window_info anchor="bottom" id="Docker" order="9" show_stripe_button="false" />
-      <window_info anchor="bottom" id="Event Log" order="10" side_tool="true" />
-      <window_info anchor="bottom" id="Messages" order="11" weight="0.32919255" />
-      <window_info anchor="bottom" id="Java Enterprise" order="12" />
-      <window_info anchor="bottom" id="Database Changes" order="13" />
-      <window_info anchor="bottom" id="Version Control" order="14" />
-      <window_info anchor="right" id="Commander" order="0" weight="0.4" />
-      <window_info anchor="right" id="Ant Build" order="1" weight="0.25" />
-      <window_info anchor="right" content_ui="combo" id="Hierarchy" order="2" weight="0.25" />
-      <window_info anchor="right" id="Maven" order="3" />
-      <window_info anchor="right" id="Palette" order="4" />
-      <window_info anchor="right" id="Capture Analysis" order="5" />
-      <window_info anchor="right" id="Database" order="6" />
-      <window_info anchor="right" x="-105" y="314" width="1400" height="700" id="Byte Code Viewer" order="7" type="FLOATING" />
-      <window_info anchor="right" id="Palette&#9;" order="8" />
-      <window_info anchor="right" id="Theme Preview" order="9" />
-      <window_info anchor="right" id="Bean Validation" order="10" />
-    </layout>
-  </component>
   <component name="TypeScriptGeneratedFilesManager">
     <option name="version" value="1" />
+  </component>
+  <component name="Vcs.Log.Tabs.Properties">
+    <option name="TAB_STATES">
+      <map>
+        <entry key="MAIN">
+          <value>
+            <State />
+          </value>
+        </entry>
+      </map>
+    </option>
   </component>
   <component name="VcsManagerConfiguration">
     <option name="CHECK_CODE_SMELLS_BEFORE_PROJECT_COMMIT" value="false" />
@@ -524,325 +261,6 @@
     <MESSAGE value="Throttling using a thread pool" />
     <MESSAGE value="add CPU intense task dummy" />
     <option name="LAST_COMMIT_MESSAGE" value="add CPU intense task dummy" />
-  </component>
-  <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/src/main/java/victor/training/concurrency/primitives/LockTry.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="96">
-          <caret line="9" column="13" selection-start-line="9" selection-start-column="13" selection-end-line="9" selection-end-column="13" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/victor/training/concurrency/ThreadLocal1.java" />
-    <entry file="file://$PROJECT_DIR$/src/main/java/victor/training/concurrency/pools/WorkeriCareIntorcDate.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="298">
-          <caret line="55" column="6" selection-start-line="55" selection-start-column="6" selection-end-line="55" selection-end-column="6" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/pom.xml">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="192">
-          <caret line="20" column="18" lean-forward="true" selection-start-line="20" selection-start-column="18" selection-end-line="20" selection-end-column="18" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="jar://C:/Program Files/Java/jdk1.8.0_151/src.zip!/java/lang/String.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="167">
-          <caret line="110" column="19" selection-start-line="110" selection-start-column="19" selection-end-line="110" selection-end-column="19" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/victor/training/concurrency/leaks/BigObject20MB.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="144">
-          <caret line="7" column="49" selection-start-line="7" selection-start-column="38" selection-end-line="7" selection-end-column="49" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/victor/training/concurrency/leaks/Leak4.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="95">
-          <caret line="12" column="18" selection-start-line="12" selection-start-column="18" selection-end-line="12" selection-end-column="18" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/victor/training/concurrency/leaks/Leak5.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="216">
-          <caret line="12" column="43" selection-start-line="12" selection-start-column="43" selection-end-line="12" selection-end-column="43" />
-          <folding>
-            <element signature="imports" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/victor/training/concurrency/leaks/Leak6_TheMostCommon.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="168">
-          <caret line="13" column="17" lean-forward="true" selection-start-line="13" selection-start-column="17" selection-end-line="13" selection-end-column="17" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/victor/training/concurrency/leaks/Leak7_RealLife.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="312">
-          <caret line="22" column="48" selection-start-line="22" selection-start-column="48" selection-end-line="22" selection-end-column="48" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/victor/training/concurrency/leaks/Leak2.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="360">
-          <caret line="21" selection-start-line="21" selection-end-line="21" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/victor/training/concurrency/leaks/RequestContext.java" />
-    <entry file="file://$PROJECT_DIR$/src/main/java/victor/training/concurrency/leaks/SessionContext.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="192">
-          <caret line="18" column="30" selection-start-line="18" selection-start-column="30" selection-end-line="18" selection-end-column="30" />
-          <folding>
-            <element signature="e#326#353#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/victor/training/concurrency/leaks/LeaksApp.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="144">
-          <caret line="6" column="17" selection-start-line="6" selection-start-column="17" selection-end-line="6" selection-end-column="17" />
-          <folding>
-            <element signature="imports" expanded="true" />
-            <element signature="e#300#301#0" expanded="true" />
-            <element signature="e#359#360#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/victor/training/concurrency/leaks/Leak1.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="92">
-          <caret line="8" column="18" selection-start-line="8" selection-start-column="18" selection-end-line="8" selection-end-column="18" />
-          <folding>
-            <element signature="imports" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/victor/training/concurrency/leaks/KillOne.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="135">
-          <caret line="5" selection-start-line="5" selection-end-line="5" />
-          <folding>
-            <element signature="imports" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/victor/training/concurrency/leaks/BigObject200KBApprox.java" />
-    <entry file="file://$PROJECT_DIR$/src/main/java/victor/training/concurrency/leaks/CachingMethodObject.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="168">
-          <caret line="8" column="39" selection-start-line="8" selection-start-column="39" selection-end-line="8" selection-end-column="39" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/victor/training/concurrency/leaks/BigObject200KB.java" />
-    <entry file="file://$PROJECT_DIR$/src/main/java/victor/training/concurrency/leaks/BigObject80MB.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="96">
-          <caret line="4" column="13" selection-start-line="4" selection-start-column="13" selection-end-line="4" selection-end-column="13" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/victor/training/concurrency/leaks/Leak3.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="360">
-          <caret line="15" column="9" selection-start-line="15" selection-start-column="9" selection-end-line="15" selection-end-column="9" />
-          <folding>
-            <element signature="imports" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/victor/training/concurrency/primitives/PhaserBarrier.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="96">
-          <caret line="7" column="13" selection-start-line="7" selection-start-column="13" selection-end-line="7" selection-end-column="13" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/victor/training/concurrency/primitives/Barrier.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="240">
-          <caret line="12" column="39" selection-start-line="12" selection-start-column="39" selection-end-line="12" selection-end-column="39" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/victor/training/concurrency/primitives/Latch.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="96">
-          <caret line="8" column="13" selection-start-line="8" selection-start-column="13" selection-end-line="8" selection-end-column="13" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/victor/training/concurrency/primitives/MonitorDeadlock.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="120">
-          <caret line="5" column="13" selection-start-line="5" selection-start-column="13" selection-end-line="5" selection-end-column="13" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/victor/training/concurrency/primitives/ReadersWriterLock.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="96">
-          <caret line="7" column="13" selection-start-line="7" selection-start-column="13" selection-end-line="7" selection-end-column="13" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/victor/training/concurrency/InlantuireDeApeluriAsincrone.java" />
-    <entry file="file://$PROJECT_DIR$/src/main/java/victor/training/concurrency/pools/ThreadPool.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="96">
-          <caret line="11" column="13" selection-start-line="11" selection-start-column="13" selection-end-line="11" selection-end-column="13" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/victor/training/concurrency/db/StringBuilderPlay.java" />
-    <entry file="file://$PROJECT_DIR$/src/main/java/victor/training/concurrency/db/ParallelStream.java" />
-    <entry file="file://$PROJECT_DIR$/src/main/java/victor/training/concurrency/pools/GalusteFJP.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="96">
-          <caret line="8" column="23" selection-start-line="8" selection-start-column="23" selection-end-line="8" selection-end-column="23" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/victor/training/concurrency/pools/Executori.java" />
-    <entry file="file://$PROJECT_DIR$/src/main/java/victor/training/concurrency/db/StapanDeSclavi.java" />
-    <entry file="file://$PROJECT_DIR$/src/main/java/victor/training/concurrency/pools/CommandSpringApp.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="336">
-          <caret line="26" column="39" lean-forward="true" selection-start-line="26" selection-start-column="39" selection-end-line="26" selection-end-column="39" />
-          <folding>
-            <element signature="imports" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/victor/training/concurrency/parallelpipe/Step2Worker.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-335" />
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/victor/training/concurrency/tricks/Pointer.java" />
-    <entry file="file://$PROJECT_DIR$/src/main/java/victor/training/concurrency/parallelpipe/WithSemaphore.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-1080" />
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/victor/training/concurrency/db/LaBar.java" />
-    <entry file="file://$PROJECT_DIR$/src/main/java/victor/training/concurrency/nplus1.sql">
-      <provider selected="true" editor-type-id="text-editor" />
-    </entry>
-    <entry file="file://$PROJECT_DIR$/target/classes/TheEternalBuilderProblem.class">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="360">
-          <caret line="16" column="29" selection-start-line="16" selection-start-column="27" selection-end-line="16" selection-end-column="29" />
-          <folding>
-            <element signature="e#0#625#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/victor/training/concurrency/VolatilePuzzle.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="120">
-          <caret line="6" column="13" selection-start-line="6" selection-start-column="13" selection-end-line="6" selection-end-column="13" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/victor/training/concurrency/LockPhilosophers.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="168">
-          <caret line="12" column="26" selection-start-line="12" selection-start-column="22" selection-end-line="12" selection-end-column="26" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/victor/training/concurrency/StringPool.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="120">
-          <caret line="5" column="30" selection-start-line="5" selection-start-column="30" selection-end-line="5" selection-end-column="30" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/victor/training/concurrency/waitnotify/PingPong.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="1200">
-          <caret line="53" column="6" selection-start-line="53" selection-start-column="6" selection-end-line="53" selection-end-column="6" />
-          <folding>
-            <element signature="imports" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/TheEternalBuilderProblem.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="480">
-          <caret line="27" column="5" selection-start-line="27" selection-start-column="5" selection-end-line="27" selection-end-column="5" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/victor/training/concurrency/ThreadLocals.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="96">
-          <caret line="4" column="25" selection-start-line="4" selection-start-column="25" selection-end-line="4" selection-end-column="25" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/victor/training/concurrency/ThreadStop.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="264">
-          <caret line="12" column="16" selection-start-line="12" selection-start-column="16" selection-end-line="12" selection-end-column="16" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/victor/training/concurrency/waitnotify/OddEvenIncrementer.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="24">
-          <caret line="4" column="13" selection-start-line="4" selection-start-column="13" selection-end-line="4" selection-end-column="13" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/victor/training/concurrency/pools/Throttling.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="120">
-          <caret line="14" selection-start-line="14" selection-end-line="14" />
-          <folding>
-            <element signature="imports" expanded="true" />
-            <element signature="e#737#738#0" expanded="true" />
-            <element signature="e#768#769#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/victor/training/concurrency/ConcurrencyUtil.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-241">
-          <caret line="33" column="43" selection-start-line="33" selection-start-column="43" selection-end-line="33" selection-end-column="43" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/victor/training/concurrency/APlusPlus.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="46">
-          <caret line="7" column="36" selection-start-line="7" selection-start-column="36" selection-end-line="7" selection-end-column="36" />
-        </state>
-      </provider>
-    </entry>
   </component>
   <component name="masterDetails">
     <states>
