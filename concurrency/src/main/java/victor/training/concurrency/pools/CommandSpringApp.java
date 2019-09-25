@@ -71,13 +71,13 @@ class DrinkerService {
 class Barman {
 	public Ale getOneAle() {
 		 log("Pouring Ale...");
-		 sleep2(3000);
+		 sleep2(1000);
 		 return new Ale();
 	 }
 	
 	 public Whiskey getOneWhiskey() {
 		 log("Pouring Whiskey...");
-		 sleep2(3000);
+		 sleep2(1000);
 		 return new Whiskey();
 	 }
 }

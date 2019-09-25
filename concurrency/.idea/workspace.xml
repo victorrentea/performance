@@ -2,33 +2,26 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="2b04acf9-df94-4b01-a6d8-6f900829c14a" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/../.idea/performance.iml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/codeStyles/codeStyleConfig.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/libraries/Maven__org_projectlombok_lombok_1_16_22.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/sonarlint/issuestore/b/1/b199c48dc393908f1bedb74a9f7df7890ebeb8e2" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/sonarlint/issuestore/index.pb" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/victor/training/concurrency/batch/BatchApp.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/victor/training/concurrency/batch/DummyTasklet.java" afterDir="false" />
       <change afterPath="$PROJECT_DIR$/../performance-jmh/.idea/codeStyles/codeStyleConfig.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../performance-jmh/src/main/java/victor/perf/StringBuilderPlay.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/../.gitignore" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/concurrency.iml" beforeDir="false" afterPath="$PROJECT_DIR$/concurrency.iml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/pom.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/victor/training/concurrency/pools/CommandSpringApp.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/victor/training/concurrency/pools/CommandSpringApp.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/META-INF/concurrency.kotlin_module" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/../performance-jmh/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../performance-jmh/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../performance-jmh/src/main/java/victor/proxy/StreamsCPUMixedTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/../performance-jmh/src/main/java/victor/perf/StreamsCPUMixedTest.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../performance-jmh/src/main/java/victor/proxy/StreamsCPUOnlyTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/../performance-jmh/src/main/java/victor/perf/StreamsCPUOnlyTest.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../performance-jmh/target/classes/META-INF/BenchmarkList" beforeDir="false" afterPath="$PROJECT_DIR$/../performance-jmh/target/classes/META-INF/BenchmarkList" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../performance-jmh/target/classes/META-INF/CompilerHints" beforeDir="false" afterPath="$PROJECT_DIR$/../performance-jmh/target/classes/META-INF/CompilerHints" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../performance-jmh/target/generated-sources/annotations/victor/proxy/generated/ProxyPerformanceTest_cacheMethod_jmhTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/../performance-jmh/target/generated-sources/annotations/victor/perf/generated/ProxyPerformanceTest_cacheMethod_jmhTest.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../performance-jmh/target/generated-sources/annotations/victor/proxy/generated/ProxyPerformanceTest_classProxy_jmhTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/../performance-jmh/target/generated-sources/annotations/victor/perf/generated/ProxyPerformanceTest_classProxy_jmhTest.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../performance-jmh/target/generated-sources/annotations/victor/proxy/generated/ProxyPerformanceTest_decorator_jmhTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/../performance-jmh/target/generated-sources/annotations/victor/perf/generated/ProxyPerformanceTest_decorator_jmhTest.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../performance-jmh/target/generated-sources/annotations/victor/proxy/generated/ProxyPerformanceTest_interfaceProxy_jmhTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/../performance-jmh/target/generated-sources/annotations/victor/perf/generated/ProxyPerformanceTest_interfaceProxy_jmhTest.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../performance-jmh/target/generated-sources/annotations/victor/proxy/generated/ProxyPerformanceTest_jmhType.java" beforeDir="false" afterPath="$PROJECT_DIR$/../performance-jmh/target/generated-sources/annotations/victor/perf/generated/ProxyPerformanceTest_jmhType.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../performance-jmh/target/generated-sources/annotations/victor/proxy/generated/ProxyPerformanceTest_jmhType_B1.java" beforeDir="false" afterPath="$PROJECT_DIR$/../performance-jmh/target/generated-sources/annotations/victor/perf/generated/ProxyPerformanceTest_jmhType_B1.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../performance-jmh/target/generated-sources/annotations/victor/proxy/generated/ProxyPerformanceTest_jmhType_B2.java" beforeDir="false" afterPath="$PROJECT_DIR$/../performance-jmh/target/generated-sources/annotations/victor/perf/generated/ProxyPerformanceTest_jmhType_B2.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../performance-jmh/target/generated-sources/annotations/victor/proxy/generated/ProxyPerformanceTest_jmhType_B3.java" beforeDir="false" afterPath="$PROJECT_DIR$/../performance-jmh/target/generated-sources/annotations/victor/perf/generated/ProxyPerformanceTest_jmhType_B3.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../performance-jmh/target/generated-sources/annotations/victor/proxy/generated/ProxyPerformanceTest_springCacheable_jmhTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/../performance-jmh/target/generated-sources/annotations/victor/perf/generated/ProxyPerformanceTest_springCacheable_jmhTest.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../performance-jmh/target/generated-sources/annotations/victor/proxy/generated/ProxyPerformanceTest_springCachedViaBPP_jmhTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/../performance-jmh/target/generated-sources/annotations/victor/perf/generated/ProxyPerformanceTest_springCachedViaBPP_jmhTest.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../performance-jmh/target/classes/META-INF/BenchmarkList" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../performance-jmh/target/classes/META-INF/CompilerHints" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../performance-jmh/target/generated-sources/annotations/victor/proxy/generated/ProxyPerformanceTest_cacheMethod_jmhTest.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../performance-jmh/target/generated-sources/annotations/victor/proxy/generated/ProxyPerformanceTest_classProxy_jmhTest.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../performance-jmh/target/generated-sources/annotations/victor/proxy/generated/ProxyPerformanceTest_decorator_jmhTest.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../performance-jmh/target/generated-sources/annotations/victor/proxy/generated/ProxyPerformanceTest_interfaceProxy_jmhTest.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../performance-jmh/target/generated-sources/annotations/victor/proxy/generated/ProxyPerformanceTest_jmhType.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../performance-jmh/target/generated-sources/annotations/victor/proxy/generated/ProxyPerformanceTest_jmhType_B1.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../performance-jmh/target/generated-sources/annotations/victor/proxy/generated/ProxyPerformanceTest_jmhType_B2.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../performance-jmh/target/generated-sources/annotations/victor/proxy/generated/ProxyPerformanceTest_jmhType_B3.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../performance-jmh/target/generated-sources/annotations/victor/proxy/generated/ProxyPerformanceTest_springCacheable_jmhTest.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../performance-jmh/target/generated-sources/annotations/victor/proxy/generated/ProxyPerformanceTest_springCachedViaBPP_jmhTest.java" beforeDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -84,27 +77,34 @@
     <property name="RequestMappingsPanelWidth0" value="75" />
     <property name="RequestMappingsPanelWidth1" value="75" />
     <property name="SHARE_PROJECT_CONFIGURATION_FILES" value="true" />
+    <property name="SONARLINT_PRECOMMIT_ANALYSIS" value="false" />
     <property name="WebServerToolWindowFactoryState" value="false" />
     <property name="aspect.path.notification.shown" value="true" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/../../gs-batch-processing-master/complete/pom.xml" />
     <property name="nodejs_interpreter_path.stuck_in_default_project" value="undefined stuck path" />
     <property name="nodejs_npm_path_reset_for_default_project" value="true" />
     <property name="nodejs_package_manager_path" value="npm" />
     <property name="project.structure.last.edited" value="Project" />
     <property name="project.structure.proportion" value="0.0" />
     <property name="project.structure.side.proportion" value="0.0" />
-    <property name="settings.editor.selected.configurable" value="reference.projectsettings.compiler.javacompiler" />
+    <property name="restartRequiresConfirmation" value="false" />
+    <property name="settings.editor.selected.configurable" value="editing.templates" />
+    <property name="show.run.dashboard.notification" value="false" />
   </component>
   <component name="RecentsManager">
-    <key name="CopyFile.RECENT_KEYS">
-      <recent name="C:\workspace\performance\concurrency\src\main\java\victor\training\concurrency\pools" />
-    </key>
-    <key name="CopyClassDialog.RECENTS_KEY">
-      <recent name="victor.training.concurrency.leaks" />
-    </key>
     <key name="MoveFile.RECENT_KEYS">
       <recent name="C:\workspace\performance\concurrency\src\main\java\victor\training\concurrency" />
       <recent name="C:\workspace\performance\concurrency\src\main\java\victor\training\concurrency\leaks" />
+    </key>
+    <key name="MoveInnerDialog.RECENTS_KEY">
+      <recent name="victor.training.concurrency.batch" />
+    </key>
+    <key name="CopyClassDialog.RECENTS_KEY">
+      <recent name="victor.training.concurrency.batch" />
+      <recent name="victor.training.concurrency.leaks" />
+    </key>
+    <key name="CopyFile.RECENT_KEYS">
+      <recent name="C:\workspace\performance\concurrency\src\main\java\victor\training\concurrency\pools" />
     </key>
   </component>
   <component name="RunDashboard">
@@ -126,19 +126,6 @@
       <extension name="coverage">
         <pattern>
           <option name="PATTERN" value="victor.training.concurrency.*" />
-          <option name="ENABLED" value="true" />
-        </pattern>
-      </extension>
-      <method v="2">
-        <option name="Make" enabled="true" />
-      </method>
-    </configuration>
-    <configuration name="Barrier" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
-      <option name="MAIN_CLASS_NAME" value="victor.training.concurrency.primitives.Barrier" />
-      <module name="concurrency" />
-      <extension name="coverage">
-        <pattern>
-          <option name="PATTERN" value="victor.training.concurrency.primitives.*" />
           <option name="ENABLED" value="true" />
         </pattern>
       </extension>
@@ -172,6 +159,19 @@
         <option name="Make" enabled="true" />
       </method>
     </configuration>
+    <configuration name="BatchApp" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot" temporary="true" nameIsGenerated="true">
+      <module name="concurrency" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="victor.training.concurrency.batch.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <option name="SPRING_BOOT_MAIN_CLASS" value="victor.training.concurrency.batch.BatchApp" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
     <configuration name="CommandSpringApp" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot" temporary="true" nameIsGenerated="true">
       <module name="concurrency" />
       <extension name="coverage">
@@ -186,19 +186,19 @@
       </method>
     </configuration>
     <list>
-      <item itemvalue="Application.Barrier" />
       <item itemvalue="Application.Throttling" />
       <item itemvalue="Application.APlusPlus" />
       <item itemvalue="Application.LockPhilosophers" />
       <item itemvalue="Spring Boot.CommandSpringApp" />
+      <item itemvalue="Spring Boot.BatchApp" />
     </list>
     <recent_temporary>
       <list>
         <item itemvalue="Spring Boot.CommandSpringApp" />
+        <item itemvalue="Spring Boot.BatchApp" />
         <item itemvalue="Application.LockPhilosophers" />
         <item itemvalue="Application.APlusPlus" />
         <item itemvalue="Application.Throttling" />
-        <item itemvalue="Application.Barrier" />
       </list>
     </recent_temporary>
   </component>
@@ -214,7 +214,7 @@
       <updated>1565244393574</updated>
       <workItem from="1565244394965" duration="17651000" />
       <workItem from="1565291223764" duration="3045000" />
-      <workItem from="1569438486779" duration="2861000" />
+      <workItem from="1569438486779" duration="5397000" />
     </task>
     <task id="LOCAL-00001" summary="undo solution">
       <created>1565277558908</created>
@@ -237,7 +237,14 @@
       <option name="project" value="LOCAL" />
       <updated>1565298506609</updated>
     </task>
-    <option name="localTasksCounter" value="4" />
+    <task id="LOCAL-00004" summary="Add command as HTTP request">
+      <created>1569442544527</created>
+      <option name="number" value="00004" />
+      <option name="presentableId" value="LOCAL-00004" />
+      <option name="project" value="LOCAL" />
+      <updated>1569442544527</updated>
+    </task>
+    <option name="localTasksCounter" value="5" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -260,89 +267,7 @@
     <MESSAGE value="undo solution" />
     <MESSAGE value="Throttling using a thread pool" />
     <MESSAGE value="add CPU intense task dummy" />
-    <option name="LAST_COMMIT_MESSAGE" value="add CPU intense task dummy" />
-  </component>
-  <component name="masterDetails">
-    <states>
-      <state key="ArtifactsStructureConfigurable.UI">
-        <settings>
-          <artifact-editor />
-          <splitter-proportions>
-            <option name="proportions">
-              <list>
-                <option value="0.2" />
-              </list>
-            </option>
-          </splitter-proportions>
-        </settings>
-      </state>
-      <state key="FacetStructureConfigurable.UI">
-        <settings>
-          <splitter-proportions>
-            <option name="proportions">
-              <list>
-                <option value="0.2" />
-              </list>
-            </option>
-          </splitter-proportions>
-        </settings>
-      </state>
-      <state key="GlobalLibrariesConfigurable.UI">
-        <settings>
-          <splitter-proportions>
-            <option name="proportions">
-              <list>
-                <option value="0.2" />
-              </list>
-            </option>
-          </splitter-proportions>
-        </settings>
-      </state>
-      <state key="JdkListConfigurable.UI">
-        <settings>
-          <splitter-proportions>
-            <option name="proportions">
-              <list>
-                <option value="0.2" />
-              </list>
-            </option>
-          </splitter-proportions>
-        </settings>
-      </state>
-      <state key="ModuleStructureConfigurable.UI">
-        <settings>
-          <splitter-proportions>
-            <option name="proportions">
-              <list>
-                <option value="0.2" />
-              </list>
-            </option>
-          </splitter-proportions>
-        </settings>
-      </state>
-      <state key="ProjectJDKs.UI">
-        <settings>
-          <last-edited>1.8</last-edited>
-          <splitter-proportions>
-            <option name="proportions">
-              <list>
-                <option value="0.2" />
-              </list>
-            </option>
-          </splitter-proportions>
-        </settings>
-      </state>
-      <state key="ProjectLibrariesConfigurable.UI">
-        <settings>
-          <splitter-proportions>
-            <option name="proportions">
-              <list>
-                <option value="0.2" />
-              </list>
-            </option>
-          </splitter-proportions>
-        </settings>
-      </state>
-    </states>
+    <MESSAGE value="Add command as HTTP request" />
+    <option name="LAST_COMMIT_MESSAGE" value="Add command as HTTP request" />
   </component>
 </project>
