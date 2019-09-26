@@ -2,10 +2,11 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="2b04acf9-df94-4b01-a6d8-6f900829c14a" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/src/main/java/victor/training/concurrency/pools/tasks/CPUTask2.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/victor/training/concurrency/batch/paritem/BatchParItemsApp.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/victor/training/concurrency/pools/OptimizeExternalLoad.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/victor/training/concurrency/pools/OptimizeExternalLoad.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/victor/training/concurrency/pools/tasks/CPUTask.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/victor/training/concurrency/pools/tasks/CPUTask.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/victor/training/concurrency/batch/BatchApp.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/victor/training/concurrency/batch/parstep/BatchParStepsApp.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/victor/training/concurrency/batch/DummyTasklet.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/victor/training/concurrency/batch/parstep/DummyTasklet.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/victor/training/concurrency/pools/tasks/FragileExternalSystemTask.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/victor/training/concurrency/pools/tasks/FragileExternalSystemTask.java" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -58,7 +59,7 @@
     <property name="WebServerToolWindowFactoryState" value="false" />
     <property name="aspect.path.notification.shown" value="true" />
     <property name="last_directory_selection" value="$PROJECT_DIR$/src/main/java/victor/training/concurrency/pools" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$/../../gs-batch-processing-master/complete/pom.xml" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/src/main/java/victor/training/concurrency/batch/parstep" />
     <property name="nodejs_interpreter_path.stuck_in_default_project" value="undefined stuck path" />
     <property name="nodejs_npm_path_reset_for_default_project" value="true" />
     <property name="nodejs_package_manager_path" value="npm" />
@@ -70,14 +71,15 @@
     <property name="show.run.dashboard.notification" value="false" />
   </component>
   <component name="RecentsManager">
-    <key name="MoveFile.RECENT_KEYS">
-      <recent name="C:\workspace\performance\concurrency\src\main\java\victor\training\concurrency" />
-      <recent name="C:\workspace\performance\concurrency\src\main\java\victor\training\concurrency\leaks" />
-    </key>
     <key name="MoveClassesOrPackagesDialog.RECENTS_KEY">
       <recent name="victor.training.concurrency.pools" />
     </key>
+    <key name="CopyFile.RECENT_KEYS">
+      <recent name="C:\workspace\performance\concurrency\src\main\java\victor\training\concurrency\batch\parstep" />
+      <recent name="C:\workspace\performance\concurrency\src\main\java\victor\training\concurrency\pools" />
+    </key>
     <key name="MoveInnerDialog.RECENTS_KEY">
+      <recent name="victor.training.concurrency.batch.parstep" />
       <recent name="victor.training.concurrency.batch" />
     </key>
     <key name="CopyClassDialog.RECENTS_KEY">
@@ -85,8 +87,9 @@
       <recent name="victor.training.concurrency.batch" />
       <recent name="victor.training.concurrency.leaks" />
     </key>
-    <key name="CopyFile.RECENT_KEYS">
-      <recent name="C:\workspace\performance\concurrency\src\main\java\victor\training\concurrency\pools" />
+    <key name="MoveFile.RECENT_KEYS">
+      <recent name="C:\workspace\performance\concurrency\src\main\java\victor\training\concurrency" />
+      <recent name="C:\workspace\performance\concurrency\src\main\java\victor\training\concurrency\leaks" />
     </key>
   </component>
   <component name="RunDashboard">
@@ -101,7 +104,20 @@
       </list>
     </option>
   </component>
-  <component name="RunManager" selected="Application.OptimizeExternalLoad">
+  <component name="RunManager" selected="Application.BatchParItemsApp">
+    <configuration name="BatchParItemsApp" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
+      <option name="MAIN_CLASS_NAME" value="victor.training.concurrency.batch.paritem.BatchParItemsApp" />
+      <module name="concurrency" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="victor.training.concurrency.batch.paritem.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
     <configuration name="CPUTask" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
       <option name="MAIN_CLASS_NAME" value="victor.training.concurrency.pools.tasks.CPUTask" />
       <module name="concurrency" />
@@ -141,46 +157,33 @@
         <option name="Make" enabled="true" />
       </method>
     </configuration>
-    <configuration name="VolatilePuzzle" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
-      <option name="MAIN_CLASS_NAME" value="victor.training.concurrency.VolatilePuzzle" />
+    <configuration name="BatchParItemsApp" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot" temporary="true" nameIsGenerated="true">
       <module name="concurrency" />
       <extension name="coverage">
         <pattern>
-          <option name="PATTERN" value="victor.training.concurrency.*" />
+          <option name="PATTERN" value="victor.training.concurrency.batch.paritem.*" />
           <option name="ENABLED" value="true" />
         </pattern>
       </extension>
-      <method v="2">
-        <option name="Make" enabled="true" />
-      </method>
-    </configuration>
-    <configuration name="BatchApp" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot" temporary="true" nameIsGenerated="true">
-      <module name="concurrency" />
-      <extension name="coverage">
-        <pattern>
-          <option name="PATTERN" value="victor.training.concurrency.batch.*" />
-          <option name="ENABLED" value="true" />
-        </pattern>
-      </extension>
-      <option name="SPRING_BOOT_MAIN_CLASS" value="victor.training.concurrency.batch.BatchApp" />
+      <option name="SPRING_BOOT_MAIN_CLASS" value="victor.training.concurrency.batch.paritem.BatchParItemsApp" />
       <method v="2">
         <option name="Make" enabled="true" />
       </method>
     </configuration>
     <list>
-      <item itemvalue="Application.VolatilePuzzle" />
       <item itemvalue="Application.Throttling" />
       <item itemvalue="Application.OptimizeExternalLoad" />
       <item itemvalue="Application.CPUTask2" />
-      <item itemvalue="Spring Boot.BatchApp" />
+      <item itemvalue="Spring Boot.BatchParItemsApp" />
+      <item itemvalue="Application.BatchParItemsApp" />
     </list>
     <recent_temporary>
       <list>
+        <item itemvalue="Application.BatchParItemsApp" />
+        <item itemvalue="Spring Boot.BatchParItemsApp" />
         <item itemvalue="Application.OptimizeExternalLoad" />
         <item itemvalue="Application.CPUTask2" />
         <item itemvalue="Application.Throttling" />
-        <item itemvalue="Application.VolatilePuzzle" />
-        <item itemvalue="Spring Boot.BatchApp" />
       </list>
     </recent_temporary>
   </component>
@@ -197,7 +200,7 @@
       <workItem from="1565244394965" duration="17651000" />
       <workItem from="1565291223764" duration="3045000" />
       <workItem from="1569438486779" duration="12149000" />
-      <workItem from="1569491262735" duration="1137000" />
+      <workItem from="1569491262735" duration="5996000" />
     </task>
     <task id="LOCAL-00001" summary="undo solution">
       <created>1565277558908</created>
@@ -262,7 +265,14 @@
       <option name="project" value="LOCAL" />
       <updated>1569478791596</updated>
     </task>
-    <option name="localTasksCounter" value="10" />
+    <task id="LOCAL-00010" summary="CPU task improved">
+      <created>1569492486963</created>
+      <option name="number" value="00010" />
+      <option name="presentableId" value="LOCAL-00010" />
+      <option name="project" value="LOCAL" />
+      <updated>1569492486963</updated>
+    </task>
+    <option name="localTasksCounter" value="11" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -293,6 +303,7 @@
     <MESSAGE value="Judo Locks" />
     <MESSAGE value="cleanup" />
     <MESSAGE value="Limited external system" />
-    <option name="LAST_COMMIT_MESSAGE" value="Limited external system" />
+    <MESSAGE value="CPU task improved" />
+    <option name="LAST_COMMIT_MESSAGE" value="CPU task improved" />
   </component>
 </project>

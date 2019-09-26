@@ -1,6 +1,5 @@
-package victor.training.concurrency.batch;
+package victor.training.concurrency.batch.parstep;
 
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.batch.core.Job;
 import org.springframework.batch.core.configuration.annotation.EnableBatchProcessing;
 import org.springframework.batch.core.configuration.annotation.JobBuilderFactory;
@@ -17,10 +16,10 @@ import org.springframework.core.task.SimpleAsyncTaskExecutor;
 
 @SpringBootApplication
 @EnableBatchProcessing
-public class BatchApp {
+public class BatchParStepsApp {
 
     public static void main(String[] args) {
-        SpringApplication.run(BatchApp.class, args).close();
+        SpringApplication.run(BatchParStepsApp.class, args).close();
     }
 
     @Autowired

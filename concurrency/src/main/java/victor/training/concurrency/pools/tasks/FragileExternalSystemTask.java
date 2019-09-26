@@ -15,7 +15,6 @@ public class FragileExternalSystemTask implements Runnable {
                 log("KABOOOM!!");
                 throw new IllegalArgumentException("Per SLA, you are not allowed to be called by more than two parallel requests. Prepared to be sued!");
             }
-            // TODO try calling saturatableExternalSystem()
             log("Handling request no " + requestIndex.incrementAndGet());
             sleep2(1000);
             log("Done");
