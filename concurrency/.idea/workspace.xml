@@ -92,7 +92,7 @@
       </list>
     </option>
   </component>
-  <component name="RunManager" selected="Application.JudoLocks">
+  <component name="RunManager">
     <configuration name="ConcurrencyUtil" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
       <option name="MAIN_CLASS_NAME" value="victor.training.concurrency.ConcurrencyUtil" />
       <module name="concurrency" />
@@ -167,10 +167,10 @@
     </list>
     <recent_temporary>
       <list>
+        <item itemvalue="Spring Boot.BatchApp" />
         <item itemvalue="Application.JudoLocks" />
         <item itemvalue="Application.ConcurrencyUtil" />
         <item itemvalue="Spring Boot.CommandSpringApp" />
-        <item itemvalue="Spring Boot.BatchApp" />
         <item itemvalue="Application.LockPhilosophers" />
       </list>
     </recent_temporary>

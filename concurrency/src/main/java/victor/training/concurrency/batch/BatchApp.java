@@ -15,7 +15,6 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
 import org.springframework.core.task.SimpleAsyncTaskExecutor;
 
-@Slf4j
 @SpringBootApplication
 @EnableBatchProcessing
 public class BatchApp {
