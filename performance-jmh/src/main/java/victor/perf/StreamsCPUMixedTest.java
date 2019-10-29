@@ -1,4 +1,4 @@
-package victor.proxy;
+package victor.perf;
 
 import org.openjdk.jmh.annotations.*;
 

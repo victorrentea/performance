@@ -1,10 +1,16 @@
 package victor.training.concurrency;
 
+import org.jooq.lambda.Unchecked;
+
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Random;
+import java.util.*;
+import java.util.concurrent.Callable;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
+import java.util.concurrent.atomic.AtomicInteger;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 public class ConcurrencyUtil {
 	static Random random = new Random();
@@ -30,11 +36,20 @@ public class ConcurrencyUtil {
 	}
 
 	public static void useCPU(long millis) {
-		long tEnd = System.currentTimeMillis() + millis;
-		while (System.currentTimeMillis() < tEnd) {
-			Math.sqrt(Math.random());
-		}
+
 	}
+
+
+	public static int measureCall(Runnable r) {
+		long t0 = System.currentTimeMillis();
+		r.run();
+		long t1 = System.currentTimeMillis();
+		return (int) (t1-t0);
+	}
+	public static Callable<Integer> measuring(Runnable r) {
+		return () -> measureCall(r);
+	}
+
 
 	
 	static List<String> position = new ArrayList<>();
