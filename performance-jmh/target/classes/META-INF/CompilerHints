@@ -9,3 +9,6 @@ inline,victor/proxy/StreamsCPUMixedTest.oneMilliCpuTask
 inline,victor/proxy/StreamsCPUMixedTest.startThreadPool
 inline,victor/proxy/StreamsCPUMixedTest.streamParallel
 inline,victor/proxy/StreamsCPUMixedTest.streamSerial
+inline,victor/proxy/StreamsCPUOnlyTest.forClassic
+inline,victor/proxy/StreamsCPUOnlyTest.streamParallel
+inline,victor/proxy/StreamsCPUOnlyTest.streamSerial
