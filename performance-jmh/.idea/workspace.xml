@@ -2,20 +2,33 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="0e1584f6-4d86-4d34-9539-64d7002532f5" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/../concurrency/.idea/codeStyles/codeStyleConfig.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.classpath" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/codeStyles/codeStyleConfig.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/vcs.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.project" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.settings/org.eclipse.core.resources.prefs" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.settings/org.eclipse.jdt.core.prefs" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.settings/org.eclipse.m2e.core.prefs" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../concurrency/.idea/libraries/Maven__org_projectlombok_lombok_1_16_22.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../concurrency/.idea/sonarlint/issuestore/b/1/b199c48dc393908f1bedb74a9f7df7890ebeb8e2" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../concurrency/.idea/sonarlint/issuestore/index.pb" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../concurrency/src/main/java/victor/training/concurrency/JudoLocks.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../concurrency/src/main/java/victor/training/concurrency/batch/paritem/BatchParItemsApp.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../concurrency/src/main/java/victor/training/concurrency/batch/parstep/BatchParStepsApp.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../concurrency/src/main/java/victor/training/concurrency/batch/parstep/DummyTasklet.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../concurrency/src/main/java/victor/training/concurrency/pools/OptimizeExternalLoad.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../concurrency/src/main/java/victor/training/concurrency/pools/tasks/CPUTask.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../concurrency/src/main/java/victor/training/concurrency/pools/tasks/FragileExternalSystemTask.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../concurrency/src/main/java/victor/training/concurrency/pools/tasks/IOTask.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../concurrency/src/main/java/victor/training/concurrency/pools/tasks/LimitedExternalSystemTask.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/victor/perf/StringBuilderPlay.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/../.gitignore" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../concurrency/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../concurrency/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/pom.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/META-INF/BenchmarkList" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/META-INF/CompilerHints" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../concurrency/concurrency.iml" beforeDir="false" afterPath="$PROJECT_DIR$/../concurrency/concurrency.iml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../concurrency/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../concurrency/pom.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../concurrency/src/main/java/victor/training/concurrency/ConcurrencyUtil.java" beforeDir="false" afterPath="$PROJECT_DIR$/../concurrency/src/main/java/victor/training/concurrency/ConcurrencyUtil.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../concurrency/src/main/java/victor/training/concurrency/pools/CommandSpringApp.java" beforeDir="false" afterPath="$PROJECT_DIR$/../concurrency/src/main/java/victor/training/concurrency/pools/CommandSpringApp.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../concurrency/src/main/java/victor/training/concurrency/pools/Throttling.java" beforeDir="false" afterPath="$PROJECT_DIR$/../concurrency/src/main/java/victor/training/concurrency/pools/Throttling.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../concurrency/src/main/java/victor/training/concurrency/pools/WorkeriCareIntorcDate.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../concurrency/target/classes/META-INF/concurrency.kotlin_module" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/victor/proxy/PlayMe.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/victor/proxy/StreamsCPUMixedTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/victor/perf/StreamsCPUMixedTest.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/victor/proxy/StreamsCPUOnlyTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/victor/perf/StreamsCPUOnlyTest.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/META-INF/BenchmarkList" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/META-INF/BenchmarkList" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/META-INF/CompilerHints" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/META-INF/CompilerHints" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -169,7 +182,9 @@
       <map>
         <entry key="MAIN">
           <value>
-            <State />
+            <State>
+              <option name="COLUMN_ORDER" />
+            </State>
           </value>
         </entry>
       </map>
