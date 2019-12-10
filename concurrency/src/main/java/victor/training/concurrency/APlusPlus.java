@@ -27,6 +27,8 @@ public class APlusPlus {
 				a += aLocal;
 			}
 		}
+		
+		
 	}
 
 	public static class ThreadB extends Thread {
