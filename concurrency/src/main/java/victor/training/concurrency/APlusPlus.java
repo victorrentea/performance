@@ -14,9 +14,6 @@ import java.util.concurrent.atomic.AtomicInteger;
 import lombok.extern.slf4j.Slf4j;
 
 public class APlusPlus {
-	private static int bumbacTotal;
-	private static final Object monitor = new Object();
-
 	public static int culegeBumbac() {
 		log("Ma pornesc la cules");
 		int bumbac = 0;
@@ -24,11 +21,8 @@ public class APlusPlus {
 			bumbac++;
 		}
 		ConcurrencyUtil.sleepSomeTime();
-		synchronized (monitor) {
-			bumbacTotal += bumbac;
-		}
 		log("AM terminat");
-		return 3;
+		return bumbac;
 	}
 
 	static ExecutorService pool;
@@ -48,15 +42,17 @@ public class APlusPlus {
 		viitoare3uri.add(pool.submit(() -> culegeBumbac()));
 		
 		sleep2(100);
-		System.out.println("Am terminat treaba mea");
+		log("Am terminat treaba mea");
 		
+		int bumbacTotal = 0;
 		for (Future<Integer> future3 : viitoare3uri) {
-			future3.get(); // blocheaza threadul curent pana e gata si ala
+			Integer bumbac = future3.get(); // blocheaza threadul curent pana e gata si ala
+			bumbacTotal += bumbac;
 		}
 		
-		System.out.println("Total = " + bumbacTotal);
+		log("Total = " + bumbacTotal);
 		
 		long t1 = System.currentTimeMillis();
-		System.out.println("Took = " + (t1 - t0));
+		log("Took = " + (t1 - t0));
 	}
 }
