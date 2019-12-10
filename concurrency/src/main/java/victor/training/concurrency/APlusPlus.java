@@ -1,62 +1,56 @@
 package victor.training.concurrency;
 
+import static victor.training.concurrency.ConcurrencyUtil.log;
+
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import lombok.extern.slf4j.Slf4j;
 
 public class APlusPlus {
-	private static int a;
+	private static int bumbacTotal;
 	private static final Object monitor = new Object();
 
-	public static class ThreadA extends Thread {
-		public void run() {
-			int aLocal = 0;
-			for (int i = 0; i < 1000_000/10; i++) {
-				aLocal++;
-				aLocal++;
-				aLocal++;
-				aLocal++;
-				aLocal++;
-				aLocal++;
-				aLocal++;
-				aLocal++;
-				aLocal++;
-				aLocal++;
-			}
-			synchronized (monitor) {
-				a += aLocal;
-			}
+	public static void culegeBumbac() {
+		log("Ma pornesc la cules");
+		int bumbac = 0;
+		for (int i = 0; i < 1000_000; i++) {
+			bumbac++;
 		}
-		
-		
+		synchronized (monitor) {
+			bumbacTotal += bumbac;
+		}
+		log("AM terminat");
 	}
 
-	public static class ThreadB extends Thread {
-		public void run() {
-			int aLocal = 0;
-			for (int i = 0; i < 1000_000; i++) {
-				aLocal++;
-			}
-			synchronized (monitor) {
-				a += aLocal;
-			}
-		}
-	}
-
-	// TODO (bonus): ConcurrencyUtil.useCPU(1)
+	static ExecutorService pool;
 	public static void main(String[] args) throws InterruptedException {
-		ThreadA threadA = new ThreadA();
-		ThreadB threadB = new ThreadB();
+		pool = Executors.newFixedThreadPool(2); // asta face springu
+		buzinss();
+		pool.shutdown();
+	}
 
+	private static void buzinss() {
 		long t0 = System.currentTimeMillis();
-
-		threadA.start();
-		threadB.start();
-		threadA.join();
-		threadB.join();
-
+		pool.execute(new Runnable() {
+			public void run() {
+				culegeBumbac();				
+			}
+		});
+		pool.execute(new Runnable() {
+			public void run() {
+				culegeBumbac();				
+			}
+		});
+		pool.execute(new Runnable() {
+			public void run() {
+				culegeBumbac();				
+			}
+		});
+		
 		long t1 = System.currentTimeMillis();
-		System.out.println("Total = " + a);
+		System.out.println("Total = " + bumbacTotal);
 		System.out.println("Took = " + (t1 - t0));
 	}
 }
