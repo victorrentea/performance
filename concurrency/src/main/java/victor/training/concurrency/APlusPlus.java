@@ -1,7 +1,10 @@
 package victor.training.concurrency;
 
 import static victor.training.concurrency.ConcurrencyUtil.log;
+import static victor.training.concurrency.ConcurrencyUtil.sleep2;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -20,6 +23,7 @@ public class APlusPlus {
 		for (int i = 0; i < 1000_000; i++) {
 			bumbac++;
 		}
+		ConcurrencyUtil.sleepSomeTime();
 		synchronized (monitor) {
 			bumbacTotal += bumbac;
 		}
@@ -38,14 +42,17 @@ public class APlusPlus {
 		long t0 = System.currentTimeMillis();
 //		Future<Integer>
 		
-		Future<Integer> future3 = pool.submit(() -> culegeBumbac());
-//		pool.execute(() -> culegeBumbac());
-//		pool.execute(() -> culegeBumbac());
+		List<Future<Integer>> viitoare3uri = new ArrayList<>(); 
+		viitoare3uri.add(pool.submit(() -> culegeBumbac()));
+		viitoare3uri.add(pool.submit(() -> culegeBumbac()));
+		viitoare3uri.add(pool.submit(() -> culegeBumbac()));
 		
-		ConcurrencyUtil.sleep2(100);
+		sleep2(100);
 		System.out.println("Am terminat treaba mea");
 		
-		future3.get(); // blocheaza threadul curent pana e gata si ala
+		for (Future<Integer> future3 : viitoare3uri) {
+			future3.get(); // blocheaza threadul curent pana e gata si ala
+		}
 		
 		System.out.println("Total = " + bumbacTotal);
 		
