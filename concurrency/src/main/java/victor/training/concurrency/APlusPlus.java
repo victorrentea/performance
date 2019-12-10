@@ -48,9 +48,17 @@ public class APlusPlus {
 				culegeBumbac();				
 			}
 		});
+		ConcurrencyUtil.sleep2(100);
+		int fostu = -1;
+		int actualu = 0;
+		while (fostu != actualu) { // buzy-wait
+			fostu = actualu;
+			actualu = bumbacTotal;
+			ConcurrencyUtil.sleep2(2);
+		}
+		System.out.println("Total = " + bumbacTotal);
 		
 		long t1 = System.currentTimeMillis();
-		System.out.println("Total = " + bumbacTotal);
 		System.out.println("Took = " + (t1 - t0));
 	}
 }
