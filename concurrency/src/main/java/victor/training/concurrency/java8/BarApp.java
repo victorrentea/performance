@@ -22,7 +22,8 @@ public class BarApp {
 		
 		// DefferedResult / promise al java: 
 
-		CompletableFuture<Bere> futureBere = supplyAsync(Barman::toarnaBere);		// FORK
+		CompletableFuture<Bere> futureBere = supplyAsync(Barman::toarnaBere)
+				.exceptionally(exceptie -> null);		// FORK
 		CompletableFuture<Whiskey> futureWhiskey = supplyAsync(Barman::toarnaWhiskey);// FORK
 		CompletableFuture<Pastrama> futurePastrama = supplyAsync(() -> Frigider.maDucSaIauPastrama()); // FORK
 		
@@ -68,6 +69,9 @@ class Barman {
 	public static Bere toarnaBere() {
 		log("Torn bere");
 		sleep2(1000);
+		if (true) {
+			throw new IllegalStateException("Nu mai e mere");
+		}
 		log("Gata");
 		return new Bere();
 	}
