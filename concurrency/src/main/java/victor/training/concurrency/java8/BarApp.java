@@ -21,26 +21,26 @@ public class BarApp {
 		log("Am venit la bar");
 		
 		// DefferedResult / promise al java: 
-		CompletableFuture<Bere> futureBere = supplyAsync(() -> Barman.toarnaBere());
-		CompletableFuture<Whiskey> futureWhiskey = supplyAsync(() -> Barman.toarnaWhiskey());
-		
-		
+
+		CompletableFuture<Bere> futureBere = supplyAsync(Barman::toarnaBere);		// FORK
+		CompletableFuture<Whiskey> futureWhiskey = supplyAsync(Barman::toarnaWhiskey);// FORK
+		CompletableFuture<Pastrama> futurePastrama = supplyAsync(() -> Frigider.maDucSaIauPastrama()); // FORK
 		
 		CompletableFuture<RachetaCoktail> futureCocktail = futureWhiskey.thenCombine(futureBere, 
-				(whiskey, bere) -> new RachetaCoktail(whiskey, bere));
-		
-		//	futureBere.then
+				RachetaCoktail::new);
 		
 		
-		Pastrama pastrama = Frigider.maDucSaIauPastrama();
-		log("Mananc " + pastrama);
+		futurePastrama.thenAcceptBoth(futureCocktail, (pastrama,cocktail) -> {
+			log("Mananc " + pastrama);
+			log("Beu " + cocktail);
+			log("Plec acasa");		
+		});
 		
 		
 		
-		RachetaCoktail coktail = futureCocktail.get();
-		log("Beu " + coktail);
-		
-		log("Plec acasa");		
+		log("gata use-caseul. ma intorc in piscina. Pleoshc!");
+		sleep2(4000); // intr-o aplicatie normala, app nu moare dupa executia unui use-case.
+		// AICI moare, pentru ca threadurile pe care ruleaza procesarile sunt daemoni care nu tin app in viata.
 	}
 
 }
