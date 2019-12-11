@@ -16,7 +16,7 @@ public class Parent {
 
     private String name;
 
-    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    @OneToMany(cascade = CascadeType.ALL)
     @JoinColumn(name = "PARENT_ID")
     private Set<Child> children = new HashSet<>();
 

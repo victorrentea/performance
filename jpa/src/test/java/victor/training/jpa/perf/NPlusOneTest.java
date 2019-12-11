@@ -50,7 +50,8 @@ public class NPlusOneTest {
 
 	@Test
 	public void nPlusOne() {
-		List<Parent> parents = em.createQuery("FROM Parent", Parent.class).getResultList();
+		List<Parent> parents = em.createQuery(
+				"SELECT p FROM Parent p LEFT JOIN FETCH p.children", Parent.class).getResultList();
 
 		int totalChildren = anotherMethod(parents);
 		assertThat(totalChildren).isEqualTo(5);
