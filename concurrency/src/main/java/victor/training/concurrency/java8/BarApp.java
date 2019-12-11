@@ -9,6 +9,7 @@ import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 import java.util.function.Consumer;
+import java.util.function.Function;
 
 import javax.management.RuntimeErrorException;
 
@@ -16,7 +17,6 @@ import lombok.ToString;
 import victor.training.concurrency.ConcurrencyUtil;
 
 public class BarApp {
-	static RachetaCoktail coktail;
 	public static void main(String[] args) throws InterruptedException, ExecutionException {
 		log("Am venit la bar");
 		
@@ -26,13 +26,14 @@ public class BarApp {
 		
 		
 		CompletableFuture<Void> ambeleGata = allOf(futureBere, futureWhiskey); // Operatorul JOIN in UML
-		ambeleGata.thenAccept(new Consumer<Void>() {
+		CompletableFuture<RachetaCoktail> futureCocktail = 
+				ambeleGata.thenApply(new Function<Void, RachetaCoktail>() {
 			@Override
-			public void accept(Void v) {
+			public RachetaCoktail apply(Void v) {
 				try {
 					Bere bere = futureBere.get(); // NU VA BLOCA DE LOC: berea va fi fost deja turnata
 					Whiskey whiskey = futureWhiskey.get();
-					coktail = new RachetaCoktail(whiskey, bere);
+					return new RachetaCoktail(whiskey, bere);
 				} catch (Exception e) {
 					throw new RuntimeException(e);
 				}
@@ -45,6 +46,7 @@ public class BarApp {
 		
 		
 		
+		RachetaCoktail coktail = futureCocktail.get();
 		log("Beu " + coktail);
 		
 		log("Plec acasa");		
