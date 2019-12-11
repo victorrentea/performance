@@ -25,7 +25,6 @@ public class BarApp {
 
 		ForkJoinPool poolDeChematPeEi = new ForkJoinPool(1000); // this is SPARTA!!
 		
-		
 		CompletableFuture<Bere> futureBere = supplyAsync(Barman::toarnaBere, poolDeChematPeEi)
 				.exceptionally(exceptie -> null);		// FORK
 		CompletableFuture<Whiskey> futureWhiskey = supplyAsync(Barman::toarnaWhiskey, poolDeChematPeEi);// FORK

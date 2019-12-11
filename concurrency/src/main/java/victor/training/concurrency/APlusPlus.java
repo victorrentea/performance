@@ -29,7 +29,8 @@ public class APlusPlus {
 
 	static ExecutorService pool;
 	public static void main(String[] args) throws InterruptedException, ExecutionException {
-		pool = Executors.newFixedThreadPool(2); // asta face springu
+//		pool = Executors.newFixedThreadPool(2); // asta face springu
+		pool = Executors.newCachedThreadPool();
 		buzinss();
 		pool.shutdown();
 	}
