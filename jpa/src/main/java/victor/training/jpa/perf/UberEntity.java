@@ -24,17 +24,28 @@ public class UberEntity {
     private Scope scope;
     @ManyToOne
     private User createdBy;
+    
+    
 
     public Long getId() {
         return id;
     }
-
+    
     public String getName() {
-        return name;
+    	return name;
+    }
+    
+    public UberEntity setName(String name) {
+    	this.name = name;
+    	return this;
     }
 
-    public UberEntity setName(String name) {
-        this.name = name;
+    public String getFirstName() {
+        return firstName;
+    }
+
+    public UberEntity setFirstName(String firstName) {
+        this.firstName = firstName;
         return this;
     }
 

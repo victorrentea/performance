@@ -12,6 +12,8 @@ import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.context.transaction.TestTransaction;
 import org.springframework.transaction.annotation.Transactional;
 
+import static org.junit.Assert.assertEquals;
+
 import javax.persistence.EntityManager;
 
 @RunWith(SpringRunner.class)
@@ -37,6 +39,8 @@ public class UberEntityTest {
 
 
         UberEntity uber = new UberEntity()
+        		.setName("numeBun")
+        		.setFirstName("first")
                 .setFiscalCountry(romania)
                 .setOriginCountry(romania)
                 .setInvoicingCountry(romania)
@@ -53,6 +57,7 @@ public class UberEntityTest {
         log.info("Loaded");
         // TODO fetch only the necessary data
         // TODO change link types?
-        System.out.println(uberEntity.toString());
+        assertEquals("numeBun", uberEntity.getName());
+        assertEquals("first", uberEntity.getFirstName());
     }
 }

@@ -50,8 +50,8 @@ public class NPlusOneTest {
 
 	@Test
 	public void nPlusOne() {
-		List<Parent> parents = em.createQuery(
-				"SELECT DISTINCT p FROM Parent p LEFT JOIN FETCH p.children", Parent.class).getResultList();
+		Set<Parent> parents =new HashSet<>( em.createQuery(
+				"SELECT p FROM Parent p LEFT JOIN FETCH p.children", Parent.class).getResultList());
 
 		int totalChildren = anotherMethod(parents);
 		assertThat(totalChildren).isEqualTo(5);
@@ -61,10 +61,14 @@ public class NPlusOneTest {
 		log.debug("Start iterating over {} parents: {}", parents.size(), parents);
 		int total = 0;
 		for (Parent parent : parents) {
-			total += parent.getChildren().size();
+			total += numaraCopiii(parent);
 		}
 		log.debug("Done counting: {} children", total);
 		return total;
+	}
+
+	private int numaraCopiii(Parent parent) {
+		return parent.getChildren().size();
 	}
 
 }
