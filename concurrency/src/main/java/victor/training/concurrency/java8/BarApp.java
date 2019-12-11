@@ -7,6 +7,7 @@ import static victor.training.concurrency.ConcurrencyUtil.sleep2;
 
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
+import java.util.concurrent.ForkJoinPool;
 import java.util.concurrent.Future;
 import java.util.function.Consumer;
 import java.util.function.Function;
@@ -22,10 +23,13 @@ public class BarApp {
 		
 		// DefferedResult / promise al java: 
 
-		CompletableFuture<Bere> futureBere = supplyAsync(Barman::toarnaBere)
+		ForkJoinPool poolDeChematPeEi = new ForkJoinPool(1000); // this is SPARTA!!
+		
+		
+		CompletableFuture<Bere> futureBere = supplyAsync(Barman::toarnaBere, poolDeChematPeEi)
 				.exceptionally(exceptie -> null);		// FORK
-		CompletableFuture<Whiskey> futureWhiskey = supplyAsync(Barman::toarnaWhiskey);// FORK
-		CompletableFuture<Pastrama> futurePastrama = supplyAsync(() -> Frigider.maDucSaIauPastrama()); // FORK
+		CompletableFuture<Whiskey> futureWhiskey = supplyAsync(Barman::toarnaWhiskey, poolDeChematPeEi);// FORK
+		CompletableFuture<Pastrama> futurePastrama = supplyAsync(() -> Frigider.maDucSaIauPastrama(), poolDeChematPeEi); // FORK
 		
 		CompletableFuture<RachetaCoktail> futureCocktail = futureWhiskey.thenCombine(futureBere, 
 				RachetaCoktail::new);
