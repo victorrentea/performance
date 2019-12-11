@@ -8,11 +8,15 @@ import static victor.training.concurrency.ConcurrencyUtil.sleep2;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
+import java.util.function.Consumer;
+
+import javax.management.RuntimeErrorException;
 
 import lombok.ToString;
 import victor.training.concurrency.ConcurrencyUtil;
 
 public class BarApp {
+	static RachetaCoktail coktail;
 	public static void main(String[] args) throws InterruptedException, ExecutionException {
 		log("Am venit la bar");
 		
@@ -20,19 +24,25 @@ public class BarApp {
 		CompletableFuture<Bere> futureBere = supplyAsync(() -> Barman.toarnaBere());
 		CompletableFuture<Whiskey> futureWhiskey = supplyAsync(() -> Barman.toarnaWhiskey());
 		
-		Bere bere = futureBere.get();
-		Whiskey whiskey = futureWhiskey.get();
 		
-//		CompletableFuture<Void> nimicDaEGata = allOf(futureBere, futureWhiskey);
-//		nimicDaEGata.thenAccept(v -> {
-//			return null;
-//		});
+		CompletableFuture<Void> ambeleGata = allOf(futureBere, futureWhiskey); // Operatorul JOIN in UML
+		ambeleGata.thenAccept(new Consumer<Void>() {
+			@Override
+			public void accept(Void v) {
+				try {
+					Bere bere = futureBere.get(); // NU VA BLOCA DE LOC: berea va fi fost deja turnata
+					Whiskey whiskey = futureWhiskey.get();
+					coktail = new RachetaCoktail(whiskey, bere);
+				} catch (Exception e) {
+					throw new RuntimeException(e);
+				}
+			}
+		});
 		//	futureBere.then
 		
 		Pastrama pastrama = Frigider.maDucSaIauPastrama();
 		log("Mananc " + pastrama);
 		
-		RachetaCoktail coktail = new RachetaCoktail(whiskey, bere);
 		
 		
 		log("Beu " + coktail);
