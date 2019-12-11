@@ -23,6 +23,9 @@ class UserContextHolder {
 		return usernameulDePeThread.get();
 //		return varza;
 	}
+	public static void removeUserFromThread() {
+		usernameulDePeThread.remove();
+	}
 }
 
 
@@ -35,7 +38,12 @@ class RecordController {
 	void m(int id, String newName, String username) {
 		log("Acting user: " + username);
 		UserContextHolder.setCurrentUser(username);
-		facade.m(id, newName);
+		try {
+			facade.m(id, newName);
+		} finally {
+			// TOT TIMPUL FA ASTA!!
+			UserContextHolder.removeUserFromThread();
+		}
 	}
 }
 

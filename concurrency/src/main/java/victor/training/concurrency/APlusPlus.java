@@ -14,12 +14,14 @@ import java.util.concurrent.atomic.AtomicInteger;
 import lombok.extern.slf4j.Slf4j;
 
 public class APlusPlus {
+
 	public static int culegeBumbac() {
 		log("Ma pornesc la cules");
 		int bumbac = 0;
 		for (int i = 0; i < 1000_000; i++) {
 			bumbac++;
 		}
+		
 		ConcurrencyUtil.sleepSomeTime();
 		log("AM terminat");
 		return bumbac;

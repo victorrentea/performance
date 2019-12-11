@@ -11,7 +11,6 @@ public class KillOne {
 		KillTwo.internalMethod();
 		log("start One.a1()");
 	}
-
 	public static synchronized void internalMethod() {
 		log("start One.b1()");
 		sleep2(3_000);

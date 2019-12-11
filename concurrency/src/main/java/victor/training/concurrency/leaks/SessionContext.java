@@ -21,7 +21,7 @@ public class SessionContext implements Serializable {
 			return cache.get(key); // cache hit
 		}
 		BigObject20MB newObject = loadMethod.call();
-		cache.put(key, newObject);
+		cache.put(key, newObject); // NU pe sesiune!!
 		return newObject;
 	}
 }

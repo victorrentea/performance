@@ -16,14 +16,13 @@ public class Leak1 {
 		String s = "Just allocated: " + bigData.largeArray.length*4 + " Bytes.";
 		s+="Remaining Memory: " + Runtime.getRuntime().freeMemory();
 		
-		threadLocal.set(bigData);
 		try {
-			
-			
-			System.out.println(s);
+			threadLocal.set(bigData);
 		} finally {
 			threadLocal.remove();
 		}
+		
+		System.out.println(s);
 		return s;
 	}
 }

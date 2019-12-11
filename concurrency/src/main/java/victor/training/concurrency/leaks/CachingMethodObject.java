@@ -7,12 +7,11 @@ public class CachingMethodObject {
 	public static class UserRightsCalculator {
 		public void doStuff() {
 			System.out.println("Stupid Code");
-//			cache.get("vaaai");
-
+//			System.out.println("din cache direct pt ds " + cache.get("a"));
 		}
-
 	}
 	
+	//camp de instanta
 	private Map<String, BigObject20MB> cache = new HashMap<>();
 	
 	public UserRightsCalculator createRightsCalculator() {
