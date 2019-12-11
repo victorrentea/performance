@@ -25,21 +25,12 @@ public class BarApp {
 		CompletableFuture<Whiskey> futureWhiskey = supplyAsync(() -> Barman.toarnaWhiskey());
 		
 		
-		CompletableFuture<Void> ambeleGata = allOf(futureBere, futureWhiskey); // Operatorul JOIN in UML
-		CompletableFuture<RachetaCoktail> futureCocktail = 
-				ambeleGata.thenApply(new Function<Void, RachetaCoktail>() {
-			@Override
-			public RachetaCoktail apply(Void v) {
-				try {
-					Bere bere = futureBere.get(); // NU VA BLOCA DE LOC: berea va fi fost deja turnata
-					Whiskey whiskey = futureWhiskey.get();
-					return new RachetaCoktail(whiskey, bere);
-				} catch (Exception e) {
-					throw new RuntimeException(e);
-				}
-			}
-		});
+		
+		CompletableFuture<RachetaCoktail> futureCocktail = futureWhiskey.thenCombine(futureBere, 
+				(whiskey, bere) -> new RachetaCoktail(whiskey, bere));
+		
 		//	futureBere.then
+		
 		
 		Pastrama pastrama = Frigider.maDucSaIauPastrama();
 		log("Mananc " + pastrama);
