@@ -38,7 +38,7 @@ public class NPlusOneTest {
 		em.persist(new Parent("Victor")
 				.addChild(new Child("Emma"))
 				.addChild(new Child("Vlad"))
-		);
+				);
 		em.persist(new Parent("Peter")
 				.addChild(new Child("Maria"))
 				.addChild(new Child("Stephan"))
