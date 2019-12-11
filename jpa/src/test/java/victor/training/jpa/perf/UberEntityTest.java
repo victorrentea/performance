@@ -63,6 +63,7 @@ public class UberEntityTest {
         		"SELECT new victor.training.jpa.perf.UberNume(u.name,u.firstName)"
         		+ " FROM UberEntity u WHERE u.id=:uberId", UberNume.class)
         		.setParameter("uberId", uber.getId());
+        // nume, prenume, numar de orderuri plasate, date ultimului order, tota lcomenzi, tara de origine
         
         UberNume name = q.getSingleResult();
         log.info("Loaded " + name);
@@ -72,6 +73,11 @@ public class UberEntityTest {
         assertEquals("first", name.getFirstName());
     }
 }
+//DA, se poate: entitate mapata pe view.
+//@Entity
+//@Table("QQQ")
+//class QQQ {}
+
 
 @Data
 class UberNume {
