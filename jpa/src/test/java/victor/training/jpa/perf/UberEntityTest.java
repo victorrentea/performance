@@ -14,7 +14,10 @@ import org.springframework.transaction.annotation.Transactional;
 
 import static org.junit.Assert.assertEquals;
 
+import java.util.Arrays;
+
 import javax.persistence.EntityManager;
+import javax.persistence.Query;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
@@ -53,11 +56,13 @@ public class UberEntityTest {
         TestTransaction.start();
 
         log.info("Now, loading by id...");
-        UberEntity uberEntity = em.find(UberEntity.class, uber.getId());
-        log.info("Loaded");
+        Query q = em.createQuery("SELECT u.name,u.firstName FROM UberEntity u WHERE u.id=:uberId")
+        		.setParameter("uberId", uber.getId());
+        Object[] ceoFiAsta = (Object[]) q.getSingleResult();
+        log.info("Loaded " + Arrays.toString(ceoFiAsta));
         // TODO fetch only the necessary data
         // TODO change link types?
-        assertEquals("numeBun", uberEntity.getName());
-        assertEquals("first", uberEntity.getFirstName());
+        assertEquals("numeBun", ceoFiAsta[0]);
+        assertEquals("first", ceoFiAsta[1]);
     }
 }
