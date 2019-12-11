@@ -12,12 +12,12 @@ import java.util.UUID;
 @RequestMapping("leak4")
 public class Leak4 {
 	@Autowired
-    private SessionContext session;
+    private UserContext userData;
 	
 	@GetMapping
 	public String test() throws Exception {
 		String uuid = UUID.randomUUID().toString();
-		session.tryCache(uuid, BigObject20MB::new);
+		userData.tryCache(uuid, BigObject20MB::new);
 		return "the most subtle";
 	}
 }

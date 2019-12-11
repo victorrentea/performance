@@ -5,10 +5,12 @@ import static victor.training.concurrency.ConcurrencyUtil.log;
 public class ThreadLocals {
 
 	public static void main(String[] args) {
-	new RecordController().m(1,"new", "gigel");
+		new RecordController().m(1, "new", "gigel");
 	}
 }
+
 class UserContextHolder {
+	// TODO
 }
 
 // -- WARNING: enterprise code below --
@@ -38,11 +40,10 @@ class RecordService {
 	}
 }
 
-
 class RecordRepo {
 	void updateRecord(int recordId, String newName) {
 		String username = "???"; // TODO
-		//down in the basement
+		// down in the basement
 		log("INSERT INTO RECORD(..., LAST_MODIFIED_BY) VALUES (..., ?) : " + username);
 	}
 

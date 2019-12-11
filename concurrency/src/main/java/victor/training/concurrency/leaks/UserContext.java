@@ -12,7 +12,7 @@ import java.util.concurrent.Callable;
 @SuppressWarnings("serial")
 @Component
 @Scope(scopeName = "session", proxyMode = ScopedProxyMode.TARGET_CLASS)
-public class SessionContext implements Serializable {
+public class UserContext implements Serializable {
 
 	private Map<String, BigObject20MB> cache = new HashMap<>();
 	
