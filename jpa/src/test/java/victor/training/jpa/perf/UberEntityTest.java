@@ -12,12 +12,15 @@ import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.context.transaction.TestTransaction;
 import org.springframework.transaction.annotation.Transactional;
 
+import lombok.Data;
+
 import static org.junit.Assert.assertEquals;
 
 import java.util.Arrays;
 
 import javax.persistence.EntityManager;
 import javax.persistence.Query;
+import javax.persistence.TypedQuery;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
@@ -56,13 +59,21 @@ public class UberEntityTest {
         TestTransaction.start();
 
         log.info("Now, loading by id...");
-        Query q = em.createQuery("SELECT u.name,u.firstName FROM UberEntity u WHERE u.id=:uberId")
+        TypedQuery<UberNume> q = em.createQuery(
+        		"SELECT new victor.training.jpa.perf.UberNume(u.name,u.firstName)"
+        		+ " FROM UberEntity u WHERE u.id=:uberId", UberNume.class)
         		.setParameter("uberId", uber.getId());
-        Object[] ceoFiAsta = (Object[]) q.getSingleResult();
-        log.info("Loaded " + Arrays.toString(ceoFiAsta));
+        
+        UberNume name = q.getSingleResult();
+        log.info("Loaded " + name);
         // TODO fetch only the necessary data
         // TODO change link types?
-        assertEquals("numeBun", ceoFiAsta[0]);
-        assertEquals("first", ceoFiAsta[1]);
+        assertEquals("numeBun", name.getName());
+        assertEquals("first", name.getFirstName());
     }
+}
+
+@Data
+class UberNume {
+	private final String name, firstName;
 }
