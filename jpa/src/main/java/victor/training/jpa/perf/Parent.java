@@ -14,6 +14,7 @@ public class Parent {
     @GeneratedValue
     private Long id;
 
+    @Lob
     private String name;
 
     @OneToMany(cascade = CascadeType.ALL)
