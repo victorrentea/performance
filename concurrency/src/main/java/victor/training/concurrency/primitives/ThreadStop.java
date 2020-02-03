@@ -1,4 +1,4 @@
-package victor.training.concurrency;
+package victor.training.concurrency.primitives;
 
 import static victor.training.concurrency.ConcurrencyUtil.log;
 import static victor.training.concurrency.ConcurrencyUtil.sleepSomeTime;
