@@ -3,14 +3,15 @@ package victor.training.concurrency.leaks;
 import java.util.HashMap;
 import java.util.Map;
 
-public class CachingMethodObject {
-	public class UserRightsCalculator {
+	 class UserRightsCalculator {
 		public void doStuff() {
-			System.out.println("Stupid Code");
+			System.out.println("Stupid Code + " /*+ cache.size()*/);
 			// what's the connection with the 'cache' field ?
+
 		}
 	}
-	
+public class CachingMethodObject {
+
 	private Map<String, BigObject20MB> cache = new HashMap<>();
 	
 	public UserRightsCalculator createRightsCalculator() {

@@ -17,6 +17,7 @@ public class Leak3 {
 		HttpSession session = request.getSession();
 		System.out.println("was new session: " + session.isNew());
 		session.setAttribute("rights",new BigObject80MB());
+//		UPDATE SET WEHERE ID = session.getId()
 		return "even more subtle";
 	}
 }

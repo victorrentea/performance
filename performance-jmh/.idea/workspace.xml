@@ -2,35 +2,15 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="0e1584f6-4d86-4d34-9539-64d7002532f5" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/../concurrency/.idea/libraries/Maven__org_projectlombok_lombok_1_16_22.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../concurrency/.idea/sonarlint/issuestore/b/1/b199c48dc393908f1bedb74a9f7df7890ebeb8e2" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../concurrency/.idea/sonarlint/issuestore/index.pb" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../concurrency/src/main/java/victor/training/concurrency/JudoLocks.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../concurrency/src/main/java/victor/training/concurrency/batch/paritem/BatchParItemsApp.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../concurrency/src/main/java/victor/training/concurrency/batch/parstep/BatchParStepsApp.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../concurrency/src/main/java/victor/training/concurrency/batch/parstep/DummyTasklet.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../concurrency/src/main/java/victor/training/concurrency/pools/OptimizeExternalLoad.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../concurrency/src/main/java/victor/training/concurrency/pools/tasks/CPUTask.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../concurrency/src/main/java/victor/training/concurrency/pools/tasks/FragileExternalSystemTask.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../concurrency/src/main/java/victor/training/concurrency/pools/tasks/IOTask.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../concurrency/src/main/java/victor/training/concurrency/pools/tasks/LimitedExternalSystemTask.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/victor/perf/StringBuilderPlay.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/../.gitignore" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../concurrency/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../concurrency/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../concurrency/concurrency.iml" beforeDir="false" afterPath="$PROJECT_DIR$/../concurrency/concurrency.iml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../concurrency/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../concurrency/pom.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../concurrency/src/main/java/victor/training/concurrency/ConcurrencyUtil.java" beforeDir="false" afterPath="$PROJECT_DIR$/../concurrency/src/main/java/victor/training/concurrency/ConcurrencyUtil.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../concurrency/src/main/java/victor/training/concurrency/pools/CommandSpringApp.java" beforeDir="false" afterPath="$PROJECT_DIR$/../concurrency/src/main/java/victor/training/concurrency/pools/CommandSpringApp.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../concurrency/src/main/java/victor/training/concurrency/pools/Throttling.java" beforeDir="false" afterPath="$PROJECT_DIR$/../concurrency/src/main/java/victor/training/concurrency/pools/Throttling.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../concurrency/src/main/java/victor/training/concurrency/pools/WorkeriCareIntorcDate.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../concurrency/target/classes/META-INF/concurrency.kotlin_module" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/victor/proxy/PlayMe.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/victor/proxy/StreamsCPUMixedTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/victor/perf/StreamsCPUMixedTest.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/victor/proxy/StreamsCPUOnlyTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/victor/perf/StreamsCPUOnlyTest.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/META-INF/BenchmarkList" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/META-INF/BenchmarkList" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/META-INF/CompilerHints" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/META-INF/CompilerHints" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../concurrency/src/main/java/victor/training/concurrency/Pointeri.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../concurrency/src/main/java/victor/training/concurrency/leaks/ThreadLocalUnleashed.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../concurrency/src/main/java/victor/training/concurrency/StringuriCuPlus.java" beforeDir="false" afterPath="$PROJECT_DIR$/../concurrency/src/main/java/victor/training/concurrency/StringuriCuPlus.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../concurrency/src/main/java/victor/training/concurrency/leaks/CachingMethodObject.java" beforeDir="false" afterPath="$PROJECT_DIR$/../concurrency/src/main/java/victor/training/concurrency/leaks/CachingMethodObject.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../concurrency/src/main/java/victor/training/concurrency/leaks/Leak1.java" beforeDir="false" afterPath="$PROJECT_DIR$/../concurrency/src/main/java/victor/training/concurrency/leaks/Leak1.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../concurrency/src/main/java/victor/training/concurrency/leaks/Leak2.java" beforeDir="false" afterPath="$PROJECT_DIR$/../concurrency/src/main/java/victor/training/concurrency/leaks/Leak2.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../concurrency/src/main/java/victor/training/concurrency/leaks/Leak3.java" beforeDir="false" afterPath="$PROJECT_DIR$/../concurrency/src/main/java/victor/training/concurrency/leaks/Leak3.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
     </list>
-    <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -89,18 +69,6 @@
     <key name="CopyClassDialog.RECENTS_KEY">
       <recent name="victor.proxy" />
     </key>
-  </component>
-  <component name="RunDashboard">
-    <option name="ruleStates">
-      <list>
-        <RuleState>
-          <option name="name" value="ConfigurationTypeDashboardGroupingRule" />
-        </RuleState>
-        <RuleState>
-          <option name="name" value="StatusDashboardGroupingRule" />
-        </RuleState>
-      </list>
-    </option>
   </component>
   <component name="RunManager" selected="Jmh.StreamsCPUOnlyTest">
     <configuration name="PlayMe" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">

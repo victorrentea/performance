@@ -21,5 +21,5 @@ public class Leak2 {
 
 class RequestContext {
 
-    public CachingMethodObject.UserRightsCalculator rights;
+    public UserRightsCalculator rights;
 }

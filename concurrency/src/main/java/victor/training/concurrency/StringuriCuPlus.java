@@ -13,6 +13,7 @@ public class StringuriCuPlus {
         String s = a + 2;
 
 
+
     }
     public void m(Stream<Integer> numere, Writer writer) {
         numere.forEach(Unchecked.consumer(i -> writer.write(i + " ")));
