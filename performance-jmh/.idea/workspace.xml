@@ -2,9 +2,8 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="0e1584f6-4d86-4d34-9539-64d7002532f5" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/../concurrency/src/main/java/victor/training/concurrency/APlusPlus.java" beforeDir="false" afterPath="$PROJECT_DIR$/../concurrency/src/main/java/victor/training/concurrency/APlusPlus.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../concurrency/src/main/java/victor/training/concurrency/LaPiscina.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../concurrency/src/main/java/victor/training/concurrency/LockPhilosophers.java" beforeDir="false" afterPath="$PROJECT_DIR$/../concurrency/src/main/java/victor/training/concurrency/LockPhilosophers.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../concurrency/src/main/java/victor/training/concurrency/primitives/ReadersWriterLock.java" beforeDir="false" afterPath="$PROJECT_DIR$/../concurrency/src/main/java/victor/training/concurrency/primitives/ReadersWriterLock.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />

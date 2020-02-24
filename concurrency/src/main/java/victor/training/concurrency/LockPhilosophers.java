@@ -51,11 +51,14 @@ public class LockPhilosophers {
 				
 				log("Waiting for first fork (" + firstFork.id + ")");
 				firstFork.take();
-				log("Took it");
-				sleepSomeTime();
-				log("Taking second fork (" + secondFork.id + ")");
-				secondFork.take();
-				
+				try {
+					log("Took it");
+					sleepSomeTime();
+					log("Taking second fork (" + secondFork.id + ")");
+				} finally {
+					secondFork.take(); // Si baietii plang cateodata. cand nu-i vede nimeni, noaptea cand fac debug.
+				}
+
 				eat();
 				
 				firstFork.putDown();
