@@ -9,12 +9,13 @@ public class BoxingUnboxing {
 	
 	public static void main(String[] args) {
 		List<Long> list =LongStream.range(1, 10_000_000).boxed().collect(toList());
-		
+
 		long t0 = System.currentTimeMillis();
 		
-		Long sum = 0L;
+		long sum = 0L;
 		for (Long i : list) {
 			sum += i;
+//			sum = new Long(sum.longValue() + i.longValue());
 		}
 		
 		long t1 = System.currentTimeMillis();

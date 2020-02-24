@@ -2,9 +2,11 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="0e1584f6-4d86-4d34-9539-64d7002532f5" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/../concurrency/src/main/java/victor/training/concurrency/interview/TheInfamousStringBuilderProblem.java" beforeDir="false" afterPath="$PROJECT_DIR$/../concurrency/src/main/java/victor/training/concurrency/interview/TheInfamousStringBuilderProblem.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../concurrency/src/main/java/victor/training/concurrency/interview/HaiSaMaJoc.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../concurrency/src/main/java/victor/training/concurrency/interview/BoxingUnboxing.java" beforeDir="false" afterPath="$PROJECT_DIR$/../concurrency/src/main/java/victor/training/concurrency/interview/BoxingUnboxing.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../concurrency/src/main/java/victor/training/concurrency/interview/Pointeri.java" beforeDir="false" afterPath="$PROJECT_DIR$/../concurrency/src/main/java/victor/training/concurrency/interview/Pointeri.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../concurrency/src/main/resources/logback.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../concurrency/src/main/resources/logback.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/victor/perf/StringBuilderTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/victor/perf/StringBuilderTest.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -159,7 +161,7 @@
       <workItem from="1580824940072" duration="152000" />
       <workItem from="1580829127425" duration="316000" />
       <workItem from="1580832263464" duration="1834000" />
-      <workItem from="1582530218450" duration="1550000" />
+      <workItem from="1582530218450" duration="4341000" />
     </task>
     <task id="LOCAL-00001" summary="String Builder JMH">
       <created>1580765574343</created>
@@ -221,6 +223,10 @@
       <screen x="0" y="0" width="1536" height="834" />
     </state>
     <state x="425" y="189" key="run.anything.popup/0.0.1536.834@0.0.1536.834" timestamp="1582536171072" />
+    <state x="431" y="155" key="search.everywhere.popup" timestamp="1582546014495">
+      <screen x="0" y="0" width="1536" height="834" />
+    </state>
+    <state x="431" y="155" key="search.everywhere.popup/0.0.1536.834@0.0.1536.834" timestamp="1582546014495" />
   </component>
   <component name="masterDetails">
     <states>
