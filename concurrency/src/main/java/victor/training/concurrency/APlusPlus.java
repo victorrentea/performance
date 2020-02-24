@@ -1,25 +1,32 @@
 package victor.training.concurrency;
 
+import java.util.concurrent.atomic.AtomicInteger;
+
 public class APlusPlus {
-    private static Integer population = 0;
+    private static int population;
     private static final Object monitor = new Object();
 
     public static class ThreadA extends Thread {
         public void run() {
+            int localPopulation = 0;
             for (int i = 0; i < 1000_000; i++) {
-                synchronized (monitor) {
-                    population++;
-                }
+                localPopulation++;
+            }
+            synchronized (monitor) {
+                population += localPopulation;
             }
         }
     }
 
     public static class ThreadB extends Thread {
         public void run() {
+            // map-reduce https://ro.wikipedia.org/wiki/MapReduce
+            int localPopulation = 0;
             for (int i = 0; i < 1000_000; i++) {
-                synchronized (monitor) {
-                    population++;
-                }
+                localPopulation++;
+            }
+            synchronized (monitor) {
+                population += localPopulation;
             }
         }
     }

@@ -8,7 +8,7 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.concurrent.Semaphore;
 
-public class Semaphore1 {
+public class 	Semaphore1 {
 	static class BoundedHashSet<T> {
 		private final Set<T> set;
 		private Semaphore sem;

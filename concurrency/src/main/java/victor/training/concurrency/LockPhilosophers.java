@@ -16,8 +16,10 @@ public class LockPhilosophers {
 		}
 		public void take() {
 			lock.lock();
+			lock.lock();
 		}
 		public void putDown() {
+			lock.unlock();
 			lock.unlock();
 		}
 	}
@@ -33,8 +35,15 @@ public class LockPhilosophers {
 		}
 
 		public void run() {
-			Fork firstFork = leftFork;
-			Fork secondFork = rightFork;
+			Fork firstFork;
+			Fork secondFork;
+			if (leftFork.id < rightFork.id) {
+				firstFork = leftFork;
+				secondFork = rightFork;
+			} else {
+				firstFork = rightFork;
+				secondFork = leftFork;
+			}
 
 			for (int i=0;i<50;i++) {
 				sleepSomeTime();
