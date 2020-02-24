@@ -1,7 +1,7 @@
 package victor.training.concurrency;
 
 public class APlusPlus {
-    private static int population;
+    private static Integer population = 0;
 
     public static class ThreadA extends Thread {
         public void run() {
