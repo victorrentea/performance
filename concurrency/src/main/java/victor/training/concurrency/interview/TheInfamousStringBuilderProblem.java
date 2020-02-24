@@ -2,45 +2,39 @@ package victor.training.concurrency.interview;
 
 import static java.util.stream.Collectors.toList;
 
-import java.io.FileWriter;
-import java.io.IOException;
-import java.io.Writer;
+import java.io.*;
+import java.nio.file.Files;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.IntStream;
+import java.util.stream.Stream;
 
 public class TheInfamousStringBuilderProblem {
 	public static void main(String[] args) throws IOException {
-		// TODO explore:
-		String a = "a"; // alocat in String Pool
+
+		String a = "a";
 		String b = "b";
-		if (a == "a") {
-			System.out.println("WTH?!");
+
+		String ab = a + b;
+		System.out.println(ab);
+
+		String a1 = a + 1;
+		System.out.println(a1);
+
+		;
+
+		try (OutputStreamWriter writer = new OutputStreamWriter(System.out);
+			Stream<String> lines = Files.lines(new File("data.txt").toPath())) {
+
+			Iterable<String> interablePesteLinii = lines::iterator;
+			infamous(interablePesteLinii, writer);
 		}
-		
-		String c = a + b + a; //2 
-		c += a; // inca unu
-		
-		
-		List<String> list = Arrays.asList("a","b","c");
-
-		String s = infamous(list);
-
-		try (Writer w = new FileWriter("out.txt")) {
-			w.write(s);
-		}
-		// TODO more elements ?
-
-		// TODO unde poti sa faci flush? Catre: disk, CLOB, httpServletResponse.getWriter()
-
-		System.out.println("Gata");
 	}
 
-	private static String infamous(List<String> list) {
-		String s = "start X";
+	private static void infamous(Iterable<String> list, Writer writer) throws IOException {
+		writer.write("start X");
 		for (String string : list) {
-			s  += string + " ";
+			writer.write(string + " \n");
 		}
-		return s;
 	}
 }
