@@ -1,5 +1,9 @@
 package victor.training.concurrency;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.util.Random;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.function.Supplier;
@@ -14,33 +18,50 @@ public class LaPiscina {
     public static void main(String[] args) {
         ExecutorService executor = Executors.newFixedThreadPool(2);
 
-
-        executor.submit(LaPiscina::m);
-        executor.submit(LaPiscina::m);
+        Random r = new Random();
+        String user = "gigi" + r.nextInt(10);
+        log("Userul sus = " + user);
+        userulDePeThread.set(user);
+        try {
+            executor.submit(propagateUser(LaPiscina::m));
+            executor.submit(propagateUser(LaPiscina::m));
+        } finally {
+            userulDePeThread.remove();
+        }
         executor.shutdown();
+    }
+
+    private static Runnable propagateUser(Runnable treabaDeFapt) {
+        // aici sunt pe threadul original
+        String userulOriginal = userulDePeThread.get();
+        return () -> {
+            // aici sunt pe worker thread
+//            Thread.currentThread().setName(userulOriginal); // optional
+            userulDePeThread.set(userulOriginal);
+            try {
+                treabaDeFapt.run();
+            } finally {
+                userulDePeThread.remove();
+            }
+        };
     }
 
     private static void f() {
         g();
     }
-
+private static final Logger log = LoggerFactory.getLogger(LaPiscina.class);
     private static void g() {
         // in repo, in beci: aici vrei userul curent sa-l pun in LAST_MODIFIED_BY
-        log("LAST_MODIFIED_BY = " + userulDePeThread.get());
+        log.debug("LAST_MODIFIED_BY = " + userulDePeThread.get());
     }
 
     public static void m() {
         log("Treaba de facut");
-        String user = "gigi " + Math.random();
-        log("Userul sus = " + user);
-        userulDePeThread.set(user);
-        try {
-            sleep2(1000);
-            f();
 
-            log("Gata treaba");
-        } finally {
-            userulDePeThread.remove();
-        }
+        sleep2(1000);
+        f();
+
+        log("Gata treaba");
+
     }
 }
