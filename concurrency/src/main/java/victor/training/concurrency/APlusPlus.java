@@ -1,20 +1,25 @@
 package victor.training.concurrency;
 
 public class APlusPlus {
-    private static int population;
+    private static Integer population = 0;
+    private static final Object monitor = new Object();
 
     public static class ThreadA extends Thread {
         public void run() {
-            for (int i = 0; i < 10_000; i++) {
-                population++;
+            for (int i = 0; i < 1000_000; i++) {
+                synchronized (monitor) {
+                    population++;
+                }
             }
         }
     }
 
     public static class ThreadB extends Thread {
         public void run() {
-            for (int i = 0; i < 10_000; i++) {
-                population++;
+            for (int i = 0; i < 1000_000; i++) {
+                synchronized (monitor) {
+                    population++;
+                }
             }
         }
     }
