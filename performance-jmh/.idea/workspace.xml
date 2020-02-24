@@ -2,8 +2,12 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="0e1584f6-4d86-4d34-9539-64d7002532f5" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/../concurrency/src/main/java/victor/training/concurrency/xml/StAXParsing.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../concurrency/src/main/java/victor/training/concurrency/xml/StAXWriting.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../concurrency/run-redis.bat" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../concurrency/salary.txt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../concurrency/src/main/java/victor/training/concurrency/cache/CacheApp.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../concurrency/src/main/resources/application.properties" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../concurrency/concurrency.iml" beforeDir="false" afterPath="$PROJECT_DIR$/../concurrency/concurrency.iml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../concurrency/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../concurrency/pom.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -45,6 +49,13 @@
   <component name="ProjectId" id="1Ssc7fDeNyYjn6vcDXD1nKHx2lL" />
   <component name="ProjectLevelVcsManager" settingsEditedManually="true">
     <ConfirmationsSetting value="2" id="Add" />
+  </component>
+  <component name="ProjectViewState">
+    <option name="autoscrollFromSource" value="true" />
+    <option name="autoscrollToSource" value="true" />
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showExcludedFiles" value="true" />
+    <option name="showLibraryContents" value="true" />
   </component>
   <component name="PropertiesComponent">
     <property name="ASKED_ADD_EXTERNAL_FILES" value="true" />
@@ -134,6 +145,7 @@
       <workItem from="1566252450107" duration="122000" />
       <workItem from="1566252641009" duration="3245000" />
       <workItem from="1572355579198" duration="1233000" />
+      <workItem from="1582573049384" duration="639000" />
     </task>
     <servers />
   </component>
@@ -155,6 +167,12 @@
   </component>
   <component name="VcsManagerConfiguration">
     <option name="ADD_EXTERNAL_FILES_SILENTLY" value="true" />
+  </component>
+  <component name="WindowStateProjectService">
+    <state x="549" y="190" key="FileChooserDialogImpl" timestamp="1582573052435">
+      <screen x="0" y="0" width="1536" height="834" />
+    </state>
+    <state x="549" y="190" key="FileChooserDialogImpl/0.0.1536.834@0.0.1536.834" timestamp="1582573052435" />
   </component>
   <component name="masterDetails">
     <states>
