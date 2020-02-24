@@ -2,10 +2,9 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="0e1584f6-4d86-4d34-9539-64d7002532f5" name="Default Changelist" comment="">
+      <change afterPath="$PROJECT_DIR$/../concurrency/src/main/java/victor/training/concurrency/xml/StAXParsing.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../concurrency/src/main/java/victor/training/concurrency/xml/StAXWriting.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/victor/perf/StreamsCPUMixedTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/victor/perf/StreamsCPUMixedTest.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/victor/perf/StreamsCPUOnlyTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/victor/perf/StreamsCPUOnlyTest.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/victor/perf/StringBuilderPlay.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/victor/perf/StringBuilderTest.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
