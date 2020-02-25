@@ -2,14 +2,6 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="0e1584f6-4d86-4d34-9539-64d7002532f5" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/../concurrency/src/main/java/victor/training/concurrency/leaks/IntCache.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../concurrency/src/main/java/victor/training/concurrency/leaks/Leak8_Weird.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../concurrency/src/main/java/victor/training/concurrency/interview/Pointeri.java" beforeDir="false" afterPath="$PROJECT_DIR$/../concurrency/src/main/java/victor/training/concurrency/interview/Pointeri.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../concurrency/src/main/java/victor/training/concurrency/leaks/CachingMethodObject.java" beforeDir="false" afterPath="$PROJECT_DIR$/../concurrency/src/main/java/victor/training/concurrency/leaks/CachingMethodObject.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../concurrency/src/main/java/victor/training/concurrency/leaks/KillOne.java" beforeDir="false" afterPath="$PROJECT_DIR$/../concurrency/src/main/java/victor/training/concurrency/leaks/KillOne.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../concurrency/src/main/java/victor/training/concurrency/leaks/Leak1.java" beforeDir="false" afterPath="$PROJECT_DIR$/../concurrency/src/main/java/victor/training/concurrency/leaks/Leak1.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../concurrency/src/main/java/victor/training/concurrency/leaks/Leak2.java" beforeDir="false" afterPath="$PROJECT_DIR$/../concurrency/src/main/java/victor/training/concurrency/leaks/Leak2.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../concurrency/src/main/java/victor/training/concurrency/leaks/Leak7_RealLife.java" beforeDir="false" afterPath="$PROJECT_DIR$/../concurrency/src/main/java/victor/training/concurrency/leaks/Leak7_RealLife.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
