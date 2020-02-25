@@ -1,75 +1,47 @@
 package victor.training.concurrency;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.CommandLineRunner;
-import org.springframework.boot.SpringApplication;
-import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.cloud.stream.annotation.EnableBinding;
-import org.springframework.cloud.stream.messaging.Sink;
-import org.springframework.cloud.stream.messaging.Source;
-import org.springframework.context.annotation.Bean;
-import org.springframework.scheduling.annotation.EnableAsync;
-import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
-import org.springframework.stereotype.Component;
-import org.springframework.stereotype.Service;
-
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutionException;
+
 import static java.util.Arrays.asList;
+import static java.util.concurrent.CompletableFuture.supplyAsync;
+import static victor.training.concurrency.ConcurrencyUtil.log;
 import static victor.training.concurrency.ConcurrencyUtil.sleep2;
-import static victor.training.oo.stuff.ThreadUtils.sleep;
 
-@EnableAsync
-@SpringBootApplication
+@Slf4j
 public class CommandSpringApp {
-	public static void main(String[] args) {
-		SpringApplication.run(CommandSpringApp.class, args).close(); // Note: .close to stop executors after CLRunner finishes
+	public static void main(String[] args) throws ExecutionException, InterruptedException {
+		unRequest();
+		log("Gata requestul. Threadul asta se intoarce la joaca in Piscina");
+		sleep2(4000);
 	}
 
-	@Bean
-	public ThreadPoolTaskExecutor executor() {
-		ThreadPoolTaskExecutor executor = new ThreadPoolTaskExecutor();
-		executor.setCorePoolSize(1);
-		executor.setMaxPoolSize(1);
-		executor.setQueueCapacity(500);
-		executor.setThreadNamePrefix("barman-");
-		executor.initialize();
-		executor.setWaitForTasksToCompleteOnShutdown(true);
-		return executor;
-	}
+	private static void unRequest() throws InterruptedException, ExecutionException {
+		log("Submitting my order");
+		Barman barman = new Barman();
 
-}
+		CompletableFuture<Beer> futureBeer = supplyAsync(barman::pourBeer);
+		CompletableFuture<Vodka> futureVodka = supplyAsync(barman::pourVodka);
+		log("Waiting for my drinks...");
 
-@Slf4j
-@Component
-class Drinker implements CommandLineRunner {
-	@Autowired
-	private Barman barman;
-
-	// TODO [1] inject and use a ThreadPoolTaskExecutor.submit
-	// TODO [2] make them return a CompletableFuture + @Async + asyncExecutor bean
-    // TODO [3] wanna try it out over JMS? try out ServiceActivatorPattern
-	public void run(String... args) {
-		log.debug("Submitting my order");
-		Beer beer = barman.pourBeer();
-		Vodka vodka = barman.pourVodka();
-		log.debug("Waiting for my drinks...");
-		log.debug("Got my order! Thank you lad! " + asList(beer, vodka));
+		Beer beer = futureBeer.get();
+		Vodka vodka = futureVodka.get();
+		log("Got my order! Thank you lad! " + asList(beer, vodka));
 	}
 }
 
-@Slf4j
-@Service
 class Barman {
 	public Beer pourBeer() {
-		 log.debug("Pouring Beer...");
+		 log("Pouring Beer...");
 		 sleep2(1000);
 		 return new Beer();
 	 }
 	
 	 public Vodka pourVodka() {
-		 log.debug("Pouring Vodka...");
+		 log("Pouring Vodka...");
 		 sleep2(1000);
 		 return new Vodka();
 	 }
