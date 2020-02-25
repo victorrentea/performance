@@ -13,8 +13,12 @@ public class Leak2 {
 	public String test() {
 		RequestContext requestContext = new RequestContext();
 		threadLocal.set(requestContext);
-		requestContext.rights = new CachingMethodObject()
-				.createRightsCalculator();
+		try {
+			requestContext.rights = new CachingMethodObject()
+					.createRightsCalculator();
+		} finally {
+			threadLocal.remove();
+		}
 		return "subtle";
 	}
 }
