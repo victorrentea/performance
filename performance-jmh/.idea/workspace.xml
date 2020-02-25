@@ -57,6 +57,7 @@
   <component name="PropertiesComponent">
     <property name="ASKED_ADD_EXTERNAL_FILES" value="true" />
     <property name="SHARE_PROJECT_CONFIGURATION_FILES" value="true" />
+    <property name="SONARLINT_PRECOMMIT_ANALYSIS" value="false" />
     <property name="WebServerToolWindowFactoryState" value="false" />
     <property name="aspect.path.notification.shown" value="true" />
     <property name="extract.method.default.visibility" value="private" />
@@ -167,10 +168,18 @@
     <option name="ADD_EXTERNAL_FILES_SILENTLY" value="true" />
   </component>
   <component name="WindowStateProjectService">
+    <state x="388" y="11" key="CommitChangelistDialog2" timestamp="1582668553087">
+      <screen x="0" y="0" width="1536" height="834" />
+    </state>
+    <state x="388" y="11" key="CommitChangelistDialog2/0.0.1536.834@0.0.1536.834" timestamp="1582668553087" />
     <state x="549" y="190" key="FileChooserDialogImpl" timestamp="1582573052435">
       <screen x="0" y="0" width="1536" height="834" />
     </state>
     <state x="549" y="190" key="FileChooserDialogImpl/0.0.1536.834@0.0.1536.834" timestamp="1582573052435" />
+    <state x="361" y="153" key="Vcs.Push.Dialog.v2" timestamp="1582668554101">
+      <screen x="0" y="0" width="1536" height="834" />
+    </state>
+    <state x="361" y="153" key="Vcs.Push.Dialog.v2/0.0.1536.834@0.0.1536.834" timestamp="1582668554101" />
   </component>
   <component name="masterDetails">
     <states>

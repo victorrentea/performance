@@ -7,11 +7,11 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping("leak2")
 public class Leak2 {
-	static ThreadLocal<RequestContext> threadLocal = new ThreadLocal<>();
+	static ThreadLocal<MyAppRequestContext> threadLocal = new ThreadLocal<>();
 	
 	@GetMapping
 	public String test() {
-		RequestContext requestContext = new RequestContext();
+		MyAppRequestContext requestContext = new MyAppRequestContext();
 		threadLocal.set(requestContext);
 		requestContext.rights = new CachingMethodObject()
 				.createRightsCalculator();
@@ -19,7 +19,7 @@ public class Leak2 {
 	}
 }
 
-class RequestContext {
+class MyAppRequestContext {
 
     public CachingMethodObject.UserRightsCalculator rights;
 }
