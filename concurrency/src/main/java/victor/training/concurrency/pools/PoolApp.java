@@ -68,9 +68,9 @@ class DrinkerService {
     @Autowired
     private Barman barman;
 
-    public List<Object> orderDrinks() throws Exception {
+    public List<Object> orderDrinks() {
         log.debug("Submitting my order");
-        Beer beer = barman.pourBeer().get();
+        Beer beer = barman.pourBeer();
         Vodka vodka = barman.pourVodka();
         log.debug("Got my order! Thank you lad! " + asList(beer, vodka));
         return asList(beer, vodka);
@@ -85,10 +85,10 @@ class Barman {
 	private MyRequestContext requestContext;
 
 	@Async
-    public Future<Beer> pourBeer() {
-        log.debug("Pouring Beer to "+ requestContext.getCurrentUser()+"...");
+    public Beer pourBeer() {
+        log.debug("Pouring Beer to " + requestContext.getCurrentUser()+"...");
         sleep2(1000);
-        return completedFuture(new Beer());
+        return new Beer();
     }
 
     public Vodka pourVodka() {
@@ -126,6 +126,6 @@ class BarController implements CommandLineRunner {
     public void run(String... args) throws Exception {
 		requestContext.setCurrentUser("jdoe");
 		requestContext.setRequestId("" + new Random().nextInt(100));
-        System.out.println(service.orderDrinks());
+        log.debug(service.orderDrinks().toString());
     }
 }
