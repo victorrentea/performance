@@ -2,8 +2,6 @@ package victor.training.concurrency.pools;
 
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
@@ -15,10 +13,8 @@ import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.context.request.async.DeferredResult;
 
 import java.util.List;
-import java.util.concurrent.CompletableFuture;
 
 import static java.util.Arrays.asList;
 import static java.util.concurrent.CompletableFuture.supplyAsync;
@@ -27,9 +23,9 @@ import static victor.training.concurrency.ConcurrencyUtil.sleep2;
 
 @EnableAsync
 @SpringBootApplication
-public class CommandSpringApp implements CommandLineRunner {
+public class CompletableFuturePlay implements CommandLineRunner {
 	public static void main(String[] args) {
-		SpringApplication.run(CommandSpringApp.class, args)
+		SpringApplication.run(CompletableFuturePlay.class, args)
 				.close(); // Note: .close to stop executors after CLRunner finishes
 	}
 
