@@ -33,7 +33,7 @@ public class Hashing {
     }
 
     private static Collection<?> generate(int max) {
-        System.out.printf("Generating shuffled sequence of %d elements...%n", max);
+        System.out.printf("Generating shuffled sequence of %,d elements...%n", max);
         List<String> result = IntStream.rangeClosed(1, max)
                 .mapToObj(i -> "A" + i)
                 .collect(toList());
