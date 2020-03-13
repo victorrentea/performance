@@ -26,13 +26,13 @@ public class Hashing {
     }
 
     public static void main(String[] args) {
-        List<String> targetIds = generate(20_000);
-        List<String> allIds = generate(20_000);
+        Collection<?> targetIds = generate(20_000);
+        Collection<?> allIds = generate(20_000);
 
         match(targetIds, allIds);
     }
 
-    private static List<String> generate(int max) {
+    private static Collection<?> generate(int max) {
         System.out.printf("Generating shuffled sequence of %d elements...%n", max);
         List<String> result = IntStream.rangeClosed(1, max)
                 .mapToObj(i -> "A" + i)
@@ -41,11 +41,11 @@ public class Hashing {
         return result;
     }
 
-    private static void match(Collection<String> targetIds, Collection<String> allIds) {
+    private static void match(Collection<?> targetIds, Collection<?> allIds) {
         System.out.println("Matching...");
         long t0 = System.currentTimeMillis();
         int n = 0;
-        for (String a : targetIds) {
+        for (Object a : targetIds) {
             if (allIds.contains(a)) {
                 n ++;
             }
