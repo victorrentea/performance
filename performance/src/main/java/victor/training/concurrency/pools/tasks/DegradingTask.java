@@ -5,7 +5,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 import static victor.training.concurrency.ConcurrencyUtil.log;
 import static victor.training.concurrency.ConcurrencyUtil.sleep2;
 
-public class LimitedExternalSystemTask implements Runnable {
+public class DegradingTask implements Runnable {
     private AtomicInteger concurrentCalls = new AtomicInteger(0);
     public void run() {
         int concurrent = concurrentCalls.incrementAndGet();

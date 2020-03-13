@@ -46,11 +46,6 @@ public class GalusteFJP {
         x.thenRunAsync(Galusca7::m, pool);
         log("Ies");
 
-//        Stream.of(1,2,3,4,5,6,7,8,9,10)
-//                .parallel().forEach(e -> {
-//                    sleep2(10);
-//                    log("print " + e);
-//        });
     }
 }
 

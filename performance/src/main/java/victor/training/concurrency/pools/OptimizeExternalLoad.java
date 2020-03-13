@@ -2,7 +2,7 @@ package victor.training.concurrency.pools;
 
 import org.jooq.lambda.Unchecked;
 import victor.training.concurrency.pools.tasks.CPUTask;
-import victor.training.concurrency.pools.tasks.LimitedExternalSystemTask;
+import victor.training.concurrency.pools.tasks.DegradingTask;
 
 import java.util.List;
 import java.util.concurrent.ExecutorService;
@@ -40,8 +40,8 @@ public class OptimizeExternalLoad {
 
 class BizService {
     // @Autowired
-    private LimitedExternalSystemTask limited = new LimitedExternalSystemTask();
-    private CPUTask cpu = CPUTask.selfCalibrate(100);
+    private DegradingTask limited = new DegradingTask();
+    private CPUTask cpu = new CPUTask(100);
     ExecutorService pool = Executors.newFixedThreadPool(8);
 
 

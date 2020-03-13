@@ -1,13 +1,13 @@
 package victor.training.concurrency.pools;
 
 import victor.training.concurrency.ConcurrencyUtil;
-import victor.training.concurrency.pools.tasks.FragileExternalSystemTask;
+import victor.training.concurrency.pools.tasks.FragileEndpointTask;
 
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 public class Throttling {
-    private static final FragileExternalSystemTask fragile = new FragileExternalSystemTask();
+    private static final FragileEndpointTask fragile = new FragileEndpointTask();
 
     public static void main(String[] args) {
         ExecutorService httpPool = Executors.newFixedThreadPool(20);

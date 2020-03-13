@@ -19,20 +19,16 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 import java.util.Random;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.Future;
 
 import static java.util.Arrays.asList;
-import static java.util.concurrent.CompletableFuture.completedFuture;
 import static java.util.concurrent.CompletableFuture.supplyAsync;
-import static victor.training.concurrency.ConcurrencyUtil.log;
 import static victor.training.concurrency.ConcurrencyUtil.sleep2;
 
 @EnableAsync
 @SpringBootApplication
-public class PoolApp {
+public class BarmanApp {
     public static void main(String[] args) {
-        SpringApplication.run(PoolApp.class, args)
+        SpringApplication.run(BarmanApp.class, args)
                 .close(); // Note: .close to stop executors after CLRunner finishes
     }
 

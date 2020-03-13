@@ -1,5 +1,6 @@
 package victor.training.concurrency.interview;
 
+import static java.util.Arrays.asList;
 import static java.util.stream.Collectors.toList;
 
 import java.io.FileWriter;
@@ -10,37 +11,36 @@ import java.util.List;
 import java.util.stream.IntStream;
 
 public class TheInfamousStringBuilderProblem {
-	public static void main(String[] args) throws IOException {
-		// TODO explore:
-		String a = "a"; // alocat in String Pool
-		String b = "b";
-		if (a == "a") {
-			System.out.println("WTH?!");
-		}
-		
-		String c = a + b + a; //2 
-		c += a; // inca unu
-		
-		
-		List<String> list = Arrays.asList("a","b","c");
+    public static void main(String[] args) throws IOException {
+        // TODO explore:
+        String a = "a"; // goes to String Pool
+        String b = "b";
+        if (a == "a") {
+            System.out.println("WTH?!");
+        }
+        String c = a + b + a; //2
+        c += a; // one more
 
-		String s = infamous(list);
 
-		try (Writer w = new FileWriter("out.txt")) {
-			w.write(s);
-		}
-		// TODO more elements ?
+        List<String> list = asList("a", "b", "c");
 
-		// TODO unde poti sa faci flush? Catre: disk, CLOB, httpServletResponse.getWriter()
+        String s = infamous(list);
 
-		System.out.println("Gata");
-	}
+        try (Writer w = new FileWriter("out.txt")) {
+            w.write(s);
+        }
+        // TODO more elements ?
 
-	private static String infamous(List<String> list) {
-		String s = "start X";
-		for (String string : list) {
-			s  += string + " ";
-		}
-		return s;
-	}
+        // TODO Where could you offload data? File, CLOB, httpServletResponse.getWriter()
+
+        System.out.println("Done");
+    }
+
+    private static String infamous(List<String> list) {
+        String s = "Header";
+        for (String string : list) {
+            s += string + "\n";
+        }
+        return s;
+    }
 }

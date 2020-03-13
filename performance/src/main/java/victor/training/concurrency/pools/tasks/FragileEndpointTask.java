@@ -5,7 +5,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 import static victor.training.concurrency.ConcurrencyUtil.log;
 import static victor.training.concurrency.ConcurrencyUtil.sleep2;
 
-public class FragileExternalSystemTask implements Runnable {
+public class FragileEndpointTask implements Runnable {
     private AtomicInteger requestIndex = new AtomicInteger(0);
     private AtomicInteger parallelRequests = new AtomicInteger(0);
     public void run() {
@@ -15,7 +15,7 @@ public class FragileExternalSystemTask implements Runnable {
                 log("KABOOOM!!");
                 throw new IllegalArgumentException("Per SLA, you are not allowed to be called by more than two parallel requests. Prepared to be sued!");
             }
-            log("Handling request no " + requestIndex.incrementAndGet());
+            log("Handling request #" + requestIndex.incrementAndGet());
             sleep2(1000);
             log("Done");
         } finally {

@@ -1,63 +1,54 @@
 package victor.training.concurrency.pools.tasks;
 
-import victor.training.concurrency.ConcurrencyUtil;
-
 import java.math.BigDecimal;
+import java.util.HashMap;
+import java.util.Map;
+
+import static victor.training.concurrency.ConcurrencyUtil.log;
+import static victor.training.concurrency.ConcurrencyUtil.measureCall;
 
 public class CPUTask implements Runnable {
-    private final long targetN;
+    private static final Map<Long, Long> WORK_FOR_MILLIS = new HashMap<>();
+    private final long work;
 
-    public CPUTask(long targetN) {
-        this.targetN = targetN;
+    public CPUTask(long millis) {
+        this.work = WORK_FOR_MILLIS.computeIfAbsent(millis, CPUTask::estimateWorkForMillis);
     }
 
     @Override
     public void run() {
-        cpu(targetN);
+        doWork(work);
     }
-    private static void cpu(long n) {
-        for (int i = 0; i<n; i++) {
+
+    private static void doWork(long n) {
+        for (int i = 0; i < n; i++) {
             new BigDecimal(i).pow(i);
         }
     }
 
-    public static CPUTask selfCalibrate(int targetMillis) {
+    private static long estimateWorkForMillis(long targetMillis) {
         System.out.print("Warming up... ");
-        for (int i = 100; i<1000;i++) {
-            cpu(i);
+        for (int i = 100; i < 1000; i++) {
+            doWork(i);
         }
         System.out.println("Done");
-        System.out.println("Looking for n to take " +targetMillis +" ms of CPU on 1 thread");
-        System.gc();
-        for (long n = 100; ; n*=1.1) {
+        System.out.println("Estimating work to take " + targetMillis + " ms of CPU on 1 thread");
+        for (long n = 100; ; n *= 1.05) {
+            System.gc();
             long nn = n;
-            int dt = ConcurrencyUtil.measureCall(() -> cpu(nn));
+            int dt = measureCall(() -> doWork(nn));
             if (dt > targetMillis) {
-                System.out.println("n="+n);
-                return new CPUTask(n);
+                System.out.println("n=" + n);
+                return n;
             }
         }
     }
 
     public static void main(String[] args) {
-        CPUTask cpu = CPUTask.selfCalibrate(100);
-        System.out.println(ConcurrencyUtil.measureCall(() -> cpu.run()));
-        System.out.println(ConcurrencyUtil.measureCall(() -> cpu.run()));
-        System.out.println(ConcurrencyUtil.measureCall(() -> cpu.run()));
-        System.out.println(ConcurrencyUtil.measureCall(() ->    cpu.run()));
-        System.out.println(ConcurrencyUtil.measureCall(() ->    cpu.run()));
-        System.out.println(ConcurrencyUtil.measureCall(() ->    cpu.run()));
-        System.out.println(ConcurrencyUtil.measureCall(() ->    cpu.run()));
-        System.out.println(ConcurrencyUtil.measureCall(() ->    cpu.run()));
-        System.out.println(ConcurrencyUtil.measureCall(() ->    cpu.run()));
-        System.out.println(ConcurrencyUtil.measureCall(() ->    cpu.run()));
-        System.out.println(ConcurrencyUtil.measureCall(() ->    cpu.run()));
-        System.out.println(ConcurrencyUtil.measureCall(() ->    cpu.run()));
-        System.out.println(ConcurrencyUtil.measureCall(() ->    cpu.run()));
-        System.out.println(ConcurrencyUtil.measureCall(() ->    cpu.run()));
-        System.out.println(ConcurrencyUtil.measureCall(() ->    cpu.run()));
-        System.out.println(ConcurrencyUtil.measureCall(() ->    cpu.run()));
-        System.out.println(ConcurrencyUtil.measureCall(() ->    cpu.run()));
-        System.out.println(ConcurrencyUtil.measureCall(() ->    cpu.run()));
+        CPUTask cpu = new CPUTask(100);
+        log("Checking...");
+        for (int i = 0; i < 20; i++) {
+            System.out.println(measureCall(() -> cpu.run()));
+        }
     }
 }

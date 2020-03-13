@@ -3,7 +3,7 @@ package victor.training.concurrency.interview;
 //import static java.util.Arrays.asList;
 import static victor.training.concurrency.ConcurrencyUtil.log;
 
-public class ThreadDetails {
+public class ThreadVsProcess {
 
     public static void main(String[] args) {
         Runnable r = new Runnable() {
