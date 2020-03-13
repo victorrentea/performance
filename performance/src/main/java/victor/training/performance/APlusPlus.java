@@ -1,4 +1,4 @@
-package victor.training.concurrency;
+package victor.training.performance;
 
 public class APlusPlus {
     private static Integer population = 0;
