@@ -7,19 +7,36 @@ import victor.training.performance.pools.tasks.IOTask;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.ForkJoinPool;
+import java.util.concurrent.Future;
+
+import static java.util.concurrent.CompletableFuture.supplyAsync;
 
 public class Exercise {
-    public static void main(String[] args) {
+    public static void main(String[] args) throws ExecutionException, InterruptedException {
         long t0 = System.currentTimeMillis();
-        List<String> results = new ArrayList<>();
+        ForkJoinPool fragilePool = new ForkJoinPool(2);
+        ForkJoinPool degradingPool = new ForkJoinPool(3);
+        ForkJoinPool hugePool = new ForkJoinPool(30);
+
+        List<Future<String>> results = new ArrayList<>();
+
         for (int i = 0; i < 20; i++) { // Reading data is usually fast
             String element = i + "";
-            String e1 = Tasks.parse(element); // CPU
-            String e2 = Tasks.notify(e1); // fast but fragile
-            String e3 = Tasks.insert(e2); // degrading
-            String e4 = Tasks.marshall(e3); // CPU
-            String e5 = Tasks.linearWs(e4); // constant
-            results.add(e5);
+            CompletableFuture<String> future = supplyAsync(() -> Tasks.parse(element))
+                    .thenApplyAsync(Tasks::notify, fragilePool)
+                    .thenApplyAsync(Tasks::insert, degradingPool)
+                    .thenApplyAsync(Tasks::marshall, ForkJoinPool.commonPool())
+                    .thenApplyAsync(Tasks::linearWs, hugePool);
+//                .thenApplyAsync(Tasks::notify, fragilePool);
+
+            // 16395
+            results.add(future);
+        }
+        for (Future<String> result : results) {
+            result.get();
         }
         long t1 = System.currentTimeMillis();
         System.out.println("Delta = " + (t1-t0));
