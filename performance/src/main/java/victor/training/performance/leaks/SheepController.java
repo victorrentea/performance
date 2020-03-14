@@ -5,7 +5,6 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -17,6 +16,7 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import java.util.List;
+import java.util.UUID;
 
 @Slf4j
 @RestController
@@ -26,14 +26,14 @@ public class SheepController {
     private final SheepService service;
 
     @GetMapping("create")
-    public void create(@RequestParam(defaultValue = "Bisisica") String name) {
+    public Long create(@RequestParam(defaultValue = "Bisisica") String name) {
         log.debug("create " + name);
-        service.create(name);
+        return service.create(name);
     }
 
     @GetMapping("search")
     public List<Sheep> search(@RequestParam(defaultValue = "Bisisica") String name) {
-        log.debug("two");
+        log.debug("search for " + name);
         return service.search(name);
     }
 }
@@ -44,16 +44,25 @@ public class SheepController {
 @Transactional
 class SheepService {
     private final SheepRepo repo;
+    private final ShepardService shepard;
 
-    public void create(String name) {
-        log.debug("Calling external WS");
-        ConcurrencyUtil.sleep2(500);
+    public Long create(String name) {
+        String sn = shepard.registerSheep(name);
         log.debug("Persist");
-        repo.save(new Sheep(name));
+        Sheep sheep = repo.save(new Sheep(name, sn));
+        return sheep.getId();
     }
-
     public List<Sheep> search(String name) {
         return repo.getByNameLike(name);
+    }
+}
+@Slf4j
+@Service
+class ShepardService {
+    public String registerSheep(String name) {
+        log.debug("Calling external WS");
+        ConcurrencyUtil.sleep2(500);
+        return UUID.randomUUID().toString();
     }
 }
 
@@ -63,19 +72,17 @@ interface SheepRepo extends JpaRepository<Sheep, Long> {
 
 
 @Entity
-@Data
-        // Don't
+@Data // Don't
 class Sheep {
     @GeneratedValue
     @Id
     private Long id;
 
     private String name;
+    private String sn;
 
-    public Sheep(String name) {
+    public Sheep(String name, String sn) {
         this.name = name;
-    }
-
-    public Sheep() {
+        this.sn = sn;
     }
 }
