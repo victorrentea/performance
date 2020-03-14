@@ -30,6 +30,8 @@ public class SheepController {
         log.debug("create " + name);
         return service.create(name);
     }
+    // TODO Starve Connections
+    // TODO Starve Threads
 
     @GetMapping("search")
     public List<Sheep> search(@RequestParam(defaultValue = "Bisisica") String name) {
