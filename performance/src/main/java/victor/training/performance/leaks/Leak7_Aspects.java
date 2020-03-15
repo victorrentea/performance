@@ -1,5 +1,6 @@
 package victor.training.performance.leaks;
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
@@ -7,19 +8,26 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.UUID;
+import java.time.LocalDateTime;
 
 @RestController
-@RequestMapping("leak6")
-public class Leak6_TheMostCommon {
-	// ANATHEMA: Never bake your own cache!! Plugin a mature one!
-	// [RO] Nu-ti faci cacheul la coada vacii nicioadata!
-    private static Map<String, Object> oops = new HashMap<>();
+@RequestMapping("leak7")
+public class Leak7_Aspects {
+	@Autowired
+    private  Stuff stuff;
 	@GetMapping
 	public String test() {
-	    oops.put(UUID.randomUUID().toString(), new BigObject20MB());
+		stuff.stuff(LocalDateTime.now().toString());
 		return "the most brainless, but most common. Long Live SonarLint";
+	}
+}
+
+@Service
+@Slf4j
+class Stuff {
+	@Cacheable("big")
+	public BigObject20MB stuff(String timestamp) {
+		log.debug("Calling method for {}", timestamp);
+	    return new BigObject20MB();
 	}
 }

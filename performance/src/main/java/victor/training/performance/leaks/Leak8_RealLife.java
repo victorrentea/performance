@@ -9,8 +9,8 @@ import java.util.Map;
 import java.util.UUID;
 
 @RestController
-@RequestMapping("leak7")
-public class Leak7_RealLife {
+@RequestMapping("leak8")
+public class Leak8_RealLife {
     // ANATHEMA: Never bake your own cache
     private static Map<String, Integer> smallEntriesCantHurt = new HashMap<>();
 
