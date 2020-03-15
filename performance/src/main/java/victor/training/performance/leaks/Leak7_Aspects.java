@@ -18,7 +18,7 @@ public class Leak7_Aspects {
 	@GetMapping
 	public String test() {
 		stuff.stuff(LocalDateTime.now().toString());
-		return "the most brainless, but most common. Long Live SonarLint";
+		return "Tools won't shield you from stupidity.";
 	}
 }
 
