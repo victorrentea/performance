@@ -25,7 +25,7 @@ public class Leak7_Aspects {
 @Service
 @Slf4j
 class Stuff {
-	@Cacheable("big")
+	@Cacheable("stuff")
 	public BigObject20MB stuff(String timestamp) {
 		log.debug("Calling method for {}", timestamp);
 	    return new BigObject20MB();
