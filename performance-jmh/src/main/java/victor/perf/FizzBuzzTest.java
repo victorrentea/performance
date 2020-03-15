@@ -13,12 +13,10 @@ import java.util.concurrent.TimeUnit;
 @Measurement(iterations = 20, time = 200, timeUnit = TimeUnit.MILLISECONDS)
 @Fork(1)
 public class FizzBuzzTest {
-    public static final int N = 10_000;
-
-    @Benchmark
-    public String original() {
-        return FizzFuzzOriginal.f().toString();
-    }
+//    @Benchmark
+//    public String original() {
+//        return FizzFuzzOriginal.f().toString();
+//    }
     @Benchmark
     public String optimized() {
         return FizzFuzzOptimized.f().toString();

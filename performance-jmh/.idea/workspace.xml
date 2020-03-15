@@ -2,7 +2,12 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="0e1584f6-4d86-4d34-9539-64d7002532f5" name="Default Changelist" comment="">
+      <change afterPath="$PROJECT_DIR$/out.txt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/victor/perf/SetVsListTest.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/compiler.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/compiler.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/run.bat" beforeDir="false" afterPath="$PROJECT_DIR$/run.bat" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/victor/perf/FizzBuzzTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/victor/perf/FizzBuzzTest.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -58,7 +63,7 @@
     <property name="WebServerToolWindowFactoryState" value="false" />
     <property name="aspect.path.notification.shown" value="true" />
     <property name="extract.method.default.visibility" value="private" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/src/main/java/victor/perf" />
     <property name="nodejs_interpreter_path.stuck_in_default_project" value="undefined stuck path" />
     <property name="nodejs_npm_path_reset_for_default_project" value="true" />
     <property name="project.structure.last.edited" value="Project" />
@@ -70,6 +75,10 @@
     <key name="CopyClassDialog.RECENTS_KEY">
       <recent name="victor.perf" />
       <recent name="victor.proxy" />
+    </key>
+    <key name="CopyFile.RECENT_KEYS">
+      <recent name="C:\workspace\performance\performance-jmh\src\main\java\victor\perf" />
+      <recent name="SetVsListTest" />
     </key>
   </component>
   <component name="RunManager" selected="Jmh.StreamsCPUOnlyTest">
@@ -126,6 +135,9 @@
       </list>
     </recent_temporary>
   </component>
+  <component name="ServiceViewManager">
+    <option name="showServicesTree" value="false" />
+  </component>
   <component name="SvnConfiguration">
     <configuration />
   </component>
@@ -142,6 +154,7 @@
       <workItem from="1566252641009" duration="3245000" />
       <workItem from="1572355579198" duration="1233000" />
       <workItem from="1582573049384" duration="639000" />
+      <workItem from="1584298982852" duration="3105000" />
     </task>
     <task id="LOCAL-00001" summary="add FizzBuzz JMH">
       <created>1582668553526</created>
@@ -187,6 +200,18 @@
       <screen x="0" y="0" width="1536" height="834" />
     </state>
     <state x="361" y="153" key="Vcs.Push.Dialog.v2/0.0.1536.834@0.0.1536.834" timestamp="1582668554101" />
+    <state x="580" y="336" key="com.intellij.openapi.vcs.update.UpdateOrStatusOptionsDialogupdate-v2" timestamp="1584304475741">
+      <screen x="0" y="0" width="1536" height="834" />
+    </state>
+    <state x="580" y="336" key="com.intellij.openapi.vcs.update.UpdateOrStatusOptionsDialogupdate-v2/0.0.1536.834@0.0.1536.834" timestamp="1584304475741" />
+    <state x="499" y="180" key="extract.method.dialog" timestamp="1584304601746">
+      <screen x="0" y="0" width="1536" height="834" />
+    </state>
+    <state x="499" y="180" key="extract.method.dialog/0.0.1536.834@0.0.1536.834" timestamp="1584304601746" />
+    <state x="431" y="155" width="672" height="678" key="search.everywhere.popup" timestamp="1584305510783">
+      <screen x="0" y="0" width="1536" height="834" />
+    </state>
+    <state x="431" y="155" width="672" height="678" key="search.everywhere.popup/0.0.1536.834@0.0.1536.834" timestamp="1584305510783" />
   </component>
   <component name="masterDetails">
     <states>
