@@ -9,6 +9,7 @@ public class Pointers {
     // TODO at which point can the instance be GC-ed ?
     private static void unreferenced() {
         Pointers p = new Pointers();
+        // -- p este legat de un stack frame
         Pointers p2 = p;
         // A
         p2 = null;
@@ -23,17 +24,26 @@ public class Pointers {
         Pointers c = a;
 		checkIdentity(a, b, c);
 
-		// TODO play checkEquals("a1", "a1", "a1");
+        String ceva = "a";
+        checkIdentity("a1", "a1", ceva + "1");
 
     }
 
-	private static void checkIdentity(Object x, Object a, Object b) {
-		System.out.println("\nCheck equals class " + x.getClass());
-		System.out.println("a==b: " + (x == a));
-		System.out.println("a==c: " + (x == b));
+	private static void checkIdentity(Object a, Object b, Object c) {
+		System.out.println("\nCheck equals class " + a.getClass());
+		System.out.println("a==b: " + (a == b));
+		System.out.println("a==c: " + (a == c));
 
-		System.out.printf("toString()\n\ta=%s\n\tb=%s\n\tc=%s\n", x, a, b);
-		System.out.printf("hashCode()\n\ta=%d\n\tb=%d\n\tc=%d\n", x.hashCode(), a.hashCode(), b.hashCode());
+		System.out.printf("toString()\n\ta=%s\n\tb=%s\n\tc=%s\n", a, b, c);
+
+		System.out.printf("hashCode()\n\ta=%x\n\tb=%x\n\tc=%x\n",
+                a.hashCode(), b.hashCode(), c.hashCode());
+
+		System.out.printf("identityHashCode()\n\ta=%x\n\tb=%x\n\tc=%x\n",
+                System.identityHashCode(a),
+                System.identityHashCode(b),
+                System.identityHashCode(c));
+
 		// TODO change to %x
 		// TODO change to identityHashCode
 	}
