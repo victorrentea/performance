@@ -10,11 +10,18 @@ public class SummingBoxes {
     public static void main(String[] args) {
         List<Long> list = LongStream.range(1, 10_000_000)
 				.boxed().collect(toList());
+        long[] arr = new long[list.size()];
+        for (int i = 0; i < list.size(); i++) {
+            arr[i] = list.get(i);
+        }
+        // TODO iterarea pe arr evita si unboxingul.
 
         long t0 = System.currentTimeMillis();
 
-        Long sum = 0L;
+        long sum = 0L;
         for (Long i : list) {
+//            sum = new Long(i.longValue() + sum.longValue());
+//            sum = sum + i.longValue(); // unboxed
             sum += i;
         }
 
