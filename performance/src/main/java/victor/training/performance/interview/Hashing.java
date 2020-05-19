@@ -70,6 +70,7 @@ public class Hashing {
     }
 
     // HashMap .put.get.containsKey = O(1) pe baza elem.hashCode
+    // LinkedHashMap/Set - pastreaza si ordinea inserarii cheilor. adica la iterare le e aceeasi ordine
     // HashSet<> .add.remove.contains = O(1) pe baza unui HashMap
     // TreeSet<> .add.remote.contains = O(lgN) pe baza a TreeMap cu Comparable<>
     // ArrayList<> .add.remove.contains = O(N)
