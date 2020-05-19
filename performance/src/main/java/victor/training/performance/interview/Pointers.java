@@ -48,4 +48,13 @@ public class Pointers {
 		// TODO change to identityHashCode
 	}
 
+    @Override
+    public int hashCode() {
+        return 9;
+    }
+
+    @Override
+    public String toString() {
+        return "axxx";
+    }
 }

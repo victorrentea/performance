@@ -1,12 +1,11 @@
 package victor.training.performance.interview;
 
 import java.time.LocalDate;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.List;
+import java.util.*;
 import java.util.stream.IntStream;
 
 import static java.util.stream.Collectors.toList;
+import static java.util.stream.Collectors.toSet;
 
 public class Hashing {
     private String name;
@@ -30,19 +29,26 @@ public class Hashing {
 
     private static Collection<?> generate(int max) {
         System.out.printf("Generating shuffled sequence of %,d elements...%n", max);
-        List<String> result = IntStream.rangeClosed(1, max)
+        Set<String> result = IntStream.rangeClosed(1, max)
                 .mapToObj(i -> "A" + i)
-                .collect(toList());
-        Collections.shuffle(result);
+                .collect(toSet());
+//        Collections.shuffle(result);
         return result;
     }
 
+
+    // HashMap .put.get.containsKey = O(1) pe baza elem.hashCode
+    // HashSet<> .add.remove.contains = O(1) pe baza unui HashMap
+    // TreeSet<> .add.remote.contains = O(lgN) pe baza a TreeMap cu Comparable<>
+    // ArrayList<> .add.remove.contains = O(N)
+
+    // O(N^2) sau ..  mai rapid
     private static void match(Collection<?> targetIds, Collection<?> allIds) {
         System.out.println("Matching...");
         long t0 = System.currentTimeMillis();
         int n = 0;
-        for (Object a : targetIds) {
-            if (allIds.contains(a)) {
+        for (Object a : targetIds) { // x N
+            if (allIds.contains(a)) { // O(N) sau O(logN) sau O(1) in fct de tipul allIds.
                 n ++;
             }
         }
