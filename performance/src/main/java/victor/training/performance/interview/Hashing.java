@@ -29,13 +29,45 @@ public class Hashing {
 
     private static Collection<?> generate(int max) {
         System.out.printf("Generating shuffled sequence of %,d elements...%n", max);
-        Set<String> result = IntStream.rangeClosed(1, max)
+        Set<Elem> result = IntStream.rangeClosed(1, max)
                 .mapToObj(i -> "A" + i)
+                .map(Elem::new)
                 .collect(toSet());
 //        Collections.shuffle(result);
         return result;
     }
 
+    static class Elem {
+        String s;
+
+        public Elem(String s) {
+            this.s = s;
+        }
+//        public int hashCode() {
+//            return 0;
+//            //degenerat: pierzi tot castigul de O(1) de prin colectiile Hash*
+//        }
+
+        @Override
+        public boolean equals(Object o) {
+            if (this == o) return true;
+            if (o == null || getClass() != o.getClass()) return false;
+            Elem elem = (Elem) o;
+            return Objects.equals(s, elem.s);
+        }
+
+        @Override
+        public int hashCode() {
+            return Objects.hash(s);
+        }
+
+
+//        A) 1.h=2.h
+//        B) 1.e(2)
+        // B ==> A .. A nu implica B.
+        // Adica pot exita 2 elem cu hash egal dar equals false
+
+    }
 
     // HashMap .put.get.containsKey = O(1) pe baza elem.hashCode
     // HashSet<> .add.remove.contains = O(1) pe baza unui HashMap
