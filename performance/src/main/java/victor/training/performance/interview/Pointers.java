@@ -8,20 +8,20 @@ public class Pointers {
 
     // TODO at which point can the instance be GC-ed ?
     private static void unreferenced() {
-        Pointers p = new Pointers();
+        Pointers p = new Pointers(); // 1
         // -- p este legat de un stack frame
-        Pointers p2 = p;
+        Pointers p2 = p; //2
         // A
-        p2 = null;
+        p2 = null; //1
         // B
-        p = null;
+        p = null; // 0
         // C
     }
 
     private static void pointersInJava() {
-        Pointers a = new Pointers();
+        Pointers a = new Pointers(); // 1
         Pointers b = new Pointers();
-        Pointers c = a;
+        Pointers c = a; // 2
 		checkIdentity(a, b, c);
 
         String ceva = "a";

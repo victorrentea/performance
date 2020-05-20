@@ -3,7 +3,7 @@ package victor.training.performance;
 import java.util.concurrent.atomic.AtomicInteger;
 
 public class APlusPlus {
-    private static int population;
+    private static /*volatile-NU AJUTA*/ int population;
     public static final Object LOCK = new Object();
 
     public static class ThreadA extends Thread {

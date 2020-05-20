@@ -33,9 +33,23 @@ public class LockPhilosophers {
 		}
 
 		public void run() {
-			Fork firstFork = leftFork;
-			Fork secondFork = rightFork;
+			Fork firstFork = leftFork.id < rightFork.id ? leftFork:rightFork;
+			Fork secondFork = leftFork.id < rightFork.id ? rightFork:leftFork;
 
+//			synchronized (a) {
+//				altaMetoda() care cheamaPeAlta() care face:
+			// periculos in app mari
+//				synchronized (b){
+//
+//				}
+//			}
+
+			// de aceea: recomandarea este ca obiectele pe care faci syncronized sa fie private in clasa
+//			synchronized (b) {
+//				synchronized (a){
+//
+//				}
+//			}
 			for (int i=0;i<50;i++) {
 				sleepSomeTime();
 				log("I'm hungry!");

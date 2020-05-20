@@ -2,7 +2,12 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="0e1584f6-4d86-4d34-9539-64d7002532f5" name="Default Changelist" comment="">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/victor/perf/FizzBuzzTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/victor/perf/FizzBuzzTest.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../performance/src/main/java/victor/training/performance/APlusPlus.java" beforeDir="false" afterPath="$PROJECT_DIR$/../performance/src/main/java/victor/training/performance/APlusPlus.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../performance/src/main/java/victor/training/performance/LockPhilosophers.java" beforeDir="false" afterPath="$PROJECT_DIR$/../performance/src/main/java/victor/training/performance/LockPhilosophers.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../performance/src/main/java/victor/training/performance/ThreadLocals.java" beforeDir="false" afterPath="$PROJECT_DIR$/../performance/src/main/java/victor/training/performance/ThreadLocals.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../performance/src/main/java/victor/training/performance/interview/Pointers.java" beforeDir="false" afterPath="$PROJECT_DIR$/../performance/src/main/java/victor/training/performance/interview/Pointers.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -141,7 +146,7 @@
       <workItem from="1584298982852" duration="4775000" />
       <workItem from="1589879239544" duration="731000" />
       <workItem from="1589880037506" duration="2327000" />
-      <workItem from="1589952500595" duration="1802000" />
+      <workItem from="1589952500595" duration="3957000" />
     </task>
     <task id="LOCAL-00001" summary="add FizzBuzz JMH">
       <created>1582668553526</created>
