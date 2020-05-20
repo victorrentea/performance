@@ -17,7 +17,11 @@ public class Leak1 {
 		s+="Remaining Memory: " + Runtime.getRuntime().freeMemory();
 		
 		threadLocal.set(bigData);
-		System.out.println("Call business method here");
+		try {
+			System.out.println("Call business method here");
+		} finally {
+			threadLocal.remove();
+		}
 		return s;
 	}
 }

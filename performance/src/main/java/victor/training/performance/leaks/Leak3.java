@@ -16,7 +16,12 @@ public class Leak3 {
 		// Clear JSESSIONID cookie
 		HttpSession session = request.getSession();
 		System.out.println("was new session: " + session.isNew());
-		session.setAttribute("rights",new BigObject80MB());
+//		session.setAttribute("ca-porcu",new BigObject80MB());
+
+		// NU PUI CA PORCU pe sesiune.
+		// in microservicii nu pui NIMIC pe sesiune (pt Load balancing).
+		// REST care e stateless. D-aia s-a inventat JWT/SAML semnat ca sa care si drepturi
+		// sa nu fii tu nevoit sa faci +1 query / fiecare request
 		return "even more subtle";
 	}
 }

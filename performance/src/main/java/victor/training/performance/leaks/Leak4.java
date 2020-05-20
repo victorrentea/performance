@@ -30,11 +30,13 @@ public class Leak4 {
 }
 
 @Component
+// NU PUI CA PORCU pe sesiune.
 @Scope(scopeName = "session", proxyMode = ScopedProxyMode.TARGET_CLASS)
 class UserContext implements Serializable {
 
 	private Map<String, BigObject20MB> cache = new HashMap<>();
 
+	// un cache ca asta nu-ti va mai aduce ca$h
 	public BigObject20MB tryCache(String key, Callable<BigObject20MB> loadMethod) throws Exception {
 		if (cache.containsKey(key)) {
 			return cache.get(key); // cache hit
