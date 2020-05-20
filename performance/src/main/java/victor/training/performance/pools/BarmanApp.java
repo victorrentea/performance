@@ -74,32 +74,13 @@ class DrinkerService {
 
 }
 
-@Service
-@Slf4j
-class Barman {
-	@Autowired
-	private MyRequestContext requestContext;
-
-	@Async
-    public Beer pourBeer() {
-        log.debug("Pouring Beer to " + requestContext.getCurrentUser()+"...");
-        sleep2(1000);
-        return new Beer();
-    }
-
-    public Vodka pourVodka() {
-        log.debug("Pouring Vodka...");
-        sleep2(1000);
-        return new Vodka();
-    }
+interface Drink {}
+@Data
+class Beer implements Drink {
 }
 
 @Data
-class Beer {
-}
-
-@Data
-class Vodka {
+class Vodka implements Drink {
 }
 
 

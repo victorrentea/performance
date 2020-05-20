@@ -1,5 +1,7 @@
 package victor.training.performance.xml;
 
+import org.apache.commons.io.IOUtils;
+
 import javax.xml.namespace.QName;
 import javax.xml.stream.XMLEventReader;
 import javax.xml.stream.XMLInputFactory;
@@ -9,11 +11,18 @@ import javax.xml.stream.events.XMLEvent;
 import java.io.Reader;
 import java.io.StringReader;
 
+//SAX istoric
 public class StAXParsing {
     public static void main(String[] args) throws XMLStreamException {
         XMLInputFactory factory = XMLInputFactory.newInstance();
         Reader reader = new StringReader("<root><record id=\"1\"><a>A</a><b>B</b></record><record id=\"2\"><a>A2</a><b>B2</b></record></root>");
         XMLEventReader xmlReader = factory.createXMLEventReader(reader);
+
+
+
+        // Parsezi cu stax tot fisierul de 2M de recorduri,
+        // pentru fiecare record reconstruiesti XML-ul lui (asta nu e mare de ob 1K)
+        // Foloseti JAXB sa parsezi snippetul de XML reconstruit.
 
         xmlReader.nextEvent(); // document start event
         System.out.println("START " + xmlReader.nextEvent().asStartElement().getName());
