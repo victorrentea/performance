@@ -12,7 +12,7 @@ import java.time.LocalDateTime;
 
 @RestController
 @RequestMapping("leak7")
-public class Leak7_Aspects {
+public class Leak7_Cacheable {
 	@Autowired
     private  Stuff stuff;
 	@GetMapping
