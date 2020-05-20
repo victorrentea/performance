@@ -4,7 +4,7 @@
 //
 //import java.util.concurrent.TimeUnit;
 //import java.util.stream.IntStream;
-//
+//blue
 //@State(Scope.Thread)
 //@BenchmarkMode(Mode.AverageTime)
 //@OutputTimeUnit(TimeUnit.MICROSECONDS)

@@ -2,11 +2,10 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="0e1584f6-4d86-4d34-9539-64d7002532f5" name="Default Changelist" comment="">
+      <change afterPath="$PROJECT_DIR$/../performance/src/main/java/victor/training/performance/LoggingPerformant.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/victor/perf/FizzBuzzTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/victor/perf/FizzBuzzTest.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/victor/perf/IOParallel.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/victor/perf/IOParallel.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/victor/perf/StringBuilderTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/victor/perf/StringBuilderTest.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../performance/src/main/java/victor/training/performance/interview/Hashing.java" beforeDir="false" afterPath="$PROJECT_DIR$/../performance/src/main/java/victor/training/performance/interview/Hashing.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/victor/perf/StreamsCPUOnlyTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/victor/perf/StreamsCPUOnlyTest.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../performance/src/main/java/victor/training/performance/APlusPlus.java" beforeDir="false" afterPath="$PROJECT_DIR$/../performance/src/main/java/victor/training/performance/APlusPlus.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -30,6 +29,7 @@
     </option>
   </component>
   <component name="Git.Settings">
+    <option name="PREVIEW_PUSH_PROTECTED_ONLY" value="true" />
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$/.." />
   </component>
   <component name="ProjectCodeStyleSettingsMigration">
@@ -52,7 +52,7 @@
     <property name="WebServerToolWindowFactoryState" value="false" />
     <property name="aspect.path.notification.shown" value="true" />
     <property name="extract.method.default.visibility" value="private" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/../performance" />
     <property name="nodejs_interpreter_path.stuck_in_default_project" value="undefined stuck path" />
     <property name="nodejs_npm_path_reset_for_default_project" value="true" />
     <property name="project.structure.last.edited" value="Project" />
@@ -143,6 +143,8 @@
       <workItem from="1582573049384" duration="639000" />
       <workItem from="1584298982852" duration="4775000" />
       <workItem from="1589879239544" duration="731000" />
+      <workItem from="1589880037506" duration="2327000" />
+      <workItem from="1589952500595" duration="1802000" />
     </task>
     <task id="LOCAL-00001" summary="add FizzBuzz JMH">
       <created>1582668553526</created>
@@ -165,7 +167,14 @@
       <option name="project" value="LOCAL" />
       <updated>1584544529104</updated>
     </task>
-    <option name="localTasksCounter" value="4" />
+    <task id="LOCAL-00004" summary="JMH">
+      <created>1589880198784</created>
+      <option name="number" value="00004" />
+      <option name="presentableId" value="LOCAL-00004" />
+      <option name="project" value="LOCAL" />
+      <updated>1589880198784</updated>
+    </task>
+    <option name="localTasksCounter" value="5" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -188,21 +197,22 @@
     <MESSAGE value="add FizzBuzz JMH" />
     <MESSAGE value="add set vs list" />
     <MESSAGE value="IO Parallel" />
-    <option name="LAST_COMMIT_MESSAGE" value="IO Parallel" />
+    <MESSAGE value="JMH" />
+    <option name="LAST_COMMIT_MESSAGE" value="JMH" />
   </component>
   <component name="WindowStateProjectService">
-    <state x="388" y="2" key="CommitChangelistDialog2" timestamp="1584544528508">
+    <state x="388" y="0" key="CommitChangelistDialog2" timestamp="1589880198179">
       <screen x="0" y="0" width="1536" height="834" />
     </state>
-    <state x="388" y="2" key="CommitChangelistDialog2/0.0.1536.834@0.0.1536.834" timestamp="1584544528508" />
+    <state x="388" y="0" key="CommitChangelistDialog2/0.0.1536.834@0.0.1536.834" timestamp="1589880198179" />
     <state x="161" y="56" key="DiffContextDialog" timestamp="1584544514900">
       <screen x="0" y="0" width="1536" height="834" />
     </state>
     <state x="161" y="56" key="DiffContextDialog/0.0.1536.834@0.0.1536.834" timestamp="1584544514900" />
-    <state x="549" y="190" key="FileChooserDialogImpl" timestamp="1582573052435">
+    <state x="549" y="190" key="FileChooserDialogImpl" timestamp="1589881984419">
       <screen x="0" y="0" width="1536" height="834" />
     </state>
-    <state x="549" y="190" key="FileChooserDialogImpl/0.0.1536.834@0.0.1536.834" timestamp="1582573052435" />
+    <state x="549" y="190" key="FileChooserDialogImpl/0.0.1536.834@0.0.1536.834" timestamp="1589881984419" />
     <state width="1493" height="227" key="GridCell.Tab.0.bottom" timestamp="1589879971260">
       <screen x="0" y="0" width="1536" height="834" />
     </state>
@@ -223,10 +233,10 @@
       <screen x="0" y="0" width="1536" height="834" />
     </state>
     <state x="490" y="159" width="540" height="524" key="StructurePopup/0.0.1536.834@0.0.1536.834" timestamp="1584544349891" />
-    <state x="361" y="153" key="Vcs.Push.Dialog.v2" timestamp="1584544530590">
+    <state x="361" y="153" key="Vcs.Push.Dialog.v2" timestamp="1589880201484">
       <screen x="0" y="0" width="1536" height="834" />
     </state>
-    <state x="361" y="153" key="Vcs.Push.Dialog.v2/0.0.1536.834@0.0.1536.834" timestamp="1584544530590" />
+    <state x="361" y="153" key="Vcs.Push.Dialog.v2/0.0.1536.834@0.0.1536.834" timestamp="1589880201484" />
     <state x="580" y="336" key="com.intellij.openapi.vcs.update.UpdateOrStatusOptionsDialogupdate-v2" timestamp="1584304475741">
       <screen x="0" y="0" width="1536" height="834" />
     </state>
