@@ -3,9 +3,9 @@
   <component name="ChangeListManager">
     <list default="true" id="0e1584f6-4d86-4d34-9539-64d7002532f5" name="Default Changelist" comment="">
       <change afterPath="$PROJECT_DIR$/../performance/src/main/java/victor/training/performance/pools/Barman.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../performance/src/main/java/victor/training/performance/pools/PrimaMeaPiscina.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../performance/src/main/java/victor/training/performance/pools/BarmanApp.java" beforeDir="false" afterPath="$PROJECT_DIR$/../performance/src/main/java/victor/training/performance/pools/BarmanApp.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../performance/src/main/java/victor/training/performance/pools/PrimaMeaPiscina.java" beforeDir="false" afterPath="$PROJECT_DIR$/../performance/src/main/java/victor/training/performance/pools/PrimaMeaPiscina.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../performance/src/main/java/victor/training/performance/xml/StAXParsing.java" beforeDir="false" afterPath="$PROJECT_DIR$/../performance/src/main/java/victor/training/performance/xml/StAXParsing.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
