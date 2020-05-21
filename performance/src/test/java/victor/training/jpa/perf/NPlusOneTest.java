@@ -45,9 +45,9 @@ public class NPlusOneTest {
 				.addChild(new Child("Vlad"))
 				.addChild(new Child("Ana"))
 				.addChild(new Child("xx"))
-				.addPhone(new Phone("999"))
-				.addPhone(new Phone("888"))
-				.addPhone(new Phone("000"))
+//				.addPhone(new Phone("999"))
+//				.addPhone(new Phone("888"))
+//				.addPhone(new Phone("000"))
 		);
 		em.persist(new Parent("Peter")
 				.addChild(new Child("Maria"))
@@ -60,7 +60,8 @@ public class NPlusOneTest {
 		log.debug("Inainte de queryul de parinti");
 //		List<Parent> parents = parentRepo.findAll(); // nu merge
 //		List<Parent> parents = em.createQuery("SELECT p FROM Parent p", Parent.class).getResultList(); // nu merge
-		List<Parent> parents = asList(parentRepo.findById(1L).get());//em.createQuery("SELECT p FROM Parent p", Parent.class).getResultList();
+//		List<Parent> parents = asList(parentRepo.findById(1L).get());
+		List<Parent> parents = em.createQuery("SELECT p FROM Parent p LEFT JOIN FETCH p.children", Parent.class).getResultList();
 		log.debug("Dupa queryul de parinti");
 
 		int totalChildren = anotherMethod(parents);

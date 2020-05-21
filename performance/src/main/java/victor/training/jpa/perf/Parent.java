@@ -16,10 +16,10 @@ public class Parent {
 
     private String name;
 
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "parent", fetch = FetchType.EAGER)
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "parent"/*, fetch = FetchType.EAGER*/)
     private Set<Child> children = new HashSet<>();
 
-    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    @OneToMany(cascade = CascadeType.ALL/*, fetch = FetchType.EAGER*/)
     @JoinColumn
     private Set<Phone> phones = new HashSet<>();
 
