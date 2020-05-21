@@ -1,6 +1,7 @@
 package victor.training.jpa.perf;
 
 import lombok.RequiredArgsConstructor;
+import lombok.Value;
 import org.springframework.stereotype.Repository;
 
 import javax.persistence.EntityManager;
@@ -15,11 +16,23 @@ public class UberEntitySearchRepo {
 
     public List<?> search(String name, Long invoiceCountry) {
 
-        String jpql = "SELECT u.id,u.name " +
-                "FROM UberEntity u WHERE 1=1 ";
+        String jpql = "SELECT new victor.training.jpa.perf.UberSearchResult(u.id,u.name,u.invoicingCountry.name) " +
+                "FROM UberEntity u   WHERE 1=1 ";
 
-        Query query = em.createQuery(jpql);
+        // DACA transformi query-ul intr-un view, poti in continuare sa
+        // ramai in JPQL si sa faci LEFT JOIN Parent p ON p.name = u.name ca
+        // sa vii in restul modelul JPA
+
+        TypedQuery<UberSearchResult> query = em.createQuery(jpql, UberSearchResult.class);
 
         return query.getResultList();
     }
+}
+
+
+@Value
+class UberSearchResult {
+    long id;
+    String name;
+    String invoiceCountryName;
 }

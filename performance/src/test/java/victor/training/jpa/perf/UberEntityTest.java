@@ -93,7 +93,7 @@ public class UberEntityTest {
 
         searchRepo.search(null, null)
                 .stream()
-                .map(obj-> Arrays.toString((Object[])obj))
+//                .map(obj-> Arrays.toString((Object[])obj))
                 .forEach(System.out::println);
 
     }
