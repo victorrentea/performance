@@ -53,7 +53,7 @@ public class NPlusOneTest {
 		);
 		em.flush();
 		em.clear();
-		TestTransaction.end();
+//		TestTransaction.end();
 
 		List<Parent> parents = em.createQuery("SELECT p FROM Parent p", Parent.class).getResultList();
 
