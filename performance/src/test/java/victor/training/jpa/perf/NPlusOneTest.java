@@ -17,6 +17,7 @@ import javax.persistence.EntityManager;
 import java.util.Collection;
 import java.util.List;
 
+import static java.util.Arrays.asList;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @RunWith(SpringRunner.class)
@@ -52,12 +53,16 @@ public class NPlusOneTest {
 		TestTransaction.start();
 
 		log.debug("Inainte de queryul de parinti");
-		List<Parent> parents = em.createQuery("SELECT p FROM Parent p", Parent.class).getResultList();
+//		List<Parent> parents = parentRepo.findAll(); // nu merge
+//		List<Parent> parents = em.createQuery("SELECT p FROM Parent p", Parent.class).getResultList(); // nu merge
+		List<Parent> parents = asList(parentRepo.findById(1L).get());//em.createQuery("SELECT p FROM Parent p", Parent.class).getResultList();
 		log.debug("Dupa queryul de parinti");
 
 		int totalChildren = anotherMethod(parents);
 		assertThat(totalChildren).isEqualTo(5);
 	}
+	@Autowired
+	ParentRepo parentRepo;
 //	@Autowired
 //	ClasaCuAltaTx tx;
 
