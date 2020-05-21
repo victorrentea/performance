@@ -14,6 +14,7 @@ import org.springframework.test.context.transaction.TestTransaction;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityManager;
+import java.util.Arrays;
 import java.util.Map;
 
 @RunWith(SpringRunner.class)
@@ -68,5 +69,32 @@ public class UberEntityTest {
         // TODO fetch only the necessary data
         // TODO change link types?
         System.out.println(uberEntity.toString());
+    }
+
+    @Autowired
+    UberEntitySearchRepo searchRepo;
+    @Test
+    public void testSearch() {
+        em.persist(romania);
+        em.persist(testUser);
+        em.persist(globalScope);
+
+
+        UberEntity uber = new UberEntity()
+                .setName("Nume")
+                .setFiscalCountryId(romania.getId())
+                .setOriginCountryId(romania.getId())
+//                .setInvoicingCountryId(romania.getId())
+                .setInvoicingCountry(romania)
+                .setCreatedBy(testUser)
+                .setNationalityId(romania.getId())
+                .setScopeId(globalScope.getId());
+        em.persist(uber);
+
+        searchRepo.search(null, null)
+                .stream()
+                .map(obj-> Arrays.toString((Object[])obj))
+                .forEach(System.out::println);
+
     }
 }
