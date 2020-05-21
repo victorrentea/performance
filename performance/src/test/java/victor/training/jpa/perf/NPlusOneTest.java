@@ -14,8 +14,10 @@ import org.springframework.test.context.transaction.TestTransaction;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityManager;
+import javax.persistence.LockModeType;
 import java.util.Collection;
 import java.util.List;
+import java.util.Set;
 
 import static java.util.Arrays.asList;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -43,8 +45,7 @@ public class NPlusOneTest {
 		em.persist(new Parent("Victor")
 				.addChild(new Child("Emma"))
 				.addChild(new Child("Vlad"))
-				.addChild(new Child("Ana"))
-				.addChild(new Child("xx"))
+//				.addChild(new Child("xx"))
 //				.addPhone(new Phone("999"))
 //				.addPhone(new Phone("888"))
 //				.addPhone(new Phone("000"))
@@ -61,8 +62,13 @@ public class NPlusOneTest {
 //		List<Parent> parents = parentRepo.findAll(); // nu merge
 //		List<Parent> parents = em.createQuery("SELECT p FROM Parent p", Parent.class).getResultList(); // nu merge
 //		List<Parent> parents = asList(parentRepo.findById(1L).get());
-		List<Parent> parents = em.createQuery("SELECT p FROM Parent p LEFT JOIN FETCH p.children", Parent.class).getResultList();
-		log.debug("Dupa queryul de parinti");
+//		List<Parent> parents = em.createQuery("SELECT p FROM Parent p LEFT JOIN FETCH p.children", Parent.class).getResultList();
+//		List<Parent> parents = parentRepo.findAllLoadingChildren();
+//		log.debug("TST: " + (parents.get(0) == parents.get(1)));
+//		em.lock(parents.get(0), LockModeType.PESSIMISTIC_WRITE);
+//		log.debug("TST: " + (parents.get(0) == parentRepo.findById(1L).get()));
+		Set<Parent> parents = parentRepo.findAllLoadingChildren();
+		log.debug("Dupa queryul de parinti: " + parents);
 
 		int totalChildren = anotherMethod(parents);
 		assertThat(totalChildren).isEqualTo(5);
