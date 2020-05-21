@@ -1,24 +1,29 @@
 package victor.training.performance.batch.paritem;
 
-import org.apache.commons.lang.RandomStringUtils;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.batch.core.Job;
 import org.springframework.batch.core.Step;
 import org.springframework.batch.core.configuration.annotation.EnableBatchProcessing;
 import org.springframework.batch.core.configuration.annotation.JobBuilderFactory;
 import org.springframework.batch.core.configuration.annotation.StepBuilderFactory;
 import org.springframework.batch.core.launch.support.RunIdIncrementer;
-import org.springframework.batch.item.*;
+import org.springframework.batch.item.ItemProcessor;
+import org.springframework.batch.item.ItemWriter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.cloud.task.configuration.EnableTask;
 import org.springframework.context.annotation.Bean;
 import org.springframework.core.task.SimpleAsyncTaskExecutor;
 import org.springframework.core.task.TaskExecutor;
 
 import java.util.List;
 
-import static victor.training.performance.ConcurrencyUtil.*;
+import static victor.training.performance.ConcurrencyUtil.measureCall;
+import static victor.training.performance.ConcurrencyUtil.sleep2;
 
+
+@EnableTask
 @SpringBootApplication
 @EnableBatchProcessing
 public class BatchParItemsApp {
@@ -29,23 +34,24 @@ public class BatchParItemsApp {
     }
 
     @Autowired
-    JobBuilderFactory jobBuilderFactory;
+    private JobBuilderFactory jobBuilderFactory;
 
     @Autowired
-    StepBuilderFactory stepBuilderFactory;
+    private StepBuilderFactory stepBuilderFactory;
 
     @Bean
     public TaskExecutor taskExecutor(){
         return new SimpleAsyncTaskExecutor("spring_batch");
     }
 
-    @Bean
     public Step sampleStep(TaskExecutor taskExecutor) {
-        return this.stepBuilderFactory.get("sampleStep")
-                .<String, String>chunk(10)
-                .reader(new StringGeneratorReader(10))
+        return stepBuilderFactory.get("sampleStep")
+                .<String, String>chunk(5)
+                .reader(new StringGeneratorReader(50))
                 .processor(new StringProcessor())
                 .writer(new StringConsoleWriter())
+                .listener(new MyChunkListener())
+                .listener(new MyStepExecutionListener())
                 .taskExecutor(taskExecutor)
                 .build();
     }
@@ -55,46 +61,9 @@ public class BatchParItemsApp {
         return jobBuilderFactory.get("parallelFlowJob")
                 .incrementer(new RunIdIncrementer())
                 .start(sampleStep(taskExecutor()))
+                .listener(new MyJobListener())
                 .build();
 
-    }
-}
-
-class StringProcessor implements ItemProcessor<String, String> {
-    @Override
-    public synchronized String process(String item) {
-        log("Start processing " + item);
-        sleep2(100);
-        log("End processing " + item);
-        return item.toUpperCase();
-    }
-}
-
-
-class StringGeneratorReader implements ItemReader<String> {
-    private int count;
-    public StringGeneratorReader(int count) {
-        this.count = count;
-    }
-    public String read() {
-        if (count <= 0) {
-            return null;
-        }
-        count--;
-        String s = RandomStringUtils.random(4);
-        log("Read " + s);
-        sleep2(1);
-        return s;
-    }
-}
-
-class StringConsoleWriter implements ItemWriter<String> {
-    @Override
-    public void write(List<? extends String> list) throws Exception {
-        sleep2(1);
-        for (String s : list) {
-            log("Write " + s);
-        }
     }
 }
 
