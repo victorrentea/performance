@@ -14,9 +14,10 @@ public class UberEntity {
     private String cnp;
 
     private String ssn;
-//    @Basic(fetch = FetchType.LAZY)
-//    @Lob
-//    private String cv;
+    @Basic(fetch = FetchType.LAZY)
+    @Lob
+    private String cv;
+
     private String passportNumber;
 //    @ManyToOne
     private Long originCountryId;
@@ -46,7 +47,15 @@ public class UberEntity {
         return this;
     }
 
-//    public UberEntity setOriginCountry(Country originCountry) {
+    public UberEntity setCv(String cv) {
+        this.cv = cv;
+        return this;
+    }
+
+    public String getCv() {
+        return cv;
+    }
+    //    public UberEntity setOriginCountry(Country originCountry) {
 //        this.originCountry = originCountry;
 //        return this;
 //    }
