@@ -19,6 +19,10 @@ public class Parent {
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "parent", fetch = FetchType.EAGER)
     private Set<Child> children = new HashSet<>();
 
+    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    @JoinColumn
+    private Set<Phone> phones = new HashSet<>();
+
     private Parent() {
     }
 
@@ -33,6 +37,10 @@ public class Parent {
     public Parent addChild(Child child) {
         children.add(child);
         child.setParent(this);
+        return this;
+    }
+    public Parent addPhone(Phone phone) {
+        phones.add(phone);
         return this;
     }
 
