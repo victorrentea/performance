@@ -8,17 +8,20 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.annotation.Rollback;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.context.transaction.TestTransaction;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityManager;
+import java.util.Map;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
 @Transactional
+@ActiveProfiles("inmemdb")
 @Rollback(false)
-@DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_EACH_TEST_METHOD)
+//@DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_EACH_TEST_METHOD)
 public class UberEntityTest {
     private static final Logger log = LoggerFactory.getLogger(UberEntityTest.class);
 
@@ -37,20 +40,31 @@ public class UberEntityTest {
 
 
         UberEntity uber = new UberEntity()
-                .setFiscalCountry(romania)
-                .setOriginCountry(romania)
+                .setFiscalCountryId(romania.getId())
+                .setOriginCountryId(romania.getId())
+//                .setInvoicingCountryId(romania.getId())
                 .setInvoicingCountry(romania)
                 .setCreatedBy(testUser)
-                .setNationality(romania)
-                .setScope(globalScope);
+                .setNationalityId(romania.getId())
+                .setScopeId(globalScope.getId());
         em.persist(uber);
 
         TestTransaction.end();
         TestTransaction.start();
 
+
+//        countryRepo.findById(uber.getFiscalCountryId()); -- asta produce multe queryuri daca in for
+//        Map<Long, Country> toateTarile = countryRepo.findAll();
+//        toateTarile.get(uber.getFiscalCountryId());
+
         log.info("Now, loading by id...");
-        UberEntity uberEntity = em.find(UberEntity.class, uber.getId());
+        UberEntity uberEntity = em.createQuery("SELECT u FROM UberEntity u " +
+                "LEFT JOIN FETCH u.invoicingCountry WHERE u.id = :id", UberEntity.class)
+                .setParameter("id",uber.getId())
+                .getResultList().get(0);//em.find(UberEntity.class, uber.getId());
         log.info("Loaded");
+        System.out.println("Lazy.id: " + uberEntity.getInvoicingCountry().getId());
+        System.out.println("Lazy.name: " + uberEntity.getInvoicingCountry().getName());
         // TODO fetch only the necessary data
         // TODO change link types?
         System.out.println(uberEntity.toString());

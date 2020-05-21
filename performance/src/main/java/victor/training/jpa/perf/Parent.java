@@ -24,8 +24,7 @@ public class Parent {
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "parent"/*, fetch = FetchType.EAGER*/)
     private Set<Child> children = new HashSet<>();
 
-    @OneToMany(cascade = CascadeType.ALL/*, fetch = FetchType.EAGER*/)
-    @JoinColumn
+    @ElementCollection
     private Set<Phone> phones = new HashSet<>();
 
     private Parent() {

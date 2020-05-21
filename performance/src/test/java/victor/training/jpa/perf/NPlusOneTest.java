@@ -46,9 +46,9 @@ public class NPlusOneTest {
 				.addChild(new Child("Emma"))
 				.addChild(new Child("Vlad"))
 //				.addChild(new Child("xx"))
-//				.addPhone(new Phone("999"))
-//				.addPhone(new Phone("888"))
-//				.addPhone(new Phone("000"))
+				.addPhone(new Phone("999"))
+				.addPhone(new Phone("888"))
+				.addPhone(new Phone("000"))
 		);
 		em.persist(new Parent("Peter")
 				.addChild(new Child("Maria"))

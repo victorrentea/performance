@@ -1,9 +1,6 @@
 package victor.training.jpa.perf;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
-import javax.persistence.ManyToOne;
+import javax.persistence.*;
 
 @Entity
 public class UberEntity {
@@ -11,17 +8,28 @@ public class UberEntity {
     @GeneratedValue
     private Long id;
     private String name;
-    private String firstName, lastName, ibanCode, cnp, ssn, passportNumber;
-    @ManyToOne
-    private Country originCountry;
-    @ManyToOne
-    private Country nationality;
-    @ManyToOne
-    private Country fiscalCountry;
-    @ManyToOne
+    private String firstName;
+    private String lastName;
+    private String ibanCode;
+    private String cnp;
+
+    private String ssn;
+//    @Basic(fetch = FetchType.LAZY)
+//    @Lob
+//    private String cv;
+    private String passportNumber;
+//    @ManyToOne
+    private Long originCountryId;
+//    @ManyToOne
+    private Long nationalityId;
+//    @Transient
+//    private Country fiscalCountry;
+    private Long fiscalCountryId;
+    @ManyToOne(fetch = FetchType.LAZY)
     private Country invoicingCountry;
-    @ManyToOne
-    private Scope scope;
+//    private Long invoicingCountryId;
+//    @ManyToOne
+    private Long scopeId;
     @ManyToOne
     private User createdBy;
 
@@ -38,19 +46,71 @@ public class UberEntity {
         return this;
     }
 
-    public UberEntity setOriginCountry(Country originCountry) {
-        this.originCountry = originCountry;
+//    public UberEntity setOriginCountry(Country originCountry) {
+//        this.originCountry = originCountry;
+//        return this;
+//    }
+//
+//    public UberEntity setNationality(Country nationality) {
+//        this.nationality = nationality;
+//        return this;
+//    }
+//
+//    public UberEntity setFiscalCountry(Country fiscalCountry) {
+//        this.fiscalCountry = fiscalCountry;
+//        return this;
+//    }
+//
+//    public UberEntity setInvoicingCountry(Country invoicingCountry) {
+//        this.invoicingCountry = invoicingCountry;
+//        return this;
+//    }
+//
+//    public UberEntity setScope(Scope scope) {
+//        this.scope = scope;
+//        return this;
+//    }
+
+
+    public Long getOriginCountryId() {
+        return originCountryId;
+    }
+
+    public UberEntity setOriginCountryId(Long originCountryId) {
+        this.originCountryId = originCountryId;
         return this;
     }
 
-    public UberEntity setNationality(Country nationality) {
-        this.nationality = nationality;
+    public Long getNationalityId() {
+        return nationalityId;
+    }
+
+    public UberEntity setNationalityId(Long nationalityId) {
+        this.nationalityId = nationalityId;
         return this;
     }
 
-    public UberEntity setFiscalCountry(Country fiscalCountry) {
-        this.fiscalCountry = fiscalCountry;
+    public Long getFiscalCountryId() {
+        return fiscalCountryId;
+    }
+
+    public UberEntity setFiscalCountryId(Long fiscalCountryId) {
+        this.fiscalCountryId = fiscalCountryId;
         return this;
+    }
+
+//    public Long getInvoicingCountryId() {
+//        return invoicingCountryId;
+//    }
+//
+//    public UberEntity setInvoicingCountryId(Long invoicingCountryId) {
+//        this.invoicingCountryId = invoicingCountryId;
+//        return this;
+//    }
+
+
+    public Country getInvoicingCountry() {
+        return invoicingCountry;
     }
 
     public UberEntity setInvoicingCountry(Country invoicingCountry) {
@@ -58,18 +118,18 @@ public class UberEntity {
         return this;
     }
 
-    public UberEntity setScope(Scope scope) {
-        this.scope = scope;
+    public Long getScopeId() {
+        return scopeId;
+    }
+
+    public UberEntity setScopeId(Long scopeId) {
+        this.scopeId = scopeId;
         return this;
     }
 
     public UberEntity setCreatedBy(User createdBy) {
         this.createdBy = createdBy;
         return this;
-    }
-
-    public Country getOriginCountry() {
-        return originCountry;
     }
 }
 
@@ -81,7 +141,7 @@ class Country {
     private String region;
     private String continent;
     private int population;
-    private Country() {
+    protected Country() {
     }
     public Country(Long id, String name) {
         this.id = id;
@@ -106,6 +166,10 @@ class Scope {
     public Scope(Long id, String name) {
         this.id = id;
         this.name = name;
+    }
+
+    public Long getId() {
+        return id;
     }
 }
 
