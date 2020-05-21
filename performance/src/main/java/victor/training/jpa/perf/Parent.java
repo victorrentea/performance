@@ -1,5 +1,7 @@
 package victor.training.jpa.perf;
 
+import org.hibernate.annotations.NaturalId;
+
 import javax.persistence.*;
 import java.util.Collection;
 import java.util.Collections;
@@ -9,7 +11,10 @@ import java.util.Set;
 import static java.util.Collections.unmodifiableSet;
 
 @Entity
+//@Table(uniqueConstraints = @UniqueConstraint(columnNames = "CNP"), indexes = @Index())
 public class Parent {
+//    @NaturalId
+//    cnp
     @Id
     @GeneratedValue
     private Long id;
