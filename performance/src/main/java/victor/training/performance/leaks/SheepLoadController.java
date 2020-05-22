@@ -4,6 +4,7 @@ import lombok.Data;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.transaction.support.TransactionTemplate;
@@ -29,7 +30,8 @@ public class SheepLoadController {
     @GetMapping("create")
     public Long create(@RequestParam(defaultValue = "Bisisica") String name) {
         log.debug("create " + name);
-        return service.create(name);
+        service.create(name);
+        return 13L; // dummy
     }
     // Hit using JMeter and:
     // TODO Starve Connections
@@ -53,10 +55,12 @@ class SheepService {
 //    @Transactional // evita sa pui @Transactional pe metode care dureaza mult timp din cauze externe (no-DB)
     // eg: WS call, parsari de fisiere mari.
     // pentru ca tii DB connectionul blocat, in timp ce altii asteapta
-    public Long create(String name) {
+    @Async("sheepCreateExecutor")
+    public /*Long*/ void create(String name) {
         String sn = shepard.registerSheep(name);
 //        TransactionTemplate // e alta solutie programatica
-        return altaMetCuTxInAccesiClasa(name, sn);
+
+        /*return*/ altaMetCuTxInAccesiClasa(name, sn);
     }
 
     //@Transactional // nici un proxy nu vede aceasta adnotare - efectiv nu functioneaza
