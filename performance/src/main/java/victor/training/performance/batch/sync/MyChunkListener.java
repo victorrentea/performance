@@ -1,4 +1,4 @@
-package victor.training.performance.batch.paritem;
+package victor.training.performance.batch.sync;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.batch.core.ChunkListener;
