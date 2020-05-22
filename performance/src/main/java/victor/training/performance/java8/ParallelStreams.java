@@ -23,10 +23,12 @@ public class ParallelStreams {
 //        Stream<Integer> stream = StreamSupport.stream(iterable.spliterator(), false);
 
         numbers.parallelStream()
+                .parallel()
                 .filter(n -> {
                     log("Filtrez " + n);
                     return n % 2 == 1;
                 })
+                .sequential()
                 .map(n -> {
                     log("Square " + n);
                     sleep2(1000); // chemi un WS, citesti un fisier, apelezi DB
