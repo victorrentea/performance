@@ -13,6 +13,6 @@ public class MyJobListener implements JobExecutionListener {
 
     @Override
     public void afterJob(JobExecution jobExecution) {
-
+//jobExecution.getStatus() ==
     }
 }

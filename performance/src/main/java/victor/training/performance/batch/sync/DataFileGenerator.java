@@ -8,9 +8,9 @@ import java.io.Writer;
 public class DataFileGenerator {
     public static void main(String[] args) throws IOException {
         long t0 = System.currentTimeMillis();
-        try (Writer writer = new FileWriter("data.xml")){ // TODO how to optimize this?
+        try (Writer writer = new BufferedWriter(new FileWriter("data.xml"))){ // TODO how to optimize this?
             writer.write("<root>\n");
-            for (int i = 0; i < 10000000; i++) {
+            for (int i = 0; i < 100; i++) {
                 writer.write("<data><value>elem"+i+"</value></data>\n");
             }
             writer.write("</root>");
