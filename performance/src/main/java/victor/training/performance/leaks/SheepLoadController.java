@@ -6,6 +6,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.transaction.support.TransactionTemplate;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -45,17 +46,26 @@ public class SheepLoadController {
 @Slf4j
 @Service
 @RequiredArgsConstructor
-@Transactional
 class SheepService {
     private final SheepRepo repo;
     private final ShepardService shepard;
 
+//    @Transactional // evita sa pui @Transactional pe metode care dureaza mult timp din cauze externe (no-DB)
+    // eg: WS call, parsari de fisiere mari.
+    // pentru ca tii DB connectionul blocat, in timp ce altii asteapta
     public Long create(String name) {
         String sn = shepard.registerSheep(name);
+//        TransactionTemplate // e alta solutie programatica
+        return altaMetCuTxInAccesiClasa(name, sn);
+    }
+
+    @Transactional // nici un proxy nu vede aceasta adnotare - efectiv nu functioneaza
+    public Long altaMetCuTxInAccesiClasa(String name, String sn) {
         log.debug("Persist");
         Sheep sheep = repo.save(new Sheep(name, sn));
         return sheep.getId();
     }
+
     public List<Sheep> search(String name) {
         return repo.getByNameLike(name);
     }
@@ -85,6 +95,7 @@ class Sheep {
     private String name;
     private String sn;
 
+    protected Sheep() {}
     public Sheep(String name, String sn) {
         this.name = name;
         this.sn = sn;
