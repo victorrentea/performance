@@ -26,4 +26,15 @@ public class LeaksApp {
         executor.setWaitForTasksToCompleteOnShutdown(true);
         return executor;
     }
+    @Bean
+    public ThreadPoolTaskExecutor shepardProtectionExecutor() {
+        ThreadPoolTaskExecutor executor = new ThreadPoolTaskExecutor();
+        executor.setCorePoolSize(7);
+        executor.setMaxPoolSize(7);
+        executor.setQueueCapacity(500);
+        executor.setThreadNamePrefix("cioban-");
+        executor.initialize();
+        executor.setWaitForTasksToCompleteOnShutdown(true);
+        return executor;
+    }
 }

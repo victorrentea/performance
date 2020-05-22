@@ -2,12 +2,11 @@ package victor.training.performance.leaks;
 
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
+import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-import org.springframework.transaction.support.TransactionTemplate;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -19,6 +18,9 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import java.util.List;
 import java.util.UUID;
+import java.util.concurrent.CompletableFuture;
+
+import static java.util.concurrent.CompletableFuture.completedFuture;
 
 @Slf4j
 @RestController
@@ -55,9 +57,10 @@ class SheepService {
 //    @Transactional // evita sa pui @Transactional pe metode care dureaza mult timp din cauze externe (no-DB)
     // eg: WS call, parsari de fisiere mari.
     // pentru ca tii DB connectionul blocat, in timp ce altii asteapta
+    @SneakyThrows
     @Async("sheepCreateExecutor")
     public /*Long*/ void create(String name) {
-        String sn = shepard.registerSheep(name);
+        String sn = shepard.registerSheep(name).get();
 //        TransactionTemplate // e alta solutie programatica
 
         /*return*/ altaMetCuTxInAccesiClasa(name, sn);
@@ -77,10 +80,11 @@ class SheepService {
 @Slf4j
 @Service
 class ShepardService {
-    public String registerSheep(String name) {
+    @Async("shepardProtectionExecutor")
+    public CompletableFuture<String> registerSheep(String name) {
         log.debug("Calling external WS");
         ConcurrencyUtil.sleep2(500);
-        return UUID.randomUUID().toString();
+        return completedFuture(UUID.randomUUID().toString());
     }
 }
 
