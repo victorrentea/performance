@@ -22,7 +22,7 @@ import java.util.UUID;
 @RestController
 @RequestMapping("load")
 @RequiredArgsConstructor
-public class SheepController {
+public class SheepLoadController {
     private final SheepService service;
 
     @GetMapping("create")
