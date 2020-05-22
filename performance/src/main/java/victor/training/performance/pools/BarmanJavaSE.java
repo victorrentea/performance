@@ -9,7 +9,7 @@ import static victor.training.performance.ConcurrencyUtil.sleep2;
 
 @Service
 @Slf4j
-public class Barman {
+public class BarmanJavaSE {
     public Beer pourBeer() {
         log.debug("Pouring Beer to ...");
         sleep2(1000);

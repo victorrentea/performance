@@ -9,11 +9,9 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.support.SimpleThreadScope;
-import org.springframework.scheduling.annotation.Async;
 import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 import org.springframework.stereotype.Component;
-import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -22,7 +20,6 @@ import java.util.Random;
 
 import static java.util.Arrays.asList;
 import static java.util.concurrent.CompletableFuture.supplyAsync;
-import static victor.training.performance.ConcurrencyUtil.sleep2;
 
 @EnableAsync
 @SpringBootApplication
@@ -62,7 +59,7 @@ public class BarmanApp {
 @Slf4j
 class DrinkerService {
     @Autowired
-    private Barman barman;
+    private BarmanJavaSE barman;
 
     public List<Object> orderDrinks() {
         log.debug("Submitting my order");
@@ -75,13 +72,6 @@ class DrinkerService {
 }
 
 interface Drink {}
-@Data
-class Beer implements Drink {
-}
-
-@Data
-class Vodka implements Drink {
-}
 
 
 // TODO hard-core more DeferredResult

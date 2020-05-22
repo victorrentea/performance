@@ -3,10 +3,8 @@ package victor.training.performance.pools;
 import org.jooq.lambda.Unchecked;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.*;
-import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 import static java.util.stream.Collectors.joining;
@@ -15,7 +13,7 @@ import static java.util.stream.Collectors.toList;
 public class PrimaMeaPiscina {
 
     public static void main(String[] args) {
-        Barman barman = new Barman();
+        BarmanJavaSE barman = new BarmanJavaSE();
         String comenzi ="b,b,v,v,v,b,b";
 
         // 90+% din cazuri, asta folosim: fixed.
@@ -26,9 +24,9 @@ public class PrimaMeaPiscina {
         comenzi = IntStream.range(0,100).mapToObj(i->"b").collect(joining(","));
 
         ExecutorService pool = new ThreadPoolExecutor(
-                10, 20, // best practice: max = core size
+                20, 20, // best practice: max = core size
                 1, TimeUnit.SECONDS,
-                new ArrayBlockingQueue<>(20),
+                new ArrayBlockingQueue<>(80),
                 new ThreadPoolExecutor.CallerRunsPolicy());
 
         List<Future<? extends Drink>> futureDrinks = new ArrayList<>();
