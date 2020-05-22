@@ -50,6 +50,7 @@ public class BarmanApp {
         executor.initialize();
         executor.setTaskDecorator(propagateRequestContext);
         executor.setWaitForTasksToCompleteOnShutdown(true);
+
         return executor;
     }
 

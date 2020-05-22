@@ -46,6 +46,7 @@ public class PrimaMeaPiscina {
         }
         // pana aici ai plasat comenzile
 
+
         List<? extends Drink> drinks = futureDrinks.stream()
                 .map(Unchecked.function(Future::get)) // .get blocheaza threadul main pana e gata respectivul future
                 .collect(toList());

@@ -1,5 +1,6 @@
 package victor.training.performance.pools.spring;
 
+import ch.qos.logback.core.BasicStatusManager;
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.experimental.theories.DataPoints;
@@ -16,6 +17,7 @@ import victor.training.performance.pools.BarmanJavaSE;
 import victor.training.performance.pools.Beer;
 import victor.training.performance.pools.Vodka;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
 
@@ -54,7 +56,11 @@ public class PoolsApp implements CommandLineRunner {
         CompletableFuture<Beer> futureBeer = barman.pourBeer();
         CompletableFuture<Vodka> futureVodka = barman.pourVodka();
 
+
         System.out.println("main face chestii...");
+        sleep2(100);
+        futureBeer.cancel(true);
+        futureVodka.cancel(true);
 
         CompletableFuture<DillyDilly> futureDilly = futureBeer.thenCombine(futureVodka,
                 (beer, vodka) -> new DillyDilly(beer, vodka));
