@@ -1,4 +1,4 @@
-package victor.training.performance.leaks;
+package victor.training;
 
 import org.springframework.util.FileSystemUtils;
 
