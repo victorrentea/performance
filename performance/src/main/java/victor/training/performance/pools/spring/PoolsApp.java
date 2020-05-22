@@ -16,6 +16,7 @@ import victor.training.performance.pools.BarmanJavaSE;
 import victor.training.performance.pools.Beer;
 import victor.training.performance.pools.Vodka;
 
+import java.util.List;
 import java.util.concurrent.CompletableFuture;
 
 import static java.util.concurrent.CompletableFuture.completedFuture;
@@ -68,7 +69,17 @@ public class PoolsApp implements CommandLineRunner {
         log.debug("Plec acasa...");
         long t1 = System.currentTimeMillis();
         System.out.println("Took: " + (t1-t0));
+
+//        synchronized () {
+//            listaComuna.add("aa");
+////            log.debug() nu breakpoint
+//            sleep(random(1ms .. 50ms))
+//        }
+//        synchronized () {
+//            listaComuna.get("aa");
+//        }
     }
+//    List<String> listaComuna;
 }
 
 @Data

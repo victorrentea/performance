@@ -9,6 +9,8 @@ import static victor.training.performance.ConcurrencyUtil.sleep2;
 public class StringProcessor implements ItemProcessor<String, String> {
     @Override
     public synchronized String process(String item) {
+
+        //TODO  simuleaza add in colectie partajata
         log.debug("Start processing " + item);
         sleep2(100);
         log.debug("End processing " + item);
