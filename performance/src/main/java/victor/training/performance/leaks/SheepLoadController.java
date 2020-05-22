@@ -30,8 +30,10 @@ public class SheepLoadController {
         log.debug("create " + name);
         return service.create(name);
     }
+    // Hit using JMeter and:
     // TODO Starve Connections
     // TODO Starve Threads
+    // ---> Fix by async
 
     @GetMapping("search")
     public List<Sheep> search(@RequestParam(defaultValue = "Bisisica") String name) {
