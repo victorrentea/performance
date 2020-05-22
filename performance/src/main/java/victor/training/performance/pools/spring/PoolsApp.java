@@ -12,12 +12,14 @@ import org.springframework.scheduling.annotation.Async;
 import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 import org.springframework.stereotype.Service;
+import victor.training.performance.pools.BarmanJavaSE;
 import victor.training.performance.pools.Beer;
 import victor.training.performance.pools.Vodka;
 
 import java.util.concurrent.CompletableFuture;
 
 import static java.util.concurrent.CompletableFuture.completedFuture;
+import static java.util.concurrent.CompletableFuture.supplyAsync;
 import static victor.training.performance.ConcurrencyUtil.sleep2;
 
 @Slf4j
@@ -39,12 +41,15 @@ public class PoolsApp implements CommandLineRunner {
         executor.setWaitForTasksToCompleteOnShutdown(true);
         return executor;
     }
-
     @Autowired
     private BarmanSpring barman;
     @Override
     public void run(String... args) throws Exception {
         long t0 = System.currentTimeMillis();
+        // Java SE, dar atunci se foloseste common pool-ul din JVM. Ala unu la parinti
+//        CompletableFuture<Beer> futureBeer = supplyAsync(() -> new BarmanJavaSE().pourBeer());
+//        CompletableFuture<Vodka> futureVodka = supplyAsync(() -> new BarmanJavaSE().pourVodka());
+        // Spring @Async ai control asupra poolului
         CompletableFuture<Beer> futureBeer = barman.pourBeer();
         CompletableFuture<Vodka> futureVodka = barman.pourVodka();
 
@@ -55,8 +60,11 @@ public class PoolsApp implements CommandLineRunner {
 
 //        Beer beer = futureBeer.get();
 //        Vodka vodka = futureVodka.get();
-        DillyDilly dilly = futureDilly.get();
-        log.debug("Beu: " + dilly);
+//        DillyDilly dilly = futureDilly.get();
+
+        futureDilly.thenAccept(dilly ->
+            log.debug("Beu: " + dilly)
+                );
         log.debug("Plec acasa...");
         long t1 = System.currentTimeMillis();
         System.out.println("Took: " + (t1-t0));
