@@ -5,8 +5,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.context.annotation.Bean;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.scheduling.annotation.EnableAsync;
+import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 import org.springframework.stereotype.Service;
 import victor.training.performance.pools.Beer;
 import victor.training.performance.pools.Vodka;
@@ -23,6 +25,19 @@ public class PoolsApp implements CommandLineRunner {
     public static void main(String[] args) {
         SpringApplication.run(PoolsApp.class);
     }
+
+    @Bean
+    public ThreadPoolTaskExecutor bar() {
+        ThreadPoolTaskExecutor executor = new ThreadPoolTaskExecutor();
+        executor.setCorePoolSize(2);
+        executor.setMaxPoolSize(2);
+        executor.setQueueCapacity(500);
+        executor.setThreadNamePrefix("bar-");
+        executor.initialize();
+        executor.setWaitForTasksToCompleteOnShutdown(true);
+        return executor;
+    }
+
     @Autowired
     private BarmanSpring barman;
     @Override
@@ -43,14 +58,14 @@ public class PoolsApp implements CommandLineRunner {
 @Service
 @Slf4j
 class BarmanSpring {
-    @Async
+    @Async("bar")
     public CompletableFuture<Beer> pourBeer() {
         log.debug("Pouring Beer to ...");
         sleep2(1000);
         return completedFuture(new Beer());
     }
 
-    @Async
+    @Async("bar")
     public CompletableFuture<Vodka> pourVodka() {
         log.debug("Pouring Vodka...");
         sleep2(1000);
