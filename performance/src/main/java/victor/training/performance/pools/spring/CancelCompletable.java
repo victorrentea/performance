@@ -7,6 +7,7 @@ import victor.training.performance.pools.BarmanJavaSE;
 import victor.training.performance.pools.Beer;
 import victor.training.performance.pools.Vodka;
 
+import java.io.Writer;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
@@ -49,9 +50,18 @@ class TaskCancel implements Runnable{
     @Override
     public void run() {
 
+//        Writer writer;
+//        writer.write("date"); //daca in timpul write-ului primesti un interrupt
+//        // trebuie sa verifici
+//        if (Thread.interrupted()) {
+//            System.out.println("Sunt mort");
+//            return;
+//        }
         log.debug("START " + i);
         try {
             Thread.sleep(1000);
+            Future<String > fs;
+//            fs.get()
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
