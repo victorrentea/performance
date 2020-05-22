@@ -5,12 +5,15 @@ import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.ResponseEntity;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.context.request.async.DeferredResult;
 import victor.training.performance.ConcurrencyUtil;
 
 import javax.persistence.Entity;
@@ -30,10 +33,17 @@ public class SheepLoadController {
     private final SheepService service;
 
     @GetMapping("create")
-    public Long create(@RequestParam(defaultValue = "Bisisica") String name) {
+    public DeferredResult<ResponseEntity<Long>> create(@RequestParam(defaultValue = "Bisisica") String name) {
         log.debug("create " + name);
-        service.create(name);
-        return 13L; // dummy
+        DeferredResult<ResponseEntity<Long>> deferred = new DeferredResult<>();
+        service.create(name)
+                .thenAccept(id -> deferred.setResult(ResponseEntity.ok(id)))
+                .exceptionally(e -> {
+                    deferred.setResult(ResponseEntity.status(500).build());
+                    return null;
+                });
+        log.debug("eliberez threadul din HTTP connection pool pe care s-a rulat /load/create");
+        return deferred; // dummy
     }
     // Hit using JMeter and:
     // TODO Starve Connections
@@ -59,11 +69,12 @@ class SheepService {
     // pentru ca tii DB connectionul blocat, in timp ce altii asteapta
     @SneakyThrows
     @Async("sheepCreateExecutor")
-    public /*Long*/ void create(String name) {
-        String sn = shepard.registerSheep(name).get();
+    public CompletableFuture<Long> create(String name) {
+        String sn = shepard.registerSheep(name);
+//        String sn = shepard.registerSheep(name).get(); // faci .get imediat ca sa limitzi concurenta outbound
 //        TransactionTemplate // e alta solutie programatica
 
-        /*return*/ altaMetCuTxInAccesiClasa(name, sn);
+        return completedFuture(altaMetCuTxInAccesiClasa(name, sn));
     }
 
     //@Transactional // nici un proxy nu vede aceasta adnotare - efectiv nu functioneaza
@@ -80,11 +91,12 @@ class SheepService {
 @Slf4j
 @Service
 class ShepardService {
-    @Async("shepardProtectionExecutor")
-    public CompletableFuture<String> registerSheep(String name) {
+//    @Async("shepardProtectionExecutor")
+//    public CompletableFuture<String> registerSheep(String name) {
+    public String registerSheep(String name) {
         log.debug("Calling external WS");
         ConcurrencyUtil.sleep2(500);
-        return completedFuture(UUID.randomUUID().toString());
+        return UUID.randomUUID().toString();
     }
 }
 
