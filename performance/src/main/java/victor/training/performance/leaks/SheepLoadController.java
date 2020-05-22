@@ -59,7 +59,7 @@ class SheepService {
         return altaMetCuTxInAccesiClasa(name, sn);
     }
 
-    @Transactional // nici un proxy nu vede aceasta adnotare - efectiv nu functioneaza
+    //@Transactional // nici un proxy nu vede aceasta adnotare - efectiv nu functioneaza
     public Long altaMetCuTxInAccesiClasa(String name, String sn) {
         log.debug("Persist");
         Sheep sheep = repo.save(new Sheep(name, sn));
