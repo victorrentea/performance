@@ -2,8 +2,8 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="0e1584f6-4d86-4d34-9539-64d7002532f5" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/src/main/java/victor/perf/FizzBuzzTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/victor/perf/FizzBuzzTest.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/victor/perf/StreamsCPUOnlyTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/victor/perf/StreamsCPUOnlyTest.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../performance/src/main/java/victor/training/performance/java8/ParallelStreams.java" beforeDir="false" afterPath="$PROJECT_DIR$/../performance/src/main/java/victor/training/performance/java8/ParallelStreams.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -27,6 +27,7 @@
     </option>
   </component>
   <component name="Git.Settings">
+    <option name="PREVIEW_PUSH_PROTECTED_ONLY" value="true" />
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$/.." />
   </component>
   <component name="ProjectCodeStyleSettingsMigration">
@@ -146,7 +147,7 @@
       <workItem from="1572355579198" duration="1233000" />
       <workItem from="1582573049384" duration="639000" />
       <workItem from="1584298982852" duration="4586000" />
-      <workItem from="1590138777644" duration="315000" />
+      <workItem from="1590138777644" duration="667000" />
     </task>
     <task id="LOCAL-00001" summary="add FizzBuzz JMH">
       <created>1582668553526</created>
@@ -162,7 +163,14 @@
       <option name="project" value="LOCAL" />
       <updated>1584305872471</updated>
     </task>
-    <option name="localTasksCounter" value="3" />
+    <task id="LOCAL-00003" summary="Incercari pe parallelStrem">
+      <created>1590139106427</created>
+      <option name="number" value="00003" />
+      <option name="presentableId" value="LOCAL-00003" />
+      <option name="project" value="LOCAL" />
+      <updated>1590139106428</updated>
+    </task>
+    <option name="localTasksCounter" value="4" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -184,13 +192,14 @@
     <option name="ADD_EXTERNAL_FILES_SILENTLY" value="true" />
     <MESSAGE value="add FizzBuzz JMH" />
     <MESSAGE value="add set vs list" />
-    <option name="LAST_COMMIT_MESSAGE" value="add set vs list" />
+    <MESSAGE value="Incercari pe parallelStrem" />
+    <option name="LAST_COMMIT_MESSAGE" value="Incercari pe parallelStrem" />
   </component>
   <component name="WindowStateProjectService">
-    <state x="388" y="2" key="CommitChangelistDialog2" timestamp="1584544457373">
+    <state x="388" y="0" key="CommitChangelistDialog2" timestamp="1590139105690">
       <screen x="0" y="0" width="1536" height="834" />
     </state>
-    <state x="388" y="2" key="CommitChangelistDialog2/0.0.1536.834@0.0.1536.834" timestamp="1584544457373" />
+    <state x="388" y="0" key="CommitChangelistDialog2/0.0.1536.834@0.0.1536.834" timestamp="1590139105690" />
     <state x="549" y="190" key="FileChooserDialogImpl" timestamp="1582573052435">
       <screen x="0" y="0" width="1536" height="834" />
     </state>
@@ -199,10 +208,10 @@
       <screen x="0" y="0" width="1536" height="834" />
     </state>
     <state x="490" y="159" width="540" height="524" key="StructurePopup/0.0.1536.834@0.0.1536.834" timestamp="1584544349891" />
-    <state x="361" y="153" key="Vcs.Push.Dialog.v2" timestamp="1582668554101">
+    <state x="361" y="153" key="Vcs.Push.Dialog.v2" timestamp="1590139110443">
       <screen x="0" y="0" width="1536" height="834" />
     </state>
-    <state x="361" y="153" key="Vcs.Push.Dialog.v2/0.0.1536.834@0.0.1536.834" timestamp="1582668554101" />
+    <state x="361" y="153" key="Vcs.Push.Dialog.v2/0.0.1536.834@0.0.1536.834" timestamp="1590139110443" />
     <state x="580" y="336" key="com.intellij.openapi.vcs.update.UpdateOrStatusOptionsDialogupdate-v2" timestamp="1584304475741">
       <screen x="0" y="0" width="1536" height="834" />
     </state>
