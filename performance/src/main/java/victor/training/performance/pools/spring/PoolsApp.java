@@ -1,6 +1,8 @@
 package victor.training.performance.pools.spring;
 
+import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
+import org.junit.experimental.theories.DataPoints;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
@@ -46,11 +48,31 @@ public class PoolsApp implements CommandLineRunner {
         CompletableFuture<Beer> futureBeer = barman.pourBeer();
         CompletableFuture<Vodka> futureVodka = barman.pourVodka();
 
-        Beer beer = futureBeer.get();
-        Vodka vodka = futureVodka.get();
-        log.debug("Beu: " + beer + " cu " + vodka);
+        System.out.println("main face chestii...");
+
+        CompletableFuture<DillyDilly> futureDilly = futureBeer.thenCombine(futureVodka,
+                (beer, vodka) -> new DillyDilly(beer, vodka));
+
+//        Beer beer = futureBeer.get();
+//        Vodka vodka = futureVodka.get();
+        DillyDilly dilly = futureDilly.get();
+        log.debug("Beu: " + dilly);
+        log.debug("Plec acasa...");
         long t1 = System.currentTimeMillis();
         System.out.println("Took: " + (t1-t0));
+    }
+}
+
+@Data
+@Slf4j
+class DillyDilly {
+    private final Beer beer;
+    private final Vodka vodka;
+
+    public DillyDilly(Beer beer, Vodka vodka) {
+        log.debug("Fac cocktail");
+        this.beer = beer;
+        this.vodka = vodka;
     }
 }
 
@@ -61,7 +83,7 @@ class BarmanSpring {
     @Async("bar")
     public CompletableFuture<Beer> pourBeer() {
         log.debug("Pouring Beer to ...");
-        sleep2(1000);
+        sleep2(2000);
         return completedFuture(new Beer());
     }
 
