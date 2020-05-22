@@ -26,7 +26,7 @@ public class PrimaMeaPiscina {
         comenzi = IntStream.range(0,100).mapToObj(i->"b").collect(joining(","));
 
         ExecutorService pool = new ThreadPoolExecutor(
-                10, 20,
+                10, 20, // best practice: max = core size
                 1, TimeUnit.SECONDS,
                 new ArrayBlockingQueue<>(20),
                 new ThreadPoolExecutor.CallerRunsPolicy());
