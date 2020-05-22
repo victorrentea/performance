@@ -43,6 +43,7 @@ public class BatchParItemsApp {
 
     public Step sampleStep(TaskExecutor taskExecutor) {
         return stepBuilderFactory.get("sampleStep")
+//                .par
                 .<String, String>chunk(5)
                 .reader(new StringGeneratorReader(50))
                 .processor(new StringProcessor())
