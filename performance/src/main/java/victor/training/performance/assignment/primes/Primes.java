@@ -1,36 +1,40 @@
 package victor.training.performance.assignment.primes;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
-import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.Future;
 
 public class Primes {
+
+    public static final int N_MAX = 1000_000;
+
     public static void main(String[] args) {
 
-        System.out.println(getPrimes(1, 100));
+        //System.out.println(getPrimes(1, 100));
+
         long t0 = System.currentTimeMillis();
-        System.out.println(countPrimesParallel(1,1000_000));
+        int expected = countPrimes(1, N_MAX);
         long t1 = System.currentTimeMillis();
-        System.out.println("took " + (t1-t0));
+        long dt0 = t1-t0;
+        System.out.println("First run took " + (t1-t0));
+
+        t0 = System.currentTimeMillis();
+        int actual = countPrimesFaster(1,N_MAX);
+        t1 = System.currentTimeMillis();
+        long dt1 = t1-t0;
+        System.out.println("Your implem took " + (t1-t0));
+
+        if (actual != expected) {
+            System.err.println("You have a bug: expected to find " + expected + " primes, but you returned " + actual);
+        } else if (dt1 > dt0 / 2) {
+            System.err.println("Your solution is not fast enough yet. Are you using all the available resources?");
+        } else {
+            System.out.println("CONGRATULATIONS!");
+        }
+
     }
 
-    public static int countPrimesParallel(long start, long end) {
-        List<Future<Integer>> segments = new ArrayList<>();
-        for (long startSeg1 = start; startSeg1 < end; startSeg1 += 5000) {
-            long startSeg = startSeg1;
-            long endSeg = Math.min(end, startSeg + 5000);
-            segments.add(CompletableFuture.supplyAsync(() -> countPrimes(startSeg, endSeg)));
-        }
-        return segments.stream().map(integerFuture -> {
-            try {
-                return integerFuture.get();
-            } catch (InterruptedException | ExecutionException e) {
-                throw new RuntimeException(e);
-            }
-        }).mapToInt(Integer::intValue).sum();
+    public static int countPrimesFaster(long start, long end) {
+        return 0; // TODO implement faster
     }
 
     public static int countPrimes(long start, long end) {

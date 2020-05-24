@@ -9,18 +9,13 @@ import org.springframework.batch.core.launch.support.RunIdIncrementer;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.cloud.task.configuration.EnableTask;
 import org.springframework.context.annotation.Bean;
 import org.springframework.core.task.SimpleAsyncTaskExecutor;
 import org.springframework.core.task.TaskExecutor;
-import victor.training.performance.batch.sync.MyChunkListener;
-import victor.training.performance.batch.sync.MyJobListener;
-import victor.training.performance.batch.sync.MyStepExecutionListener;
 
 import static victor.training.performance.ConcurrencyUtil.measureCall;
 
 
-@EnableTask
 @SpringBootApplication
 @EnableBatchProcessing
 public class BatchParItemsApp {

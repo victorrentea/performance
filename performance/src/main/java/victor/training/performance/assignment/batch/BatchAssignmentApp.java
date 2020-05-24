@@ -1,4 +1,4 @@
-package victor.training.performance.batch.sync;
+package victor.training.performance.assignment.batch;
 
 import org.springframework.batch.core.Job;
 import org.springframework.batch.core.Step;
@@ -24,11 +24,11 @@ import static victor.training.performance.ConcurrencyUtil.measureCall;
 
 @SpringBootApplication
 @EnableBatchProcessing
-public class BatchBasicApp {
+public class BatchAssignmentApp {
 
     public static void main(String[] args) throws IOException {
-        DataFileGenerator.generateFile(10_000);
-        int dt = measureCall(() -> SpringApplication.run(BatchBasicApp.class, args).close());
+        QuotationDataFileGenerator.generateFile(10_000);
+        int dt = measureCall(() -> SpringApplication.run(BatchAssignmentApp.class, args).close());
         System.out.println("Batch took " + dt + " ms");
     }
 
@@ -41,37 +41,35 @@ public class BatchBasicApp {
     public Step basicChunkStep() {
         // TODO optimize: tune chunk size
         return stepBuilderFactory.get("basicChunkStep")
-                .<MyEntityFileRecord, MyEntity>chunk(5)
+                .<QuotationRecord, Quotation>chunk(5)
                 .reader(xmlReader())
                 .processor(processor())
                 // TODO optimize: tune ID generation
                 // TODO optimize: enable JDBC batch mode
                 .writer(jpaWriter())
-                .listener(new MyChunkListener())
-                .listener(new MyStepExecutionListener())
                 .build();
     }
 
     @Bean
-    public MyEntityProcessor processor() {
-        return new MyEntityProcessor();
+    public QuotationToEntityTransformer processor() {
+        return new QuotationToEntityTransformer();
     }
 
     @Autowired
     private EntityManagerFactory emf;
 
-    private JpaItemWriter<MyEntity> jpaWriter() {
-        JpaItemWriter<MyEntity> writer = new JpaItemWriter<>();
+    private JpaItemWriter<Quotation> jpaWriter() {
+        JpaItemWriter<Quotation> writer = new JpaItemWriter<>();
         writer.setEntityManagerFactory(emf);
         return writer;
     }
 
-    private ItemReader<MyEntityFileRecord> xmlReader() {
-        StaxEventItemReader<MyEntityFileRecord> reader = new StaxEventItemReader<>();
+    private ItemReader<QuotationRecord> xmlReader() {
+        StaxEventItemReader<QuotationRecord> reader = new StaxEventItemReader<>();
         reader.setResource(new FileSystemResource("data.xml"));
-        reader.setFragmentRootElementName("data");
+        reader.setFragmentRootElementName("quotation");
         Jaxb2Marshaller unmarshaller = new Jaxb2Marshaller();
-        unmarshaller.setClassesToBeBound(MyEntityFileRecord.class);;
+        unmarshaller.setClassesToBeBound(QuotationRecord.class);;
         reader.setUnmarshaller(unmarshaller);
         return reader;
     }
@@ -81,7 +79,6 @@ public class BatchBasicApp {
         return jobBuilderFactory.get("basicJob")
                 .incrementer(new RunIdIncrementer())
                 .start(basicChunkStep())
-                .listener(new MyJobListener())
                 .build();
 
     }
