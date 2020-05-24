@@ -21,6 +21,8 @@ import victor.training.performance.batch.paritem.StringConsoleWriter;
 
 import javax.persistence.EntityManagerFactory;
 
+import java.io.IOException;
+
 import static victor.training.performance.ConcurrencyUtil.measureCall;
 
 
@@ -29,7 +31,8 @@ import static victor.training.performance.ConcurrencyUtil.measureCall;
 @EnableBatchProcessing
 public class BatchBasicApp {
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws IOException {
+        DataFileGenerator.generateFile(100_000);
         int dt = measureCall(() -> SpringApplication.run(BatchBasicApp.class, args).close());
         System.out.println("Batch took " + dt + " ms");
     }

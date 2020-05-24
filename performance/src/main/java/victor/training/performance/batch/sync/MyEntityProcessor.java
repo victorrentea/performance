@@ -8,7 +8,7 @@ import org.springframework.batch.item.ItemProcessor;
 public class MyEntityProcessor implements ItemProcessor<MyEntity, MyEntity> {
     @Override
     public MyEntity process(MyEntity item) throws Exception {
-        log.debug("Proceesing item: " + item);
+//        log.debug("Proceesing item: " + item);
         return item;
     }
 }
