@@ -5,20 +5,17 @@ import lombok.Data;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
-import javax.persistence.ManyToOne;
-import javax.xml.bind.annotation.XmlRootElement;
 
 @Data
 @Entity
-public class MyEntity {
+public class City {
     @Id
     @GeneratedValue
     private Long id;
     private String name;
-    @ManyToOne
-    private City city;
-    public MyEntity(String name) {
+
+    public City(String name) {
         this.name = name;
     }
-    public MyEntity() {}
+    public City() {}
 }

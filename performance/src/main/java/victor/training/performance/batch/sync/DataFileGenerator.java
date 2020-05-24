@@ -15,7 +15,8 @@ public class DataFileGenerator {
         try (Writer writer = new FileWriter("data.xml")){ // TODO how to optimize this?
             writer.write("<root>\n");
             for (int i = 0; i < recordCount; i++) {
-                writer.write("<data><value>elem"+i+"</value></data>\n");
+                String cityName = "City " + i / 1000;
+                writer.write("<data><name>elem"+i+"</name><city>"+cityName+"</city></data>\n");
             }
             writer.write("</root>");
         }

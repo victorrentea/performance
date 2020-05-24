@@ -32,7 +32,7 @@ import static victor.training.performance.ConcurrencyUtil.measureCall;
 public class BatchBasicApp {
 
     public static void main(String[] args) throws IOException {
-        DataFileGenerator.generateFile(100_000);
+        DataFileGenerator.generateFile(10_000);
         int dt = measureCall(() -> SpringApplication.run(BatchBasicApp.class, args).close());
         System.out.println("Batch took " + dt + " ms");
     }
@@ -44,14 +44,22 @@ public class BatchBasicApp {
     private StepBuilderFactory stepBuilderFactory;
 
     public Step basicChunkStep() {
+        // TODO optimize: tune chunk size
         return stepBuilderFactory.get("basicChunkStep")
-                .<MyEntity, MyEntity>chunk(5)
+                .<MyEntityFileRecord, MyEntity>chunk(5)
                 .reader(xmlReader())
-                .processor(new MyEntityProcessor())
+                .processor(processor())
+                // TODO optimize: tune ID generation
+                // TODO optimize: enable JDBC batch mode
                 .writer(jpaWriter())
                 .listener(new MyChunkListener())
                 .listener(new MyStepExecutionListener())
                 .build();
+    }
+
+    @Bean
+    public MyEntityProcessor processor() {
+        return new MyEntityProcessor();
     }
 
     @Autowired
@@ -63,12 +71,12 @@ public class BatchBasicApp {
         return writer;
     }
 
-    private ItemReader<MyEntity> xmlReader() {
-        StaxEventItemReader<MyEntity> reader = new StaxEventItemReader<>();
+    private ItemReader<MyEntityFileRecord> xmlReader() {
+        StaxEventItemReader<MyEntityFileRecord> reader = new StaxEventItemReader<>();
         reader.setResource(new FileSystemResource("data.xml"));
         reader.setFragmentRootElementName("data");
         Jaxb2Marshaller unmarshaller = new Jaxb2Marshaller();
-        unmarshaller.setClassesToBeBound(MyEntity.class);;
+        unmarshaller.setClassesToBeBound(MyEntityFileRecord.class);;
         reader.setUnmarshaller(unmarshaller);
         return reader;
     }
