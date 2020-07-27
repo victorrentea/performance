@@ -5,20 +5,24 @@ import java.util.concurrent.atomic.AtomicInteger;
 public class APlusPlus {
 
     private static final Object MUTEX = new Object();
-    private static AtomicInteger infected = new AtomicInteger(0);
+    private static int infected;
 
     public static class ThreadA extends Thread {
         public void run() {
+            int localInfected = 0;
             for (int i = 0; i < 100_000; i++) {
-                    infected.incrementAndGet();
+                 localInfected++;
             }
+            infected += localInfected;
         }
     }
     public static class ThreadB extends Thread {
         public void run() {
+            int localInfected = 0;
             for (int i = 0; i < 100_000; i++) {
-                    infected.incrementAndGet();
+                localInfected++;
             }
+            infected += localInfected;
         }
     }
     // TODO (bonus): ConcurrencyUtil.useCPU(1)
