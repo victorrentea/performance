@@ -46,12 +46,7 @@ public class LaBar {
       // cele doua apeluri nu depind unul de altul
 
 
-      Future<Bere> futureBeer = pool.submit(new Callable<Bere>() {
-         @Override
-         public Bere call() throws Exception {
-            return barMan.toarnaBere();
-         }
-      });
+      Future<Bere> futureBeer = pool.submit(barMan::toarnaBere); // "cool" - Java 8
 
 
       Future<Vodka> futureVodka = pool.submit(new Callable<Vodka>() {
