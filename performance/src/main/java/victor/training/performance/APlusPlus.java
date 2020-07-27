@@ -6,21 +6,23 @@ public class APlusPlus {
     public static class ThreadA extends Thread {
         public void run() {
             for (int i = 0; i < 10_000; i++) {
-                infected++;
+                synchronized (infected) {
+//                    infected = new Integer(infected.intValue() + 1);
+                    infected ++;
+                }
             }
         }
     }
-
     public static class ThreadB extends Thread {
         public void run() {
             for (int i = 0; i < 10_000; i++) {
-                infected++;
+                synchronized (infected) {
+                    infected++;
+                }
             }
         }
     }
-
     // TODO (bonus): ConcurrencyUtil.useCPU(1)
-
 
     public static void main(String[] args) throws InterruptedException {
         ThreadA threadA = new ThreadA();
