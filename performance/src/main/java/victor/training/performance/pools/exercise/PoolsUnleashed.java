@@ -8,6 +8,7 @@ import java.util.concurrent.*;
 import java.util.concurrent.ThreadPoolExecutor.CallerRunsPolicy;
 
 public class PoolsUnleashed {
+   private static final Logger log = LoggerFactory.getLogger(PoolsUnleashed.class);
 
    public static void main(String[] args) {
 
@@ -23,11 +24,13 @@ public class PoolsUnleashed {
           new ArrayBlockingQueue<>(5),
           new CallerRunsPolicy());
 
-      System.out.println("Start");
-      for (int i = 0; i < 10; i++) {
+      log.debug("Start");
+      for (int i = 0; i < 11; i++) {
+         log.debug("Submit " +i);
          pool.submit(new Cumparator(i));
+         log.debug("Am submis " +i);
       }
-      System.out.println("Gata");
+      log.debug("Gata");
    }
 }
 
