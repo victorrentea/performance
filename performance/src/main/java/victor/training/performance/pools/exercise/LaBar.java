@@ -32,10 +32,21 @@ public class LaBar {
 
       // mai jos, main-ul blocheaza unul dintre core-uri intergral (100% cpu usage pe 1 core)
       // multithreadingul de multe ori te faci sa cauti alt job (in paralel) - ca vrei tu sau sefu
-      while (!futureBeer.isDone()) { // buzy waiting- o forma de polling -pe care nu vrei sa o faci niciodata
+//      while (!futureBeer.isDone()) { // buzy waiting- o forma de polling -pe care nu vrei sa o faci niciodata
 //         ConcurrencyUtil.sleep2(1);
-         log.debug("Mai dureaza?");
-      }
+//         log.debug("Mai dureaza?");
+//      }
+
+      // daca totusi trebuie sa afli daca ceva in exteriorul java s-a schimbat
+      // dar acel 'sistem' nu-ti ofera un mod de a te notifica cand s-a intamplat (Observer Design Pattern)
+      // atunci TREBUIE sa faci polling.
+      // call REST care-ti zica ca 'mai intreaba-ma tu daca e gata din cand in cand'
+
+      //  Cum faci polling corect:
+      // while(!gata) {sleep(<configurabil>); callREST }
+      // nivelul 2: sa persisti in baza un rand cu STATUS=PENDING + id-ul primit din exterior pt polling
+
+      log.debug("astept...");
       Bere bere = futureBeer.get();
 
       pool.submit(new Callable<Vodka>() {
