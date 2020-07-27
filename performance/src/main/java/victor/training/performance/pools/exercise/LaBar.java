@@ -28,16 +28,23 @@ public class LaBar {
       // nivelul 2: sa persisti in baza un rand cu STATUS=PENDING + id-ul primit din exterior pt polling
 
    public static void main(String[] args) throws ExecutionException, InterruptedException {
-     new LaBar().mergi();
+      LaBar bar = new LaBar();
+      bar.mergi();
+      bar.inchide();
    }
 
+   private void inchide() {
+      pool.shutdown();
+   }
+
+   private ExecutorService pool = Executors.newFixedThreadPool(2);
    private BarMan barMan = new BarMan();
 
+   // apel HTTP
    public void mergi() throws ExecutionException, InterruptedException {
       log.debug("Trimit comanda");
       // cele doua apeluri nu depind unul de altul
 
-      ExecutorService pool = Executors.newFixedThreadPool(2);
 
       Future<Bere> futureBeer = pool.submit(new Callable<Bere>() {
          @Override
