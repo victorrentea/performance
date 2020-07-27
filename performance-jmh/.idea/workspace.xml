@@ -1,9 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="0e1584f6-4d86-4d34-9539-64d7002532f5" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-    </list>
+    <list default="true" id="0e1584f6-4d86-4d34-9539-64d7002532f5" name="Default Changelist" comment="" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -189,18 +187,14 @@
       <screen x="0" y="0" width="1536" height="834" />
     </state>
     <state x="388" y="2" key="CommitChangelistDialog2/0.0.1536.834@0.0.1536.834" timestamp="1584544457373" />
-    <state x="549" y="190" key="FileChooserDialogImpl" timestamp="1582573052435">
+    <state x="519" y="137" key="RollbackChangesDialog" timestamp="1591956707853">
       <screen x="0" y="0" width="1536" height="834" />
     </state>
-    <state x="549" y="190" key="FileChooserDialogImpl/0.0.1536.834@0.0.1536.834" timestamp="1582573052435" />
+    <state x="519" y="137" key="RollbackChangesDialog/0.0.1536.834@0.0.1536.834" timestamp="1591956707853" />
     <state x="490" y="159" width="540" height="524" key="StructurePopup" timestamp="1584544349891">
       <screen x="0" y="0" width="1536" height="834" />
     </state>
     <state x="490" y="159" width="540" height="524" key="StructurePopup/0.0.1536.834@0.0.1536.834" timestamp="1584544349891" />
-    <state x="361" y="153" key="Vcs.Push.Dialog.v2" timestamp="1582668554101">
-      <screen x="0" y="0" width="1536" height="834" />
-    </state>
-    <state x="361" y="153" key="Vcs.Push.Dialog.v2/0.0.1536.834@0.0.1536.834" timestamp="1582668554101" />
     <state x="580" y="336" key="com.intellij.openapi.vcs.update.UpdateOrStatusOptionsDialogupdate-v2" timestamp="1584304475741">
       <screen x="0" y="0" width="1536" height="834" />
     </state>
