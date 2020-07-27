@@ -22,7 +22,7 @@ public class PoolsUnleashed {
           new ArrayBlockingQueue<>(5));
 
       System.out.println("Start");
-      for (int i = 0; i < 9; i++) {
+      for (int i = 0; i < 10; i++) {
          pool.submit(new Cumparator(i));
       }
       System.out.println("Gata");
