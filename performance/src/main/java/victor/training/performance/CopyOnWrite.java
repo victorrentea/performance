@@ -14,7 +14,7 @@ public class CopyOnWrite {
       while (thread.isAlive()) {
          String s = "";
          for (Integer e : list) {
-            sleep2(20);
+            // TODO add delay
             s += e + " ";
          }
          sleep2(300);
@@ -34,7 +34,7 @@ class Builder implements Runnable {
    public void run() {
       for (int i = 0; i < 1000; i++) {
          list.add(i);
-         sleep2(300);
+         sleep2(300); // TODO reduce delay
       }
    }
 }
