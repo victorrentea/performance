@@ -27,27 +27,28 @@ public class LaBar {
       // while(!gata) {sleep(<configurabil>); callREST }
       // nivelul 2: sa persisti in baza un rand cu STATUS=PENDING + id-ul primit din exterior pt polling
 
-   public static void main(String[] args) throws ExecutionException, InterruptedException {
+   public static void main(String[] args) throws ExecutionException, InterruptedException, TimeoutException {
       LaBar bar = new LaBar();
       bar.mergi();
       bar.inchide();
    }
 
-   private void inchide() {
+   private void inchide() throws InterruptedException {
       pool.shutdown();
+      log.debug("Am cerut inchiderea");
+      pool.awaitTermination(1, TimeUnit.SECONDS);
+      log.debug("Chiar s-a inchis");
    }
 
    private ExecutorService pool = Executors.newFixedThreadPool(2);
    private BarMan barMan = new BarMan();
 
    // apel HTTP
-   public void mergi() throws ExecutionException, InterruptedException {
+   public void mergi() throws ExecutionException, InterruptedException, TimeoutException {
       log.debug("Trimit comanda");
       // cele doua apeluri nu depind unul de altul
 
-
       Future<Bere> futureBeer = pool.submit(barMan::toarnaBere); // "cool" - Java 8
-
 
       Future<Vodka> futureVodka = pool.submit(new Callable<Vodka>() {
          @Override
@@ -56,7 +57,11 @@ public class LaBar {
          }
       });
       log.debug("astept...");
-      Bere bere = futureBeer.get();
+      Bere bere = futureBeer.get(1, TimeUnit.MINUTES);
+      // best practice in viata reala. Sa nu blochezi indefinit si cel
+      // care vrea rezultatul taskului submis (daca taskul s-a blcoakt
+      // cumva pe pool)
+
       Vodka vodka = futureVodka.get();
 
       log.debug("Am trimis comanda");
