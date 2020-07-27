@@ -1,12 +1,12 @@
 package victor.training.performance;
 
 public class APlusPlus {
-    private static Integer population = 0;
+    private static Integer infected = 0;
 
     public static class ThreadA extends Thread {
         public void run() {
             for (int i = 0; i < 10_000; i++) {
-                population++;
+                infected++;
             }
         }
     }
@@ -14,7 +14,7 @@ public class APlusPlus {
     public static class ThreadB extends Thread {
         public void run() {
             for (int i = 0; i < 10_000; i++) {
-                population++;
+                infected++;
             }
         }
     }
@@ -34,7 +34,7 @@ public class APlusPlus {
         threadB.join();
 
         long t1 = System.currentTimeMillis();
-        System.out.println("Total = " + population);
+        System.out.println("Total = " + infected);
         System.out.println("Took = " + (t1 - t0));
     }
 }
