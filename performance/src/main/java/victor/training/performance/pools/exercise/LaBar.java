@@ -40,7 +40,7 @@ public class LaBar {
       log.debug("Chiar s-a inchis");
    }
 
-   private ExecutorService pool = Executors.newFixedThreadPool(2);
+   private ExecutorService pool = Executors.newFixedThreadPool(2); //acest 2 trebuie intotdeauna luat din configuratie, nu hard-codat
    private BarMan barMan = new BarMan();
 
    // apel HTTP
