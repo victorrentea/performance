@@ -4,12 +4,12 @@ import java.util.concurrent.*;
 
 import static java.util.concurrent.CompletableFuture.supplyAsync;
 import static victor.training.performance.ConcurrencyUtil.log;
-import static victor.training.performance.ConcurrencyUtil.sleep2;
+import static victor.training.performance.ConcurrencyUtil.sleepq;
 
 public class GalusteFJP {
     public static void main(String[] args) throws ExecutionException, InterruptedException {
         measure(() -> treaba());
-        sleep2(1000);
+        sleepq(1000);
     }
     public static void measure(Runnable r) {
         long t0 = System.currentTimeMillis();
@@ -51,21 +51,21 @@ public class GalusteFJP {
 
 class Galusca1 {
     static String m() {
-        sleep2(100);
+        sleepq(100);
         log("1");
         return "a";
     }
 }
 class Galusca2 {
     static String m() {
-        sleep2(100);
+        sleepq(100);
         log("2");
         return "b";
     }
 }
 class Galusca3 {
     static String m(String a) {
-        sleep2(100);
+        sleepq(100);
         log("3");
 //        if (true) throw new RuntimeException();
         return a.toUpperCase();
@@ -73,14 +73,14 @@ class Galusca3 {
 }
 class Galusca4 {
     static String m(String A, String b) {
-        sleep2(100);
+        sleepq(100);
         log("4");
         return A+b+"c";
     }
 }
 class Galusca5 {
     static String m() {
-        sleep2(100);
+        sleepq(100);
         log("5");
         return "d";
     }
@@ -88,7 +88,7 @@ class Galusca5 {
 class Galusca6 {
     static String m() {
         log("6start");
-        sleep2(100);
+        sleepq(100);
         log("6end");
         return "d";
     }
@@ -96,7 +96,7 @@ class Galusca6 {
 class Galusca7 {
     static String m() {
         log("7start");
-        sleep2(100);
+        sleepq(100);
         log("7end");
         return "d";
     }

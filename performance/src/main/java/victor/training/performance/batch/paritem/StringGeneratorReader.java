@@ -4,7 +4,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.RandomStringUtils;
 import org.springframework.batch.item.ItemReader;
 
-import static victor.training.performance.ConcurrencyUtil.sleep2;
+import static victor.training.performance.ConcurrencyUtil.sleepq;
 
 @Slf4j
 public class StringGeneratorReader implements ItemReader<String> {
@@ -22,7 +22,7 @@ public class StringGeneratorReader implements ItemReader<String> {
         totalItemsToGenerate--;
         String s = RandomStringUtils.randomAlphabetic(4);
         log.debug("Read " + s);
-        sleep2(1);
+        sleepq(1);
         return s;
     }
 }

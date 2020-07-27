@@ -1,7 +1,7 @@
 package victor.training.performance;
 
 import static victor.training.performance.ConcurrencyUtil.log;
-import static victor.training.performance.ConcurrencyUtil.sleep2;
+import static victor.training.performance.ConcurrencyUtil.sleepq;
 import static victor.training.performance.ConcurrencyUtil.sleepSomeTime;
 
 import java.util.concurrent.locks.Lock;
@@ -70,7 +70,7 @@ public class LockPhilosophers {
 		new Philosopher("Konfuzius", forks[1], forks[2]).start();
 		new Philosopher("Socrates", forks[2], forks[3]).start();
 		new Philosopher("Voltaire", forks[3], forks[4]).start();
-		sleep2(1000);
+		sleepq(1000);
 		new Philosopher("Descartes", forks[4], forks[0]).start();
 	}
 }

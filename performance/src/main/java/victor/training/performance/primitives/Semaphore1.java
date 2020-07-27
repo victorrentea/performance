@@ -1,7 +1,7 @@
 package victor.training.performance.primitives;
 
 import static victor.training.performance.ConcurrencyUtil.log;
-import static victor.training.performance.ConcurrencyUtil.sleep2;
+import static victor.training.performance.ConcurrencyUtil.sleepq;
 
 import java.util.Collections;
 import java.util.HashSet;
@@ -43,7 +43,7 @@ public class Semaphore1 {
 			}
 			private void addElement(String element) {
 				try {
-					sleep2(20);
+					sleepq(20);
 					log("adding element " + element);
 					set.add(element);
 					log("added");
@@ -55,7 +55,7 @@ public class Semaphore1 {
 		
 		new Thread("Remover") {
 			public void run() {
-				sleep2(200);
+				sleepq(200);
 				remove("a");
 				remove("b");
 				remove("c");
@@ -63,7 +63,7 @@ public class Semaphore1 {
 				remove("e");
 			}
 			private void remove(String element) {
-				sleep2(20);
+				sleepq(20);
 				log("removing(" + element + ")");
 				set.remove(element);
 				log("removed");

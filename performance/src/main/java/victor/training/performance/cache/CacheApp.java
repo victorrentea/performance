@@ -82,7 +82,7 @@ class EmployeeRepo {
 
     @SneakyThrows
     public int getSalary() {
-        ConcurrencyUtil.sleep2(3000);
+        ConcurrencyUtil.sleepq(3000);
 
         return read();
     }

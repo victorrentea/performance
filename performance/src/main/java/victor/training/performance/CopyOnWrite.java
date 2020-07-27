@@ -3,7 +3,7 @@ package victor.training.performance;
 import java.util.ArrayList;
 import java.util.List;
 
-import static victor.training.performance.ConcurrencyUtil.sleep2;
+import static victor.training.performance.ConcurrencyUtil.sleepq;
 
 public class CopyOnWrite {
 
@@ -17,7 +17,7 @@ public class CopyOnWrite {
             // TODO add delay
             s += e + " ";
          }
-         sleep2(300);
+         sleepq(300);
          System.out.println(s);
       }
    }
@@ -34,7 +34,7 @@ class Builder implements Runnable {
    public void run() {
       for (int i = 0; i < 1000; i++) {
          list.add(i);
-         sleep2(300); // TODO reduce delay
+         sleepq(300); // TODO reduce delay
       }
    }
 }

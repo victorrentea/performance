@@ -63,7 +63,7 @@ class SheepService {
 class ShepardService {
     public String registerSheep(String name) {
         log.debug("Calling external WS");
-        ConcurrencyUtil.sleep2(500);
+        ConcurrencyUtil.sleepq(500);
         return UUID.randomUUID().toString();
     }
 }

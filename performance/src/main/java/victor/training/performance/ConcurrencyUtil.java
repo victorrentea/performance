@@ -12,14 +12,14 @@ public class ConcurrencyUtil {
 	}
 	
 	public static void sleepSomeTime(int min, int max) {
-		sleep2(randomInt(min, max));
+		sleepq(randomInt(min, max));
 	}
 	
 	public static int randomInt(int min, int max) {
 		return min + random.nextInt(max-min);
 	}
 	
-	public static void sleep2(long millis) {
+	public static void sleepq(long millis) {
 		try {
 			Thread.sleep(millis);
 		} catch (InterruptedException e) {

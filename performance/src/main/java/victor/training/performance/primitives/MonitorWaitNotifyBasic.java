@@ -1,7 +1,7 @@
 package victor.training.performance.primitives;
 
 import static victor.training.performance.ConcurrencyUtil.log;
-import static victor.training.performance.ConcurrencyUtil.sleep2;
+import static victor.training.performance.ConcurrencyUtil.sleepq;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -24,7 +24,7 @@ public class MonitorWaitNotifyBasic {
 		public void waitForTask() {
 			log("Waiting for task..");
 			
-			 sleep2(1); // Force thread shift  
+			 sleepq(1); // Force thread shift
 			// TODO masaTaskuri.wait();
 			
 			log("Got task to do: " + masaTaskuri.value);

@@ -29,7 +29,7 @@ public class OddEvenIncrementer {
 						even.notifyAll(); // a devenit odd
 					}
 				}
-				ConcurrencyUtil.sleep2(1);
+				ConcurrencyUtil.sleepq(1);
 			}
 		}
 	}
@@ -55,7 +55,7 @@ public class OddEvenIncrementer {
 						odd.notifyAll(); // a devenit odd
 					}
 				}
-				ConcurrencyUtil.sleep2(1);
+				ConcurrencyUtil.sleepq(1);
 			}
 		}
 	}

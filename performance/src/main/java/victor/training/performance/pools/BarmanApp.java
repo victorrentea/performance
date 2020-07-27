@@ -22,7 +22,7 @@ import java.util.Random;
 
 import static java.util.Arrays.asList;
 import static java.util.concurrent.CompletableFuture.supplyAsync;
-import static victor.training.performance.ConcurrencyUtil.sleep2;
+import static victor.training.performance.ConcurrencyUtil.sleepq;
 
 @EnableAsync
 @SpringBootApplication
@@ -83,13 +83,13 @@ class Barman {
 	@Async
     public Beer pourBeer() {
         log.debug("Pouring Beer to " + requestContext.getCurrentUser()+"...");
-        sleep2(1000);
+        sleepq(1000);
         return new Beer();
     }
 
     public Vodka pourVodka() {
         log.debug("Pouring Vodka...");
-        sleep2(1000);
+        sleepq(1000);
         return new Vodka();
     }
 }

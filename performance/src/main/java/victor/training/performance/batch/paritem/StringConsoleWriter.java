@@ -5,14 +5,14 @@ import org.springframework.batch.item.ItemWriter;
 
 import java.util.List;
 
-import static victor.training.performance.ConcurrencyUtil.sleep2;
+import static victor.training.performance.ConcurrencyUtil.sleepq;
 
 @Slf4j
 public class StringConsoleWriter implements ItemWriter<String> {
     // TODO ItemStreamWriter
     @Override
     public void write(List<? extends String> list) {
-        sleep2(1);
+        sleepq(1);
         for (String s : list) {
             log.debug("Write " + s);
         }
