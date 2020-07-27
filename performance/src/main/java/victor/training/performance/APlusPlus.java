@@ -13,7 +13,9 @@ public class APlusPlus {
             for (int i = 0; i < 100_000; i++) {
                  localInfected++;
             }
-            infected += localInfected;
+            synchronized (MUTEX) {
+                infected += localInfected;
+            }
         }
     }
     public static class ThreadB extends Thread {
@@ -22,7 +24,9 @@ public class APlusPlus {
             for (int i = 0; i < 100_000; i++) {
                 localInfected++;
             }
-            infected += localInfected;
+            synchronized (MUTEX) {
+                infected += localInfected;
+            }
         }
     }
     // TODO (bonus): ConcurrencyUtil.useCPU(1)
