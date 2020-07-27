@@ -5,6 +5,7 @@ import org.slf4j.LoggerFactory;
 import victor.training.performance.ConcurrencyUtil;
 
 import java.util.concurrent.*;
+import java.util.concurrent.ThreadPoolExecutor.CallerRunsPolicy;
 
 public class PoolsUnleashed {
 
@@ -19,7 +20,8 @@ public class PoolsUnleashed {
       ThreadPoolExecutor pool = new ThreadPoolExecutor(
           2, 4,
           5, TimeUnit.SECONDS,
-          new ArrayBlockingQueue<>(5));
+          new ArrayBlockingQueue<>(5),
+          new CallerRunsPolicy());
 
       System.out.println("Start");
       for (int i = 0; i < 10; i++) {
