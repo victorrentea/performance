@@ -18,12 +18,15 @@ public class ConcurrencyUtil {
 	public static int randomInt(int min, int max) {
 		return min + random.nextInt(max-min);
 	}
-	
+
+	/**
+	 * Sleeps quietly (without throwing anything out)
+	 */
 	public static void sleepq(long millis) {
 		try {
 			Thread.sleep(millis);
 		} catch (InterruptedException e) {
-			e.printStackTrace();
+			throw new RuntimeException(e);
 		}
 	}
 
