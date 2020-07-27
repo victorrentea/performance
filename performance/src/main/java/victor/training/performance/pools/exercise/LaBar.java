@@ -46,8 +46,6 @@ public class LaBar {
          }
       });
 
-      log.debug("astept...");
-      Bere bere = futureBeer.get();
 
       Future<Vodka> futureVodka = pool.submit(new Callable<Vodka>() {
          @Override
@@ -55,6 +53,8 @@ public class LaBar {
             return barMan.toarnaVodka();
          }
       });
+      log.debug("astept...");
+      Bere bere = futureBeer.get();
       Vodka vodka = futureVodka.get();
 
       log.debug("Am trimis comanda");
