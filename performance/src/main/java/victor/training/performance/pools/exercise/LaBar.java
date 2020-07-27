@@ -11,25 +11,6 @@ import java.util.concurrent.*;
 public class LaBar {
    //   private static final Logger log = LoggerFactory.getLogger(LaLigheane.class);
 
-   public static void main(String[] args) throws ExecutionException, InterruptedException {
-     new LaBar().mergi();
-   }
-
-   private BarMan barMan = new BarMan();
-
-   public void mergi() throws ExecutionException, InterruptedException {
-      log.debug("Trimit comanda");
-      // cele doua apeluri nu depind unul de altul
-
-      ExecutorService pool = Executors.newSingleThreadExecutor();
-
-      Future<Bere> futureBeer = pool.submit(new Callable<Bere>() {
-         @Override
-         public Bere call() throws Exception {
-            return barMan.toarnaBere();
-         }
-      });
-
       // mai jos, main-ul blocheaza unul dintre core-uri intergral (100% cpu usage pe 1 core)
       // multithreadingul de multe ori te faci sa cauti alt job (in paralel) - ca vrei tu sau sefu
 //      while (!futureBeer.isDone()) { // buzy waiting- o forma de polling -pe care nu vrei sa o faci niciodata
@@ -46,18 +27,38 @@ public class LaBar {
       // while(!gata) {sleep(<configurabil>); callREST }
       // nivelul 2: sa persisti in baza un rand cu STATUS=PENDING + id-ul primit din exterior pt polling
 
+   public static void main(String[] args) throws ExecutionException, InterruptedException {
+     new LaBar().mergi();
+   }
+
+   private BarMan barMan = new BarMan();
+
+   public void mergi() throws ExecutionException, InterruptedException {
+      log.debug("Trimit comanda");
+      // cele doua apeluri nu depind unul de altul
+
+      ExecutorService pool = Executors.newFixedThreadPool(2);
+
+      Future<Bere> futureBeer = pool.submit(new Callable<Bere>() {
+         @Override
+         public Bere call() throws Exception {
+            return barMan.toarnaBere();
+         }
+      });
+
       log.debug("astept...");
       Bere bere = futureBeer.get();
 
-      pool.submit(new Callable<Vodka>() {
+      Future<Vodka> futureVodka = pool.submit(new Callable<Vodka>() {
          @Override
          public Vodka call() throws Exception {
             return barMan.toarnaVodka();
          }
       });
+      Vodka vodka = futureVodka.get();
 
       log.debug("Am trimis comanda");
-      log.debug("Savurez " + bere + " cu " /*+ vodka*/);
+      log.debug("Savurez " + bere + " cu " + vodka);
    }
 }
 
