@@ -1,25 +1,23 @@
 package victor.training.performance;
 
+import java.util.concurrent.atomic.AtomicInteger;
+
 public class APlusPlus {
+
     private static final Object MUTEX = new Object();
-    private static Integer infected = 0;
+    private static AtomicInteger infected = new AtomicInteger(0);
 
     public static class ThreadA extends Thread {
         public void run() {
             for (int i = 0; i < 100_000; i++) {
-                synchronized (MUTEX) {
-//                    infected = new Integer(infected.intValue() + 1);
-                    infected ++;
-                }
+                    infected.incrementAndGet();
             }
         }
     }
     public static class ThreadB extends Thread {
         public void run() {
             for (int i = 0; i < 100_000; i++) {
-                synchronized (MUTEX) {
-                    infected++;
-                }
+                    infected.incrementAndGet();
             }
         }
     }
