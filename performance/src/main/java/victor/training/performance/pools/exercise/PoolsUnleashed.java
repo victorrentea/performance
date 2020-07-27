@@ -20,7 +20,7 @@ public class PoolsUnleashed {
 //          deschidem o noua casa(dar avem max 4 case)
       ThreadPoolExecutor pool = new ThreadPoolExecutor(
           2, 4,
-          5, TimeUnit.SECONDS,
+          3, TimeUnit.SECONDS, // dupa 3 secunde se 'contrage poolul' la coresize
           new ArrayBlockingQueue<>(5),
           new CallerRunsPolicy());
 
