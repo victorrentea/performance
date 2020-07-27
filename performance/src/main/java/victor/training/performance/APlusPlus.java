@@ -6,7 +6,7 @@ public class APlusPlus {
 
     public static class ThreadA extends Thread {
         public void run() {
-            for (int i = 0; i < 10_000; i++) {
+            for (int i = 0; i < 100_000; i++) {
                 synchronized (MUTEX) {
 //                    infected = new Integer(infected.intValue() + 1);
                     infected ++;
@@ -16,7 +16,7 @@ public class APlusPlus {
     }
     public static class ThreadB extends Thread {
         public void run() {
-            for (int i = 0; i < 10_000; i++) {
+            for (int i = 0; i < 100_000; i++) {
                 synchronized (MUTEX) {
                     infected++;
                 }
