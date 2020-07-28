@@ -12,8 +12,8 @@ public class SummingBoxes {
 				.boxed().collect(toList());
 
         long t0 = System.currentTimeMillis();
-
-        Long sum = 0L;
+ //
+        long sum = 0L;
         for (Long i : list) {
             sum += i;
         }
