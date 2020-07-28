@@ -2,11 +2,20 @@ package victor.training.performance.interview;
 
 public class Pointers {
     public static void main(String[] args) {
-        unreferenced();
+
+       m("a1");
+
+       unreferenced();
         pointersInJava();
     }
 
-    // TODO at which point can the instance be GC-ed ?
+   private static void m(String a1) {
+      if (a1 == "a" + 1) {
+         System.out.println("Asa");
+      }
+   }
+
+   // TODO at which point can the instance be GC-ed ?
     private static void unreferenced() {
         Pointers p = new Pointers();
         Pointers p2 = p;
