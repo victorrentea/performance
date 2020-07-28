@@ -16,7 +16,7 @@ import static victor.training.performance.ConcurrencyUtil.measuring;
 public class OptimizeExternalLoad {
 
     public static void main(String[] args) {
-        // cannot tune, global in App Server, shared for other requests
+        // cannot control as it's shared for other requests
         ExecutorService httpPool = Executors.newFixedThreadPool(50);
 
         BizService service = new BizService();
