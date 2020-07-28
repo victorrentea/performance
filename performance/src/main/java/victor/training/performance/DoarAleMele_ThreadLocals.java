@@ -17,12 +17,12 @@ public class DoarAleMele_ThreadLocals implements Runnable {
       pool.submit(new DoarAleMele_ThreadLocals());
    }
 
-   static int n = 0;
+   static ThreadLocal<Integer> n = ThreadLocal.withInitial(() -> 0);
 
    @Override
    public void run() {
-      n++;
+      n.set(n.get() + 1);
       ConcurrencyUtil.sleep2(1000);
-      log.debug("Citesc: " + n);
+      log.debug("Citesc: " + n.get());
    }
 }
