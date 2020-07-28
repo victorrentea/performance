@@ -17,7 +17,7 @@ public class PierdemUnElementInMap {
 
       System.out.println(childOne.hashCode());
       // adolescenta
-      childOne.setName("Emma-Simona");
+//      childOne.setName("Emma-Simona");
 
       System.out.println(childOne.hashCode());
       System.out.println(puiiMei.contains(childOne));
@@ -26,8 +26,9 @@ public class PierdemUnElementInMap {
 }
 
 @ToString
+// Pe @Entity de hibernate NICIODATA nu implementa hashCode/equals
 class Copil {
-   private String name;
+   private final String name;
 
    public Copil(String name) {
       this.name = name;
@@ -37,9 +38,9 @@ class Copil {
       return name;
    }
 
-   public void setName(String name) {
-      this.name = name;
-   }
+//   public void setName(String name) {
+//      this.name = name;
+//   }
 
    @Override
    public boolean equals(Object o) {
