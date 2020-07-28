@@ -17,7 +17,7 @@ public class Leak7_Cacheable {
     private  Stuff stuff;
 	@GetMapping
 	public String test() {
-		stuff.stuff(LocalDateTime.now().toString());
+		stuff.method(LocalDateTime.now().toString());
 		return "Tools won't shield you from stupidity.";
 	}
 }
@@ -26,7 +26,7 @@ public class Leak7_Cacheable {
 @Slf4j
 class Stuff {
 	@Cacheable("stuff")
-	public BigObject20MB stuff(String timestamp) {
+	public BigObject20MB method(String timestamp) {
 		log.debug("Calling method for {}", timestamp);
 	    return new BigObject20MB();
 	}
