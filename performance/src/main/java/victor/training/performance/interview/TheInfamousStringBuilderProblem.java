@@ -1,43 +1,38 @@
 package victor.training.performance.interview;
 
-import static java.util.Arrays.asList;
-
+import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.Writer;
+import java.nio.file.Files;
+import java.util.Iterator;
 import java.util.List;
 
 public class TheInfamousStringBuilderProblem {
-    public static void main(String[] args) throws IOException {
-        // TODO explore:
-        String a = "a"; // goes to String Pool
-        String b = "b";
-        if (a == "a") {
-            System.out.println("WTH?!");
-        }
-        String c = a + b + a; //2
-        c += a; // one more
+   public static void main(String[] args) throws IOException {
+      Iterable<String> it = () -> {
+         try {
+            return Files.lines(new File("data.txt").toPath()).iterator();
+         } catch (IOException e) {
+            throw new RuntimeException(e);
+         }
+      };
+      mMare(it, new FileWriter("out.txt"));
 
+   }
 
-        List<String> list = asList("a", "b", "c");
+   public String m(List<String> linii) { // <50-100 elem nu conteaza
+      StringBuilder s = new StringBuilder();
+      for (String linie : linii) {
+         s.append(linie).append("\n");
+      }
+      return s.toString();
+   }
 
-        String s = infamous(list);
-
-        try (Writer w = new FileWriter("out.txt")) {
-            w.write(s);
-        }
-        // TODO more elements ?
-
-        // TODO Where could you offload data? File, CLOB, httpServletResponse.getWriter()
-
-        System.out.println("Done");
-    }
-
-    private static String infamous(List<String> list) {
-        String s = "Header";
-        for (String string : list) {
-            s += string + "\n";
-        }
-        return s;
-    }
+   // > 10K -> streamlining. Procesezi in chunkuri si versi outputul afara din RAM
+   public static void mMare(Iterable<String> linii, Writer output) throws IOException { // <50-100 elem nu conteaza
+      for (String linie : linii) {
+         output.write(linie.toUpperCase()  + "\n");
+      }
+   }
 }
