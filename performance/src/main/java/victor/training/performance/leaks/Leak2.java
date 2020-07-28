@@ -24,7 +24,10 @@ public class Leak2 {
 	@GetMapping
 	public String test() throws Exception {
 		String uuid = UUID.randomUUID().toString();
-		userData.tryCache(uuid, BigObject20MB::new);
+
+		// NU pune chestii grele pe sesiunea userului.
+
+//		userData.tryCache(uuid, BigObject20MB::new);
 		return "subtle";
 	}
 }

@@ -2,9 +2,7 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="0e1584f6-4d86-4d34-9539-64d7002532f5" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../performance/src/main/java/victor/training/performance/leaks/Leak1.java" beforeDir="false" afterPath="$PROJECT_DIR$/../performance/src/main/java/victor/training/performance/leaks/Leak1.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../performance/src/main/java/victor/training/performance/xml/StAXParsing.java" beforeDir="false" afterPath="$PROJECT_DIR$/../performance/src/main/java/victor/training/performance/xml/StAXParsing.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../performance/src/main/java/victor/training/performance/leaks/Leak2.java" beforeDir="false" afterPath="$PROJECT_DIR$/../performance/src/main/java/victor/training/performance/leaks/Leak2.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
