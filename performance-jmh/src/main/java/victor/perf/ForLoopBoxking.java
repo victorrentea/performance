@@ -26,12 +26,18 @@ import static java.util.stream.Collectors.toList;
 @Fork(1)
 public class ForLoopBoxking {
 
+   private long[] listArr;
+   //this takes 2x more memory that the long[]
+   private Long[] listArr2;
+
+   //worst case, lista de mai jos ocupa = + 25% memorie
    private List<Long> list;
 
    @Setup
    public void initData() {
       list = LongStream.range(1, 10_000_000)
           .boxed().collect(toList());
+      listArr = list.stream().mapToLong(l -> l).toArray();
    }
 
    @Benchmark
@@ -42,6 +48,14 @@ public class ForLoopBoxking {
          sum += list.get(i * 4 + 1);
          sum += list.get(i * 4 + 2);
          sum += list.get(i * 4 + 3);
+      }
+      return sum;
+   }
+   @Benchmark
+   public long sumaLongPrimitives() {
+      long sum = 0L;
+      for (long l : listArr) {
+         sum += l;
       }
       return sum;
    }
