@@ -12,7 +12,11 @@ import java.io.StringReader;
 public class StAXParsing {
     public static void main(String[] args) throws XMLStreamException {
         XMLInputFactory factory = XMLInputFactory.newInstance();
-        Reader reader = new StringReader("<root><record id=\"1\"><a>A</a><b>B</b></record><record id=\"2\"><a>A2</a><b>B2</b></record></root>");
+        Reader reader = new StringReader(
+            "<root>" +
+            "<record id=\"1\"><a>A</a><b>B</b></record>" +
+            "<record id=\"2\"><a>A2</a><b>B2</b><telefon>B</telefon></record>" +
+            "</root>");
         XMLEventReader xmlReader = factory.createXMLEventReader(reader);
 
         xmlReader.nextEvent(); // document start event
@@ -30,6 +34,14 @@ public class StAXParsing {
             xmlReader.nextEvent(); // <b>
             System.out.println("b=" +xmlReader.nextEvent().asCharacters().getData());
             xmlReader.nextEvent(); // </b>
+
+            if (xmlReader.peek().isStartElement()) {
+                XMLEvent startTelefonTag = xmlReader.nextEvent();
+                System.out.println("START TELEFON: " + startTelefonTag);
+                System.out.println("telefon=" + xmlReader.nextEvent().asCharacters().getData());
+                xmlReader.nextEvent(); // <telefon>
+            }
+
 
             xmlReader.nextEvent(); // </record>
         }
