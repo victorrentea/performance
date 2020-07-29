@@ -13,7 +13,7 @@ public class Parent {
 
     private String name;
 
-    @OneToMany(cascade = CascadeType.PERSIST)
+    @OneToMany(cascade = CascadeType.PERSIST, fetch = FetchType.EAGER)
     @JoinColumn(name = "PARENT_ID")
     private Set<Child> children = new HashSet<>();
 
