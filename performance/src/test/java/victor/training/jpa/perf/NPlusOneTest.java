@@ -38,10 +38,6 @@ public class NPlusOneTest {
 				.addChild(new Child("Emma"))
 				.addChild(new Child("Vlad"))
 		);
-		em.persist(new Parent("Victor2")
-				.addChild(new Child("Emma"))
-				.addChild(new Child("Vlad"))
-		);
 		em.persist(new Parent("Peter")
 				.addChild(new Child("Maria"))
 				.addChild(new Child("Stephan"))
@@ -54,7 +50,7 @@ public class NPlusOneTest {
 
 	@Test
 	public void nPlusOne() {
-		List<Parent> parents = em.createQuery("FROM Parent", Parent.class).getResultList();
+		List<Parent> parents = em.createQuery("FROM Parent ", Parent.class).getResultList();
 
 		// 500 linii mai tarziu
 		int totalChildren = countChildren(parents);
@@ -70,6 +66,7 @@ public class NPlusOneTest {
 			log.debug("Adica eu chem .size() si ala imi face query !?!" +
 				" WTF? Oare pe ce chem size() : " + children.getClass());
 			total += children.size();
+			break;
 		}
 		log.debug("Done counting: {} children", total);
 		return total;
