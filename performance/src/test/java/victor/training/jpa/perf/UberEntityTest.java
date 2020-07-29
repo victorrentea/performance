@@ -49,10 +49,12 @@ public class UberEntityTest {
         TestTransaction.start();
 
         log.info("Now, loading by id...");
-        UberEntity uberEntity = em.find(UberEntity.class, uber.getId());
+        UberEntity uberEntity = em.createQuery("SELECT u FROM UberEntity u WHERE u.id=:id", UberEntity.class)
+            .setParameter("id",uber.getId())
+            .getSingleResult();
         log.info("Loaded");
         // TODO fetch only the necessary data
         // TODO change link types?
-        System.out.println(uberEntity.toString());
+        System.out.println(uberEntity.getName() + " | " + uberEntity.getOriginCountry().getName());
     }
 }
