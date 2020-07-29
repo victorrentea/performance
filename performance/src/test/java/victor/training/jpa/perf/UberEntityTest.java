@@ -38,6 +38,7 @@ public class UberEntityTest {
 
 
         UberEntity uber = new UberEntity()
+            .setName("Nume bun")
                 .setFiscalCountry(romania)
                 .setOriginCountry(romania)
                 .setInvoicingCountry(romania)
