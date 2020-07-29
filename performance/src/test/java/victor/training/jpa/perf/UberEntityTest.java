@@ -13,7 +13,6 @@ import org.springframework.test.context.transaction.TestTransaction;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityManager;
-import java.util.Arrays;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
@@ -40,7 +39,7 @@ public class UberEntityTest {
         UberEntity uber = new UberEntity()
             .setName("Nume bun")
                 .setFiscalCountry(romania)
-                .setOriginCountry(romania)
+                .setOriginCountryId(romania.getId())
                 .setInvoicingCountry(romania)
                 .setCreatedBy(testUser)
                 .setNationality(romania)
@@ -50,8 +49,13 @@ public class UberEntityTest {
         TestTransaction.end();
         TestTransaction.start();
 
+        System.out.println(em.find(UberEntity.class, uber.getId()));
+
+        log.info("LINIE --------------------------------------------------------------------");
+
+
         log.info("Now, loading by id...");
-        UberSearchResult result = em.createQuery("SELECT new victor.training.jpa.perf.UberSearchResult(u.name, u.originCountry.name, u.createdBy.name, u.ibanCode) " +
+        UberSearchResult result = em.createQuery("SELECT new victor.training.jpa.perf.UberSearchResult(u.name, u.fiscalCountry.name, u.createdBy.name, u.ibanCode) " +
             " FROM UberEntity u WHERE u.id=:id", UberSearchResult.class)
             .setParameter("id",uber.getId())
             .getSingleResult();
@@ -63,13 +67,13 @@ public class UberEntityTest {
 }
 class UberSearchResult {
     private final String name;
-    private final String originCountry;
+    private final String fiscalCountry;
     private final String creatorUser;
     private final String ibanCode;
 
-    public UberSearchResult(String name, String originCountry, String creatorUser, String ibanCode) {
+    public UberSearchResult(String name, String fiscalCountry, String creatorUser, String ibanCode) {
         this.name = name;
-        this.originCountry = originCountry;
+        this.fiscalCountry = fiscalCountry;
         this.creatorUser = creatorUser;
         this.ibanCode = ibanCode;
     }
@@ -85,7 +89,7 @@ class UberSearchResult {
     public String toString() {
         return "UberSearchResult{" +
             "name='" + name + '\'' +
-            ", originCountry='" + originCountry + '\'' +
+            ", originCountry='" + fiscalCountry + '\'' +
             ", creatorUser='" + creatorUser + '\'' +
             ", ibanCode='" + ibanCode + '\'' +
             '}';

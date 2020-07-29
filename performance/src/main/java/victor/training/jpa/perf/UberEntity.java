@@ -12,8 +12,10 @@ public class UberEntity {
     private Long id;
     private String name;
     private String firstName, lastName, ibanCode, cnp, ssn, passportNumber;
-    @ManyToOne
-    private Country originCountry;
+//    @ManyToOne
+//    private Country originCountry;
+
+    private Long originCountryId;
     @ManyToOne
     private Country nationality;
     @ManyToOne
@@ -38,8 +40,8 @@ public class UberEntity {
         return this;
     }
 
-    public UberEntity setOriginCountry(Country originCountry) {
-        this.originCountry = originCountry;
+    public UberEntity setOriginCountryId(Long originCountryId) {
+        this.originCountryId = originCountryId;
         return this;
     }
 
@@ -66,10 +68,6 @@ public class UberEntity {
     public UberEntity setCreatedBy(User createdBy) {
         this.createdBy = createdBy;
         return this;
-    }
-
-    public Country getOriginCountry() {
-        return originCountry;
     }
 }
 
