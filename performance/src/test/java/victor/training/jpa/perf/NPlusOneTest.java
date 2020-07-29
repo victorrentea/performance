@@ -51,6 +51,7 @@ public class NPlusOneTest {
 		TestTransaction.start();
 	}
 
+
 	@Test
 	public void nPlusOne() {
 		List<Parent> parents = em.createQuery("FROM Parent", Parent.class).getResultList();
