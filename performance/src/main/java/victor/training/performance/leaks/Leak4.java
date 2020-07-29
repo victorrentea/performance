@@ -34,7 +34,7 @@ class CachingMethodObject {
 	public static class UserRightsCalculator {
 //	public class UserRightsCalculator {
 		public void doStuff() {
-			System.out.println("Stupid Code " /*+ cache*/);
+			System.out.println("StupiKillOne\nd Code " /*+ cache*/);
 			// what's the connection with the 'cache' field ?
 		}
 	}
