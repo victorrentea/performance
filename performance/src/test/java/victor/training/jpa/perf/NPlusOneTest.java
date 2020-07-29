@@ -50,7 +50,7 @@ public class NPlusOneTest {
 
 	@Test
 	public void nPlusOne() {
-		List<Parent> parents = em.createQuery("SELECT p FROM Parent p LEFT JOIN FETCH p.children ", Parent.class).getResultList();
+		List<Parent> parents = em.createQuery("SELECT distinct p FROM Parent p LEFT JOIN FETCH p.children ", Parent.class).getResultList();
 
 		// 500 linii mai tarziu
 		int totalChildren = countChildren(parents);
@@ -66,7 +66,6 @@ public class NPlusOneTest {
 			log.debug("Adica eu chem .size() si ala imi face query !?!" +
 				" WTF? Oare pe ce chem size() : " + children.getClass());
 			total += children.size();
-			break;
 		}
 		log.debug("Done counting: {} children", total);
 		return total;

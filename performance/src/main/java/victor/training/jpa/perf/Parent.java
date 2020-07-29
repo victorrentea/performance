@@ -20,6 +20,7 @@ public class Parent {
     @OneToMany(cascade = CascadeType.PERSIST)
 //    @BatchSize(size= 100)
     @JoinColumn(name = "PARENT_ID")
+//    @Fetch(FetchMode.JOIN)
     private Set<Child> children = new HashSet<>();
 
     private Parent() {
