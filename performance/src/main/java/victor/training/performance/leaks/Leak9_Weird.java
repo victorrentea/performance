@@ -10,7 +10,8 @@ public class Leak9_Weird {
 	@GetMapping
 	public String test() {
 		BigObject80MB big = new BigObject80MB();
-		while (true) ; // or sleep 60 sec
+		while (true) ; // or sleep 60 sec or deadlock
 		// Conclusion?...
+		// nu tine obiecte mari in memorie pentru mult timp, ci strict cat e necesar.
 	}
 }
