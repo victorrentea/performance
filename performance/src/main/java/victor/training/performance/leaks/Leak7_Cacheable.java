@@ -17,8 +17,10 @@ public class Leak7_Cacheable {
     private  Stuff stuff;
 	@GetMapping
 	public String test() {
-		stuff.method(LocalDateTime.now().toString());
-		return "Tools won't shield you from stupidity.";
+		BigObject20MB data = stuff.method(LocalDateTime.now().toString());
+		return "Tools won't shield you from stupidity: " + data;
+		// but they still offer max-size, expiration..
+		// https://www.ehcache.org/documentation/2.8/configuration/cache-size.html
 	}
 }
 

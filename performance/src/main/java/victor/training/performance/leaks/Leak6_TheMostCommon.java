@@ -15,7 +15,7 @@ import java.util.UUID;
 @RequestMapping("leak6")
 public class Leak6_TheMostCommon {
    // AVOID: Hand-made cache!! Plugin a mature one!
-   // [RO] Nu-ti faci cacheul la coada vacii nicioadata!
+   // [RO] Nu-ti faci cacheul de mana niciodata
    private static Map<String, Object> oops = new HashMap<>();
 
    @GetMapping

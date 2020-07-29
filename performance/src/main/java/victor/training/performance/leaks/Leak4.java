@@ -3,6 +3,7 @@ package victor.training.performance.leaks;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import victor.training.performance.leaks.CachingMethodObject.UserRightsCalculator;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -23,7 +24,7 @@ public class Leak4 {
 }
 
 class MyAppRequestContext {
-    public CachingMethodObject.UserRightsCalculator rights;
+    public UserRightsCalculator rights;
 }
 
 class CachingMethodObject {
