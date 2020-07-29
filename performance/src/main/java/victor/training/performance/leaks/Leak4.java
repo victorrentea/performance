@@ -16,8 +16,12 @@ public class Leak4 {
 	public String test() {
 		MyAppRequestContext requestContext = new MyAppRequestContext();
 		threadLocal.set(requestContext);
-		requestContext.rights = new CachingMethodObject()
-				.createRightsCalculator();
+		try {
+			requestContext.rights = new CachingMethodObject()
+					.createRightsCalculator();
+		} finally {
+			threadLocal.remove();
+		}
 		return "the most subtle";
 	}
 }
@@ -27,13 +31,13 @@ class MyAppRequestContext {
 }
 
 class CachingMethodObject {
-	public class UserRightsCalculator {
+	public static class UserRightsCalculator {
+//	public class UserRightsCalculator {
 		public void doStuff() {
-			System.out.println("Stupid Code");
+			System.out.println("Stupid Code " /*+ cache*/);
 			// what's the connection with the 'cache' field ?
 		}
 	}
-
 	private Map<String, BigObject20MB> cache = new HashMap<>();
 
 	public UserRightsCalculator createRightsCalculator() {

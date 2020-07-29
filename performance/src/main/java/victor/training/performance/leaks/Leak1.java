@@ -20,8 +20,7 @@ public class Leak1 {
 		try {
 			biz();
 		} finally {
-			threadLocal.remove();
-
+			threadLocal.remove(); // "request"
 		}
 
 		return s;
