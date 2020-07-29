@@ -50,7 +50,7 @@ public class NPlusOneTest {
 
 	@Test
 	public void nPlusOne() {
-		List<Parent> parents = em.createQuery("FROM Parent ", Parent.class).getResultList();
+		List<Parent> parents = em.createQuery("SELECT p FROM Parent p LEFT JOIN FETCH p.children ", Parent.class).getResultList();
 
 		// 500 linii mai tarziu
 		int totalChildren = countChildren(parents);
