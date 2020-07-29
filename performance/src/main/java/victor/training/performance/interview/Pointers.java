@@ -17,14 +17,11 @@ public class Pointers {
 
    // TODO at which point can the instance be GC-ed ?
     private static void unreferenced() {
-        Pointers p = new Pointers();
-        Pointers p2 = p;
-        // A
-        p2 = null;
-        // B
-        p = null;
-        // C
-    }
+        Pointers p = new Pointers(); // 1
+        Pointers p2 = p; // 2
+        p2 = null; // 1
+        p = null; // 0
+    } // 0
 
     private static void pointersInJava() {
         Pointers a = new Pointers();

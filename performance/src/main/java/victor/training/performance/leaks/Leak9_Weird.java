@@ -4,6 +4,14 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+
+class Eu {
+	int x;
+	long b;
+	int[] ss = {1,2,3,4,5,6,8};
+	String zeceMega = "...";
+}
+
 @RestController
 @RequestMapping("leak9")
 public class Leak9_Weird {
