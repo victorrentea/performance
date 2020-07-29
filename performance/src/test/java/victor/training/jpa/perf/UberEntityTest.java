@@ -51,8 +51,8 @@ public class UberEntityTest {
         log.info("Now, loading by id...");
         UberEntity uberEntity = em.find(UberEntity.class, uber.getId());
         log.info("Loaded");
-        // TODO fetch only the necessary data
-        // TODO change link types?
-        System.out.println(uberEntity.toString());
+        // TODO 1 change link types?
+        // TODO 2 fetch only the necessary data
+        System.out.println(uberEntity.getName() + "|" + uberEntity.getOriginCountry().getName());
     }
 }
