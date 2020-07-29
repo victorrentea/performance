@@ -13,6 +13,7 @@ import org.springframework.test.context.transaction.TestTransaction;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityManager;
+import java.util.Arrays;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
@@ -49,12 +50,12 @@ public class UberEntityTest {
         TestTransaction.start();
 
         log.info("Now, loading by id...");
-        UberEntity uberEntity = em.createQuery("SELECT u FROM UberEntity u WHERE u.id=:id", UberEntity.class)
+        Object[] stuff = (Object[]) em.createQuery("SELECT u.name, u.originCountry.name FROM UberEntity u WHERE u.id=:id")
             .setParameter("id",uber.getId())
             .getSingleResult();
         log.info("Loaded");
         // TODO fetch only the necessary data
         // TODO change link types?
-        System.out.println(uberEntity.getName() + " | " + uberEntity.getOriginCountry().getName());
+        System.out.println(Arrays.toString(stuff));
     }
 }
