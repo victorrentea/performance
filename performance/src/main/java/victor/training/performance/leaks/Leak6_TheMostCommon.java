@@ -16,9 +16,9 @@ import java.util.UUID;
 public class Leak6_TheMostCommon {
 	// ANATHEMA: Never bake your own cache!! Plugin a mature one!
 	// [RO] Nu-ti faci cacheul la coada vacii nicioadata!
-    private static Map<String, Object> oops = new HashMap<>();
 	@GetMapping
 	public String test() {
+	 Map<String, Object> oops = new HashMap<>();
 	    oops.put(UUID.randomUUID().toString(), new BigObject20MB());
 		return "the most brainless, but most common. Long Live SonarLint";
 	}
