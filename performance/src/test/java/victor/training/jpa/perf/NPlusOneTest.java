@@ -15,7 +15,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityManager;
 import java.util.Collection;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -39,6 +38,10 @@ public class NPlusOneTest {
 				.addChild(new Child("Emma"))
 				.addChild(new Child("Vlad"))
 		);
+		em.persist(new Parent("Victor2")
+				.addChild(new Child("Emma"))
+				.addChild(new Child("Vlad"))
+		);
 		em.persist(new Parent("Peter")
 				.addChild(new Child("Maria"))
 				.addChild(new Child("Stephan"))
@@ -52,18 +55,20 @@ public class NPlusOneTest {
 	public void nPlusOne() {
 		List<Parent> parents = em.createQuery("FROM Parent", Parent.class).getResultList();
 
-		int totalChildren = anotherMethod(parents);
+		// 500 linii mai tarziu
+		int totalChildren = countChildren(parents);
 		assertThat(totalChildren).isEqualTo(5);
 	}
 
-
-
-
-	private int anotherMethod(Collection<Parent> parents) {
+	private int countChildren(Collection<Parent> parents) {
 		log.debug("Start iterating over {} parents: {}", parents.size(), parents);
+
 		int total = 0;
 		for (Parent parent : parents) {
-			total += parent.getChildren().size();
+			Set<Child> children = parent.getChildren();
+			log.debug("Adica eu chem .size() si ala imi face query !?!" +
+				" WTF? Oare pe ce chem size() : " + children.getClass());
+			total += children.size();
 		}
 		log.debug("Done counting: {} children", total);
 		return total;

@@ -1,14 +1,11 @@
 package victor.training.jpa.perf;
 
 import javax.persistence.*;
-import java.util.Collection;
-import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 
-import static java.util.Collections.unmodifiableSet;
-
 @Entity
+@Table(name="PARENTS")
 public class Parent {
     @Id
     @GeneratedValue
@@ -16,7 +13,7 @@ public class Parent {
 
     private String name;
 
-    @OneToMany(cascade = CascadeType.ALL)
+    @OneToMany(cascade = CascadeType.PERSIST)
     @JoinColumn(name = "PARENT_ID")
     private Set<Child> children = new HashSet<>();
 
@@ -33,6 +30,11 @@ public class Parent {
 
     public Parent addChild(Child child) {
         children.add(child);
+        return this;
+    }
+
+    public Parent setName(String name) {
+        this.name = name;
         return this;
     }
 
