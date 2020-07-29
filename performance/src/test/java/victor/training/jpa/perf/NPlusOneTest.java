@@ -15,6 +15,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityManager;
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -50,10 +51,14 @@ public class NPlusOneTest {
 
 	@Test
 	public void nPlusOne() {
-		List<Parent> parents = em.createQuery("SELECT distinct p FROM Parent p LEFT JOIN FETCH p.children ", Parent.class).getResultList();
+		List<Parent> parents = em.createQuery("SELECT  p FROM Parent p LEFT JOIN FETCH p.children ", Parent.class).getResultList();
+
+		System.out.println(parents.get(0) == parents.get(1));
+		Parent parent = em.find(Parent.class, 1l);
+		System.out.println(parent == parents.get(1));
 
 		// 500 linii mai tarziu
-		int totalChildren = countChildren(parents);
+		int totalChildren = countChildren(new HashSet<>(parents));
 		assertThat(totalChildren).isEqualTo(5);
 	}
 
