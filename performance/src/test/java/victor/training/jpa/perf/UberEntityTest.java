@@ -50,12 +50,43 @@ public class UberEntityTest {
         TestTransaction.start();
 
         log.info("Now, loading by id...");
-        Object[] stuff = (Object[]) em.createQuery("SELECT u.name, u.originCountry.name FROM UberEntity u WHERE u.id=:id")
+        UberSearchResult result = em.createQuery("SELECT new victor.training.jpa.perf.UberSearchResult(u.name, u.originCountry.name, u.createdBy.name, u.ibanCode) " +
+            " FROM UberEntity u WHERE u.id=:id", UberSearchResult.class)
             .setParameter("id",uber.getId())
             .getSingleResult();
         log.info("Loaded");
         // TODO fetch only the necessary data
         // TODO change link types?
-        System.out.println(Arrays.toString(stuff));
+        System.out.println(result);
+    }
+}
+class UberSearchResult {
+    private final String name;
+    private final String originCountry;
+    private final String creatorUser;
+    private final String ibanCode;
+
+    public UberSearchResult(String name, String originCountry, String creatorUser, String ibanCode) {
+        this.name = name;
+        this.originCountry = originCountry;
+        this.creatorUser = creatorUser;
+        this.ibanCode = ibanCode;
+    }
+
+    public String getIbanCode() {
+        return ibanCode;
+    }
+//    public String getIbanCodeWithSpaces() {
+//        return ibanCode.substring(0,4) + " ";
+//    }
+
+    @Override
+    public String toString() {
+        return "UberSearchResult{" +
+            "name='" + name + '\'' +
+            ", originCountry='" + originCountry + '\'' +
+            ", creatorUser='" + creatorUser + '\'' +
+            ", ibanCode='" + ibanCode + '\'' +
+            '}';
     }
 }
