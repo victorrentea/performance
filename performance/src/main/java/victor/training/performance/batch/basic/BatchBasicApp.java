@@ -51,13 +51,19 @@ public class BatchBasicApp {
     // TODO tryout listeners
 
     private TaskletStep dummyTaskStep(String step) {
-        return stepBuilderFactory.get(step).tasklet(new DummyTasklet(step)).build();
+        return stepBuilderFactory.get(step)
+            .tasklet(new DummyTasklet(step))
+            .build();
     }
     @Bean
     public Job basicJob() {
         return jobBuilderFactory.get("basicJob")
                 .incrementer(new RunIdIncrementer())
-                .start(dummyTaskStep("Aloha Spring Batch!"))
+                .start(dummyTaskStep("Unzip input file"))
+                .next(dummyTaskStep("Verify File"))
+                .next(dummyTaskStep("Send notification emails"))
+                .next(dummyTaskStep("Move files to /done folder"))
+                .listener(new MyJobListener())
                 .build();
 
     }

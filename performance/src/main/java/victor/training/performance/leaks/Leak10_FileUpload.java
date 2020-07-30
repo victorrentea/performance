@@ -1,6 +1,7 @@
 package victor.training.performance.leaks;
 
 import org.apache.commons.io.IOUtils;
+import org.springframework.batch.core.launch.JobLauncher;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Propagation;
@@ -26,6 +27,8 @@ public class Leak10_FileUpload {
 		try (FileOutputStream tempStream = new FileOutputStream(tempFile)) {
 			IOUtils.copy(request.getInputStream(), tempStream);
 		}
+//		JobLauncher jobLauncher;
+//		jobLauncher.run(job, .... tempFile.getAbsolutePath);
 		System.out.println("Write to DB that a file named " + tempFile.getAbsolutePath() +" is ready to upload (status=PENDING)");
 		long uploadId = 99L; // persist gives you an id
 
