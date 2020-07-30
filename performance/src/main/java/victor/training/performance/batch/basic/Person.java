@@ -12,8 +12,9 @@ public class Person {
     @GeneratedValue(generator = "seqgen")
     private Long id;
     private String name;
-    @ManyToOne
-    private City city;
+//    @ManyToOne
+//    private City city;
+    private Long cityId;
 
     public Person(String name) {
         this.name = name;

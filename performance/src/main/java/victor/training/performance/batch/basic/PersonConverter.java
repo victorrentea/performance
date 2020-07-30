@@ -28,18 +28,15 @@ public class PersonConverter implements ItemProcessor<PersonXml, Person> {
 
       Long cityId = cities.get(xmlItem.getCity());
 
-      City city;
       if (cityId == null) {
          // de 10 ori in total
-         city = new City();
+         City city = new City();
          city.setName(xmlItem.getCity());
          cityRepo.save(city);
          cities.put(city.getName(), city.getId());
-      } else {
-         // 9990 ori
-         city = cityRepo.getOne(cityId);
+         cityId = city.getId();
       }
-      entity.setCity(city);
+      entity.setCityId(cityId);
       return entity;
    }
 }
