@@ -1,4 +1,4 @@
-package victor.training.performance.batch.sync;
+package victor.training.performance.batch.basic;
 
 import org.springframework.batch.core.Job;
 import org.springframework.batch.core.Step;
@@ -6,6 +6,7 @@ import org.springframework.batch.core.configuration.annotation.EnableBatchProces
 import org.springframework.batch.core.configuration.annotation.JobBuilderFactory;
 import org.springframework.batch.core.configuration.annotation.StepBuilderFactory;
 import org.springframework.batch.core.launch.support.RunIdIncrementer;
+import org.springframework.batch.core.step.tasklet.TaskletStep;
 import org.springframework.batch.item.ItemReader;
 import org.springframework.batch.item.database.JpaItemWriter;
 import org.springframework.batch.item.xml.StaxEventItemReader;
@@ -41,7 +42,7 @@ public class BatchBasicApp {
     public Step basicChunkStep() {
         // TODO optimize: tune chunk size
         return stepBuilderFactory.get("basicChunkStep")
-                .<MyEntityFileRecord, MyEntity>chunk(5)
+                .<PersonXml, Person>chunk(5)
                 .reader(xmlReader())
                 .processor(processor())
                 // TODO optimize: tune ID generation
@@ -53,34 +54,37 @@ public class BatchBasicApp {
     }
 
     @Bean
-    public MyEntityProcessor processor() {
-        return new MyEntityProcessor();
+    public PersonConverter processor() {
+        return new PersonConverter();
     }
 
     @Autowired
     private EntityManagerFactory emf;
 
-    private JpaItemWriter<MyEntity> jpaWriter() {
-        JpaItemWriter<MyEntity> writer = new JpaItemWriter<>();
+    private JpaItemWriter<Person> jpaWriter() {
+        JpaItemWriter<Person> writer = new JpaItemWriter<>();
         writer.setEntityManagerFactory(emf);
         return writer;
     }
 
-    private ItemReader<MyEntityFileRecord> xmlReader() {
-        StaxEventItemReader<MyEntityFileRecord> reader = new StaxEventItemReader<>();
+    private ItemReader<PersonXml> xmlReader() {
+        StaxEventItemReader<PersonXml> reader = new StaxEventItemReader<>();
         reader.setResource(new FileSystemResource("data.xml"));
         reader.setFragmentRootElementName("data");
         Jaxb2Marshaller unmarshaller = new Jaxb2Marshaller();
-        unmarshaller.setClassesToBeBound(MyEntityFileRecord.class);;
+        unmarshaller.setClassesToBeBound(PersonXml.class);;
         reader.setUnmarshaller(unmarshaller);
         return reader;
     }
 
+    private TaskletStep dummyTaskStep(String step) {
+        return stepBuilderFactory.get(step).tasklet(new DummyTasklet(step)).build();
+    }
     @Bean
     public Job basicJob() {
         return jobBuilderFactory.get("basicJob")
                 .incrementer(new RunIdIncrementer())
-                .start(basicChunkStep())
+                .start(dummyTaskStep("Aloha Spring Batch!"))
                 .listener(new MyJobListener())
                 .build();
 

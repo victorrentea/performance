@@ -1,4 +1,4 @@
-package victor.training.performance.batch.sync;
+package victor.training.performance.batch.basic;
 
 import org.springframework.batch.core.JobExecution;
 import org.springframework.batch.core.JobExecutionListener;

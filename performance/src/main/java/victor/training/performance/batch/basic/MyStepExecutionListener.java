@@ -1,4 +1,4 @@
-package victor.training.performance.batch.sync;
+package victor.training.performance.batch.basic;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.batch.core.ExitStatus;

@@ -1,4 +1,4 @@
-package victor.training.performance.batch.sync;
+package victor.training.performance.batch.basic;
 
 import lombok.Data;
 
@@ -6,19 +6,19 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
-import javax.xml.bind.annotation.XmlRootElement;
 
 @Data
 @Entity
-public class MyEntity {
+public class Person {
     @Id
     @GeneratedValue
     private Long id;
     private String name;
     @ManyToOne
     private City city;
-    public MyEntity(String name) {
+
+    public Person(String name) {
         this.name = name;
     }
-    public MyEntity() {}
+    public Person() {}
 }

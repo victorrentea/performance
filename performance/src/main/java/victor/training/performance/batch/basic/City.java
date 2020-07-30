@@ -1,4 +1,4 @@
-package victor.training.performance.batch.sync;
+package victor.training.performance.batch.basic;
 
 import lombok.Data;
 

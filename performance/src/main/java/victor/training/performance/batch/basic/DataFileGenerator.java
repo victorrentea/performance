@@ -1,6 +1,5 @@
-package victor.training.performance.batch.sync;
+package victor.training.performance.batch.basic;
 
-import java.io.BufferedWriter;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.Writer;
