@@ -39,7 +39,7 @@ public class BatchParStepsApp {
         Flow flowJob1 = new FlowBuilder<Flow>("flow1").start(taskletStep("step2")).build();
         Flow flowJob2 = new FlowBuilder<Flow>("flow2").start(taskletStep("step3")).build();
         Flow flowJob3 = new FlowBuilder<Flow>("flow3").start(taskletStep("step4")).build();
- 
+
         Flow slaveFlow = new FlowBuilder<Flow>("slaveFlow")
                 .split(new SimpleAsyncTaskExecutor()).add(flowJob1, flowJob2, flowJob3).build();
  

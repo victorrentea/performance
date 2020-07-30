@@ -39,43 +39,16 @@ public class BatchBasicApp {
     @Autowired
     private StepBuilderFactory stepBuilderFactory;
 
-    public Step basicChunkStep() {
-        // TODO optimize: tune chunk size
-        return stepBuilderFactory.get("basicChunkStep")
-                .<PersonXml, Person>chunk(5)
-                .reader(xmlReader())
-                .processor(processor())
-                // TODO optimize: tune ID generation
-                // TODO optimize: enable JDBC batch mode
-                .writer(jpaWriter())
-                .listener(new MyChunkListener())
-                .listener(new MyStepExecutionListener())
-                .build();
-    }
-
-    @Bean
-    public PersonConverter processor() {
-        return new PersonConverter();
-    }
-
     @Autowired
     private EntityManagerFactory emf;
 
-    private JpaItemWriter<Person> jpaWriter() {
-        JpaItemWriter<Person> writer = new JpaItemWriter<>();
-        writer.setEntityManagerFactory(emf);
-        return writer;
-    }
 
-    private ItemReader<PersonXml> xmlReader() {
-        StaxEventItemReader<PersonXml> reader = new StaxEventItemReader<>();
-        reader.setResource(new FileSystemResource("data.xml"));
-        reader.setFragmentRootElementName("data");
-        Jaxb2Marshaller unmarshaller = new Jaxb2Marshaller();
-        unmarshaller.setClassesToBeBound(PersonXml.class);;
-        reader.setUnmarshaller(unmarshaller);
-        return reader;
-    }
+    // TODO define a chunk-based step
+    // reader: StaxEventItemReader; pass the FileSystemResource;
+    // processor: convert PersonXml -> Person
+    // writer: JpaItemWriter
+
+    // TODO tryout listeners
 
     private TaskletStep dummyTaskStep(String step) {
         return stepBuilderFactory.get(step).tasklet(new DummyTasklet(step)).build();
@@ -85,7 +58,6 @@ public class BatchBasicApp {
         return jobBuilderFactory.get("basicJob")
                 .incrementer(new RunIdIncrementer())
                 .start(dummyTaskStep("Aloha Spring Batch!"))
-                .listener(new MyJobListener())
                 .build();
 
     }
