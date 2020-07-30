@@ -86,7 +86,8 @@ public class BatchBasicApp {
         return writer;
     }
 
-    private ItemProcessor<PersonXml, Person> converter() {
+    @Bean
+    public ItemProcessor<PersonXml, Person> converter() {
         return new PersonConverter();
     }
 
