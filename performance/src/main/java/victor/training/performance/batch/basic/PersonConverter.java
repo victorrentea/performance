@@ -5,10 +5,10 @@ import org.slf4j.LoggerFactory;
 import org.springframework.batch.item.ItemProcessor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.cache.annotation.Cacheable;
+import org.springframework.stereotype.Component;
 
-import javax.persistence.EntityManager;
 import java.util.Map;
-import java.util.stream.Collectors;
 
 import static java.util.stream.Collectors.toMap;
 
@@ -16,21 +16,20 @@ public class PersonConverter implements ItemProcessor<PersonXml, Person> {
    private static final Logger log = LoggerFactory.getLogger(PersonConverter.class);
    @Autowired
    private CityRepo cityRepo;
-   private Map<String, Long> cities;
 
 
    @Value("#{jobExecutionContext['file.name.param']}")
    private String fileName;
+   @Autowired
+   private CityResolver cityResolver;
 
    @Override
    public Person process(PersonXml xmlItem) throws Exception {
       Person entity = new Person();
       entity.setName(xmlItem.getName());
 
-      if (cities == null) {
-         System.out.println("Loading cities from dB for fileName" + fileName);
-         cities = cityRepo.findAll().stream().collect(toMap(City::getName, City::getId));
-      }
+      Map<String, Long> cities = cityResolver.resolveAll();
+
 
       Long cityId = cities.get(xmlItem.getCity());
 
@@ -44,5 +43,16 @@ public class PersonConverter implements ItemProcessor<PersonXml, Person> {
       }
       entity.setCityId(cityId);
       return entity;
+   }
+}
+
+@Component
+class CityResolver {
+   @Autowired
+   private CityRepo cityRepo;
+
+   @Cacheable("cities")
+   public Map<String, Long> resolveAll() {
+      return cityRepo.findAll().stream().collect(toMap(City::getName, City::getId));
    }
 }
