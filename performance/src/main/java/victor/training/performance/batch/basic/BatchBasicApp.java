@@ -7,10 +7,11 @@ import org.springframework.batch.core.configuration.annotation.JobBuilderFactory
 import org.springframework.batch.core.configuration.annotation.StepBuilderFactory;
 import org.springframework.batch.core.launch.support.RunIdIncrementer;
 import org.springframework.batch.core.step.tasklet.TaskletStep;
-import org.springframework.batch.item.ItemReader;
+import org.springframework.batch.item.*;
 import org.springframework.batch.item.database.JpaItemWriter;
 import org.springframework.batch.item.xml.StaxEventItemReader;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
@@ -48,13 +49,46 @@ public class BatchBasicApp {
     // processor: convert PersonXml -> Person
     // writer: JpaItemWriter
 
+
     // TODO tryout listeners
+    // listener: set filename on execution context
 
     private TaskletStep dummyTaskStep(String step) {
         return stepBuilderFactory.get(step)
             .tasklet(new DummyTasklet(step))
             .build();
     }
+
+    @Value("${file.path}")
+    FileSystemResource inputFile;
+
+    @Value("${chunk.size:50}")
+    private int chunkSize;
+
+    private Step chunkStep() {
+        System.out.println("inputFile = " + inputFile);
+        return stepBuilderFactory.get("itemStep")
+                .<PersonXml, Person>chunk(chunkSize) // = dimensiunea Tranzactiei. face COMMIT dupa fiecare pagina
+                    // FOARTE IMPORTANT sa in experimentezi pe date reale pe un mediu cat mai aproape de caracteristicile de Prod
+                .reader(xmlReader())
+                .processor(converter())
+                .writer(jpaWriter())
+                .build();
+
+    }
+
+    private ItemWriter<Person> jpaWriter() {
+        return null;
+    }
+
+    private ItemProcessor<PersonXml, Person> converter() {
+        return null;
+    }
+
+    private ItemReader<PersonXml> xmlReader() {
+        return null;
+    }
+
     @Bean
     public Job basicJob() {
         return jobBuilderFactory.get("basicJob")
@@ -62,10 +96,13 @@ public class BatchBasicApp {
                 .start(dummyTaskStep("Unzip input file"))
                 .next(dummyTaskStep("Verify File"))
                 .next(dummyTaskStep("Send notification emails"))
+                .next(chunkStep())
                 .next(dummyTaskStep("Move files to /done folder"))
                 .listener(new MyJobListener())
                 .build();
 
     }
+
+
 }
 

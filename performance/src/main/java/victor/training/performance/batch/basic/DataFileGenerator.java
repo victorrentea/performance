@@ -15,7 +15,7 @@ public class DataFileGenerator {
             writer.write("<root>\n");
             for (int i = 0; i < recordCount; i++) {
                 String cityName = "City " + i / 1000;
-                writer.write("<data><name>elem"+i+"</name><city>"+cityName+"</city></data>\n");
+                writer.write("<person><name>elem"+i+"</name><city>"+cityName+"</city></person>\n");
             }
             writer.write("</root>");
         }
