@@ -16,6 +16,7 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
 import org.springframework.core.io.FileSystemResource;
+import org.springframework.oxm.Unmarshaller;
 import org.springframework.oxm.jaxb.Jaxb2Marshaller;
 
 import javax.persistence.EntityManagerFactory;
@@ -66,9 +67,10 @@ public class BatchBasicApp {
     private int chunkSize;
 
     private Step chunkStep() {
-        System.out.println("inputFile = " + inputFile);
+        System.out.println("inputFile = " + inputFile); // TODO
         return stepBuilderFactory.get("itemStep")
-                .<PersonXml, Person>chunk(chunkSize) // = dimensiunea Tranzactiei. face COMMIT dupa fiecare pagina
+                .<PersonXml, Person>chunk(chunkSize)
+            // = dimensiunea Tranzactiei. face COMMIT dupa fiecare pagina
                     // FOARTE IMPORTANT sa in experimentezi pe date reale pe un mediu cat mai aproape de caracteristicile de Prod
                 .reader(xmlReader())
                 .processor(converter())
@@ -78,15 +80,24 @@ public class BatchBasicApp {
     }
 
     private ItemWriter<Person> jpaWriter() {
-        return null;
+        // TODO log ce scriu
+        JpaItemWriter<Person> writer = new JpaItemWriter<>();
+        writer.setEntityManagerFactory(emf);
+        return writer;
     }
 
     private ItemProcessor<PersonXml, Person> converter() {
-        return null;
+        return new PersonConverter();
     }
 
     private ItemReader<PersonXml> xmlReader() {
-        return null;
+        StaxEventItemReader<PersonXml> reader = new StaxEventItemReader<>();
+        reader.setResource(inputFile);
+        reader.setFragmentRootElementName("person");
+        Jaxb2Marshaller u = new Jaxb2Marshaller();
+        u.setClassesToBeBound(PersonXml.class);
+        reader.setUnmarshaller(u);
+        return reader;
     }
 
     @Bean

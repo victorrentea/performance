@@ -22,7 +22,7 @@ class DummyTasklet implements Tasklet {
 //        }
         log.info("Running step " + stepName);
         Thread.sleep(1000);
-        if (true) throw new IllegalArgumentException("N-a fost bun fisierul");
+//        if (true) throw new IllegalArgumentException("N-a fost bun fisierul");
         return RepeatStatus.FINISHED;
     }
 }
