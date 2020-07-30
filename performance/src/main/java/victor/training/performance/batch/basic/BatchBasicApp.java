@@ -5,6 +5,7 @@ import org.springframework.batch.core.Step;
 import org.springframework.batch.core.configuration.annotation.EnableBatchProcessing;
 import org.springframework.batch.core.configuration.annotation.JobBuilderFactory;
 import org.springframework.batch.core.configuration.annotation.StepBuilderFactory;
+import org.springframework.batch.core.configuration.annotation.StepScope;
 import org.springframework.batch.core.launch.support.RunIdIncrementer;
 import org.springframework.batch.core.step.tasklet.TaskletStep;
 import org.springframework.batch.item.*;
@@ -87,6 +88,7 @@ public class BatchBasicApp {
     }
 
     @Bean
+    @StepScope
     public ItemProcessor<PersonXml, Person> converter() {
         return new PersonConverter();
     }
@@ -110,9 +112,14 @@ public class BatchBasicApp {
                 .next(dummyTaskStep("Send notification emails"))
                 .next(chunkStep())
                 .next(dummyTaskStep("Move files to /done folder"))
-                .listener(new MyJobListener())
+                .listener(getListener())
                 .build();
 
+    }
+
+    @Bean
+    public MyJobListener getListener() {
+        return new MyJobListener();
     }
 
 

@@ -4,6 +4,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.batch.item.ItemProcessor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 
 import javax.persistence.EntityManager;
 import java.util.Map;
@@ -16,13 +17,18 @@ public class PersonConverter implements ItemProcessor<PersonXml, Person> {
    @Autowired
    private CityRepo cityRepo;
    private Map<String, Long> cities;
+
+
+   @Value("#{jobExecutionContext['file.name.param']}")
+   private String fileName;
+
    @Override
    public Person process(PersonXml xmlItem) throws Exception {
       Person entity = new Person();
       entity.setName(xmlItem.getName());
 
       if (cities == null) {
-         System.out.println("Loading cities from dB");
+         System.out.println("Loading cities from dB for fileName" + fileName);
          cities = cityRepo.findAll().stream().collect(toMap(City::getName, City::getId));
       }
 
