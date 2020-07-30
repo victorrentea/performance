@@ -51,7 +51,7 @@ public class NPlusOneTest {
 
 	@Test
 	public void nPlusOne() {
-		List<Parent> parents = em.createQuery("SELECT  p FROM Parent p LEFT JOIN FETCH p.children ", Parent.class).getResultList();
+		List<Parent> parents = em.createQuery("SELECT  p FROM Parent p LEFT JOIN FETCH p.children ", Parent.class)/*.setMaxResults(3)*/.getResultList(); //PageRequest sau
 
 		System.out.println(parents.get(0) == parents.get(1));
 		Parent parent = em.find(Parent.class, 1l);
