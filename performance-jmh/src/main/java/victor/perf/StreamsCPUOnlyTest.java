@@ -37,7 +37,11 @@ public class StreamsCPUOnlyTest {
 
 	public int cpuOnlyTask(int n) {
 //		return n * n;
-		return (int) Math.sqrt(n);
+		int s= 0;
+		for (int i = 0; i < 10000; i++) {
+			 s+= (int) Math.sqrt(n);
+		}
+		return s;
 	}
 
 }

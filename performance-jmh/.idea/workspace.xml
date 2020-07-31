@@ -2,8 +2,6 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="0e1584f6-4d86-4d34-9539-64d7002532f5" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/victor/perf/StreamsCPUMixedTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/victor/perf/StreamsCPUMixedTest.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/victor/perf/StreamsCPUOnlyTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/victor/perf/StreamsCPUOnlyTest.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -175,7 +173,14 @@
       <option name="project" value="LOCAL" />
       <updated>1596199832026</updated>
     </task>
-    <option name="localTasksCounter" value="4" />
+    <task id="LOCAL-00004" summary="in case you are doing lots of computation per item, the stream() overhead compared to an imperative for is negelctible">
+      <created>1596201123545</created>
+      <option name="number" value="00004" />
+      <option name="presentableId" value="LOCAL-00004" />
+      <option name="project" value="LOCAL" />
+      <updated>1596201123545</updated>
+    </task>
+    <option name="localTasksCounter" value="5" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -198,17 +203,18 @@
     <MESSAGE value="add FizzBuzz JMH" />
     <MESSAGE value="add set vs list" />
     <MESSAGE value="add boxing experiment" />
-    <option name="LAST_COMMIT_MESSAGE" value="add boxing experiment" />
+    <MESSAGE value="in case you are doing lots of computation per item, the stream() overhead compared to an imperative for is negelctible" />
+    <option name="LAST_COMMIT_MESSAGE" value="in case you are doing lots of computation per item, the stream() overhead compared to an imperative for is negelctible" />
   </component>
   <component name="WindowStateProjectService">
-    <state x="375" y="0" key="CommitChangelistDialog2" timestamp="1596199830595">
+    <state x="375" y="0" key="CommitChangelistDialog2" timestamp="1596201122300">
       <screen x="0" y="0" width="1536" height="834" />
     </state>
-    <state x="375" y="0" key="CommitChangelistDialog2/0.0.1536.834/0.-1080.1920.1050@0.0.1536.834" timestamp="1596199830595" />
-    <state x="361" y="165" key="Vcs.Push.Dialog.v2" timestamp="1596199833414">
+    <state x="375" y="0" key="CommitChangelistDialog2/0.0.1536.834/0.-1080.1920.1050@0.0.1536.834" timestamp="1596201122300" />
+    <state x="361" y="165" key="Vcs.Push.Dialog.v2" timestamp="1596201124795">
       <screen x="0" y="0" width="1536" height="834" />
     </state>
-    <state x="361" y="165" key="Vcs.Push.Dialog.v2/0.0.1536.834/0.-1080.1920.1050@0.0.1536.834" timestamp="1596199833414" />
+    <state x="361" y="165" key="Vcs.Push.Dialog.v2/0.0.1536.834/0.-1080.1920.1050@0.0.1536.834" timestamp="1596201124795" />
   </component>
   <component name="masterDetails">
     <states>
