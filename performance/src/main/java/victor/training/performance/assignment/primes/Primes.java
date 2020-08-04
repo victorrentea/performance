@@ -46,15 +46,6 @@ public class Primes {
         }
         return count;
     }
-    public static List<Long> getPrimes(long start, long end) {
-        List<Long> list = new ArrayList<>();
-        for (long n = start; n <= end; n++) {
-            if (isPrime(n)) {
-                list.add(n);
-            }
-        }
-        return list;
-    }
 
 
     public static boolean isPrime(long n) {
