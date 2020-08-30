@@ -6,7 +6,9 @@ import static victor.training.performance.ConcurrencyUtil.sleepq;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.xml.ws.Holder;
+class Holder<T> {
+	public T value;
+}
 
 public class MonitorWaitNotifyBasic {
 	static Holder<String> masaTaskuri = new Holder<>();
