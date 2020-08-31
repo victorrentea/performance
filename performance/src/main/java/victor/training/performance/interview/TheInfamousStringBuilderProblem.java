@@ -1,43 +1,37 @@
 package victor.training.performance.interview;
 
-import static java.util.Arrays.asList;
-
-import java.io.FileWriter;
-import java.io.IOException;
-import java.io.Writer;
+import java.io.*;
 import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
+import java.util.stream.Stream;
 
 public class TheInfamousStringBuilderProblem {
-    public static void main(String[] args) throws IOException {
-        // TODO explore:
-        String a = "a"; // goes to String Pool
-        String b = "b";
-        if (a == "a") {
-            System.out.println("WTH?!");
-        }
-        String c = a + b + a; //2
-        c += a; // one more
+   public static void main(String[] args) throws IOException {
 
+      List<String> elements = IntStream.range(1,1_000_000).boxed().map(String::valueOf).collect(Collectors.toList());
 
-        List<String> list = asList("a", "b", "c");
+      long t0 = System.currentTimeMillis();
+      try (Writer writer = new BufferedWriter(new FileWriter(new File("out.txt")))) {
+         concatenateAllAndWrite(elements.stream(), writer);
+      }
+      long t1 = System.currentTimeMillis();
+      System.out.println("Took " + (t1-t0));
+   }
 
-        String s = infamous(list);
-
-        try (Writer w = new FileWriter("out.txt")) {
-            w.write(s);
-        }
-        // TODO more elements ?
-
-        // TODO Where could you offload data? File, CLOB, httpServletResponse.getWriter()
-
-        System.out.println("Done");
-    }
-
-    private static String infamous(List<String> list) {
-        String s = "Header";
-        for (String string : list) {
-            s += string + "\n";
-        }
-        return s;
-    }
+   private static void concatenateAllAndWrite(Stream<String> elementStream, Writer writer) {
+      elementStream.forEach(e -> {
+         try {
+            writer.write(e);
+            writer.write(",");
+         } catch (IOException ioException) {
+            ioException.printStackTrace();
+         }
+      });
+//      String result = "";
+//      for (String element : elements) {
+//         result += element + ",";
+//      }
+//      return result;
+   }
 }
