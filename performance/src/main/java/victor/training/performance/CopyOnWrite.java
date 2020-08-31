@@ -2,13 +2,14 @@ package victor.training.performance;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 import static victor.training.performance.ConcurrencyUtil.sleepq;
 
 public class CopyOnWrite {
 
    public static void main(String[] args) {
-      List<Integer> list = new ArrayList<>();
+      List<Integer> list = new CopyOnWriteArrayList<>();
       Thread thread = new Thread(new Builder(list));
       thread.start();
       while (thread.isAlive()) {
