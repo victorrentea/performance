@@ -8,9 +8,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 import victor.training.performance.ConcurrencyUtil;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
+import java.util.*;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
@@ -25,7 +23,7 @@ import static java.util.Collections.synchronizedList;
 public class BatchingOnTheFly {
    private final FragileServiceClientAggregator aggregator;
    static AtomicInteger id = new AtomicInteger();
-   @GetMapping
+   @GetMapping("batch")
    public Beer getBeer() throws ExecutionException, InterruptedException {
       int uniqueBeerId = id.incrementAndGet();
 
@@ -40,23 +38,33 @@ public class BatchingOnTheFly {
 class FragileServiceClientAggregator {
    private final FragileServiceClient client;
 
-   private List<Integer> idBuffer = new ArrayList<>();
+   private Map<Integer, CompletableFuture<Beer>> idBuffer = new HashMap<>();
 
    // []
    public Future<Beer> getBeer(int uniqueBeerId) {
-      List<Integer> thisChunk;
+      Map<Integer, CompletableFuture<Beer>> thisChunk;
       synchronized (this) {
-         idBuffer.add(uniqueBeerId); // din cate threaduri ruleaza linia asta ?
+
+         CompletableFuture<Beer> futureBeer = new CompletableFuture<>();
+         idBuffer.put(uniqueBeerId, futureBeer); // din cate threaduri ruleaza linia asta ?
+
          if (idBuffer.size() >= 2) {
-            thisChunk = new ArrayList<>(idBuffer);
+            //aici s-a umplut bufferul si chem fragile service
+            thisChunk = new HashMap<>(idBuffer);
             idBuffer.clear();
          } else {
-            return new CompletableFuture<>(); // un Future
+            return futureBeer; // un Future
          }
       }
 
-      List<Beer> beers = client.getBeer(thisChunk);
-      return CompletableFuture.completedFuture(beers.get(beers.size() - 1));
+      List<Beer> beers = client.getBeer(thisChunk.keySet());
+
+      for (Beer beer : beers) {
+         CompletableFuture<Beer> futureBeer = thisChunk.get(beer.getOrderId());
+         futureBeer.complete(beer);
+      }
+
+      return thisChunk.get(uniqueBeerId);
    }
 }
 
@@ -67,7 +75,7 @@ class FragileServiceClientAggregator {
 @Service
 @Slf4j
 class FragileServiceClient {
-   List<Beer> getBeer(List<Integer> orderIds) {
+   List<Beer> getBeer(Collection<Integer> orderIds) {
       log.info("Creez beri pt " + orderIds);
       ConcurrencyUtil.sleepq(1000);
       return orderIds.stream().map(Beer::new).collect(Collectors.toList());
