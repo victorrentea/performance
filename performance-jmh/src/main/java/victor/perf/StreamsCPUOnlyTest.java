@@ -39,4 +39,6 @@ public class StreamsCPUOnlyTest {
 		return (int) ((int) Math.log(Math.sqrt(n)) + Math.log(Math.sqrt(n)));
 	}
 
+	//
+
 }

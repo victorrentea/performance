@@ -5,9 +5,9 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="0e1584f6-4d86-4d34-9539-64d7002532f5" name="Default Changelist" comment="">
+      <change afterPath="$PROJECT_DIR$/../performance/src/main/java/victor/training/performance/pools/NewThreads.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/victor/perf/StreamsCPUOnlyTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/victor/perf/StreamsCPUOnlyTest.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/victor/perf/StringBuilderTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/victor/perf/StringBuilderTest.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -164,7 +164,7 @@
       <workItem from="1572355579198" duration="1233000" />
       <workItem from="1582573049384" duration="639000" />
       <workItem from="1584298982852" duration="4586000" />
-      <workItem from="1598859477435" duration="1825000" />
+      <workItem from="1598859477435" duration="3545000" />
     </task>
     <task id="LOCAL-00001" summary="add FizzBuzz JMH">
       <created>1582668553526</created>
@@ -187,7 +187,14 @@
       <option name="project" value="LOCAL" />
       <updated>1598861485415</updated>
     </task>
-    <option name="localTasksCounter" value="4" />
+    <task id="LOCAL-00004" summary="Stream vs for">
+      <created>1598862156657</created>
+      <option name="number" value="00004" />
+      <option name="presentableId" value="LOCAL-00004" />
+      <option name="project" value="LOCAL" />
+      <updated>1598862156657</updated>
+    </task>
+    <option name="localTasksCounter" value="5" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -210,13 +217,14 @@
     <MESSAGE value="add FizzBuzz JMH" />
     <MESSAGE value="add set vs list" />
     <MESSAGE value="String builder JMH" />
-    <option name="LAST_COMMIT_MESSAGE" value="String builder JMH" />
+    <MESSAGE value="Stream vs for" />
+    <option name="LAST_COMMIT_MESSAGE" value="Stream vs for" />
   </component>
   <component name="WindowStateProjectService">
-    <state x="373" y="0" key="CommitChangelistDialog2" timestamp="1598861484760">
+    <state x="373" y="0" key="CommitChangelistDialog2" timestamp="1598862155510">
       <screen x="0" y="0" width="1536" height="834" />
     </state>
-    <state x="373" y="0" key="CommitChangelistDialog2/0.0.1536.834/0.-1080.1920.1050@0.0.1536.834" timestamp="1598861484760" />
+    <state x="373" y="0" key="CommitChangelistDialog2/0.0.1536.834/0.-1080.1920.1050@0.0.1536.834" timestamp="1598862155510" />
     <state x="361" y="152" key="Vcs.Push.Dialog.v2" timestamp="1598861487918">
       <screen x="0" y="0" width="1536" height="834" />
     </state>
