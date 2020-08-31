@@ -2,19 +2,15 @@ package victor.training.performance;
 
 public class APlusPlus {
     private static Integer population = 0;
-
-    public synchronized static void m() {
-        population++;
-    }
+    private static final Object MONITOR = new Object();
 
     public static class ThreadA extends Thread {
 
         public  void run() {
             for (int i = 0; i < 10_000; i++) {
-//                synchronized (population) {
-//                    population++;
-//                }
-                m();
+                synchronized (MONITOR) {
+                    population++;
+                }
             }
         }
     }
@@ -22,10 +18,9 @@ public class APlusPlus {
     public static class ThreadB extends Thread {
         public void run() {
             for (int i = 0; i < 10_000; i++) {
-                m();
-//                synchronized (population) {
-//                    population++;
-//                }
+                synchronized (MONITOR) {
+                    population++;
+                }
             }
         }
     }
