@@ -8,6 +8,8 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 import victor.training.performance.ConcurrencyUtil;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.CompletableFuture;
@@ -15,6 +17,8 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
+
+import static java.util.Collections.synchronizedList;
 
 @RestController
 @RequiredArgsConstructor
@@ -36,20 +40,23 @@ public class BatchingOnTheFly {
 class FragileServiceClientAggregator {
    private final FragileServiceClient client;
 
-   private List<Integer> idBuffer;
+   private List<Integer> idBuffer = new ArrayList<>();
 
    // []
    public Future<Beer> getBeer(int uniqueBeerId) {
-      idBuffer.add(uniqueBeerId);
-      if (idBuffer.size() >= 2) {
-         List<Beer> beers = client.getBeer(idBuffer);
-         idBuffer.clear();
-
-//         ArrayBlockingQueue
-//         Futures
-         return CompletableFuture.completedFuture(beers.get(beers.size() - 1));
+      List<Integer> thisChunk;
+      synchronized (this) {
+         idBuffer.add(uniqueBeerId); // din cate threaduri ruleaza linia asta ?
+         if (idBuffer.size() >= 2) {
+            thisChunk = new ArrayList<>(idBuffer);
+            idBuffer.clear();
+         } else {
+            return new CompletableFuture<>(); // un Future
+         }
       }
-      return null; // cum intorc aici un Future<> care sa-l pot termina manual la linia 47?
+
+      List<Beer> beers = client.getBeer(thisChunk);
+      return CompletableFuture.completedFuture(beers.get(beers.size() - 1));
    }
 }
 
