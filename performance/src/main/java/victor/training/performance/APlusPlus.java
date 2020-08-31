@@ -1,26 +1,28 @@
 package victor.training.performance;
 
+import java.util.concurrent.atomic.AtomicInteger;
+
 public class APlusPlus {
-    private static Integer population = 0;
+    private static AtomicInteger population = new AtomicInteger(0);
     private static final Object MONITOR = new Object();
 
     public static class ThreadA extends Thread {
 
         public  void run() {
-            for (int i = 0; i < 10_000; i++) {
-                synchronized (MONITOR) {
-                    population++;
-                }
+            for (int i = 0; i < 100_000; i++) {
+//                synchronized (MONITOR) {
+                    population.incrementAndGet();
+//                }
             }
         }
     }
 
     public static class ThreadB extends Thread {
         public void run() {
-            for (int i = 0; i < 10_000; i++) {
-                synchronized (MONITOR) {
-                    population++;
-                }
+            for (int i = 0; i < 100_000; i++) {
+//                synchronized (MONITOR) {
+                    population.incrementAndGet();
+//                }
             }
         }
     }
