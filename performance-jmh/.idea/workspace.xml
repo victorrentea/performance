@@ -5,9 +5,10 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="0e1584f6-4d86-4d34-9539-64d7002532f5" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/../performance/src/main/java/victor/training/performance/pools/NewThreads.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/victor/perf/APlusPlusTest.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/victor/perf/StreamsCPUOnlyTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/victor/perf/StreamsCPUOnlyTest.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../performance/src/main/java/victor/training/performance/APlusPlus.java" beforeDir="false" afterPath="$PROJECT_DIR$/../performance/src/main/java/victor/training/performance/APlusPlus.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -94,17 +95,6 @@
         <option name="Make" enabled="true" />
       </method>
     </configuration>
-    <configuration default="true" type="ArquillianJUnit" factoryName="" nameIsGenerated="true">
-      <option name="arquillianRunConfiguration">
-        <value>
-          <option name="containerStateName" value="" />
-        </value>
-      </option>
-      <option name="TEST_OBJECT" value="class" />
-      <method v="2">
-        <option name="Make" enabled="true" />
-      </method>
-    </configuration>
     <configuration name="IOParallel.set1000" type="jmh-id" factoryName="Jmh" temporary="true" program-parameters="victor.perf.IOParallel.set1000" working-dir="C:\workspace\performance\performance-jmh" benchmark-type="METHOD" benchmark-class="victor.perf.IOParallel">
       <module name="performance-jmh" />
       <method v="2">
@@ -165,6 +155,7 @@
       <workItem from="1582573049384" duration="639000" />
       <workItem from="1584298982852" duration="4586000" />
       <workItem from="1598859477435" duration="3545000" />
+      <workItem from="1598875615803" duration="406000" />
     </task>
     <task id="LOCAL-00001" summary="add FizzBuzz JMH">
       <created>1582668553526</created>
