@@ -33,6 +33,7 @@ public class BatchingOnTheFly {
    }
 }
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 class FragileServiceClientAggregator {
@@ -42,6 +43,18 @@ class FragileServiceClientAggregator {
 
    // []
    public Future<Beer> getBeer(int uniqueBeerId) {
+
+      if (log.isDebugEnabled()) {
+         log.debug("Stuff " + uniqueBeerId + " of " + idBuffer.size());
+      }
+//         log.debug(new StringBuilder().append("Stuff ").append(uniqueBeerId).append(" of ").append(idBuffer.size()).toString()); // rau ca face char* v = malloc
+      log.debug("Stuff {} of {}", uniqueBeerId, idBuffer.size());
+
+      if (log.isTraceEnabled()) {
+         log.trace("Stuff {} of {}", uniqueBeerId, functieScumpaChemataAici(idBuffer));
+      }
+
+
       Map<Integer, CompletableFuture<Beer>> thisChunk;
       synchronized (this) {
 
@@ -57,6 +70,8 @@ class FragileServiceClientAggregator {
          }
       }
 
+
+
       List<Beer> beers = client.getBeer(thisChunk.keySet());
 
       for (Beer beer : beers) {
@@ -65,6 +80,11 @@ class FragileServiceClientAggregator {
       }
 
       return thisChunk.get(uniqueBeerId);
+   }
+
+   private String functieScumpaChemataAici(Map<Integer, CompletableFuture<Beer>> idBuffer) {
+      ConcurrencyUtil.sleepq(1000);
+      return "chestii";
    }
 }
 
