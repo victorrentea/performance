@@ -5,9 +5,8 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="0e1584f6-4d86-4d34-9539-64d7002532f5" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/encodings.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/encodings.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/victor/perf/StreamsCPUMixedTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/victor/perf/StreamsCPUMixedTest.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/victor/perf/StreamsCPUOnlyTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/victor/perf/StreamsCPUOnlyTest.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/victor/perf/StringBuilderTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/victor/perf/StringBuilderTest.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -32,6 +31,7 @@
     </option>
   </component>
   <component name="Git.Settings">
+    <option name="PREVIEW_PUSH_PROTECTED_ONLY" value="true" />
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$/.." />
   </component>
   <component name="MavenImportPreferences">
@@ -80,22 +80,9 @@
       <recent name="SetVsListTest" />
     </key>
   </component>
-  <component name="RunManager" selected="Jmh.IOParallel.set1000">
+  <component name="RunManager" selected="Jmh.StreamsCPUOnlyTest (1)">
     <configuration name="PlayMe" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
       <option name="MAIN_CLASS_NAME" value="victor.proxy.PlayMe" />
-      <module name="performance-jmh" />
-      <extension name="coverage">
-        <pattern>
-          <option name="PATTERN" value="victor.proxy.*" />
-          <option name="ENABLED" value="true" />
-        </pattern>
-      </extension>
-      <method v="2">
-        <option name="Make" enabled="true" />
-      </method>
-    </configuration>
-    <configuration name="ProxyPerformanceTest" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
-      <option name="MAIN_CLASS_NAME" value="victor.proxy.ProxyPerformanceTest" />
       <module name="performance-jmh" />
       <extension name="coverage">
         <pattern>
@@ -130,6 +117,12 @@
         <option name="Make" enabled="true" />
       </method>
     </configuration>
+    <configuration name="StreamsCPUOnlyTest (1)" type="jmh-id" factoryName="Jmh" temporary="true" program-parameters="victor.perf.StreamsCPUOnlyTest.*" working-dir="C:\workspace\performance\performance-jmh" benchmark-type="CLASS" benchmark-class="victor.perf.StreamsCPUOnlyTest">
+      <module name="performance-jmh" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
     <configuration name="StreamsCPUOnlyTest" type="jmh-id" factoryName="Jmh" temporary="true" program-parameters="victor.proxy.StreamsCPUOnlyTest.*" working-dir="C:\workspace\performance\performance-jmh" benchmark-type="CLASS" benchmark-class="victor.proxy.StreamsCPUOnlyTest">
       <module name="performance-jmh" />
       <method v="2">
@@ -137,19 +130,19 @@
       </method>
     </configuration>
     <list>
-      <item itemvalue="Application.ProxyPerformanceTest" />
       <item itemvalue="Application.PlayMe" />
       <item itemvalue="Jmh.StreamsCPUMixedTest" />
       <item itemvalue="Jmh.StreamsCPUOnlyTest" />
       <item itemvalue="Jmh.IOParallel.set1000" />
+      <item itemvalue="Jmh.StreamsCPUOnlyTest (1)" />
     </list>
     <recent_temporary>
       <list>
+        <item itemvalue="Jmh.StreamsCPUOnlyTest (1)" />
         <item itemvalue="Jmh.IOParallel.set1000" />
         <item itemvalue="Jmh.StreamsCPUOnlyTest" />
         <item itemvalue="Jmh.StreamsCPUMixedTest" />
         <item itemvalue="Application.PlayMe" />
-        <item itemvalue="Application.ProxyPerformanceTest" />
       </list>
     </recent_temporary>
   </component>
@@ -171,7 +164,7 @@
       <workItem from="1572355579198" duration="1233000" />
       <workItem from="1582573049384" duration="639000" />
       <workItem from="1584298982852" duration="4586000" />
-      <workItem from="1598859477435" duration="1203000" />
+      <workItem from="1598859477435" duration="1825000" />
     </task>
     <task id="LOCAL-00001" summary="add FizzBuzz JMH">
       <created>1582668553526</created>
@@ -187,7 +180,14 @@
       <option name="project" value="LOCAL" />
       <updated>1584305872471</updated>
     </task>
-    <option name="localTasksCounter" value="3" />
+    <task id="LOCAL-00003" summary="String builder JMH">
+      <created>1598861485415</created>
+      <option name="number" value="00003" />
+      <option name="presentableId" value="LOCAL-00003" />
+      <option name="project" value="LOCAL" />
+      <updated>1598861485415</updated>
+    </task>
+    <option name="localTasksCounter" value="4" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -209,41 +209,18 @@
     <option name="ADD_EXTERNAL_FILES_SILENTLY" value="true" />
     <MESSAGE value="add FizzBuzz JMH" />
     <MESSAGE value="add set vs list" />
-    <option name="LAST_COMMIT_MESSAGE" value="add set vs list" />
+    <MESSAGE value="String builder JMH" />
+    <option name="LAST_COMMIT_MESSAGE" value="String builder JMH" />
   </component>
   <component name="WindowStateProjectService">
-    <state x="388" y="2" key="CommitChangelistDialog2" timestamp="1584544457373">
+    <state x="373" y="0" key="CommitChangelistDialog2" timestamp="1598861484760">
       <screen x="0" y="0" width="1536" height="834" />
     </state>
-    <state x="388" y="2" key="CommitChangelistDialog2/0.0.1536.834@0.0.1536.834" timestamp="1584544457373" />
-    <state x="549" y="190" key="FileChooserDialogImpl" timestamp="1582573052435">
+    <state x="373" y="0" key="CommitChangelistDialog2/0.0.1536.834/0.-1080.1920.1050@0.0.1536.834" timestamp="1598861484760" />
+    <state x="361" y="152" key="Vcs.Push.Dialog.v2" timestamp="1598861487918">
       <screen x="0" y="0" width="1536" height="834" />
     </state>
-    <state x="549" y="190" key="FileChooserDialogImpl/0.0.1536.834@0.0.1536.834" timestamp="1582573052435" />
-    <state x="490" y="159" width="540" height="524" key="StructurePopup" timestamp="1584544349891">
-      <screen x="0" y="0" width="1536" height="834" />
-    </state>
-    <state x="490" y="159" width="540" height="524" key="StructurePopup/0.0.1536.834@0.0.1536.834" timestamp="1584544349891" />
-    <state x="361" y="153" key="Vcs.Push.Dialog.v2" timestamp="1582668554101">
-      <screen x="0" y="0" width="1536" height="834" />
-    </state>
-    <state x="361" y="153" key="Vcs.Push.Dialog.v2/0.0.1536.834@0.0.1536.834" timestamp="1582668554101" />
-    <state x="580" y="336" key="com.intellij.openapi.vcs.update.UpdateOrStatusOptionsDialogupdate-v2" timestamp="1584304475741">
-      <screen x="0" y="0" width="1536" height="834" />
-    </state>
-    <state x="580" y="336" key="com.intellij.openapi.vcs.update.UpdateOrStatusOptionsDialogupdate-v2/0.0.1536.834@0.0.1536.834" timestamp="1584304475741" />
-    <state x="499" y="180" key="extract.method.dialog" timestamp="1584306345033">
-      <screen x="0" y="0" width="1536" height="834" />
-    </state>
-    <state x="499" y="180" key="extract.method.dialog/0.0.1536.834@0.0.1536.834" timestamp="1584306345033" />
-    <state width="1116" height="652" key="javadoc.popup.new" timestamp="1584306034701">
-      <screen x="0" y="0" width="1536" height="834" />
-    </state>
-    <state width="1116" height="652" key="javadoc.popup.new/0.0.1536.834@0.0.1536.834" timestamp="1584306034701" />
-    <state x="431" y="155" width="672" height="678" key="search.everywhere.popup" timestamp="1584544344117">
-      <screen x="0" y="0" width="1536" height="834" />
-    </state>
-    <state x="431" y="155" width="672" height="678" key="search.everywhere.popup/0.0.1536.834@0.0.1536.834" timestamp="1584544344117" />
+    <state x="361" y="152" key="Vcs.Push.Dialog.v2/0.0.1536.834/0.-1080.1920.1050@0.0.1536.834" timestamp="1598861487918" />
   </component>
   <component name="masterDetails">
     <states>
