@@ -16,7 +16,7 @@ public class Leak2 {
 		// Clear JSESSIONID cookie
 		HttpSession session = request.getSession();
 		System.out.println("was new session: " + session.isNew());
-		session.setAttribute("rights",new BigObject80MB());
+//		session.setAttribute("rights",new BigObject80MB());
 		return "subtle, hard to find before stress tests";
 	}
 }

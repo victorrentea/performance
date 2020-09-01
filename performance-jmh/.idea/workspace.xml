@@ -5,7 +5,18 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="0e1584f6-4d86-4d34-9539-64d7002532f5" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/../performance/src/main/java/victor/training/performance/leaks/BatchingOnTheFly.java" beforeDir="false" afterPath="$PROJECT_DIR$/../performance/src/main/java/victor/training/performance/leaks/BatchingOnTheFly.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../performance/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../performance/pom.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../performance/run-redis.bat" beforeDir="false" afterPath="$PROJECT_DIR$/../performance/run-redis.bat" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../performance/src/main/java/victor/training/performance/ThreadLocals.java" beforeDir="false" afterPath="$PROJECT_DIR$/../performance/src/main/java/victor/training/performance/ThreadLocals.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../performance/src/main/java/victor/training/performance/cache/CacheApp.java" beforeDir="false" afterPath="$PROJECT_DIR$/../performance/src/main/java/victor/training/performance/cache/CacheApp.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../performance/src/main/java/victor/training/performance/leaks/BigObject20MB.java" beforeDir="false" afterPath="$PROJECT_DIR$/../performance/src/main/java/victor/training/performance/leaks/BigObject20MB.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../performance/src/main/java/victor/training/performance/leaks/Leak1.java" beforeDir="false" afterPath="$PROJECT_DIR$/../performance/src/main/java/victor/training/performance/leaks/Leak1.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../performance/src/main/java/victor/training/performance/leaks/Leak2.java" beforeDir="false" afterPath="$PROJECT_DIR$/../performance/src/main/java/victor/training/performance/leaks/Leak2.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../performance/src/main/java/victor/training/performance/leaks/Leak3.java" beforeDir="false" afterPath="$PROJECT_DIR$/../performance/src/main/java/victor/training/performance/leaks/Leak3.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../performance/src/main/java/victor/training/performance/leaks/Leak4.java" beforeDir="false" afterPath="$PROJECT_DIR$/../performance/src/main/java/victor/training/performance/leaks/Leak4.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../performance/src/main/java/victor/training/performance/leaks/Leak5.java" beforeDir="false" afterPath="$PROJECT_DIR$/../performance/src/main/java/victor/training/performance/leaks/Leak5.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../performance/src/main/resources/application.properties" beforeDir="false" afterPath="$PROJECT_DIR$/../performance/src/main/resources/application.properties" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -217,6 +228,10 @@
       <screen x="0" y="0" width="1536" height="834" />
     </state>
     <state x="361" y="152" key="Vcs.Push.Dialog.v2/0.0.1536.834/0.-1080.1920.1050@0.0.1536.834" timestamp="1598861487918" />
+    <state x="555" y="318" key="git4idea.remote.GitConfigureRemotesDialog" timestamp="1598886666237">
+      <screen x="0" y="0" width="1536" height="834" />
+    </state>
+    <state x="555" y="318" key="git4idea.remote.GitConfigureRemotesDialog/0.0.1536.834/0.-1080.1920.1050@0.0.1536.834" timestamp="1598886666237" />
   </component>
   <component name="masterDetails">
     <states>

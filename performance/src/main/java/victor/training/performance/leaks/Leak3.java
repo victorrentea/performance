@@ -12,6 +12,7 @@ import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
+import java.util.WeakHashMap;
 import java.util.concurrent.Callable;
 
 
@@ -39,6 +40,8 @@ class UserContext implements Serializable {
 		if (cache.containsKey(key)) {
 			return cache.get(key); // cache hit
 		}
+
+
 		BigObject20MB newObject = loadMethod.call();
 		cache.put(key, newObject);
 		return newObject;
