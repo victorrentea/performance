@@ -1,5 +1,6 @@
 package victor.training.jpa.perf;
 
+import lombok.Value;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.slf4j.Logger;
@@ -51,14 +52,23 @@ public class UberEntityTest {
         TestTransaction.start();
 
         log.info("Now, loading by id...");
-        List<UberEntity> list = em.createQuery("SELECT u FROM UberEntity u WHERE u.name = :name", UberEntity.class)
+        List<UberSearchResult> list = em.createQuery(
+            "SELECT new victor.training.jpa.perf.UberSearchResult(u.name, u.originCountry.name)" +
+                                             " FROM UberEntity u WHERE u.name = :name", UberSearchResult.class)
             .setParameter("name","UberX")
             .getResultList();
         log.info("Loaded");
         // TODO 1 change link types?
         // TODO 2 fetch only the necessary data
-        for (UberEntity uberEntity : list) {
-            System.out.println(uberEntity.getName() + "|" + uberEntity.getOriginCountry().getName());
+        for (UberSearchResult uberEntity : list) {
+            System.out.println(uberEntity.getName() + "|" + uberEntity.getOriginCountryName());
         }
     }
+}
+
+@Value
+class UberSearchResult {
+    String name;
+    String originCountryName;
+
 }
