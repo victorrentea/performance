@@ -3,7 +3,6 @@ package victor.training.jpa.perf;
 import javax.persistence.*;
 
 @Entity
-
 public class UberEntity {
     @Id
     @GeneratedValue

@@ -14,6 +14,8 @@ import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityManager;
 
+import java.sql.Connection;
+
 import static java.lang.System.currentTimeMillis;
 
 @RunWith(SpringRunner.class)
@@ -36,6 +38,8 @@ public class IdentifiersTest {
         TestTransaction.end();
         long t1 = currentTimeMillis();
         log.debug("Took {} ms", t1 - t0);
+//        Connection connection;
+//        connection.prepareStatement().batch
 
         // TODO play with: Sequence size, IDENTITY, TABLE,
         // TODO show ID gaps

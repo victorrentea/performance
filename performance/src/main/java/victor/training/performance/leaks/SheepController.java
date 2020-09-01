@@ -43,7 +43,7 @@ public class SheepController {
 @Slf4j
 @Service
 @RequiredArgsConstructor
-@Transactional
+//@Transactional
 class SheepService {
     private final SheepRepo repo;
     private final ShepardService shepard;
@@ -61,6 +61,7 @@ class SheepService {
 @Slf4j
 @Service
 class ShepardService {
+
     public String registerSheep(String name) {
         log.debug("Calling external WS");
         ConcurrencyUtil.sleepq(500);
