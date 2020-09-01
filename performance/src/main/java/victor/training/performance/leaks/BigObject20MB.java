@@ -1,5 +1,7 @@
 package victor.training.performance.leaks;
 
+import org.springframework.scheduling.support.CronTrigger;
+
 import java.io.Serializable;
 import java.util.Date;
 
