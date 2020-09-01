@@ -5,6 +5,10 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="0e1584f6-4d86-4d34-9539-64d7002532f5" name="Default Changelist" comment="">
+      <change afterPath="$PROJECT_DIR$/../performance-jfr/src/main/java/com/example/demo/CustomEventsPlay.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../performance-jfr/src/main/java/com/example/demo/DemoApplication.java" beforeDir="false" afterPath="$PROJECT_DIR$/../performance-jfr/src/main/java/com/example/demo/DemoApplication.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../performance-jfr/src/main/java/com/example/demo/GCStress.java" beforeDir="false" afterPath="$PROJECT_DIR$/../performance-jfr/src/main/java/com/example/demo/GCStress.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../performance-jfr/src/main/java/com/example/demo/MyEvent.java" beforeDir="false" afterPath="$PROJECT_DIR$/../performance-jfr/src/main/java/com/example/demo/CheckStockEvent.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -153,7 +157,7 @@
       <workItem from="1572355579198" duration="1233000" />
       <workItem from="1582573049384" duration="639000" />
       <workItem from="1584298982852" duration="4586000" />
-      <workItem from="1598996463577" duration="691000" />
+      <workItem from="1598996463577" duration="1371000" />
     </task>
     <task id="LOCAL-00001" summary="add FizzBuzz JMH">
       <created>1582668553526</created>

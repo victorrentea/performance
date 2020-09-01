@@ -8,10 +8,8 @@ public class GCStress {
    public static void main(String[] args) {
       List<int[]> arrays = new ArrayList<>();
       for (int i = 0; i < 10; i++) {
-         arrays.add(new int[10_000_000]);
+         arrays.add(new int[10_000_000]); // inspect TLAB allocations
       }
       System.out.println(arrays);
-      System.out.println("Press ENTER to continue...");
-      new Scanner(System.in).nextLine();
    }
 }

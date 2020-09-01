@@ -18,7 +18,7 @@ public class DemoApplication {
 class R1 {
 	@GetMapping
 	public String hello() throws InterruptedException {
-		MyEvent event = new MyEvent();
+		CheckStockEvent event = new CheckStockEvent();
 		event.begin();
 
 		int[] ints = new int[1000];
