@@ -1,4 +1,4 @@
-package victor.training.jpa;
+package victor.training.jfr;
 
 public class TestJava11 {
    public static void main(String[] args) {

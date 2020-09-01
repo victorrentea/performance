@@ -5,15 +5,13 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="0e1584f6-4d86-4d34-9539-64d7002532f5" name="Default Changelist" comment="">
+      <change afterPath="$PROJECT_DIR$/../performance-jfr/src/main/java/victor/training/jfr/App.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../performance-jfr/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../performance-jfr/pom.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../performance-jfr/src/main/java/module-info.java" beforeDir="false" afterPath="$PROJECT_DIR$/../performance-jfr/src/main/java/module-info.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../performance-jfr/src/main/java/victor/training/jpa/MyEvent.java" beforeDir="false" afterPath="$PROJECT_DIR$/../performance-jfr/src/main/java/victor/training/jfr/MyEvent.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../performance-jfr/src/main/java/victor/training/jpa/TestJava11.java" beforeDir="false" afterPath="$PROJECT_DIR$/../performance-jfr/src/main/java/victor/training/jfr/TestJava11.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../performance/src/main/java/victor/training/performance/leaks/BigObject20MB.java" beforeDir="false" afterPath="$PROJECT_DIR$/../performance/src/main/java/victor/training/performance/leaks/BigObject20MB.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../performance/src/main/java/victor/training/performance/leaks/Leak10_Java8.java" beforeDir="false" afterPath="$PROJECT_DIR$/../performance/src/main/java/victor/training/performance/leaks/Leak10_Java8.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../performance/src/main/java/victor/training/performance/leaks/Leak6_TheMostCommon.java" beforeDir="false" afterPath="$PROJECT_DIR$/../performance/src/main/java/victor/training/performance/leaks/Leak6_TheMostCommon.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../performance/src/main/java/victor/training/performance/leaks/Leak7_Cacheable.java" beforeDir="false" afterPath="$PROJECT_DIR$/../performance/src/main/java/victor/training/performance/leaks/Leak7_Cacheable.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../performance/src/main/java/victor/training/performance/leaks/Leak8_RealLife.java" beforeDir="false" afterPath="$PROJECT_DIR$/../performance/src/main/java/victor/training/performance/leaks/Leak8_RealLife.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../performance/src/main/java/victor/training/performance/leaks/Leak9_Weird.java" beforeDir="false" afterPath="$PROJECT_DIR$/../performance/src/main/java/victor/training/performance/leaks/Leak9_Weird.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../performance/src/main/java/victor/training/performance/leaks/LeaksApp.java" beforeDir="false" afterPath="$PROJECT_DIR$/../performance/src/main/java/victor/training/performance/leaks/LeaksApp.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../performance/src/main/resources/application.properties" beforeDir="false" afterPath="$PROJECT_DIR$/../performance/src/main/resources/application.properties" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../performance/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../performance/pom.xml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />

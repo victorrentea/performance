@@ -1,4 +1,4 @@
-package victor.training.jpa;
+package victor.training.jfr;
 
 import jdk.jfr.Event;
 
