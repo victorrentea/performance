@@ -5,13 +5,14 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="0e1584f6-4d86-4d34-9539-64d7002532f5" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/../performance-jfr/src/main/java/victor/training/jfr/App.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../performance-jfr/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../performance-jfr/pom.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../performance-jfr/src/main/java/module-info.java" beforeDir="false" afterPath="$PROJECT_DIR$/../performance-jfr/src/main/java/module-info.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../performance-jfr/src/main/java/victor/training/jpa/MyEvent.java" beforeDir="false" afterPath="$PROJECT_DIR$/../performance-jfr/src/main/java/victor/training/jfr/MyEvent.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../performance-jfr/src/main/java/victor/training/jpa/TestJava11.java" beforeDir="false" afterPath="$PROJECT_DIR$/../performance-jfr/src/main/java/victor/training/jfr/TestJava11.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../performance-jfr/src/main/java/victor/training/jfr/App.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../performance-jfr/src/main/java/victor/training/jfr/MyEvent.java" beforeDir="false" afterPath="$PROJECT_DIR$/../performance-jfr/src/main/java/victor/training/jfr/MyEvent.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../performance-jfr/src/main/java/victor/training/jfr/TestJava11.java" beforeDir="false" afterPath="$PROJECT_DIR$/../performance-jfr/src/main/java/victor/training/jfr/TestJava11.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../performance/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../performance/pom.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../performance/src/main/java/victor/training/performance/interview/Pointers.java" beforeDir="false" afterPath="$PROJECT_DIR$/../performance/src/main/java/victor/training/performance/interview/Pointers.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../performance/src/main/java/victor/training/performance/swing/ObserverInGUI.java" beforeDir="false" afterPath="$PROJECT_DIR$/../performance/src/main/java/victor/training/performance/swing/ObserverInGUI.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
