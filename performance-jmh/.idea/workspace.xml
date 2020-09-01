@@ -1,7 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
+  <component name="AutoImportSettings">
+    <option name="autoReloadType" value="SELECTIVE" />
+  </component>
   <component name="ChangeListManager">
-    <list default="true" id="0e1584f6-4d86-4d34-9539-64d7002532f5" name="Default Changelist" comment="" />
+    <list default="true" id="0e1584f6-4d86-4d34-9539-64d7002532f5" name="Default Changelist" comment="">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -64,7 +69,7 @@
       <recent name="SetVsListTest" />
     </key>
   </component>
-  <component name="RunManager" selected="Jmh.IOParallel.set1000">
+  <component name="RunManager" selected="Jmh.StreamsCPUMixedTest.streamSerial">
     <configuration name="PlayMe" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
       <option name="MAIN_CLASS_NAME" value="victor.proxy.PlayMe" />
       <module name="performance-jmh" />
@@ -78,15 +83,13 @@
         <option name="Make" enabled="true" />
       </method>
     </configuration>
-    <configuration name="ProxyPerformanceTest" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
-      <option name="MAIN_CLASS_NAME" value="victor.proxy.ProxyPerformanceTest" />
-      <module name="performance-jmh" />
-      <extension name="coverage">
-        <pattern>
-          <option name="PATTERN" value="victor.proxy.*" />
-          <option name="ENABLED" value="true" />
-        </pattern>
-      </extension>
+    <configuration default="true" type="ArquillianJUnit" factoryName="" nameIsGenerated="true">
+      <option name="arquillianRunConfiguration">
+        <value>
+          <option name="containerStateName" value="" />
+        </value>
+      </option>
+      <option name="TEST_OBJECT" value="class" />
       <method v="2">
         <option name="Make" enabled="true" />
       </method>
@@ -103,6 +106,12 @@
         <option name="Make" enabled="true" />
       </method>
     </configuration>
+    <configuration name="StreamsCPUMixedTest.streamSerial" type="jmh-id" factoryName="Jmh" temporary="true" program-parameters="victor.perf.StreamsCPUMixedTest.streamSerial" working-dir="C:\workspace\performance\performance-jmh" benchmark-type="METHOD" benchmark-class="victor.perf.StreamsCPUMixedTest">
+      <module name="performance-jmh" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
     <configuration name="StreamsCPUOnlyTest" type="jmh-id" factoryName="Jmh" temporary="true" program-parameters="victor.proxy.StreamsCPUOnlyTest.*" working-dir="C:\workspace\performance\performance-jmh" benchmark-type="CLASS" benchmark-class="victor.proxy.StreamsCPUOnlyTest">
       <module name="performance-jmh" />
       <method v="2">
@@ -110,22 +119,23 @@
       </method>
     </configuration>
     <list>
-      <item itemvalue="Application.ProxyPerformanceTest" />
       <item itemvalue="Application.PlayMe" />
       <item itemvalue="Jmh.StreamsCPUMixedTest" />
       <item itemvalue="Jmh.StreamsCPUOnlyTest" />
       <item itemvalue="Jmh.IOParallel.set1000" />
+      <item itemvalue="Jmh.StreamsCPUMixedTest.streamSerial" />
     </list>
     <recent_temporary>
       <list>
+        <item itemvalue="Jmh.StreamsCPUMixedTest.streamSerial" />
         <item itemvalue="Jmh.IOParallel.set1000" />
         <item itemvalue="Jmh.StreamsCPUOnlyTest" />
         <item itemvalue="Jmh.StreamsCPUMixedTest" />
         <item itemvalue="Application.PlayMe" />
-        <item itemvalue="Application.ProxyPerformanceTest" />
       </list>
     </recent_temporary>
   </component>
+  <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
   <component name="SvnConfiguration">
     <configuration />
   </component>
@@ -143,6 +153,7 @@
       <workItem from="1572355579198" duration="1233000" />
       <workItem from="1582573049384" duration="639000" />
       <workItem from="1584298982852" duration="4586000" />
+      <workItem from="1598996463577" duration="691000" />
     </task>
     <task id="LOCAL-00001" summary="add FizzBuzz JMH">
       <created>1582668553526</created>
@@ -162,7 +173,7 @@
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
-    <option name="version" value="1" />
+    <option name="version" value="3" />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
     <option name="TAB_STATES">
@@ -183,38 +194,14 @@
     <option name="LAST_COMMIT_MESSAGE" value="add set vs list" />
   </component>
   <component name="WindowStateProjectService">
-    <state x="388" y="2" key="CommitChangelistDialog2" timestamp="1584544457373">
+    <state x="223" y="72" key="#com.intellij.execution.impl.EditConfigurationsDialog" timestamp="1598996591533">
       <screen x="0" y="0" width="1536" height="834" />
     </state>
-    <state x="388" y="2" key="CommitChangelistDialog2/0.0.1536.834@0.0.1536.834" timestamp="1584544457373" />
-    <state x="549" y="190" key="FileChooserDialogImpl" timestamp="1582573052435">
+    <state x="223" y="72" key="#com.intellij.execution.impl.EditConfigurationsDialog/0.0.1536.834@0.0.1536.834" timestamp="1598996591533" />
+    <state x="277" y="62" key="SettingsEditor" timestamp="1598996598274">
       <screen x="0" y="0" width="1536" height="834" />
     </state>
-    <state x="549" y="190" key="FileChooserDialogImpl/0.0.1536.834@0.0.1536.834" timestamp="1582573052435" />
-    <state x="490" y="159" width="540" height="524" key="StructurePopup" timestamp="1584544349891">
-      <screen x="0" y="0" width="1536" height="834" />
-    </state>
-    <state x="490" y="159" width="540" height="524" key="StructurePopup/0.0.1536.834@0.0.1536.834" timestamp="1584544349891" />
-    <state x="361" y="153" key="Vcs.Push.Dialog.v2" timestamp="1582668554101">
-      <screen x="0" y="0" width="1536" height="834" />
-    </state>
-    <state x="361" y="153" key="Vcs.Push.Dialog.v2/0.0.1536.834@0.0.1536.834" timestamp="1582668554101" />
-    <state x="580" y="336" key="com.intellij.openapi.vcs.update.UpdateOrStatusOptionsDialogupdate-v2" timestamp="1584304475741">
-      <screen x="0" y="0" width="1536" height="834" />
-    </state>
-    <state x="580" y="336" key="com.intellij.openapi.vcs.update.UpdateOrStatusOptionsDialogupdate-v2/0.0.1536.834@0.0.1536.834" timestamp="1584304475741" />
-    <state x="499" y="180" key="extract.method.dialog" timestamp="1584306345033">
-      <screen x="0" y="0" width="1536" height="834" />
-    </state>
-    <state x="499" y="180" key="extract.method.dialog/0.0.1536.834@0.0.1536.834" timestamp="1584306345033" />
-    <state width="1116" height="652" key="javadoc.popup.new" timestamp="1584306034701">
-      <screen x="0" y="0" width="1536" height="834" />
-    </state>
-    <state width="1116" height="652" key="javadoc.popup.new/0.0.1536.834@0.0.1536.834" timestamp="1584306034701" />
-    <state x="431" y="155" width="672" height="678" key="search.everywhere.popup" timestamp="1584544344117">
-      <screen x="0" y="0" width="1536" height="834" />
-    </state>
-    <state x="431" y="155" width="672" height="678" key="search.everywhere.popup/0.0.1536.834@0.0.1536.834" timestamp="1584544344117" />
+    <state x="277" y="62" key="SettingsEditor/0.0.1536.834@0.0.1536.834" timestamp="1598996598274" />
   </component>
   <component name="masterDetails">
     <states>
