@@ -44,6 +44,12 @@ public class NPlusOneTest {
 				.addChild(new Child("Stephan"))
 				.addChild(new Child("Paul"))
 		);
+		em.persist(new Parent("Peter")
+		);
+		em.persist(new Parent("Peter")
+		);
+		em.persist(new Parent("Peter")
+		);
 		TestTransaction.end();
 		TestTransaction.start();
 	}
@@ -63,6 +69,7 @@ public class NPlusOneTest {
 		log.debug("Start iterating over {} parents: {}", parents.size(), parents);
 		int total = 0;
 		for (Parent parent : parents) {
+			// SELECT 2..8 ms
 			total += parent.getChildren().size();
 		}
 		log.debug("Done counting: {} children", total);

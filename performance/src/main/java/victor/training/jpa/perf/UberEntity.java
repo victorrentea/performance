@@ -6,6 +6,7 @@ import javax.persistence.Id;
 import javax.persistence.ManyToOne;
 
 @Entity
+
 public class UberEntity {
     @Id
     @GeneratedValue

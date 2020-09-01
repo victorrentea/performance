@@ -13,6 +13,7 @@ import org.springframework.test.context.transaction.TestTransaction;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityManager;
+import java.util.List;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
@@ -37,6 +38,7 @@ public class UberEntityTest {
 
 
         UberEntity uber = new UberEntity()
+                .setName("UberX")
                 .setFiscalCountry(romania)
                 .setOriginCountry(romania)
                 .setInvoicingCountry(romania)
@@ -49,10 +51,14 @@ public class UberEntityTest {
         TestTransaction.start();
 
         log.info("Now, loading by id...");
-        UberEntity uberEntity = em.find(UberEntity.class, uber.getId());
+        List<UberEntity> list = em.createQuery("SELECT u FROM UberEntity u WHERE u.name = :name", UberEntity.class)
+            .setParameter("name","UberX")
+            .getResultList();
         log.info("Loaded");
         // TODO 1 change link types?
         // TODO 2 fetch only the necessary data
-        System.out.println(uberEntity.getName() + "|" + uberEntity.getOriginCountry().getName());
+        for (UberEntity uberEntity : list) {
+            System.out.println(uberEntity.getName() + "|" + uberEntity.getOriginCountry().getName());
+        }
     }
 }
