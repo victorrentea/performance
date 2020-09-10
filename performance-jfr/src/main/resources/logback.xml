@@ -7,7 +7,7 @@
         </layout>
     </appender>
 
-
+<!--    <logger name="victor.training.jfr.FileProcessor" level="DEBUG"-->
 
     <root level="info">
         <appender-ref ref="console" />

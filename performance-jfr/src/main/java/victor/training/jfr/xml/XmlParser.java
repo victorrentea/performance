@@ -17,7 +17,7 @@ import java.util.Scanner;
 public class XmlParser {
    public static void main(String[] args) throws JAXBException, IOException {
       File file = new File("data.txt");
-      XmlGenerator.generate(file, 10000);
+      XmlGenerator.generate(file, 50000);
 
       System.out.println("[ENTER] when ready");
       new Scanner(System.in).nextLine();
