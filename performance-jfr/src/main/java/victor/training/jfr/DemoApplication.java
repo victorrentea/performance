@@ -2,13 +2,13 @@ package victor.training.jfr;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.slf4j.Marker;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.EnableMBeanExport;
+import org.springframework.core.task.TaskDecorator;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
@@ -28,12 +28,29 @@ public class DemoApplication {
 	public void m() {
 	    log.debug("Stuff");
 	}
+	@Value("${minWaitThresholdForLogging}")
+	private long minWaitThresholdForLogging;
 
 	@Bean
 	public ThreadPoolTaskExecutor importThreadPool(@Value("${import.pool.size}") int importPoolSize) {
 		ThreadPoolTaskExecutor pool = new ThreadPoolTaskExecutor();
 		pool.setMaxPoolSize(importPoolSize);
 		pool.setCorePoolSize(importPoolSize);
+		pool.setTaskDecorator(new TaskDecorator() {
+			@Override
+			public Runnable decorate(Runnable original) {
+				log.info("Decorating task running in the thread that does .submit()");
+				long submitTime  = System.currentTimeMillis();
+				return () -> {
+					long startTime = System.currentTimeMillis();
+					if (startTime - submitTime > minWaitThresholdForLogging) {
+						log.info("Waited in queue {} seconds" , (startTime-submitTime)/1000);
+					}
+					log.info("Start task - works on worker thread");
+					original.run();
+				};
+			}
+		});
 		return pool;
 	}
 
@@ -47,14 +64,8 @@ class DataStructure {}
 @Component
 class FileProcessor {
 	private static final Logger log = LoggerFactory.getLogger(FileProcessor.class);
-	@Value("${minWaitThresholdForLogging}")
-	private long minWaitThresholdForLogging;
 
-	public void processFile(int fileId, long sumbmitTime) {
-		long startTime = System.currentTimeMillis();
-		if (startTime - sumbmitTime > minWaitThresholdForLogging) {
-			log.info("Waited in queue {} seconds" , (startTime-sumbmitTime)/1000);
-		}
+	public void processFile(int fileId) {
 		log.info("Start processing file {}", fileId);
 		ThreadUtils.sleepq(5_000); //network
 		Tasks.cpu(5_000);
@@ -80,7 +91,7 @@ class R1 {
 		}
 		log.info("Submitting file {}", fileId);
 		long sumbmitTime = System.currentTimeMillis();
-		importThreadPool.submit(() -> fileProcessor.processFile(fileId, sumbmitTime));
+		importThreadPool.submit(() -> fileProcessor.processFile(fileId));
 		return "Done";
 	}
 
