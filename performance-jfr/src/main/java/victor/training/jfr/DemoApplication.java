@@ -9,6 +9,7 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.EnableMBeanExport;
+import org.springframework.core.task.TaskDecorator;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
@@ -24,25 +25,11 @@ import java.util.concurrent.atomic.AtomicInteger;
 public class DemoApplication {
 	private static final Logger log = LoggerFactory.getLogger(DemoApplication.class);
 
-	@Scheduled(fixedRate = 1000)
-	public void m() {
-	    log.debug("Stuff");
-	}
-
-	@Bean
-	public ThreadPoolTaskExecutor importThreadPool(@Value("${import.pool.size}") int importPoolSize) {
-		ThreadPoolTaskExecutor pool = new ThreadPoolTaskExecutor();
-		pool.setMaxPoolSize(importPoolSize);
-		pool.setCorePoolSize(importPoolSize);
-		return pool;
-	}
 
 	public static void main(String[] args) {
 		SpringApplication.run(DemoApplication.class, args);
 	}
 }
-
-class DataStructure {}
 
 @Component
 class FileProcessor {
@@ -64,34 +51,7 @@ class FileProcessor {
 
 @RestController
 class R1 {
-	AtomicInteger atomicInteger = new AtomicInteger(0);
 	private static final Logger log = LoggerFactory.getLogger(R1.class);
-	@Autowired
-	private ThreadPoolTaskExecutor importThreadPool;
-	@Autowired
-	private FileProcessor fileProcessor;
-
-	@GetMapping("file")
-	public String startProcessingFile() {
-		int fileId = atomicInteger.incrementAndGet();
-
-		if (log.isDebugEnabled()) {
-			log.debug("Start {}", convertToJson(new DataStructure()));
-		}
-		log.info("Submitting file {}", fileId);
-		long sumbmitTime = System.currentTimeMillis();
-		importThreadPool.submit(() -> fileProcessor.processFile(fileId, sumbmitTime));
-		return "Done";
-	}
-
-	private String convertToJson(DataStructure dataStructure) {
-		try {
-			Thread.sleep(2000);
-		} catch (InterruptedException e) {
-			e.printStackTrace();
-		}
-		return "somthething which in prod is not really logged anywhere";
-	}
 
 	@GetMapping("jfr")
 	public String hello() throws InterruptedException {
