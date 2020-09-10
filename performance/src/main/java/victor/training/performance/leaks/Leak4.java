@@ -19,6 +19,7 @@ public class Leak4 {
 		threadLocal.set(requestContext);
 		requestContext.rights = new CachingMethodObject()
 				.createRightsCalculator();
+		// here, no one references CachingMethodObject, but onl
 		return "the most subtle";
 	}
 }
@@ -28,14 +29,16 @@ class MyAppRequestContext {
 }
 
 class CachingMethodObject {
-	public class UserRightsCalculator {
+
+	public static class UserRightsCalculator { // this instance remains in memory
 		public void doStuff() {
-			System.out.println("Stupid Code");
+			System.out.println("Stupid Code "/* + CachingMethodObject.this.cache*/);
 			// what's the connection with the 'cache' field ?
 		}
 	}
 
-	private Map<String, BigObject20MB> cache = new HashMap<>();
+	private Map<String, BigObject20MB> cache = new HashMap<>(); // why does this remain in memory ?
+	// because the inner class instance has a hidden reference to the outer instance
 
 	public UserRightsCalculator createRightsCalculator() {
 		cache.put("a", new BigObject20MB());

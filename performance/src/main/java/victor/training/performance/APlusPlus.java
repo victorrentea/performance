@@ -14,7 +14,9 @@ public class APlusPlus {
             //SELECT FOR UPDATE :) --- lock a ROW in the database for the duration of the current Tx
             // any other Tx trying to do SELECT FOR UPDATE will HANG until your Tx terminates
             synchronized (MONITOR) {
+               // SELECT
                population++;
+               // INSERT/UPDATE
             }
             // COMMIT
          }
