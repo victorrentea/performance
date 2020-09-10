@@ -10,9 +10,13 @@ public class APlusPlus {
       public void run() {
          for (int i = 0; i < 5_000; i++) {
             ConcurrencyUtil.sleepq(1); // DB call , HTTP call.
+            // START TRANSACTION
+            //SELECT FOR UPDATE :) --- lock a ROW in the database for the duration of the current Tx
+            // any other Tx trying to do SELECT FOR UPDATE will HANG until your Tx terminates
             synchronized (MONITOR) {
                population++;
             }
+            // COMMIT
          }
       }
    }
