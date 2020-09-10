@@ -17,27 +17,43 @@ import java.util.Scanner;
 public class XmlParser {
    public static void main(String[] args) throws JAXBException, IOException {
       File file = new File("data.txt");
-      XmlGenerator.generate(file, 50000);
+      XmlGenerator.generate(file,   1_00);
 
       System.out.println("[ENTER] when ready");
       new Scanner(System.in).nextLine();
+      System.out.println("Start");
 
       int sum = 0;
-      for (int i = 0; i < 1000; i++) {
+      for (int i = 0; i < 10000; i++) {
          sum += sumRecords(file);
       }
       System.out.println(sum);
    }
 
+
+   static JAXBContext context; //40%
+
+   static {
+      try {
+         context = JAXBContext.newInstance(Records.class, Record.class);
+      } catch (JAXBException e) {
+         e.printStackTrace();
+      }
+   }
+
    private static int sumRecords(File file) throws JAXBException, IOException {
-      JAXBContext context = JAXBContext.newInstance(Records.class, Record.class);
       Unmarshaller unmarshaller = context.createUnmarshaller();
       int sum = 0;
       try (FileReader reader = new FileReader(file)) {
          Records rez = (Records) unmarshaller.unmarshal(reader);
-         for (Record record : rez.getRecord()) {
-            sum += record.getValue();
-         }
+         sum = sumVlaues(sum, rez);
+      }
+      return sum;
+   }
+
+   private static int sumVlaues(int sum, Records rez) {
+      for (Record record : rez.getRecord()) {
+         sum += record.getValue();
       }
       return sum;
    }
