@@ -43,21 +43,35 @@ public class SheepController {
 @Slf4j
 @Service
 @RequiredArgsConstructor
-@Transactional
 class SheepService {
     private final SheepRepo repo;
     private final ShepardService shepard;
+    private final OtherService otherService;
 
     public Long create(String name) {
         String sn = shepard.registerSheep(name);
-        log.debug("Persist");
-        Sheep sheep = repo.save(new Sheep(name, sn));
+        Sheep sheep = otherService.writeSheep(name, sn);
         return sheep.getId();
     }
     public List<Sheep> search(String name) {
         return repo.getByNameLike(name);
     }
 }
+
+@Slf4j
+@RequiredArgsConstructor
+@Service
+class OtherService {
+    private final SheepRepo repo;
+    @Transactional
+    public Sheep writeSheep(String name, String sn) {
+        log.debug("Persist");
+        Sheep sheep = repo.save(new Sheep(name, sn));
+        return sheep;
+    }
+
+}
+
 @Slf4j
 @Service
 class ShepardService {
@@ -83,6 +97,7 @@ class Sheep {
     private String name;
     private String sn;
 
+    public Sheep() {}
     public Sheep(String name, String sn) {
         this.name = name;
         this.sn = sn;

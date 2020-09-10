@@ -11,6 +11,8 @@ public class Leak9_Weird {
 	public String test() {
 		BigObject80MB big = new BigObject80MB();
 		while (true) ; // or sleep 60 sec
+		// or a loooong network call
+		// or a deadlock
 		// Conclusion?...
 	}
 }
