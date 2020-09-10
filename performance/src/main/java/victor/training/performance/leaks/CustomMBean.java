@@ -12,7 +12,6 @@ import org.springframework.stereotype.Service;
 @Component
 public class CustomMBean {
     private String name;
-    private int age;
 
     @Autowired
     private TrickyProcess process;
