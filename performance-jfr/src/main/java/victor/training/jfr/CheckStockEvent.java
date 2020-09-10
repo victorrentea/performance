@@ -1,4 +1,4 @@
-package com.example.demo;
+package victor.training.jfr;
 
 import jdk.jfr.Category;
 import jdk.jfr.Event;

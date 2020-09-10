@@ -1,10 +1,10 @@
-package com.example.demo;
+package victor.training.jfr;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
 
-public class GCStress {
+public class LargeObjects {
    public static void main(String[] args) {
       List<int[]> arrays = new ArrayList<>();
       for (int i = 0; i < 10; i++) {

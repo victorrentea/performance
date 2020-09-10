@@ -1,4 +1,4 @@
-package com.example.demo;
+package victor.training.jfr;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

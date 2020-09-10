@@ -4,13 +4,7 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="0e1584f6-4d86-4d34-9539-64d7002532f5" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/../performance-jfr/src/main/java/com/example/demo/CustomEventsPlay.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../performance-jfr/src/main/java/com/example/demo/DemoApplication.java" beforeDir="false" afterPath="$PROJECT_DIR$/../performance-jfr/src/main/java/com/example/demo/DemoApplication.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../performance-jfr/src/main/java/com/example/demo/GCStress.java" beforeDir="false" afterPath="$PROJECT_DIR$/../performance-jfr/src/main/java/com/example/demo/GCStress.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../performance-jfr/src/main/java/com/example/demo/MyEvent.java" beforeDir="false" afterPath="$PROJECT_DIR$/../performance-jfr/src/main/java/com/example/demo/CheckStockEvent.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-    </list>
+    <list default="true" id="0e1584f6-4d86-4d34-9539-64d7002532f5" name="Default Changelist" comment="" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -202,6 +196,22 @@
       <screen x="0" y="0" width="1536" height="834" />
     </state>
     <state x="223" y="72" key="#com.intellij.execution.impl.EditConfigurationsDialog/0.0.1536.834@0.0.1536.834" timestamp="1598996591533" />
+    <state width="1493" height="227" key="GridCell.Tab.0.bottom" timestamp="1598999463559">
+      <screen x="0" y="0" width="1536" height="834" />
+    </state>
+    <state width="1493" height="227" key="GridCell.Tab.0.bottom/0.0.1536.834@0.0.1536.834" timestamp="1598999463559" />
+    <state width="1493" height="227" key="GridCell.Tab.0.center" timestamp="1598999463559">
+      <screen x="0" y="0" width="1536" height="834" />
+    </state>
+    <state width="1493" height="227" key="GridCell.Tab.0.center/0.0.1536.834@0.0.1536.834" timestamp="1598999463559" />
+    <state width="1493" height="227" key="GridCell.Tab.0.left" timestamp="1598999463559">
+      <screen x="0" y="0" width="1536" height="834" />
+    </state>
+    <state width="1493" height="227" key="GridCell.Tab.0.left/0.0.1536.834@0.0.1536.834" timestamp="1598999463559" />
+    <state width="1493" height="227" key="GridCell.Tab.0.right" timestamp="1598999463559">
+      <screen x="0" y="0" width="1536" height="834" />
+    </state>
+    <state width="1493" height="227" key="GridCell.Tab.0.right/0.0.1536.834@0.0.1536.834" timestamp="1598999463559" />
     <state x="277" y="62" key="SettingsEditor" timestamp="1598996598274">
       <screen x="0" y="0" width="1536" height="834" />
     </state>
