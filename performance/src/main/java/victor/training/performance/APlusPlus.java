@@ -20,7 +20,7 @@ public class APlusPlus {
     }
 
     // TODO (bonus): ConcurrencyUtil.useCPU(1)
-
+    // TODO (extra bonus): Analyze with JFR
 
     public static void main(String[] args) throws InterruptedException {
         ThreadA threadA = new ThreadA();
