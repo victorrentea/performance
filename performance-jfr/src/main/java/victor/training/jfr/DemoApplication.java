@@ -104,18 +104,18 @@ class R1 {
 		return "somthething which in prod is not really logged anywhere";
 	}
 
-	@GetMapping("jfr")
-	public String hello() throws InterruptedException {
-		CheckStockEvent event = new CheckStockEvent();
-		event.begin();
-
-		int[] ints = new int[1000];
-		System.out.println(ints.length);
-
-		Thread.sleep(1000);
-		if (event.isEnabled()) {
-			event.commit();
-		}
-		return "Hello";
-	}
+//	@GetMapping("jfr")
+//	public String hello() throws InterruptedException {
+//		CheckStockEvent event = new CheckStockEvent();
+//		event.begin();
+//
+//		int[] ints = new int[1000];
+//		System.out.println(ints.length);
+//
+//		Thread.sleep(1000);
+//		if (event.isEnabled()) {
+//			event.commit();
+//		}
+//		return "Hello";
+//	}
 }
