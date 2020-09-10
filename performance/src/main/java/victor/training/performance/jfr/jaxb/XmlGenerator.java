@@ -1,4 +1,4 @@
-package victor.training.jfr.xml;
+package victor.training.performance.jfr.jaxb;
 
 import java.io.BufferedWriter;
 import java.io.File;

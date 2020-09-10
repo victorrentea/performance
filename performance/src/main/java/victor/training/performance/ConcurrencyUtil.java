@@ -65,4 +65,10 @@ public class ConcurrencyUtil {
 		}
 		System.out.println(line + pad + message);
 	}
+
+	public static void waitForEnter() {
+		System.out.println("[ENTER] to continue");
+		new Scanner(System.in).nextLine();
+		System.out.println("Start!");
+	}
 }

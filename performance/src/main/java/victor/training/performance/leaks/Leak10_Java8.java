@@ -25,6 +25,7 @@ public class Leak10_Java8 {
 		return "Keep calling this 5 times fast";
 	}
 }
+
 @Slf4j
 @Service
 class Worker {

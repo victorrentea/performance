@@ -16,7 +16,7 @@ public class TheInfamousStringBuilderProblem {
 
         // TODO join elements with "," and print them on the console
 
-        // TODO 1M
+        // TODO 300K
         // TODO JFR +=
     }
 }

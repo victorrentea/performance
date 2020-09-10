@@ -83,6 +83,7 @@ class Sheep {
     private String name;
     private String sn;
 
+    public Sheep() {}
     public Sheep(String name, String sn) {
         this.name = name;
         this.sn = sn;

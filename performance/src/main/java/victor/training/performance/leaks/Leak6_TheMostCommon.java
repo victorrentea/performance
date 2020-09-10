@@ -21,6 +21,6 @@ public class Leak6_TheMostCommon {
    @GetMapping
    public String test() {
       oops.put(UUID.randomUUID().toString(), new BigObject20MB());
-      return "the most brainless, but most common. Long Live SonarLint";
+      return "the most brainless, but the most common. Long Live SonarLint";
    }
 }

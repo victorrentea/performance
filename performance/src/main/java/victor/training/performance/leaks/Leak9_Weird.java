@@ -10,7 +10,7 @@ public class Leak9_Weird {
 	@GetMapping
 	public String test() {
 		BigObject80MB big = new BigObject80MB();
-		while (true) ; // or sleep 60 sec
+		while (true) ; // or wait for a loong network call, or sleep 60 sec, or deadlock
 		// Conclusion?...
 	}
 }

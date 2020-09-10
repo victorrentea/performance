@@ -1,4 +1,4 @@
-package victor.training.jfr;
+package victor.training.performance.jfr.tlab;
 
 import java.util.Scanner;
 

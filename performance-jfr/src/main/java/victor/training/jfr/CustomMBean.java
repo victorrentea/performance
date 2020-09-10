@@ -29,17 +29,9 @@ class TrickyProcess {
 
 @ManagedResource(
         objectName="bean:name=testBean4",
-        description="My Managed Bean",
-        log=true,
-        logFile="jmx.log",
-        currencyTimeLimit=15,
-        persistPolicy="OnUpdate",
-        persistPeriod=200,
-        persistLocation="foo",
-        persistName="bar")
+        description="My Managed Bean")
 @Component
-public class AnnotationTestBean implements IJmxTestBean {
-
+public class CustomMBean {
     private String name;
     private int age;
 
@@ -79,10 +71,6 @@ public class AnnotationTestBean implements IJmxTestBean {
         @ManagedOperationParameter(name = "y", description = "The second number")})
     public int add(int x, int y) {
         return x + y;
-    }
-
-    public void dontExposeMe() {
-        throw new RuntimeException();
     }
 
 }
