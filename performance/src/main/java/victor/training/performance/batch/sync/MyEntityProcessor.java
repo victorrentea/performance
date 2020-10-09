@@ -12,6 +12,7 @@ import java.util.List;
 @Slf4j
 public class MyEntityProcessor implements ItemProcessor<MyEntityFileRecord, MyEntity> {
 
+//    @Value("#{systemProperties['key']}")
     @Value("#{jobParameters['param1']}")
     private String param1;
     @Value("#{jobExecutionContext['MY_START_TIME']}")
