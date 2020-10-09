@@ -15,7 +15,8 @@ public class MyJobListener implements JobExecutionListener {
 
     @Override
     public void beforeJob(JobExecution jobExecution) {
-        jobExecution.getExecutionContext().put("MY_START_TIME", LocalDateTime.now().format(DateTimeFormatter.ISO_DATE));
+//        System.out.println("exec id:" + jobExecution.getJobInstance().getInstanceId());
+        jobExecution.getExecutionContext().put("MY_START_TIME", LocalDateTime.now().format(DateTimeFormatter.ISO_LOCAL_DATE_TIME));
     }
 
     @Override

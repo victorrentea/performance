@@ -25,8 +25,8 @@ public class MyEntityProcessor implements ItemProcessor<MyEntityFileRecord, MyEn
 
     @Override
     public MyEntity process(MyEntityFileRecord record) throws Exception {
-        System.out.println("param1=  "+param1);
-        System.out.println("myStartTime=  "+myStartTime);
+//        System.out.println("param1=  "+param1);
+//        System.out.println("myStartTime=  "+myStartTime);
 //        log.debug("Proceesing item: " + item);
 //        if (true) {
 //            throw new IllegalArgumentException();

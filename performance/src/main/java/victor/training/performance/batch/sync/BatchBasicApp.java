@@ -8,6 +8,7 @@ import org.springframework.batch.item.ItemReader;
 import org.springframework.batch.item.database.JpaItemWriter;
 import org.springframework.batch.item.xml.StaxEventItemReader;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
@@ -23,6 +24,9 @@ import static victor.training.performance.ConcurrencyUtil.measureCall;
 @SpringBootApplication
 @EnableBatchProcessing
 public class BatchBasicApp {
+
+    @Value("${chunk.size}")
+    private int chunkSize;
 
     public static void main(String[] args) throws IOException {
         DataFileGenerator.generateFile(10_000);
@@ -54,7 +58,7 @@ public class BatchBasicApp {
     public Step basicChunkStep() {
         // TODO optimize: tune chunk size
         return stepBuilderFactory.get("basicChunkStep")
-                .<MyEntityFileRecord, MyEntity>chunk(5)
+                .<MyEntityFileRecord, MyEntity>chunk(chunkSize)
                 .reader(xmlReader())
                 .processor(processor())
                 // TODO optimize: tune ID generation
