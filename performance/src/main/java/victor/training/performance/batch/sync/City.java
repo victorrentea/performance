@@ -2,6 +2,7 @@ package victor.training.performance.batch.sync;
 
 import lombok.Data;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
@@ -12,6 +13,7 @@ public class City {
     @Id
     @GeneratedValue
     private Long id;
+    @Column(unique = true)
     private String name;
 
     public City(String name) {
