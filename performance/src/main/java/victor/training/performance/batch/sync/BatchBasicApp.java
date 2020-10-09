@@ -56,13 +56,10 @@ public class BatchBasicApp {
     private StepBuilderFactory stepBuilderFactory;
 
     public Step basicChunkStep() {
-        // TODO optimize: tune chunk size
         return stepBuilderFactory.get("basicChunkStep")
                 .<MyEntityFileRecord, MyEntity>chunk(chunkSize)
                 .reader(xmlReader())
                 .processor(processor())
-                // TODO optimize: tune ID generation
-                // TODO optimize: enable JDBC batch mode
                 .writer(jpaWriter())
                 .listener(new MyChunkListener())
                 .listener(new MyStepExecutionListener())
