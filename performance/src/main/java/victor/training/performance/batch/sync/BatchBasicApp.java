@@ -5,6 +5,7 @@ import org.springframework.batch.core.Step;
 import org.springframework.batch.core.configuration.annotation.EnableBatchProcessing;
 import org.springframework.batch.core.configuration.annotation.JobBuilderFactory;
 import org.springframework.batch.core.configuration.annotation.StepBuilderFactory;
+import org.springframework.batch.core.configuration.annotation.StepScope;
 import org.springframework.batch.core.launch.support.RunIdIncrementer;
 import org.springframework.batch.item.ItemReader;
 import org.springframework.batch.item.database.JpaItemWriter;
@@ -28,12 +29,22 @@ public class BatchBasicApp {
 
     public static void main(String[] args) throws IOException {
         DataFileGenerator.generateFile(10_000);
-        int dt = measureCall(() -> SpringApplication.run(BatchBasicApp.class, args).close());
+        int dt = measureCall(() -> SpringApplication.run(BatchBasicApp.class, new String[]{"param1=xx"}).close());
         System.out.println("Batch took " + dt + " ms");
     }
 
     @Autowired
     private JobBuilderFactory jobBuilderFactory;
+
+    @Bean
+    public Job basicJob() {
+        return jobBuilderFactory.get("basicJob")
+            .incrementer(new RunIdIncrementer())
+            .start(basicChunkStep())
+            .listener(new MyJobListener())
+            .build();
+
+    }
 
     @Autowired
     private StepBuilderFactory stepBuilderFactory;
@@ -52,7 +63,18 @@ public class BatchBasicApp {
                 .build();
     }
 
+    private ItemReader<MyEntityFileRecord> xmlReader() {
+        StaxEventItemReader<MyEntityFileRecord> reader = new StaxEventItemReader<>();
+        reader.setResource(new FileSystemResource("data.xml")); // TODO parameterize
+        reader.setFragmentRootElementName("data");
+        Jaxb2Marshaller unmarshaller = new Jaxb2Marshaller();
+        unmarshaller.setClassesToBeBound(MyEntityFileRecord.class);;
+        reader.setUnmarshaller(unmarshaller);
+        return reader;
+    }
+
     @Bean
+    @StepScope
     public MyEntityProcessor processor() {
         return new MyEntityProcessor();
     }
@@ -64,26 +86,6 @@ public class BatchBasicApp {
         JpaItemWriter<MyEntity> writer = new JpaItemWriter<>();
         writer.setEntityManagerFactory(emf);
         return writer;
-    }
-
-    private ItemReader<MyEntityFileRecord> xmlReader() {
-        StaxEventItemReader<MyEntityFileRecord> reader = new StaxEventItemReader<>();
-        reader.setResource(new FileSystemResource("data.xml"));
-        reader.setFragmentRootElementName("data");
-        Jaxb2Marshaller unmarshaller = new Jaxb2Marshaller();
-        unmarshaller.setClassesToBeBound(MyEntityFileRecord.class);;
-        reader.setUnmarshaller(unmarshaller);
-        return reader;
-    }
-
-    @Bean
-    public Job basicJob() {
-        return jobBuilderFactory.get("basicJob")
-                .incrementer(new RunIdIncrementer())
-                .start(basicChunkStep())
-                .listener(new MyJobListener())
-                .build();
-
     }
 }
 
