@@ -2,10 +2,7 @@ package victor.training.performance.batch.sync;
 
 import org.springframework.batch.core.Job;
 import org.springframework.batch.core.Step;
-import org.springframework.batch.core.configuration.annotation.EnableBatchProcessing;
-import org.springframework.batch.core.configuration.annotation.JobBuilderFactory;
-import org.springframework.batch.core.configuration.annotation.StepBuilderFactory;
-import org.springframework.batch.core.configuration.annotation.StepScope;
+import org.springframework.batch.core.configuration.annotation.*;
 import org.springframework.batch.core.launch.support.RunIdIncrementer;
 import org.springframework.batch.item.ItemReader;
 import org.springframework.batch.item.database.JpaItemWriter;
@@ -41,9 +38,14 @@ public class BatchBasicApp {
         return jobBuilderFactory.get("basicJob")
             .incrementer(new RunIdIncrementer())
             .start(basicChunkStep())
-            .listener(new MyJobListener())
+            .listener(jobListener())
             .build();
+    }
 
+    @Bean
+    @JobScope
+    public MyJobListener jobListener() {
+        return new MyJobListener();
     }
 
     @Autowired
