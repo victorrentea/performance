@@ -36,7 +36,7 @@
 //   }
 //
 //   @Benchmark
-//   public double exception() throws ExecutionException, InterruptedException {
+//   public double oldSwitch() throws ExecutionException, InterruptedException {
 //      switch (KEY) {
 //			case "0": return 0;
 //			case "1": return 1;
