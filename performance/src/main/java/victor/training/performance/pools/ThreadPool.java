@@ -1,5 +1,6 @@
 package victor.training.performance.pools;
 
+import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -21,20 +22,21 @@ public class ThreadPool {
       for (int i = 0; i < 40; i++) {
          MyTask task = new MyTask();
          log("Submitted new task #" + task.id);
-         executor.execute(task);
-         sleepSomeTime(100, 200);
+         executor.submit(task);
+         sleepSomeTime(100, 200); // simulate random request rate
       }
       // TODO shutdown the executor !
    }
 }
 
-class MyTask implements Runnable {
+class MyTask implements Callable<Integer> {
    private static final AtomicInteger NEXT_ID = new AtomicInteger(0);
    public int id = NEXT_ID.incrementAndGet();
 
-   public void run() {
+   public Integer call() {
       log("Start work item #" + id);
       sleepSomeTime(600, 800);
       log("Finish work item #" + id);
+      return id;
    }
 }
