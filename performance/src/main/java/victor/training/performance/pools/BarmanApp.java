@@ -80,7 +80,6 @@ class Barman {
 	@Autowired
 	private MyRequestContext requestContext;
 
-	@Async
     public Beer pourBeer() {
         log.debug("Pouring Beer to " + requestContext.getCurrentUser()+"...");
         sleepq(1000);
