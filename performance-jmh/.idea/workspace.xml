@@ -3,12 +3,32 @@
   <component name="AutoImportSettings">
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
+  <component name="BranchesTreeState">
+    <expand>
+      <path>
+        <item name="ROOT" type="e8cecc67:BranchNodeDescriptor" />
+        <item name="LOCAL_ROOT" type="e8cecc67:BranchNodeDescriptor" />
+      </path>
+      <path>
+        <item name="ROOT" type="e8cecc67:BranchNodeDescriptor" />
+        <item name="REMOTE_ROOT" type="e8cecc67:BranchNodeDescriptor" />
+      </path>
+      <path>
+        <item name="ROOT" type="e8cecc67:BranchNodeDescriptor" />
+        <item name="REMOTE_ROOT" type="e8cecc67:BranchNodeDescriptor" />
+        <item name="GROUP_NODE:origin" type="e8cecc67:BranchNodeDescriptor" />
+      </path>
+    </expand>
+    <select />
+  </component>
   <component name="ChangeListManager">
     <list default="true" id="0e1584f6-4d86-4d34-9539-64d7002532f5" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/victor/perf/StreamsCPUMixedTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/victor/perf/StreamsCPUMixedTest.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/victor/perf/ThreadPoolSizeCPUOnlyTest.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/victor/perf/tasks/CPUTask.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/victor/perf/tasks/ConcurrencyUtil.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../performance/src/main/java/victor/training/performance/batch/paritem/TestThreads.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/victor/perf/ExceptionBenchmark.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/victor/perf/ExceptionBenchmark.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/victor/perf/StringBuilderTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/victor/perf/StringBuilderTest.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/victor/perf/SwitchVsMapTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/victor/perf/SwitchVsMapTest.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -69,6 +89,7 @@
   </component>
   <component name="RecentsManager">
     <key name="CopyClassDialog.RECENTS_KEY">
+      <recent name="victor.perf.tasks" />
       <recent name="victor.perf" />
       <recent name="victor.proxy" />
     </key>
@@ -91,25 +112,36 @@
         <option name="Make" enabled="true" />
       </method>
     </configuration>
-    <configuration name="IOParallel.set1000" type="jmh-id" factoryName="Jmh" temporary="true" program-parameters="victor.perf.IOParallel.set1000" working-dir="C:\workspace\performance\performance-jmh" benchmark-type="METHOD" benchmark-class="victor.perf.IOParallel">
+    <configuration default="true" type="ArquillianJUnit" factoryName="" nameIsGenerated="true">
+      <option name="arquillianRunConfiguration">
+        <value>
+          <option name="containerStateName" value="" />
+        </value>
+      </option>
+      <option name="TEST_OBJECT" value="class" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="IOParallel.set1000" type="jmh-id" temporary="true" program-parameters="victor.perf.IOParallel.set1000" working-dir="C:\workspace\performance\performance-jmh" benchmark-type="METHOD" benchmark-class="victor.perf.IOParallel">
       <module name="performance-jmh" />
       <method v="2">
         <option name="Make" enabled="true" />
       </method>
     </configuration>
-    <configuration name="StreamsCPUMixedTest" type="jmh-id" factoryName="Jmh" temporary="true" program-parameters="victor.proxy.StreamsCPUMixedTest.*" working-dir="C:\workspace\performance\performance-jmh" benchmark-type="CLASS" benchmark-class="victor.proxy.StreamsCPUMixedTest">
+    <configuration name="StreamsCPUMixedTest" type="jmh-id" temporary="true" program-parameters="victor.proxy.StreamsCPUMixedTest.*" working-dir="C:\workspace\performance\performance-jmh" benchmark-type="CLASS" benchmark-class="victor.proxy.StreamsCPUMixedTest">
       <module name="performance-jmh" />
       <method v="2">
         <option name="Make" enabled="true" />
       </method>
     </configuration>
-    <configuration name="StreamsCPUMixedTest.streamSerial" type="jmh-id" factoryName="Jmh" temporary="true" program-parameters="victor.perf.StreamsCPUMixedTest.streamSerial" working-dir="C:\workspace\performance\performance-jmh" benchmark-type="METHOD" benchmark-class="victor.perf.StreamsCPUMixedTest">
+    <configuration name="StreamsCPUMixedTest.streamSerial" type="jmh-id" temporary="true" program-parameters="victor.perf.StreamsCPUMixedTest.streamSerial" working-dir="C:\workspace\performance\performance-jmh" benchmark-type="METHOD" benchmark-class="victor.perf.StreamsCPUMixedTest">
       <module name="performance-jmh" />
       <method v="2">
         <option name="Make" enabled="true" />
       </method>
     </configuration>
-    <configuration name="StreamsCPUOnlyTest" type="jmh-id" factoryName="Jmh" temporary="true" program-parameters="victor.proxy.StreamsCPUOnlyTest.*" working-dir="C:\workspace\performance\performance-jmh" benchmark-type="CLASS" benchmark-class="victor.proxy.StreamsCPUOnlyTest">
+    <configuration name="StreamsCPUOnlyTest" type="jmh-id" temporary="true" program-parameters="victor.proxy.StreamsCPUOnlyTest.*" working-dir="C:\workspace\performance\performance-jmh" benchmark-type="CLASS" benchmark-class="victor.proxy.StreamsCPUOnlyTest">
       <module name="performance-jmh" />
       <method v="2">
         <option name="Make" enabled="true" />
@@ -151,6 +183,7 @@
       <workItem from="1582573049384" duration="639000" />
       <workItem from="1584298982852" duration="4586000" />
       <workItem from="1598996463577" duration="1371000" />
+      <workItem from="1607207788508" duration="693000" />
     </task>
     <task id="LOCAL-00001" summary="add FizzBuzz JMH">
       <created>1582668553526</created>
@@ -232,6 +265,14 @@
       <screen x="0" y="0" width="1536" height="834" />
     </state>
     <state x="361" y="150" key="Vcs.Push.Dialog.v2/0.0.1536.834@0.0.1536.834" timestamp="1602705279555" />
+    <state width="1116" height="652" key="javadoc.popup.new" timestamp="1607208462030">
+      <screen x="0" y="0" width="1536" height="834" />
+    </state>
+    <state width="1116" height="652" key="javadoc.popup.new/0.0.1536.834@0.0.1536.834" timestamp="1607208462030" />
+    <state x="431" y="155" key="search.everywhere.popup" timestamp="1607208427174">
+      <screen x="0" y="0" width="1536" height="834" />
+    </state>
+    <state x="431" y="155" key="search.everywhere.popup/0.0.1536.834@0.0.1536.834" timestamp="1607208427174" />
   </component>
   <component name="masterDetails">
     <states>
