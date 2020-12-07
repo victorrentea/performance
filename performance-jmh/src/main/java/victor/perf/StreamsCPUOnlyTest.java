@@ -16,34 +16,39 @@ import static java.lang.Math.sqrt;
 public class StreamsCPUOnlyTest {
 
 
-    public static final int N = 10_000;
+   public static final int N = 10_000;
 
-    @Benchmark
-	public int forClassic() {
-		int sum = 0;
-		for (int i = 0; i< N; i++) {
-			sum += cpuOnlyTask(i);
-		}
-		return sum;
-	}
+   @Benchmark
+   public int forClassic() {
+      int sum = 0;
+      for (int i = 0; i < N; i++) {
+         sum += cpuOnlyTask(i);
+      }
+      return sum;
+   }
 
-	@Benchmark
-	public int streamSerial() {
-		return IntStream.range(0, N).map(this::cpuOnlyTask).sum();
-	}
+   @Benchmark
+   public int streamSerial() {
+      return IntStream.range(0, N)
+          .map(this::cpuOnlyTask)
+          .sum();
+   }
 
-	@Benchmark
-	public int streamParallel() {
-		return IntStream.range(0, N).parallel().map(this::cpuOnlyTask).sum();
-	}
+   @Benchmark
+   public int streamParallel() {
+      return IntStream.range(0, N)
+          .parallel()
+          .map(this::cpuOnlyTask)
+          .sum();
+   }
 
-	public int cpuOnlyTask(double n) {
+   public int cpuOnlyTask(double n) {
 //		return n * n;
 //		return sqrt(n);
-		for (int i = 0; i < 50; i++) {
-			n = sqrt(n);
-		}
-		return (int) n;
-	}
+      for (int i = 0; i < 50; i++) {
+         n = sqrt(n);
+      }
+      return (int) n;
+   }
 
 }
