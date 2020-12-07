@@ -120,12 +120,12 @@ class BarController implements CommandLineRunner {
 	private MyRequestContext requestContext;
 
     @GetMapping
-    public String getDrinks() throws Exception {
+    public String getDrinks() {
         return service.orderDrinks().toString();
     }
 
     @Override
-    public void run(String... args) throws Exception {
+    public void run(String... args) {
 		requestContext.setCurrentUser("jdoe");
 		requestContext.setRequestId("" + new Random().nextInt(100));
         log.debug(service.orderDrinks().toString());
