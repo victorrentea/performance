@@ -23,12 +23,11 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="0e1584f6-4d86-4d34-9539-64d7002532f5" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/src/main/java/victor/perf/ThreadPoolSizeCPUOnlyTest.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/victor/perf/tasks/CPUTask.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/victor/perf/tasks/ConcurrencyUtil.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../performance/src/main/java/victor/training/performance/batch/paritem/TestThreads.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/victor/perf/ExceptionBenchmark.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/victor/perf/ExceptionBenchmark.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/victor/perf/StringBuilderTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/victor/perf/StringBuilderTest.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/victor/perf/StreamsCPUOnlyTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/victor/perf/StreamsCPUOnlyTest.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/victor/perf/ThreadPoolSizeCPUOnlyTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/victor/perf/ThreadPoolSizeCPUOnlyTest.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/victor/perf/ThreadPoolSizeOverSizedCPUOnlyTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/victor/perf/ThreadPoolSizeOverSizedCPUOnlyTest.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../performance/src/main/java/victor/training/performance/java8/ParallelStreams.java" beforeDir="false" afterPath="$PROJECT_DIR$/../performance/src/main/java/victor/training/performance/java8/ParallelStreams.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -82,6 +81,7 @@
     <property name="last_opened_file_path" value="$PROJECT_DIR$/src/main/java/victor/perf" />
     <property name="nodejs_interpreter_path.stuck_in_default_project" value="undefined stuck path" />
     <property name="nodejs_npm_path_reset_for_default_project" value="true" />
+    <property name="nodejs_package_manager_path" value="npm" />
     <property name="project.structure.last.edited" value="Project" />
     <property name="project.structure.proportion" value="0.0" />
     <property name="project.structure.side.proportion" value="0.0" />
@@ -89,8 +89,8 @@
   </component>
   <component name="RecentsManager">
     <key name="CopyClassDialog.RECENTS_KEY">
-      <recent name="victor.perf.tasks" />
       <recent name="victor.perf" />
+      <recent name="victor.perf.tasks" />
       <recent name="victor.proxy" />
     </key>
     <key name="CopyFile.RECENT_KEYS">
@@ -108,17 +108,6 @@
           <option name="ENABLED" value="true" />
         </pattern>
       </extension>
-      <method v="2">
-        <option name="Make" enabled="true" />
-      </method>
-    </configuration>
-    <configuration default="true" type="ArquillianJUnit" factoryName="" nameIsGenerated="true">
-      <option name="arquillianRunConfiguration">
-        <value>
-          <option name="containerStateName" value="" />
-        </value>
-      </option>
-      <option name="TEST_OBJECT" value="class" />
       <method v="2">
         <option name="Make" enabled="true" />
       </method>
@@ -183,7 +172,8 @@
       <workItem from="1582573049384" duration="639000" />
       <workItem from="1584298982852" duration="4586000" />
       <workItem from="1598996463577" duration="1371000" />
-      <workItem from="1607207788508" duration="693000" />
+      <workItem from="1607207788508" duration="6378000" />
+      <workItem from="1607340275025" duration="381000" />
     </task>
     <task id="LOCAL-00001" summary="add FizzBuzz JMH">
       <created>1582668553526</created>
@@ -265,14 +255,14 @@
       <screen x="0" y="0" width="1536" height="834" />
     </state>
     <state x="361" y="150" key="Vcs.Push.Dialog.v2/0.0.1536.834@0.0.1536.834" timestamp="1602705279555" />
-    <state width="1116" height="652" key="javadoc.popup.new" timestamp="1607208462030">
+    <state width="462" height="616" key="javadoc.popup.new" timestamp="1607213612500">
       <screen x="0" y="0" width="1536" height="834" />
     </state>
-    <state width="1116" height="652" key="javadoc.popup.new/0.0.1536.834@0.0.1536.834" timestamp="1607208462030" />
-    <state x="431" y="155" key="search.everywhere.popup" timestamp="1607208427174">
+    <state width="462" height="616" key="javadoc.popup.new/0.0.1536.834@0.0.1536.834" timestamp="1607213612500" />
+    <state x="431" y="155" width="672" height="678" key="search.everywhere.popup" timestamp="1607213615442">
       <screen x="0" y="0" width="1536" height="834" />
     </state>
-    <state x="431" y="155" key="search.everywhere.popup/0.0.1536.834@0.0.1536.834" timestamp="1607208427174" />
+    <state x="431" y="155" width="672" height="678" key="search.everywhere.popup/0.0.1536.834@0.0.1536.834" timestamp="1607213615442" />
   </component>
   <component name="masterDetails">
     <states>
