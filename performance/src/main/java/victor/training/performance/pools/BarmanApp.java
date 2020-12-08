@@ -36,10 +36,10 @@ import static victor.training.performance.ConcurrencyUtil.sleepq;
 public class BarmanApp implements CommandLineRunner{
    public static void main(String[] args) {
       SpringApplication.run(BarmanApp.class, args)
-          .close(); // Note: .close to stop executors after CLRunner finishes
+          ; // Note: .close to stop executors after CLRunner finishes
    }
 
-   // TO discuss propagation of thread local data
+
    @Bean
    public static CustomScopeConfigurer defineThreadScope() {
       CustomScopeConfigurer configurer = new CustomScopeConfigurer();
@@ -68,7 +68,10 @@ public class BarmanApp implements CommandLineRunner{
    public void run(String... args) throws Exception {
       drinkerService.orderDrinks();
    }
+}
 
+class ThreadLocalHolder {
+   static public ThreadLocal<String> threadUsername = new ThreadLocal<>();
 }
 
 @RequiredArgsConstructor
@@ -83,11 +86,14 @@ class DrinkerService {
       log.debug("exit main");
       sleepq(4000);
    }
+   @Autowired
+   private MyRequestContext requestContext;
 
+   public CompletableFuture<DillyDilly> orderDrinks() throws ExecutionException, InterruptedException {
+      String currentUsername = ThreadLocalHolder.threadUsername.get();
+//      String currentUsername = requestContext.getCurrentUser();
+      log.debug("Submitting order of {}  : to " + barman.getClass(), currentUsername);
 
-
-   public DillyDilly orderDrinks() throws ExecutionException, InterruptedException {
-      log.debug("Submitting my order : to " + barman.getClass());
 
       ForkJoinPool icePool = new ForkJoinPool();
 
@@ -108,14 +114,7 @@ class DrinkerService {
              return vodka;
           }, icePool);
 
-      futureBeer.thenCombine(futureVodka, DillyDilly::new)
-          .thenAccept(d -> log.debug("Got my order! Thank you lad! " + d))
-          .exceptionally(t -> {
-             log.error(t.getMessage(), t);
-             return null;
-          })
-      ;
-      return null;
+      return futureBeer.thenCombine(futureVodka, DillyDilly::new);
    }
 
    public void pay(String comand) {
@@ -144,7 +143,7 @@ class DillyDilly {
 class Barman {
    @Async
    public CompletableFuture<Beer> pourBlondBeer() {
-      log.debug("Pouring Beer to ");// + requestContext.getCurrentUser()+"...");
+      log.debug("Pouring Beer to " + ThreadLocalHolder.threadUsername.get() +"...");
 //      if (true) {
 //         throw new IllegalStateException("Out of blond beer!!");
 //      }
@@ -170,10 +169,12 @@ class Barman {
 
 @Data
 class Beer {
+   private final  String type = "beer";
 }
 
 @Data
 class Vodka {
+   private final  String type = "stalinskaya";
 }
 
 
@@ -181,22 +182,21 @@ class Vodka {
 
 @Slf4j
 @RestController
-
-class BarController implements CommandLineRunner {
+class BarController{
    @Autowired
    private DrinkerService service;
    @Autowired
    private MyRequestContext requestContext;
 
    @GetMapping
-   public String getDrinks() throws ExecutionException, InterruptedException, TimeoutException {
-      return service.orderDrinks().toString();
+   public CompletableFuture<DillyDilly> getDrinks() throws ExecutionException, InterruptedException, TimeoutException {
+      try {
+         ThreadLocalHolder.threadUsername.set("jdoe");
+//      requestContext.setCurrentUser("jdoe");
+         return service.orderDrinks();
+      } finally {
+         ThreadLocalHolder.threadUsername.remove();
+      }
    }
 
-   @Override
-   public void run(String... args) throws ExecutionException, InterruptedException, TimeoutException {
-//		requestContext.setCurrentUser("jdoe");
-//		requestContext.setRequestId("" + new Random().nextInt(100));
-//      log.debug(service.orderDrinks().toString());
-   }
 }

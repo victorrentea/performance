@@ -12,3 +12,6 @@ public class MyRequestContext {
     private String currentUser;
     private String requestId;
 }
+// in unit tests you replace this bean definition with a singleton.
+// assuming yore' not running those tests in parallel.
+    // failsafe plugin :
