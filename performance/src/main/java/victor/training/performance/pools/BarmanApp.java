@@ -88,14 +88,12 @@ class DrinkerService {
         Future<Vodka> futureVodka = pool.submit(barman::pourVodka);
 
         log.debug("My requests were submitted");
-        futureBeer.cancel(true);
         Beer beer = futureBeer.get();//500, TimeUnit.MILLISECONDS); // how much time main wait here : 1s
         Vodka vodka = futureVodka.get();// how much time main wait here : 0sec:
 
         log.debug("Got my order! Thank you lad! " + asList(beer, vodka));
         return asList(beer, vodka);
     }
-
 }
 
 @Service
@@ -103,14 +101,8 @@ class DrinkerService {
 class Barman {
     public Beer pourBeer() {
         log.debug("Pouring Beer to ");// + requestContext.getCurrentUser()+"...");
-        try {
-            sleepq(1000);
-        } catch (RuntimeException e) {
-            e.printStackTrace();
-            throw e;
-        }
+        sleepq(1000);
         log.debug("End pouring");
-//        httpCall()
         return new Beer();
     }
     public Vodka pourVodka() {

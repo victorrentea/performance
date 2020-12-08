@@ -9,6 +9,7 @@ import static victor.training.performance.ConcurrencyUtil.sleepSomeTime;
 public class ThreadPool {
 
    public static void main(String[] args) throws InterruptedException {
+      System.out.println(Runtime.getRuntime().availableProcessors());
       // TODO Executor that keeps a fixed number (3) of threads until it is shut down
 //      ExecutorService executor = Executors.newFixedThreadPool(3);
 
