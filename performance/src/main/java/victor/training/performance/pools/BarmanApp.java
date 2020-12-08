@@ -23,6 +23,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 import java.util.Random;
+import java.util.concurrent.*;
 
 import static java.util.Arrays.asList;
 import static java.util.concurrent.CompletableFuture.supplyAsync;
@@ -71,14 +72,27 @@ public class BarmanApp {
 @Slf4j
 class DrinkerService {
     private final Barman barman;
+    static ExecutorService pool = Executors.newFixedThreadPool(2);
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws ExecutionException, InterruptedException {
         new DrinkerService(new Barman()).orderDrinks();
+        pool.shutdown();
+        log.debug("Sent shutdown request");
+        pool.awaitTermination(2, TimeUnit.SECONDS);
+        log.debug("exit main");
     }
-    public List<Object> orderDrinks() {
+    public List<Object> orderDrinks() throws ExecutionException, InterruptedException {
         log.debug("Submitting my order");
-        Beer beer = barman.pourBeer();
-        Vodka vodka = barman.pourVodka();
+
+
+        Future<Beer> futureBeer = pool.submit(barman::pourBeer);
+        Future<Vodka> futureVodka = pool.submit(barman::pourVodka);
+
+        log.debug("My requests were submitted");
+
+        Beer beer = futureBeer.get(); // how much time main wait here : 1s
+        Vodka vodka = futureVodka.get();// how much time main wait here : 0sec:
+
         log.debug("Got my order! Thank you lad! " + asList(beer, vodka));
         return asList(beer, vodka);
     }
@@ -88,15 +102,11 @@ class DrinkerService {
 @Service
 @Slf4j
 class Barman {
-//	@Autowired
-//	private MyRequestContext requestContext;
-
     public Beer pourBeer() {
         log.debug("Pouring Beer to ");// + requestContext.getCurrentUser()+"...");
         sleepq(1000);
         return new Beer();
     }
-
     public Vodka pourVodka() {
         log.debug("Pouring Vodka...");
         sleepq(1000);
@@ -124,12 +134,12 @@ class BarController implements CommandLineRunner {
 	private MyRequestContext requestContext;
 
     @GetMapping
-    public String getDrinks() {
+    public String getDrinks() throws ExecutionException, InterruptedException {
         return service.orderDrinks().toString();
     }
 
     @Override
-    public void run(String... args) {
+    public void run(String... args) throws ExecutionException, InterruptedException {
 //		requestContext.setCurrentUser("jdoe");
 //		requestContext.setRequestId("" + new Random().nextInt(100));
         log.debug(service.orderDrinks().toString());

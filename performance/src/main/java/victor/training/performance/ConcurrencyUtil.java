@@ -26,6 +26,7 @@ public class ConcurrencyUtil {
 		try {
 			Thread.sleep(millis);
 		} catch (InterruptedException e) {
+			Thread.currentThread().interrupt();
 			throw new RuntimeException(e);
 		}
 	}
