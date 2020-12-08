@@ -2,6 +2,7 @@ package victor.training.performance.pools;
 
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
+import lombok.Value;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.CustomScopeConfigurer;
@@ -72,27 +73,43 @@ public class BarmanApp {
 @Slf4j
 class DrinkerService {
     private final Barman barman;
-    static ExecutorService pool = Executors.newFixedThreadPool(2);
 
     public static void main(String[] args) throws ExecutionException, InterruptedException, TimeoutException {
         new DrinkerService(new Barman()).orderDrinks();
-        pool.shutdown();
         log.debug("Sent shutdown request");
-        pool.awaitTermination(2, TimeUnit.SECONDS);
         log.debug("exit main");
     }
     public List<Object> orderDrinks() throws ExecutionException, InterruptedException, TimeoutException {
         log.debug("Submitting my order");
 
-        Future<Beer> futureBeer = pool.submit(barman::pourBeer);
-        Future<Vodka> futureVodka = pool.submit(barman::pourVodka);
+        CompletableFuture<Beer> futureBeer = CompletableFuture.supplyAsync(barman::pourBeer);
+        CompletableFuture<Vodka> futureVodka = CompletableFuture.supplyAsync(barman::pourVodka);
 
         log.debug("My requests were submitted");
-        Beer beer = futureBeer.get();//500, TimeUnit.MILLISECONDS); // how much time main wait here : 1s
-        Vodka vodka = futureVodka.get();// how much time main wait here : 0sec:
 
-        log.debug("Got my order! Thank you lad! " + asList(beer, vodka));
+
+
+        Beer beer = futureBeer.get(); // DONT .get on CompletableFutures
+        Vodka vodka = futureVodka.get();
+log.info("Main is blocked until here");
+        DillyDilly dilly = new DillyDilly(beer, vodka);
+
+        log.debug("Got my order! Thank you lad! " + dilly);
         return asList(beer, vodka);
+    }
+}
+
+@Value
+@Slf4j
+class DillyDilly {
+    Beer beer;
+    Vodka vodka;
+
+    public DillyDilly(Beer beer, Vodka vodka) {
+        log.debug("Mixing Dilly Dilly");
+        sleepq(1000);
+        this.beer = beer;
+        this.vodka = vodka;
     }
 }
 
