@@ -85,7 +85,14 @@ class DrinkerService {
 
       CompletableFuture<Void> drinks = runAsync(() -> pay("drinks"));
 
-      CompletableFuture<Beer> futureBeer = drinks.thenApplyAsync(v -> barman.pourBlondBeer());
+      CompletableFuture<Beer> futureBeer = drinks.thenApplyAsync(v -> barman.pourBlondBeer())
+          .exceptionally(t -> {
+//             t.printStackTrace();
+             if (t instanceof CompletionException) {
+                return barman.pourDarkBeer();
+             }
+             throw new RuntimeException(t);
+          });
       CompletableFuture<Vodka> futureVodka = drinks.thenApplyAsync(v -> barman.pourVodka())
           .thenApplyAsync(vodka -> {
              log.debug("Add ice: heavy CPU Intensive task");
@@ -97,7 +104,8 @@ class DrinkerService {
           .exceptionally(t -> {
              log.error(t.getMessage(), t);
              return null;
-          });
+          })
+      ;
       return null;
    }
 
@@ -128,6 +136,12 @@ class Barman {
       if (true) {
          throw new IllegalStateException("Out of blond beer!!");
       }
+      sleepq(1000);
+      log.debug("End pouring");
+      return new Beer();
+   }
+   public Beer pourDarkBeer() {
+      log.debug("Pouring Beer to ");// + requestContext.getCurrentUser()+"...");
       sleepq(1000);
       log.debug("End pouring");
       return new Beer();
