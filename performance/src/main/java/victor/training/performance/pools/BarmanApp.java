@@ -62,6 +62,18 @@ public class BarmanApp implements CommandLineRunner{
       executor.setWaitForTasksToCompleteOnShutdown(true);
       return executor;
    }
+   @Bean
+   public ThreadPoolTaskExecutor myCustomExecutor() {
+      ThreadPoolTaskExecutor executor = new ThreadPoolTaskExecutor();
+      executor.setCorePoolSize(1);
+      executor.setMaxPoolSize(1);
+      executor.setQueueCapacity(500);
+      executor.setThreadNamePrefix("CUSTOM-");
+      executor.initialize();
+      executor.setTaskDecorator(propagateRequestContext);
+      executor.setWaitForTasksToCompleteOnShutdown(true);
+      return executor;
+   }
 
    @Autowired
    private DrinkerService drinkerService;
@@ -151,7 +163,7 @@ class Barman {
       log.debug("End pouring");
       return completedFuture(new Beer());
    }
-   @Async
+   @Async("myCustomExecutor")
    public CompletableFuture<Beer> pourDarkBeer() {
       log.debug("Pouring Beer to ");// + requestContext.getCurrentUser()+"...");
       sleepq(1000); // imagine network call HTTP
