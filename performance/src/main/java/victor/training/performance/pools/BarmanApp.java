@@ -14,7 +14,6 @@ import org.springframework.boot.autoconfigure.jdbc.DataSourceTransactionManagerA
 import org.springframework.boot.autoconfigure.orm.jpa.HibernateJpaAutoConfiguration;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.support.SimpleThreadScope;
-import org.springframework.scheduling.annotation.Async;
 import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 import org.springframework.stereotype.Component;
@@ -22,11 +21,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.List;
-import java.util.Random;
 import java.util.concurrent.*;
 
-import static java.util.Arrays.asList;
+import static java.util.concurrent.CompletableFuture.runAsync;
 import static java.util.concurrent.CompletableFuture.supplyAsync;
 import static victor.training.performance.ConcurrencyUtil.sleepq;
 
@@ -78,24 +75,28 @@ class DrinkerService {
         new DrinkerService(new Barman()).orderDrinks();
         log.debug("Sent shutdown request");
         log.debug("exit main");
+        sleepq(4000);
     }
-    public List<Object> orderDrinks() throws ExecutionException, InterruptedException, TimeoutException {
+    public DillyDilly orderDrinks() {
         log.debug("Submitting my order");
 
-        CompletableFuture<Beer> futureBeer = CompletableFuture.supplyAsync(barman::pourBeer);
-        CompletableFuture<Vodka> futureVodka = CompletableFuture.supplyAsync(barman::pourVodka);
+        ForkJoinPool icePool = new ForkJoinPool();
 
-        log.debug("My requests were submitted");
+        CompletableFuture<Void> drinks = runAsync(() -> pay("drinks"));
 
+        CompletableFuture<Beer> futureBeer = drinks.thenApplyAsync(v -> barman.pourBeer());
+        CompletableFuture<Vodka> futureVodka = drinks.thenApplyAsync(v -> barman.pourVodka())
+            .thenApplyAsync(vodka -> {
+                log.debug("Add ice: heavy CPU Intensive task");
+                return vodka;
+            }, icePool);
+        futureBeer.thenCombine(futureVodka, DillyDilly::new)
+            .thenAccept(d -> log.debug("Got my order! Thank you lad! " + d));
+        return null;
+    }
 
-
-        Beer beer = futureBeer.get(); // DONT .get on CompletableFutures
-        Vodka vodka = futureVodka.get();
-log.info("Main is blocked until here");
-        DillyDilly dilly = new DillyDilly(beer, vodka);
-
-        log.debug("Got my order! Thank you lad! " + dilly);
-        return asList(beer, vodka);
+    public void pay(String comand) {
+        //sometime throws
     }
 }
 
@@ -124,7 +125,7 @@ class Barman {
     }
     public Vodka pourVodka() {
         log.debug("Pouring Vodka...");
-        sleepq(1000);
+        sleepq(900);
         return new Vodka();
     }
 }
