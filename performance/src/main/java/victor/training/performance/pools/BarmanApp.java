@@ -74,23 +74,22 @@ class DrinkerService {
     private final Barman barman;
     static ExecutorService pool = Executors.newFixedThreadPool(2);
 
-    public static void main(String[] args) throws ExecutionException, InterruptedException {
+    public static void main(String[] args) throws ExecutionException, InterruptedException, TimeoutException {
         new DrinkerService(new Barman()).orderDrinks();
         pool.shutdown();
         log.debug("Sent shutdown request");
         pool.awaitTermination(2, TimeUnit.SECONDS);
         log.debug("exit main");
     }
-    public List<Object> orderDrinks() throws ExecutionException, InterruptedException {
+    public List<Object> orderDrinks() throws ExecutionException, InterruptedException, TimeoutException {
         log.debug("Submitting my order");
-
 
         Future<Beer> futureBeer = pool.submit(barman::pourBeer);
         Future<Vodka> futureVodka = pool.submit(barman::pourVodka);
 
         log.debug("My requests were submitted");
-
-        Beer beer = futureBeer.get(); // how much time main wait here : 1s
+        futureBeer.cancel(true);
+        Beer beer = futureBeer.get();//500, TimeUnit.MILLISECONDS); // how much time main wait here : 1s
         Vodka vodka = futureVodka.get();// how much time main wait here : 0sec:
 
         log.debug("Got my order! Thank you lad! " + asList(beer, vodka));
@@ -104,7 +103,14 @@ class DrinkerService {
 class Barman {
     public Beer pourBeer() {
         log.debug("Pouring Beer to ");// + requestContext.getCurrentUser()+"...");
-        sleepq(1000);
+        try {
+            sleepq(1000);
+        } catch (RuntimeException e) {
+            e.printStackTrace();
+            throw e;
+        }
+        log.debug("End pouring");
+//        httpCall()
         return new Beer();
     }
     public Vodka pourVodka() {
@@ -134,12 +140,12 @@ class BarController implements CommandLineRunner {
 	private MyRequestContext requestContext;
 
     @GetMapping
-    public String getDrinks() throws ExecutionException, InterruptedException {
+    public String getDrinks() throws ExecutionException, InterruptedException, TimeoutException {
         return service.orderDrinks().toString();
     }
 
     @Override
-    public void run(String... args) throws ExecutionException, InterruptedException {
+    public void run(String... args) throws ExecutionException, InterruptedException, TimeoutException {
 //		requestContext.setCurrentUser("jdoe");
 //		requestContext.setRequestId("" + new Random().nextInt(100));
         log.debug(service.orderDrinks().toString());
