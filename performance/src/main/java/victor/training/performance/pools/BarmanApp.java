@@ -1,6 +1,7 @@
 package victor.training.performance.pools;
 
 import lombok.Data;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.CustomScopeConfigurer;
@@ -65,12 +66,15 @@ public class BarmanApp {
 
 }
 
+@RequiredArgsConstructor
 @Component
 @Slf4j
 class DrinkerService {
-    @Autowired
-    private Barman barman;
+    private final Barman barman;
 
+    public static void main(String[] args) {
+        new DrinkerService(new Barman()).orderDrinks();
+    }
     public List<Object> orderDrinks() {
         log.debug("Submitting my order");
         Beer beer = barman.pourBeer();
@@ -84,11 +88,11 @@ class DrinkerService {
 @Service
 @Slf4j
 class Barman {
-	@Autowired
-	private MyRequestContext requestContext;
+//	@Autowired
+//	private MyRequestContext requestContext;
 
     public Beer pourBeer() {
-        log.debug("Pouring Beer to " + requestContext.getCurrentUser()+"...");
+        log.debug("Pouring Beer to ");// + requestContext.getCurrentUser()+"...");
         sleepq(1000);
         return new Beer();
     }
@@ -126,8 +130,8 @@ class BarController implements CommandLineRunner {
 
     @Override
     public void run(String... args) {
-		requestContext.setCurrentUser("jdoe");
-		requestContext.setRequestId("" + new Random().nextInt(100));
+//		requestContext.setCurrentUser("jdoe");
+//		requestContext.setRequestId("" + new Random().nextInt(100));
         log.debug(service.orderDrinks().toString());
     }
 }
