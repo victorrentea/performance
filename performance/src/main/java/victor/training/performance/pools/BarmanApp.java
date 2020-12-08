@@ -34,34 +34,34 @@ import static victor.training.performance.ConcurrencyUtil.sleepq;
     HibernateJpaAutoConfiguration.class
 })
 public class BarmanApp {
-    public static void main(String[] args) {
-        SpringApplication.run(BarmanApp.class, args)
-                .close(); // Note: .close to stop executors after CLRunner finishes
-    }
+   public static void main(String[] args) {
+      SpringApplication.run(BarmanApp.class, args)
+          .close(); // Note: .close to stop executors after CLRunner finishes
+   }
 
-    // TO discuss propagation of thread local data
-    @Bean
-    public static CustomScopeConfigurer defineThreadScope() {
-        CustomScopeConfigurer configurer = new CustomScopeConfigurer();
-        configurer.addScope("thread", new SimpleThreadScope()); // WARNING: Leaks memory. Prefer 'request' scope or read here: https://docs.spring.io/spring-framework/docs/current/javadoc-api/org/springframework/context/support/SimpleThreadScope.html
-        return configurer;
-    }
+   // TO discuss propagation of thread local data
+   @Bean
+   public static CustomScopeConfigurer defineThreadScope() {
+      CustomScopeConfigurer configurer = new CustomScopeConfigurer();
+      configurer.addScope("thread", new SimpleThreadScope()); // WARNING: Leaks memory. Prefer 'request' scope or read here: https://docs.spring.io/spring-framework/docs/current/javadoc-api/org/springframework/context/support/SimpleThreadScope.html
+      return configurer;
+   }
 
-    @Autowired
-    private PropagateRequestContext propagateRequestContext;
+   @Autowired
+   private PropagateRequestContext propagateRequestContext;
 
-    @Bean
-    public ThreadPoolTaskExecutor executor() {
-        ThreadPoolTaskExecutor executor = new ThreadPoolTaskExecutor();
-        executor.setCorePoolSize(1);
-        executor.setMaxPoolSize(1);
-        executor.setQueueCapacity(500);
-        executor.setThreadNamePrefix("barman-");
-        executor.initialize();
-        executor.setTaskDecorator(propagateRequestContext);
-        executor.setWaitForTasksToCompleteOnShutdown(true);
-        return executor;
-    }
+   @Bean
+   public ThreadPoolTaskExecutor executor() {
+      ThreadPoolTaskExecutor executor = new ThreadPoolTaskExecutor();
+      executor.setCorePoolSize(1);
+      executor.setMaxPoolSize(1);
+      executor.setQueueCapacity(500);
+      executor.setThreadNamePrefix("barman-");
+      executor.initialize();
+      executor.setTaskDecorator(propagateRequestContext);
+      executor.setWaitForTasksToCompleteOnShutdown(true);
+      return executor;
+   }
 
 }
 
@@ -69,65 +69,75 @@ public class BarmanApp {
 @Component
 @Slf4j
 class DrinkerService {
-    private final Barman barman;
+   private final Barman barman;
 
-    public static void main(String[] args) throws ExecutionException, InterruptedException, TimeoutException {
-        new DrinkerService(new Barman()).orderDrinks();
-        log.debug("Sent shutdown request");
-        log.debug("exit main");
-        sleepq(4000);
-    }
-    public DillyDilly orderDrinks() {
-        log.debug("Submitting my order");
+   public static void main(String[] args) throws ExecutionException, InterruptedException, TimeoutException {
+      new DrinkerService(new Barman()).orderDrinks();
+      log.debug("Sent shutdown request");
+      log.debug("exit main");
+      sleepq(4000);
+   }
 
-        ForkJoinPool icePool = new ForkJoinPool();
+   public DillyDilly orderDrinks() throws ExecutionException, InterruptedException {
+      log.debug("Submitting my order");
 
-        CompletableFuture<Void> drinks = runAsync(() -> pay("drinks"));
+      ForkJoinPool icePool = new ForkJoinPool();
 
-        CompletableFuture<Beer> futureBeer = drinks.thenApplyAsync(v -> barman.pourBeer());
-        CompletableFuture<Vodka> futureVodka = drinks.thenApplyAsync(v -> barman.pourVodka())
-            .thenApplyAsync(vodka -> {
-                log.debug("Add ice: heavy CPU Intensive task");
-                return vodka;
-            }, icePool);
-        futureBeer.thenCombine(futureVodka, DillyDilly::new)
-            .thenAccept(d -> log.debug("Got my order! Thank you lad! " + d));
-        return null;
-    }
+      CompletableFuture<Void> drinks = runAsync(() -> pay("drinks"));
 
-    public void pay(String comand) {
-        //sometime throws
-    }
+      CompletableFuture<Beer> futureBeer = drinks.thenApplyAsync(v -> barman.pourBlondBeer());
+      CompletableFuture<Vodka> futureVodka = drinks.thenApplyAsync(v -> barman.pourVodka())
+          .thenApplyAsync(vodka -> {
+             log.debug("Add ice: heavy CPU Intensive task");
+             return vodka;
+          }, icePool);
+
+      futureBeer.thenCombine(futureVodka, DillyDilly::new)
+          .thenAccept(d -> log.debug("Got my order! Thank you lad! " + d))
+          .exceptionally(t -> {
+             log.error(t.getMessage(), t);
+             return null;
+          });
+      return null;
+   }
+
+   public void pay(String comand) {
+      //sometime throws
+   }
 }
 
 @Value
 @Slf4j
 class DillyDilly {
-    Beer beer;
-    Vodka vodka;
+   Beer beer;
+   Vodka vodka;
 
-    public DillyDilly(Beer beer, Vodka vodka) {
-        log.debug("Mixing Dilly Dilly");
-        sleepq(1000);
-        this.beer = beer;
-        this.vodka = vodka;
-    }
+   public DillyDilly(Beer beer, Vodka vodka) {
+      log.debug("Mixing Dilly Dilly");
+      sleepq(1000);
+      this.beer = beer;
+      this.vodka = vodka;
+   }
 }
 
 @Service
 @Slf4j
 class Barman {
-    public Beer pourBeer() {
-        log.debug("Pouring Beer to ");// + requestContext.getCurrentUser()+"...");
-        sleepq(1000);
-        log.debug("End pouring");
-        return new Beer();
-    }
-    public Vodka pourVodka() {
-        log.debug("Pouring Vodka...");
-        sleepq(900);
-        return new Vodka();
-    }
+   public Beer pourBlondBeer() {
+      log.debug("Pouring Beer to ");// + requestContext.getCurrentUser()+"...");
+      if (true) {
+         throw new IllegalStateException("Out of blond beer!!");
+      }
+      sleepq(1000);
+      log.debug("End pouring");
+      return new Beer();
+   }
+
+   public Vodka pourVodka() {
+      log.debug("Pouring Vodka...");
+      sleepq(900);
+      return new Vodka();
+   }
 }
 
 @Data
@@ -144,20 +154,20 @@ class Vodka {
 @Slf4j
 @RestController
 class BarController implements CommandLineRunner {
-    @Autowired
-    private DrinkerService service;
-    @Autowired
-	private MyRequestContext requestContext;
+   @Autowired
+   private DrinkerService service;
+   @Autowired
+   private MyRequestContext requestContext;
 
-    @GetMapping
-    public String getDrinks() throws ExecutionException, InterruptedException, TimeoutException {
-        return service.orderDrinks().toString();
-    }
+   @GetMapping
+   public String getDrinks() throws ExecutionException, InterruptedException, TimeoutException {
+      return service.orderDrinks().toString();
+   }
 
-    @Override
-    public void run(String... args) throws ExecutionException, InterruptedException, TimeoutException {
+   @Override
+   public void run(String... args) throws ExecutionException, InterruptedException, TimeoutException {
 //		requestContext.setCurrentUser("jdoe");
 //		requestContext.setRequestId("" + new Random().nextInt(100));
-        log.debug(service.orderDrinks().toString());
-    }
+      log.debug(service.orderDrinks().toString());
+   }
 }
