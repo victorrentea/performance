@@ -27,7 +27,7 @@ import static java.util.Arrays.asList;
 import static java.util.concurrent.CompletableFuture.supplyAsync;
 import static victor.training.performance.ConcurrencyUtil.sleepq;
 
-@EnableAsync
+@EnableAsync(proxyTargetClass = true)
 @SpringBootApplication(exclude = {
     DataSourceAutoConfiguration.class,
     DataSourceTransactionManagerAutoConfiguration.class,
@@ -84,11 +84,12 @@ class DrinkerService {
 @Service
 @Slf4j
 class Barman {
-	@Autowired
-	private MyRequestContext requestContext;
+//	@Autowired
+//	private MyRequestContext requestContext;
 
     public Beer pourBeer() {
-        log.debug("Pouring Beer to " + requestContext.getCurrentUser()+"...");
+        String currentUsername = null; // TODO requestContext.getCurrentUser()
+        log.debug("Pouring Beer to " + currentUsername+"...");
         sleepq(1000);
         return new Beer();
     }
