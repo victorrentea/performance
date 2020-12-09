@@ -1,4 +1,4 @@
-package victor.training.performance.pools;
+package victor.training.performance.pools.throttling;
 
 import victor.training.performance.ConcurrencyUtil;
 import victor.training.performance.pools.tasks.FragileEndpointTask;

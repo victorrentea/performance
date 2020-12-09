@@ -1,4 +1,4 @@
-package victor.training.performance.pools.exercise;
+package victor.training.performance.pools.throttling;
 
 import victor.training.performance.pools.tasks.CPUTask;
 import victor.training.performance.pools.tasks.DegradingTask;

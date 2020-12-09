@@ -7,7 +7,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 import static victor.training.performance.ConcurrencyUtil.log;
 import static victor.training.performance.ConcurrencyUtil.sleepSomeTime;
 
-public class ThreadPool {
+public class ThreadPools {
 
    public static void main(String[] args) throws InterruptedException {
       // TODO Executor that keeps a fixed number (3) of threads until it is shut down

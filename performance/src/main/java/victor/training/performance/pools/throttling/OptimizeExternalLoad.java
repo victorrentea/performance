@@ -1,4 +1,4 @@
-package victor.training.performance.pools;
+package victor.training.performance.pools.throttling;
 
 import org.jooq.lambda.Unchecked;
 import victor.training.performance.pools.tasks.CPUTask;
