@@ -88,7 +88,7 @@ class Barman {
 //	private MyRequestContext requestContext;
 
     public Beer pourBeer() {
-        String currentUsername = null; // TODO requestContext.getCurrentUser()
+        String currentUsername = null; // TODO ThreadLocals... , requestContext.getCurrentUser()
         log.debug("Pouring Beer to " + currentUsername+"...");
         sleepq(1000);
         return new Beer();
