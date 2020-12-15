@@ -2,10 +2,10 @@ package victor.training.performance.pools;
 
 
 import lombok.SneakyThrows;
-import lombok.Value;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 import victor.training.performance.pools.drinks.Beer;
@@ -13,12 +13,8 @@ import victor.training.performance.pools.drinks.Vodka;
 
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.Future;
-import java.util.function.Supplier;
 
-import static java.util.Arrays.asList;
+import static java.util.concurrent.CompletableFuture.completedFuture;
 import static java.util.concurrent.CompletableFuture.supplyAsync;
 import static victor.training.performance.ConcurrencyUtil.sleepq;
 
@@ -39,10 +35,10 @@ public class BarService implements CommandLineRunner {
 
    @SneakyThrows
    public List<Object> orderDrinks() {
-      log.debug("Submitting my order");
+      log.debug("Submitting my order to " + barman.getClass());
 
-      CompletableFuture<Vodka> futureVodka = supplyAsync(() -> barman.pourVodka());
-      CompletableFuture<Beer> futureBeer = supplyAsync(() -> barman.pourBeer());
+      CompletableFuture<Vodka> futureVodka = barman.pourVodka();
+      CompletableFuture<Beer> futureBeer = barman.pourBeer();
 
       CompletableFuture<DillyDilly> futureDilly = futureBeer.thenCombineAsync(futureVodka, DillyDilly::new);
 
@@ -52,43 +48,33 @@ public class BarService implements CommandLineRunner {
 }
 
 // Dupa pauza:
-// 1) exceptii
+
 // 2) cu spring
 // 3) HTTP request async
 // 4) Flux mai complex
 // 5) Thread locals
-
-@Slf4j
-@Value
-class DillyDilly {
-   Beer beer;
-   Vodka vodka;
-
-   public DillyDilly(Beer beer, Vodka vodka) {
-      this.beer = beer;
-      this.vodka = vodka;
-      log.debug("Amestec bere cu vodka!!!");
-      sleepq(1000);
-   }
-}
+// 1) exceptii
 
 @Service
 @Slf4j
 class Barman {
+
    @Autowired
    private MyRequestContext requestContext;
 
-   public Beer pourBeer() {
+   @Async("executor")
+   public CompletableFuture<Beer> pourBeer() {
       String currentUsername = null; // TODO ThreadLocals... , requestContext.getCurrentUser()
       log.debug("Pouring Beer to " + currentUsername + "...");
       sleepq(1000);// SELECT
-      return new Beer();
+      return completedFuture(new Beer());
    }
 
-   public Vodka pourVodka() {
+   @Async("vodkaExecutor")
+   public CompletableFuture<Vodka> pourVodka() {
       log.debug("Pouring Vodka...");
       sleepq(1000); // HTTP, Astepti dupa altu (POATE dupa o conex cu DB)
-      return new Vodka();
+      return completedFuture(new Vodka());
    }
 }
 
