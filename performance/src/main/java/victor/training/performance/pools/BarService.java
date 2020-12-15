@@ -51,6 +51,9 @@ public class BarService implements CommandLineRunner {
 
       barman.injura("%^Q#%^%$^^!^$!^@^@!%#^%");
       System.out.println("Acasa, ma bag in patuc!");
+
+      barman.callFrGov().get();
+
       return futureDilly;
    }
 
@@ -92,6 +95,11 @@ class Barman {
       if (uratura != null) {
          throw new IllegalArgumentException("Iti fac buzunar!@!#@#");
       }
+   }
+   @Async("frGov")
+   public CompletableFuture<Long> callFrGov() {
+      sleepq(1000);
+      return completedFuture(1L);
    }
 }
 

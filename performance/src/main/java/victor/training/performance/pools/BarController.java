@@ -20,6 +20,15 @@ public class BarController {
    @GetMapping
    public CompletableFuture<DillyDilly> getDrinks() {
       UserHolderPeThread.currentUserName.set("jdoe");
+      try {
+         return service.orderDrinks();
+      } finally {
+         UserHolderPeThread.currentUserName.remove();
+      }
+   }
+   @GetMapping("yz")
+   public CompletableFuture<DillyDilly> getDrinks2() {
+      // altu care uita sa seteze userul pe thread
       return service.orderDrinks();
    }
 }

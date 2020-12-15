@@ -65,5 +65,17 @@ public class BarmanApp {
       executor.setWaitForTasksToCompleteOnShutdown(true);
       return executor;
    }
+   @Bean
+   public ThreadPoolTaskExecutor frGov() {
+      ThreadPoolTaskExecutor executor = new ThreadPoolTaskExecutor();
+      executor.setCorePoolSize(1);
+      executor.setMaxPoolSize(1);
+      executor.setQueueCapacity(500);
+      executor.setThreadNamePrefix("vodka-");
+      executor.initialize();
+      executor.setTaskDecorator(propagateRequestContext);
+      executor.setWaitForTasksToCompleteOnShutdown(true);
+      return executor;
+   }
 }
 
