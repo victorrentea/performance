@@ -2,6 +2,7 @@ package victor.training.performance.pools;
 
 
 import lombok.SneakyThrows;
+import lombok.Value;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
@@ -11,9 +12,11 @@ import victor.training.performance.pools.drinks.Beer;
 import victor.training.performance.pools.drinks.Vodka;
 
 import java.util.List;
+import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
+import java.util.function.Supplier;
 
 import static java.util.Arrays.asList;
 import static victor.training.performance.ConcurrencyUtil.sleepq;
@@ -37,19 +40,34 @@ public class BarService implements CommandLineRunner {
    public List<Object> orderDrinks() {
       log.debug("Submitting my order");
 
-      ExecutorService pool = Executors.newFixedThreadPool(2);
+//      ExecutorService pool = Executors.newFixedThreadPool(2);
 
-      Future<Vodka> futureVodka = pool.submit(() -> barman.pourVodka());
-      Future<Beer> futureBeer = pool.submit(() -> barman.pourBeer());
+      Future<Vodka> futureVodka = CompletableFuture.supplyAsync(() -> barman.pourVodka());
+      Future<Beer> futureBeer = CompletableFuture.supplyAsync(() -> barman.pourBeer());
 
       log.debug("A plecat fata/baietul cu comanda");
       Vodka vodka = futureVodka.get(); // cat timp asteapta main aici?: 1s
       Beer beer = futureBeer.get(); // cat timp asteapta main aici?: 0s
 
+      // "atunci cand si vodka si berea sunt gata, fa si asta: new Dilly
+
       log.debug("Got my order! Thank you lad! " + asList(beer, vodka));
       return asList(beer, vodka);
    }
+}
 
+@Slf4j
+@Value
+class DillyDilly {
+   Beer beer;
+   Vodka vodka;
+
+   public DillyDilly(Beer beer, Vodka vodka) {
+      this.beer = beer;
+      this.vodka = vodka;
+      log.debug("Amestec bere cu vodka!!!");
+      sleepq(1000);
+   }
 }
 
 @Service
