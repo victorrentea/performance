@@ -36,13 +36,21 @@ public class BarService implements CommandLineRunner {
    public CompletableFuture<DillyDilly> orderDrinks() {
       log.debug("Submitting my order to " + barman.getClass());
 
+
+
       CompletableFuture<Vodka> futureVodka = barman.pourVodka();
       CompletableFuture<Beer> futureBeer = barman.pourBeer();
 
+
       CompletableFuture<DillyDilly> futureDilly = futureBeer.thenCombineAsync(futureVodka, DillyDilly::new);
+
+      //swt, awt, swing, javaFX, android, -UI
 
       futureDilly.thenAccept(dilly -> log.debug("Got my order! Thank you lad! " + dilly));
       method();
+
+      barman.injura("%^Q#%^%$^^!^$!^@^@!%#^%");
+      System.out.println("Acasa, ma bag in patuc!");
       return futureDilly;
    }
 
@@ -53,7 +61,6 @@ public class BarService implements CommandLineRunner {
 }
 // Dupa pauza:
 // 4) Flux mai complex
-// 5) Thread locals
 // 1) exceptii
 @Service
 @Slf4j
@@ -64,8 +71,11 @@ class Barman {
 
    @Async("executor")
    public CompletableFuture<Beer> pourBeer() {
-      String currentUsername = UserHolderPeThread.currentUserName.get(); // TODO ThreadLocals... , requestContext.getCurrentUser()
-      log.debug(">>>>Pouring Beer to " + currentUsername + "...");
+//      String currentUsername = UserHolderPeThread.currentUserName.get(); // TODO ThreadLocals... , requestContext.getCurrentUser()
+      log.debug(">>>>Pouring Beer to " + "currentUsername" + "...");
+//      if (true) {
+//         throw new IllegalStateException("Nu mai e bere!");
+//      }
       sleepq(1000);// SELECT
       return completedFuture(new Beer());
    }
@@ -74,7 +84,14 @@ class Barman {
    public CompletableFuture<Vodka> pourVodka() {
       log.debug("Pouring Vodka...");
       sleepq(1000); // HTTP, Astepti dupa altu (POATE dupa o conex cu DB)
-      return completedFuture(new Vodka());
+      return CompletableFuture.completedFuture(new Vodka());
+   }
+
+   @Async
+   public void injura(String uratura) {
+      if (uratura != null) {
+         throw new IllegalArgumentException("Iti fac buzunar!@!#@#");
+      }
    }
 }
 
