@@ -1,7 +1,9 @@
 package victor.training.performance.leaks;
 
+import lombok.AccessLevel;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
+import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Service;
@@ -27,8 +29,10 @@ public class SheepController {
 
     @GetMapping("create")
     public Long create(@RequestParam(defaultValue = "Bisisica") String name) {
-        log.debug("create " + name);
+        log.debug("create {}", name);
         return service.create(name);
+
+
     }
     // TODO Starve Connections
     // TODO Starve Threads
@@ -43,17 +47,18 @@ public class SheepController {
 @Slf4j
 @Service
 @RequiredArgsConstructor
-@Transactional
 class SheepService {
     private final SheepRepo repo;
     private final ShepardService shepard;
 
+//    @Transactional
     public Long create(String name) {
         String sn = shepard.registerSheep(name);
         log.debug("Persist");
         Sheep sheep = repo.save(new Sheep(name, sn));
         return sheep.getId();
     }
+//@Transactional
     public List<Sheep> search(String name) {
         return repo.getByNameLike(name);
     }
@@ -78,6 +83,7 @@ interface SheepRepo extends JpaRepository<Sheep, Long> {
 class Sheep {
     @GeneratedValue
     @Id
+    @Setter(AccessLevel.NONE)
     private Long id;
 
     private String name;
