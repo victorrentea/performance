@@ -41,20 +41,22 @@ public class BarService implements CommandLineRunner {
    public List<Object> orderDrinks() {
       log.debug("Submitting my order");
 
-//      ExecutorService pool = Executors.newFixedThreadPool(2);
+      CompletableFuture<Vodka> futureVodka = supplyAsync(() -> barman.pourVodka());
+      CompletableFuture<Beer> futureBeer = supplyAsync(() -> barman.pourBeer());
 
-      log.debug("A plecat fata/baietul cu comanda");
+      CompletableFuture<DillyDilly> futureDilly = futureBeer.thenCombineAsync(futureVodka, DillyDilly::new);
 
-      supplyAsync(barman::pourBeer)
-          .thenCombineAsync(supplyAsync(barman::pourVodka), DillyDilly::new)
-          .thenAccept(this::consumeDilly);
+      futureDilly.thenAccept(dilly -> log.debug("Got my order! Thank you lad! " + dilly));
       return null;
    }
-
-   private void consumeDilly(DillyDilly dilly) {
-      log.debug("Got my order! Thank you lad! " + dilly);
-   }
 }
+
+// Dupa pauza:
+// 1) exceptii
+// 2) cu spring
+// 3) HTTP request async
+// 4) Flux mai complex
+// 5) Thread locals
 
 @Slf4j
 @Value
