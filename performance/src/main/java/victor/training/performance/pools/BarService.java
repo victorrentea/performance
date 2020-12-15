@@ -48,7 +48,13 @@ class Barman {
    public Beer pourBeer() {
       String currentUsername = null; // TODO ThreadLocals... , requestContext.getCurrentUser()
       log.debug("Pouring Beer to " + currentUsername + "...");
-      sleepq(1000);
+      try {
+//         Thread.currentThread().isInterrupted()
+//         Thread.currentThread().in
+         Thread.sleep(1000);
+      } catch (InterruptedException e) {
+         // bag piciorul
+      }
       return new Beer();
    }
 
