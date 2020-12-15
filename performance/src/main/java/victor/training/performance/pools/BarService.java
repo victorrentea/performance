@@ -11,7 +11,6 @@ import org.springframework.stereotype.Service;
 import victor.training.performance.pools.drinks.Beer;
 import victor.training.performance.pools.drinks.Vodka;
 
-import java.util.List;
 import java.util.concurrent.CompletableFuture;
 
 import static java.util.concurrent.CompletableFuture.completedFuture;
@@ -34,7 +33,7 @@ public class BarService implements CommandLineRunner {
    }
 
    @SneakyThrows
-   public List<Object> orderDrinks() {
+   public CompletableFuture<DillyDilly> orderDrinks() {
       log.debug("Submitting my order to " + barman.getClass());
 
       CompletableFuture<Vodka> futureVodka = barman.pourVodka();
@@ -43,7 +42,7 @@ public class BarService implements CommandLineRunner {
       CompletableFuture<DillyDilly> futureDilly = futureBeer.thenCombineAsync(futureVodka, DillyDilly::new);
 
       futureDilly.thenAccept(dilly -> log.debug("Got my order! Thank you lad! " + dilly));
-      return null;
+      return futureDilly;
    }
 }
 

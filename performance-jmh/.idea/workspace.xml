@@ -23,10 +23,8 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="0e1584f6-4d86-4d34-9539-64d7002532f5" name="Default Changelist" comment="CPU tasks">
-      <change afterPath="$PROJECT_DIR$/../performance/src/main/java/victor/training/performance/pools/DillyDilly.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../performance/src/main/java/victor/training/performance/pools/BarController.java" beforeDir="false" afterPath="$PROJECT_DIR$/../performance/src/main/java/victor/training/performance/pools/BarController.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../performance/src/main/java/victor/training/performance/pools/BarService.java" beforeDir="false" afterPath="$PROJECT_DIR$/../performance/src/main/java/victor/training/performance/pools/BarService.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../performance/src/main/java/victor/training/performance/pools/BarmanApp.java" beforeDir="false" afterPath="$PROJECT_DIR$/../performance/src/main/java/victor/training/performance/pools/BarmanApp.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../performance/src/main/resources/application.properties" beforeDir="false" afterPath="$PROJECT_DIR$/../performance/src/main/resources/application.properties" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />

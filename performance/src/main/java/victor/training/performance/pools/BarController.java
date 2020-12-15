@@ -5,6 +5,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.servlet.http.HttpServletRequest;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutionException;
+
 @Slf4j
 @RestController
 public class BarController {
@@ -14,7 +18,7 @@ public class BarController {
    private MyRequestContext requestContext;
 
    @GetMapping
-   public String getDrinks() {
-      return "" + service.orderDrinks();
+   public CompletableFuture<DillyDilly> getDrinks() throws ExecutionException, InterruptedException {
+      return service.orderDrinks();
    }
 }
