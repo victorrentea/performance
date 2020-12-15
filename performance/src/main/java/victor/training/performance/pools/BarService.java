@@ -19,6 +19,7 @@ import java.util.concurrent.Future;
 import java.util.function.Supplier;
 
 import static java.util.Arrays.asList;
+import static java.util.concurrent.CompletableFuture.supplyAsync;
 import static victor.training.performance.ConcurrencyUtil.sleepq;
 
 @Component
@@ -42,15 +43,16 @@ public class BarService implements CommandLineRunner {
 
 //      ExecutorService pool = Executors.newFixedThreadPool(2);
 
-      CompletableFuture<Vodka> futureVodka = CompletableFuture.supplyAsync(() -> barman.pourVodka());
-      CompletableFuture<Beer> futureBeer = CompletableFuture.supplyAsync(() -> barman.pourBeer());
-
       log.debug("A plecat fata/baietul cu comanda");
 
-      CompletableFuture<DillyDilly> futureDilly = futureBeer.thenCombineAsync(futureVodka, DillyDilly::new);
-
-      futureDilly.thenAccept(dilly -> log.debug("Got my order! Thank you lad! " + dilly));
+      supplyAsync(barman::pourBeer)
+          .thenCombineAsync(supplyAsync(barman::pourVodka), DillyDilly::new)
+          .thenAccept(this::consumeDilly);
       return null;
+   }
+
+   private void consumeDilly(DillyDilly dilly) {
+      log.debug("Got my order! Thank you lad! " + dilly);
    }
 }
 
