@@ -62,6 +62,8 @@ public class ThreadPools {
       log("Gata tot");
 //      future.get();
       // TODO shutdown the executor !
+      executor.shutdown();
+      executor.awaitTermination(1, TimeUnit.SECONDS);
    }
    {
       // din multe threaduri 50 faci asta :
