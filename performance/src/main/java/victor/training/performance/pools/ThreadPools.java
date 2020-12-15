@@ -5,6 +5,7 @@ import org.jooq.lambda.Unchecked;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.*;
+import java.util.concurrent.ThreadPoolExecutor.CallerRunsPolicy;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 
@@ -15,13 +16,18 @@ public class ThreadPools {
 
    public static void main(String[] args) throws InterruptedException, ExecutionException {
       // TODO Executor that keeps a fixed number (3) of threads until it is shut down
-      ExecutorService executor = Executors.newFixedThreadPool(3);
+//      ExecutorService executor = Executors.newFixedThreadPool(3);
 
       // TODO Executor that grows the thread pool as necessary, and kills inactive ones after 1 min
-      // TODO ExecutorService executor = Executors. ?
+//       ExecutorService executor = Executors.newCachedThreadPool();
 
       // TODO Executor that have at least 3 thread but can grow up to 10 threads. Inactive threads die in 1 second.
       // TODO Vary the fixed-sized queue to see it grow the pool and then Rejecting tasks
+      ThreadPoolExecutor executor = new ThreadPoolExecutor(
+          3, 5,
+          1, TimeUnit.SECONDS,
+          new ArrayBlockingQueue<>(4),
+          new CallerRunsPolicy());
 
       List<Future<Integer>> futures = new ArrayList<>();
 
@@ -32,6 +38,14 @@ public class ThreadPools {
          futures.add(futureInteger);
          sleepSomeTime(100, 200); // simulate random request rate
       }
+
+//      Future<?> future = executor.submit(new Runnable() {
+//         @Override
+//         public void run() {
+//            log("#sieu");
+//            throw new IllegalArgumentException("Bum frate!!");
+//         }
+//      });
       System.out.println("Am trimis tot");
 
       List<Integer> results = new ArrayList<>();
@@ -41,6 +55,8 @@ public class ThreadPools {
 
       results = futures.stream().map(Unchecked.function(Future::get)).collect(Collectors.toList());
       System.out.println(results);
+
+//      future.get();
       // TODO shutdown the executor !
    }
 }
