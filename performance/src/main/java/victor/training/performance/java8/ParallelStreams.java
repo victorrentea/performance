@@ -17,6 +17,7 @@ public class ParallelStreams {
       List<Integer> numbers = IntStream.range(1, 50).boxed().collect(toList());
 
 
+//      List<Integer> chunk;
       Stream<Integer> stream = numbers.parallelStream()
           .filter(n -> {
              log("Filter " + n);
