@@ -11,6 +11,8 @@ public class SummingBoxes {
         List<Long> list = LongStream.range(1, 10_000_000)
 				.boxed().collect(toList());
 
+        // TODO how about memory efficiency?
+
         long t0 = System.currentTimeMillis();
 
         Long sum = 0L;
