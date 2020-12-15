@@ -42,18 +42,19 @@ public class BarService implements CommandLineRunner {
       CompletableFuture<DillyDilly> futureDilly = futureBeer.thenCombineAsync(futureVodka, DillyDilly::new);
 
       futureDilly.thenAccept(dilly -> log.debug("Got my order! Thank you lad! " + dilly));
+      method();
       return futureDilly;
    }
+
+   public void method() {
+      String currentUsername = UserHolderPeThread.currentUserName.get(); // TODO ThreadLocals... , requestContext.getCurrentUser()
+      log.debug("Pouring Beer to " + currentUsername + "...");
+   }
 }
-
 // Dupa pauza:
-
-// 2) cu spring
-// 3) HTTP request async
 // 4) Flux mai complex
 // 5) Thread locals
 // 1) exceptii
-
 @Service
 @Slf4j
 class Barman {
@@ -63,8 +64,8 @@ class Barman {
 
    @Async("executor")
    public CompletableFuture<Beer> pourBeer() {
-      String currentUsername = null; // TODO ThreadLocals... , requestContext.getCurrentUser()
-      log.debug("Pouring Beer to " + currentUsername + "...");
+      String currentUsername = UserHolderPeThread.currentUserName.get(); // TODO ThreadLocals... , requestContext.getCurrentUser()
+      log.debug(">>>>Pouring Beer to " + currentUsername + "...");
       sleepq(1000);// SELECT
       return completedFuture(new Beer());
    }

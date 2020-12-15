@@ -18,7 +18,13 @@ public class BarController {
    private MyRequestContext requestContext;
 
    @GetMapping
-   public CompletableFuture<DillyDilly> getDrinks() throws ExecutionException, InterruptedException {
+   public CompletableFuture<DillyDilly> getDrinks() {
+      UserHolderPeThread.currentUserName.set("jdoe");
       return service.orderDrinks();
    }
+}
+
+
+class UserHolderPeThread {
+   public static ThreadLocal<String> currentUserName = new ThreadLocal<>();
 }
