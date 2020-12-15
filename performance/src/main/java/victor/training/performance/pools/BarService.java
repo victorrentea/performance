@@ -26,14 +26,14 @@ public class BarService implements CommandLineRunner {
    @Override
    public void run(String... args) {
       requestContext.setCurrentUser("jdoe");
-      log.debug(orderDrinks().toString());
+      log.debug("" + orderDrinks());
    }
 
    public List<Object> orderDrinks() {
       log.debug("Submitting my order");
       Beer beer = barman.pourBeer();
       Vodka vodka = barman.pourVodka();
-      log.debug("Got my order! Thank you lad! " + asList(beer, vodka));
+      log.debug("Got my order: " + asList(beer, vodka));
       return asList(beer, vodka);
    }
 

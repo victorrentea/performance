@@ -15,6 +15,6 @@ public class BarController {
 
    @GetMapping
    public String getDrinks() {
-      return service.orderDrinks().toString();
+      return "" + service.orderDrinks();
    }
 }
