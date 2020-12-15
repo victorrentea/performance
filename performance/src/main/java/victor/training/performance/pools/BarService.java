@@ -33,7 +33,7 @@ public class BarService implements CommandLineRunner {
    @Override
    public void run(String... args) {
       requestContext.setCurrentUser("jdoe");
-      log.debug(orderDrinks().toString());
+      log.debug("" + orderDrinks());
    }
 
    @SneakyThrows
@@ -42,17 +42,15 @@ public class BarService implements CommandLineRunner {
 
 //      ExecutorService pool = Executors.newFixedThreadPool(2);
 
-      Future<Vodka> futureVodka = CompletableFuture.supplyAsync(() -> barman.pourVodka());
-      Future<Beer> futureBeer = CompletableFuture.supplyAsync(() -> barman.pourBeer());
+      CompletableFuture<Vodka> futureVodka = CompletableFuture.supplyAsync(() -> barman.pourVodka());
+      CompletableFuture<Beer> futureBeer = CompletableFuture.supplyAsync(() -> barman.pourBeer());
 
       log.debug("A plecat fata/baietul cu comanda");
-      Vodka vodka = futureVodka.get(); // cat timp asteapta main aici?: 1s
-      Beer beer = futureBeer.get(); // cat timp asteapta main aici?: 0s
 
-      // "atunci cand si vodka si berea sunt gata, fa si asta: new Dilly
+      CompletableFuture<DillyDilly> futureDilly = futureBeer.thenCombineAsync(futureVodka, DillyDilly::new);
 
-      log.debug("Got my order! Thank you lad! " + asList(beer, vodka));
-      return asList(beer, vodka);
+      futureDilly.thenAccept(dilly -> log.debug("Got my order! Thank you lad! " + dilly));
+      return null;
    }
 }
 
