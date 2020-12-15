@@ -34,6 +34,9 @@ public class SumString {
       System.out.println(puiiMei.contains(emma));
 
       // nu implementa hashCode/equals pe @Entity incluzand id-ul in calcul (ca-l schimba hibernate)!!!
+
+//      List<String> list2 = new LinkedList<>();
+//      list2.add(null);
    }
 }
 
