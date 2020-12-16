@@ -5,18 +5,20 @@ import lombok.Data;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.io.IOUtils;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 import victor.training.performance.ConcurrencyUtil;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import java.io.File;
+import java.io.IOException;
+import java.sql.Blob;
 import java.util.List;
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
@@ -37,6 +39,18 @@ public class SheepController {
 
 
     }
+//    @PostMapping("uploadProfileImage")
+//    public void create(MultipartFile file) throws IOException { // $K 1G cu el dansand in frunza
+//        byte[] oneGB = IOUtils.toByteArray(file.getInputStream());
+//
+//        File.createTempFile()
+//        IOUtils.copy(file.getInputStream(), tempOutStream);//
+////        Blob
+//        log.debug("create {}", name);
+//        return service.create(name);
+//
+//
+//    }
     // TODO Starve Connections
     // TODO Starve Threads
 

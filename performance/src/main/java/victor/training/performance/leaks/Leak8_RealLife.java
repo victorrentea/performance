@@ -18,7 +18,7 @@ public class Leak8_RealLife {
 	public String test() {
 		for (int i = 0; i < 1_000_000; i++) {
 			// simulate a lot more load
-	    	smallEntriesCantHurt.put(UUID.randomUUID().toString(), 1);
+	    	smallEntriesCantHurt.put(UUID.randomUUID().toString(), 200);
 		}
 		return "real-life case: no more obvious suspect 20MB int[]";
 	}

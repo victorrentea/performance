@@ -16,11 +16,12 @@ import java.util.UUID;
 public class Leak6_TheMostCommon {
    // AVOID: Hand-made cache!! Plugin a mature one!
    // [RO] Nu-ti faci cacheul de mana niciodata
-   private static Map<String, Object> oops = new HashMap<>();
+   private static final Map<String, Object> oops = new HashMap<>();
 
    @GetMapping
    public String test() {
       oops.put(UUID.randomUUID().toString(), new BigObject20MB());
+      System.out.println(oops.get("a"));
       return "the most brainless, but the most common. Long Live SonarLint";
    }
 }

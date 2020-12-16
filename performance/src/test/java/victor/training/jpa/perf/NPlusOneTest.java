@@ -44,13 +44,20 @@ public class NPlusOneTest {
 				.addChild(new Child("Stephan"))
 				.addChild(new Child("Paul"))
 		);
+		em.persist(new Parent("Emilian")
+		);
 		TestTransaction.end();
 		TestTransaction.start();
 	}
 
 	@Test
 	public void nPlusOne() {
-		List<Parent> parents = em.createQuery("FROM Parent", Parent.class).getResultList();
+		Set<Parent> parents = new HashSet<>(
+			em.createQuery("SELECT p FROM Parent p LEFT JOIN FETCH p.children",
+				Parent.class).getResultList());
+//		daca n-ai impementat hashCode equals, vin mostenite cele din Object, care testeaza ca
+//			obj1 == obj2
+		System.out.println(parents);
 
 		int totalChildren = anotherMethod(parents);
 		assertThat(totalChildren).isEqualTo(5);
