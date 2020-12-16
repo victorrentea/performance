@@ -43,7 +43,7 @@ public class UberEntityTest {
         UberEntity uber = new UberEntity()
                 .setName("Ubbbbb")
                 .setFiscalCountry(romania)
-                .setOriginCountry(romania)
+                .setOriginCountryId(romania.getId())
                 .setInvoicingCountry(romania)
                 .setCreatedBy(testUser)
                 .setNationality(romania)
@@ -64,9 +64,12 @@ public class UberEntityTest {
         // TODO 1 change link types?
         // TODO 2 fetch only the necessary data
         System.out.println(uberEntity.getName() + "|" + uberEntity.getOriginCountryName());
+
+
     }
     @Autowired
     private UberRepo repo;
+
 }
 
 interface UberRepo extends JpaRepository<UberEntity, Long> {
@@ -77,9 +80,16 @@ interface UberRepo extends JpaRepository<UberEntity, Long> {
 //           " FROM UberEntity WHERE name LIKE ?1")
 //    List<Object[]> findDoarCeamNevoie(String namePart);
     @Query("SELECT new victor.training.jpa.perf.UberProjection" +
-           "(name, originCountry.name)" +
+           "(name, fiscalCountry.name)" +
            " FROM UberEntity WHERE name LIKE ?1")
     List<UberProjection> findDoarCeamNevoie(String namePart);
+
+
+
+//    Map<Long, String> find
+}
+
+interface ParentSearchRepo extends JpaRepository<ParentSearch, Long> {
 }
 
 @Value

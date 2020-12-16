@@ -61,6 +61,10 @@ public class NPlusOneTest {
 
 		int totalChildren = anotherMethod(parents);
 		assertThat(totalChildren).isEqualTo(5);
+
+		System.out.println("NOWNOWNOW");
+		searchRepo.findAll().forEach(System.out::println);
+
 	}
 
 
@@ -75,5 +79,8 @@ public class NPlusOneTest {
 		log.debug("Done counting: {} children", total);
 		return total;
 	}
+	@Autowired
+	private ParentSearchRepo searchRepo;
 
 }
+
