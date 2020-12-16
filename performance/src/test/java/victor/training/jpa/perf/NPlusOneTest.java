@@ -7,6 +7,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.annotation.Rollback;
 import org.springframework.test.context.junit4.SpringRunner;
@@ -69,4 +70,15 @@ public class NPlusOneTest {
 		return total;
 	}
 
+	@Autowired
+	private ParentSearchRepo searchRepo;
+
+	@Test
+	public void entityOnView() {
+		searchRepo.findAll().forEach(System.out::println);
+		assertThat(searchRepo.findAll()).anyMatch(ps -> ps.getChildrenNames().contains("Vlad,Emma"));
+	}
+}
+
+interface ParentSearchRepo extends JpaRepository<ParentSearch, Long> {
 }
