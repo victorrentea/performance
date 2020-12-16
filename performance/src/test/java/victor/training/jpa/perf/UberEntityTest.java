@@ -1,11 +1,14 @@
 package victor.training.jpa.perf;
 
+import lombok.Value;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.annotation.Rollback;
 import org.springframework.test.context.junit4.SpringRunner;
@@ -13,6 +16,7 @@ import org.springframework.test.context.transaction.TestTransaction;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityManager;
+import java.util.List;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
@@ -37,6 +41,7 @@ public class UberEntityTest {
 
 
         UberEntity uber = new UberEntity()
+                .setName("Ubbbbb")
                 .setFiscalCountry(romania)
                 .setOriginCountry(romania)
                 .setInvoicingCountry(romania)
@@ -49,10 +54,36 @@ public class UberEntityTest {
         TestTransaction.start();
 
         log.info("Now, loading by id...");
-        UberEntity uberEntity = em.find(UberEntity.class, uber.getId());
+        // E RAU sa scoti entitati intregi PT: SEARCH SA EXPORT
+//        UberEntity uberEntity = em.find(UberEntity.class, uber.getId()); // 40 coloane + 7 joinuri
+//        UberEntity uberEntity = repo.findByNameLike("%bbb%").get(0); // 4 queryuri
+
+        // Scot scalari
+        UberProjection uberEntity = repo.findDoarCeamNevoie("%bbb%").get(0);
         log.info("Loaded");
         // TODO 1 change link types?
         // TODO 2 fetch only the necessary data
-        System.out.println(uberEntity.getName() + "|" + uberEntity.getOriginCountry().getName());
+        System.out.println(uberEntity.getName() + "|" + uberEntity.getOriginCountryName());
     }
+    @Autowired
+    private UberRepo repo;
+}
+
+interface UberRepo extends JpaRepository<UberEntity, Long> {
+    //@Query em.createQuery
+//    List<UberEntity> findByNameLike(String name);
+
+//    @Query("SELECT name, originCountry.name" +
+//           " FROM UberEntity WHERE name LIKE ?1")
+//    List<Object[]> findDoarCeamNevoie(String namePart);
+    @Query("SELECT new victor.training.jpa.perf.UberProjection" +
+           "(name, originCountry.name)" +
+           " FROM UberEntity WHERE name LIKE ?1")
+    List<UberProjection> findDoarCeamNevoie(String namePart);
+}
+
+@Value
+class UberProjection {
+    String name;
+    String originCountryName;
 }
