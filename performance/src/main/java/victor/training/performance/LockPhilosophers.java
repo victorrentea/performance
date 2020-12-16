@@ -4,6 +4,7 @@ import static victor.training.performance.ConcurrencyUtil.log;
 import static victor.training.performance.ConcurrencyUtil.sleepq;
 import static victor.training.performance.ConcurrencyUtil.sleepSomeTime;
 
+import java.util.*;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
@@ -33,8 +34,8 @@ public class LockPhilosophers {
 		}
 
 		public void run() {
-			Fork firstFork = leftFork;
-			Fork secondFork = rightFork;
+			Fork firstFork = leftFork.id<rightFork.id? leftFork: rightFork;
+			Fork secondFork = leftFork.id>rightFork.id? leftFork: rightFork;
 
 			for (int i=0;i<50;i++) {
 				sleepSomeTime();
@@ -65,6 +66,7 @@ public class LockPhilosophers {
 	
 	public static void main(String[] args) {
 		log("Start");
+
 		Fork[] forks = new Fork[] {new Fork(1), new Fork(2), new Fork(3), new Fork(4), new Fork(5)};
 		new Philosopher("Plato", forks[0], forks[1]).start();
 		new Philosopher("Konfuzius", forks[1], forks[2]).start();
@@ -72,5 +74,9 @@ public class LockPhilosophers {
 		new Philosopher("Voltaire", forks[3], forks[4]).start();
 		sleepq(1000);
 		new Philosopher("Descartes", forks[4], forks[0]).start();
+
+		Map<String, Integer > map = new HashMap<>();
+
+		Map<String, Integer> syncMap = Collections.synchronizedMap(map);
 	}
 }

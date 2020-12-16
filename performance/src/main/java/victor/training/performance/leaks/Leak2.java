@@ -17,6 +17,9 @@ public class Leak2 {
 		HttpSession session = request.getSession();
 		System.out.println("Just created a new session: " + session.isNew());
 		session.setAttribute("rights",new BigObject80MB());
+
+		// fix : muta datele grele intr-un loc gen Redis.
+		// NU tii mult in memorie
 		return "subtle, hard to find before stress tests";
 	}
 }

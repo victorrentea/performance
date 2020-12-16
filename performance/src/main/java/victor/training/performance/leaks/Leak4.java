@@ -22,19 +22,21 @@ public class Leak4 {
 		return "the most subtle";
 	}
 }
-
 class MyAppRequestContext {
     public UserRightsCalculator rights;
 }
-
 class CachingMethodObject {
-	public class UserRightsCalculator {
+
+	public static class UserRightsCalculator { // la asta am referinta din ThreadLocal
 		public void doStuff() {
 			System.out.println("Stupid Code");
 			// what's the connection with the 'cache' field ?
+			// de ce instanta de UserRightsCalculator o tine
+			// pe instanta de CachingMethodObject in viata. CUM!!>!
+//			System.out.println(cache);
+//			System.out.println(CachingMethodObject.this.cache);
 		}
 	}
-
 	private Map<String, BigObject20MB> cache = new HashMap<>();
 
 	public UserRightsCalculator createRightsCalculator() {
