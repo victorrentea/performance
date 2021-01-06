@@ -1,5 +1,6 @@
 package victor.training.performance.leaks;
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
@@ -13,14 +14,19 @@ import java.util.UUID;
 
 @RestController
 @RequestMapping("leak6")
+@Slf4j
 public class Leak6_TheMostCommon {
-   // AVOID: Hand-made cache!! Plugin a mature one!
-   // [RO] Nu-ti faci cacheul de mana niciodata
-   private static Map<String, Object> oops = new HashMap<>();
+
+   // NEVER hand-make your own cache, plugin a professional one
+   private static Map<String, Integer> smallEntriesCantHurt = new HashMap<>();
 
    @GetMapping
    public String test() {
-      oops.put(UUID.randomUUID().toString(), new BigObject20MB());
-      return "the most brainless, but the most common. Long Live SonarLint";
+      log.info("Catch me if you can");
+      for (int i = 0; i < 1_000; i++) {
+         // simulate a lot more load --< hit with jmeter
+         smallEntriesCantHurt.put(UUID.randomUUID().toString(), 1);
+      }
+      return "real-life case: no more obvious suspect 20MB int[]";
    }
 }

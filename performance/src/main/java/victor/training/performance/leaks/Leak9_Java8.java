@@ -13,8 +13,8 @@ import java.util.Random;
 import java.util.function.Function;
 
 @RestController
-@RequestMapping("leak10")
-public class Leak10_Java8 {
+@RequestMapping("leak9")
+public class Leak9_Java8 {
 	@Autowired
 	private Worker worker;
 
