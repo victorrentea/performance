@@ -18,7 +18,7 @@ import java.util.UUID;
 public class Leak6_TheMostCommon {
 
    // NEVER hand-make your own cache, plugin a professional one
-   private static Map<String, Integer> smallEntriesCantHurt = new HashMap<>();
+   private static final Map<String, Integer> smallEntriesCantHurt = new HashMap<>();
 
    @GetMapping
    public String test() {

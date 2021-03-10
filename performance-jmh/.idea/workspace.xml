@@ -23,10 +23,11 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="0e1584f6-4d86-4d34-9539-64d7002532f5" name="Default Changelist" comment="CPU tasks">
-      <change beforePath="$PROJECT_DIR$/.idea/encodings.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/encodings.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/victor/perf/StreamsCPUOnlyTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/victor/perf/StreamsCPUOnlyTest.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../performance/jMeter.jmx" beforeDir="false" afterPath="$PROJECT_DIR$/../performance/jMeter.jmx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../performance/src/main/java/victor/training/performance/leaks/Leak10_Hash.java" beforeDir="false" afterPath="$PROJECT_DIR$/../performance/src/main/java/victor/training/performance/leaks/Leak10_Hash.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../performance/src/main/java/victor/training/performance/leaks/Leak1.java" beforeDir="false" afterPath="$PROJECT_DIR$/../performance/src/main/java/victor/training/performance/leaks/Leak1.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../performance/src/main/java/victor/training/performance/leaks/Leak6_TheMostCommon.java" beforeDir="false" afterPath="$PROJECT_DIR$/../performance/src/main/java/victor/training/performance/leaks/Leak6_TheMostCommon.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -77,7 +78,7 @@
     <property name="WebServerToolWindowFactoryState" value="false" />
     <property name="aspect.path.notification.shown" value="true" />
     <property name="extract.method.default.visibility" value="private" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$/src/main/java/victor/perf" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$" />
     <property name="nodejs_interpreter_path.stuck_in_default_project" value="undefined stuck path" />
     <property name="nodejs_npm_path_reset_for_default_project" value="true" />
     <property name="nodejs_package_manager_path" value="npm" />
@@ -111,13 +112,15 @@
         <option name="Make" enabled="true" />
       </method>
     </configuration>
-    <configuration default="true" type="ArquillianJUnit" factoryName="" nameIsGenerated="true">
+    <configuration default="true" type="ArquillianTestNG" factoryName="" nameIsGenerated="true">
       <option name="arquillianRunConfiguration">
         <value>
           <option name="containerStateName" value="" />
         </value>
       </option>
-      <option name="TEST_OBJECT" value="class" />
+      <option name="TEST_OBJECT" value="CLASS" />
+      <properties />
+      <listeners />
       <method v="2">
         <option name="Make" enabled="true" />
       </method>
@@ -186,6 +189,7 @@
       <workItem from="1607340275025" duration="2500000" />
       <workItem from="1608210011950" duration="629000" />
       <workItem from="1611324562832" duration="1627000" />
+      <workItem from="1615375354448" duration="1205000" />
     </task>
     <task id="LOCAL-00001" summary="add FizzBuzz JMH">
       <created>1582668553526</created>
@@ -241,29 +245,6 @@
     <MESSAGE value="Exceptions JMH" />
     <MESSAGE value="CPU tasks" />
     <option name="LAST_COMMIT_MESSAGE" value="CPU tasks" />
-  </component>
-  <component name="WindowStateProjectService">
-    <state x="375" y="0" key="CommitChangelistDialog2" timestamp="1602705278798">
-      <screen x="0" y="0" width="1536" height="834" />
-    </state>
-    <state x="375" y="0" key="CommitChangelistDialog2/0.0.1536.834@0.0.1536.834" timestamp="1602705278798" />
-    <state x="361" y="150" key="Vcs.Push.Dialog.v2" timestamp="1607340784703">
-      <screen x="0" y="0" width="1536" height="834" />
-    </state>
-    <state x="361" y="150" key="Vcs.Push.Dialog.v2/0.0.1536.834/0.-1080.1920.1050@0.0.1536.834" timestamp="1607340784703" />
-    <state x="361" y="150" key="Vcs.Push.Dialog.v2/0.0.1536.834@0.0.1536.834" timestamp="1602705279555" />
-    <state x="555" y="318" key="git4idea.remote.GitConfigureRemotesDialog" timestamp="1608210031143">
-      <screen x="0" y="0" width="1536" height="834" />
-    </state>
-    <state x="555" y="318" key="git4idea.remote.GitConfigureRemotesDialog/0.0.1536.834/0.-1080.1920.1050@0.0.1536.834" timestamp="1608210031143" />
-    <state width="462" height="616" key="javadoc.popup.new" timestamp="1607213612500">
-      <screen x="0" y="0" width="1536" height="834" />
-    </state>
-    <state width="462" height="616" key="javadoc.popup.new/0.0.1536.834@0.0.1536.834" timestamp="1607213612500" />
-    <state x="431" y="155" width="672" height="678" key="search.everywhere.popup" timestamp="1607213615442">
-      <screen x="0" y="0" width="1536" height="834" />
-    </state>
-    <state x="431" y="155" width="672" height="678" key="search.everywhere.popup/0.0.1536.834@0.0.1536.834" timestamp="1607213615442" />
   </component>
   <component name="masterDetails">
     <states>
