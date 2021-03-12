@@ -17,15 +17,15 @@ public class StreamsCPUOnlyTest {
 
 
    @Param({"100", "10000"})
-   public int N;
+   public int n_items;
 
    @Param({"light", "heavy"})
-   public String cpuIntensity;
+   public String cpu_intensity;
 
    @Benchmark
    public int forClassic() {
       int sum = 0;
-      for (int i = 0; i < N; i++) {
+      for (int i = 0; i < n_items; i++) {
          sum += cpuOnlyTask(i);
       }
       return sum;
@@ -33,21 +33,21 @@ public class StreamsCPUOnlyTest {
 
    @Benchmark
    public int stream() {
-      return IntStream.range(0, N)
+      return IntStream.range(0, n_items)
           .map(this::cpuOnlyTask)
           .sum();
    }
 
    @Benchmark
    public int streamParallel() {
-      return IntStream.range(0, N)
+      return IntStream.range(0, n_items)
           .parallel()
           .map(this::cpuOnlyTask)
           .sum();
    }
 
    public int cpuOnlyTask(int n) {
-      switch (cpuIntensity) {
+      switch (cpu_intensity) {
          case "light":
             return (int) sqrt(n);
          case "heavy":
@@ -57,7 +57,7 @@ public class StreamsCPUOnlyTest {
             }
             return (int) sum;
          default:
-            throw new IllegalStateException("Unexpected value: " + cpuIntensity);
+            throw new IllegalStateException("Unexpected value: " + cpu_intensity);
       }
    }
 

@@ -22,10 +22,7 @@
     <select />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="0e1584f6-4d86-4d34-9539-64d7002532f5" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/victor/perf/StreamsCPUOnlyTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/victor/perf/StreamsCPUOnlyTest.java" afterDir="false" />
-    </list>
+    <list default="true" id="0e1584f6-4d86-4d34-9539-64d7002532f5" name="Default Changelist" comment="" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -109,17 +106,6 @@
         <option name="Make" enabled="true" />
       </method>
     </configuration>
-    <configuration default="true" type="ArquillianJUnit" factoryName="" nameIsGenerated="true">
-      <option name="arquillianRunConfiguration">
-        <value>
-          <option name="containerStateName" value="" />
-        </value>
-      </option>
-      <option name="TEST_OBJECT" value="class" />
-      <method v="2">
-        <option name="Make" enabled="true" />
-      </method>
-    </configuration>
     <configuration name="IOParallel.set1000" type="jmh-id" temporary="true" program-parameters="victor.perf.IOParallel.set1000" working-dir="C:\workspace\performance\performance-jmh" benchmark-type="METHOD" benchmark-class="victor.perf.IOParallel">
       <module name="performance-jmh" />
       <method v="2">
@@ -185,7 +171,7 @@
       <workItem from="1608210011950" duration="629000" />
       <workItem from="1611324562832" duration="1627000" />
       <workItem from="1615375354448" duration="4004000" />
-      <workItem from="1615542353352" duration="1942000" />
+      <workItem from="1615542353352" duration="2103000" />
     </task>
     <task id="LOCAL-00001" summary="add FizzBuzz JMH">
       <created>1582668553526</created>
@@ -222,7 +208,14 @@
       <option name="project" value="LOCAL" />
       <updated>1615376674103</updated>
     </task>
-    <option name="localTasksCounter" value="6" />
+    <task id="LOCAL-00006" summary="cleanup">
+      <created>1615548099591</created>
+      <option name="number" value="00006" />
+      <option name="presentableId" value="LOCAL-00006" />
+      <option name="project" value="LOCAL" />
+      <updated>1615548099591</updated>
+    </task>
+    <option name="localTasksCounter" value="7" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -248,7 +241,8 @@
     <MESSAGE value="Exceptions JMH" />
     <MESSAGE value="CPU tasks" />
     <MESSAGE value="JMH benchmark parallel Stream" />
-    <option name="LAST_COMMIT_MESSAGE" value="JMH benchmark parallel Stream" />
+    <MESSAGE value="cleanup" />
+    <option name="LAST_COMMIT_MESSAGE" value="cleanup" />
   </component>
   <component name="masterDetails">
     <states>
