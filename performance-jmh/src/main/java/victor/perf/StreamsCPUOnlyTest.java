@@ -22,8 +22,6 @@ public class StreamsCPUOnlyTest {
    @Param({"light", "heavy"})
    public String cpuIntensity;
 
-//   public static final int N = 10_000;
-
    @Benchmark
    public int forClassic() {
       int sum = 0;
@@ -50,8 +48,6 @@ public class StreamsCPUOnlyTest {
 
    public int cpuOnlyTask(int n) {
       switch (cpuIntensity) {
-         case "trivial":
-            return (int) (n * n);
          case "light":
             return (int) sqrt(n);
          case "heavy":
