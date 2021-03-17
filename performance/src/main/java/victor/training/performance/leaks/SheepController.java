@@ -4,6 +4,7 @@ import lombok.Data;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -17,6 +18,9 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import java.util.List;
 import java.util.UUID;
+import java.util.concurrent.CompletableFuture;
+
+import static java.util.concurrent.CompletableFuture.completedFuture;
 
 @Slf4j
 @RestController
@@ -26,7 +30,7 @@ public class SheepController {
     private final SheepService service;
 
     @GetMapping("create")
-    public Long create(@RequestParam(defaultValue = "Bisisica") String name) {
+    public CompletableFuture<Sheep> create(@RequestParam(defaultValue = "Bisisica") String name) {
         log.debug("create " + name);
         return service.create(name);
     }
@@ -43,17 +47,16 @@ public class SheepController {
 @Slf4j
 @Service
 @RequiredArgsConstructor
-@Transactional
 class SheepService {
     private final SheepRepo repo;
     private final ShepardService shepard;
 
-    public Long create(String name) {
-        String sn = shepard.registerSheep(name);
-        log.debug("Persist");
-        Sheep sheep = repo.save(new Sheep(name, sn));
-        return sheep.getId();
+//@Transactional
+    public CompletableFuture<Sheep> create(String name) {
+        return shepard.registerSheep(name)
+            .thenApply(sn -> repo.save(new Sheep(name, sn)));
     }
+@Transactional
     public List<Sheep> search(String name) {
         return repo.getByNameLike(name);
     }
@@ -61,10 +64,11 @@ class SheepService {
 @Slf4j
 @Service
 class ShepardService {
-    public String registerSheep(String name) {
+    @Async
+    public CompletableFuture<String> registerSheep(String name) {
         log.debug("Calling external WS");
         ConcurrencyUtil.sleepq(500);
-        return UUID.randomUUID().toString();
+        return completedFuture(UUID.randomUUID().toString());
     }
 }
 
