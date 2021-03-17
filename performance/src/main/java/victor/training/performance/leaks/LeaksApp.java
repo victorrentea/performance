@@ -7,8 +7,6 @@ import org.springframework.context.annotation.EnableMBeanExport;
 import org.springframework.scheduling.annotation.EnableAsync;
 
 @EnableAsync
-@EnableCaching
-@EnableMBeanExport
 @SpringBootApplication
 public class LeaksApp {
     public static void main(String[] args) {
