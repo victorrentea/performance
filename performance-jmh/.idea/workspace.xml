@@ -27,8 +27,6 @@
       <change beforePath="$PROJECT_DIR$/performance-jmh.iml" beforeDir="false" afterPath="$PROJECT_DIR$/performance-jmh.iml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/pom.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/victor/perf/StreamsCPUOnlyTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/victor/perf/StreamsCPUOnlyTest.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../performance/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../performance/pom.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../performance/src/main/resources/application.properties" beforeDir="false" afterPath="$PROJECT_DIR$/../performance/src/main/resources/application.properties" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -52,9 +50,10 @@
     </option>
   </component>
   <component name="Git.Settings">
+    <option name="PREVIEW_PUSH_PROTECTED_ONLY" value="true" />
     <option name="RECENT_BRANCH_BY_REPOSITORY">
       <map>
-        <entry key="$PROJECT_DIR$/.." value="UniCredit2020_10" />
+        <entry key="$PROJECT_DIR$/.." value="master" />
       </map>
     </option>
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$/.." />
@@ -149,11 +148,11 @@
       </method>
     </configuration>
     <list>
+      <item itemvalue="Application.StreamsCPUOnlyTest" />
       <item itemvalue="Jmh.StreamsCPUMixedTest" />
       <item itemvalue="Jmh.StreamsCPUOnlyTest" />
       <item itemvalue="Jmh.IOParallel.set1000" />
       <item itemvalue="Jmh.StreamsCPUMixedTest.streamSerial" />
-      <item itemvalue="Application.StreamsCPUOnlyTest" />
     </list>
     <recent_temporary>
       <list>
@@ -251,11 +250,34 @@
   <component name="Vcs.Log.Tabs.Properties">
     <option name="TAB_STATES">
       <map>
+        <entry key="1">
+          <value>
+            <State>
+              <option name="SHOW_ONLY_AFFECTED_CHANGES" value="true" />
+              <option name="FILTERS">
+                <map>
+                  <entry key="structure">
+                    <value>
+                      <list>
+                        <option value="dir:C:/workspace/performance/performance-jmh" />
+                      </list>
+                    </value>
+                  </entry>
+                </map>
+              </option>
+            </State>
+          </value>
+        </entry>
         <entry key="MAIN">
           <value>
             <State />
           </value>
         </entry>
+      </map>
+    </option>
+    <option name="OPEN_GENERIC_TABS">
+      <map>
+        <entry key="1" value="TOOL_WINDOW" />
       </map>
     </option>
     <option name="oldMeFiltersMigrated" value="true" />
@@ -269,7 +291,9 @@
     <MESSAGE value="CPU tasks" />
     <MESSAGE value="JMH benchmark parallel Stream" />
     <MESSAGE value="cleanup" />
-    <option name="LAST_COMMIT_MESSAGE" value="cleanup" />
+    <MESSAGE value="&#10;add reactor.Flux" />
+    <MESSAGE value="add reactor.Flux" />
+    <option name="LAST_COMMIT_MESSAGE" value="add reactor.Flux" />
   </component>
   <component name="masterDetails">
     <states>

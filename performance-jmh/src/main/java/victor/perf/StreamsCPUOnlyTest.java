@@ -3,6 +3,7 @@ package victor.perf;
 import org.openjdk.jmh.annotations.*;
 import reactor.core.publisher.Flux;
 import reactor.core.scheduler.Schedulers;
+import rx.Observable;
 
 import java.util.List;
 import java.util.concurrent.TimeUnit;
@@ -73,9 +74,18 @@ public class StreamsCPUOnlyTest {
           .count()
           .block();
    }
+   @Benchmark
+   public Integer observableSingleThread() {
+      return Observable.from(numbers)
+          .map(this::cpuOnlyTask)
+          .count()
+          .toSingle()
+          .toBlocking()
+          .value();
+   }
 
    public int cpuOnlyTask(int n) {
-      System.out.println(Thread.currentThread().getName());
+//      System.out.println(Thread.currentThread().getName());
       switch (cpu_intensity) {
          case "light":
             return (int) sqrt(n);
