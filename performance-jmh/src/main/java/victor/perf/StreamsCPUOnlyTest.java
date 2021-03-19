@@ -31,7 +31,7 @@ public class StreamsCPUOnlyTest {
 
    @Setup
    public void createNumbersList() {
-       numbers = IntStream.range(0,n_items).boxed().collect(toList());
+      numbers = IntStream.range(0, n_items).boxed().collect(toList());
    }
 
    @Benchmark
@@ -57,14 +57,15 @@ public class StreamsCPUOnlyTest {
           .count();
    }
 
-   @Benchmark
+   //   @Benchmark
    public Long fluxSingleThread() {
       return Flux.fromIterable(numbers)
           .map(this::cpuOnlyTask)
           .count()
           .block();
    }
-   @Benchmark
+
+   //   @Benchmark
    public Long fluxParallelThread() {
       return Flux.fromIterable(numbers)
           .parallel()
@@ -74,7 +75,8 @@ public class StreamsCPUOnlyTest {
           .count()
           .block();
    }
-   @Benchmark
+
+   //   @Benchmark
    public Integer observableSingleThread() {
       return Observable.from(numbers)
           .map(this::cpuOnlyTask)
