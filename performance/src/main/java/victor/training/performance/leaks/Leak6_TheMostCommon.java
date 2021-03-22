@@ -25,7 +25,7 @@ public class Leak6_TheMostCommon {
       log.info("Catch me if you can");
       for (int i = 0; i < 1_000; i++) {
          // simulate a lot more load --< hit with jmeter
-         smallEntriesCantHurt.put(UUID.randomUUID().toString(), 1);
+         smallEntriesCantHurt.put(UUID.randomUUID().toString(), 1000);
       }
       return "real-life case: no more obvious suspect 20MB int[]";
    }

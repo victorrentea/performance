@@ -2,6 +2,7 @@ package victor.perf;
 
 import org.openjdk.jmh.annotations.*;
 
+import java.util.ArrayList;
 import java.util.Random;
 import java.util.concurrent.TimeUnit;
 
@@ -43,6 +44,9 @@ public class ParameterObjectsTest {
    }
 
    private int m7(long userId, String username, String createDate, int age) {
+
+
+      new ArrayList<>().add(1);
       return m8(userId, username, createDate, age);
    }
 

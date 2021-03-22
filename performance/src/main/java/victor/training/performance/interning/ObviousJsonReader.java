@@ -30,13 +30,25 @@ public class ObviousJsonReader {
       }
    }
 
+   public static final Map<String, String> refMap = new HashMap<>();
+
    private static List<Map<String, Object>> compactMap(List<Map<String, Object>> list) {
       System.out.println("Compacting...");
       List<Map<String, Object>> compacted = new ArrayList<>();
       for (Map<String, Object> map : list) {
          Map<String, Object> compactMap = new HashMap<>(map.size());
          for (Entry<String, Object> entry : map.entrySet()) {
-            String newKey = entry.getKey(); // TODO hack here
+
+            String oldKey = entry.getKey();
+            String newKey;
+            if (refMap.containsKey(oldKey)) {
+               newKey = refMap.get(oldKey);
+            } else {
+               refMap.put(oldKey, oldKey);
+               newKey = oldKey;
+            }
+
+//            String newKey = oldKey.intern(); // TODO hack here
             compactMap.put(newKey, entry.getValue());
          }
          compacted.add(compactMap);
