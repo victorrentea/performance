@@ -28,9 +28,9 @@ class MyAppRequestContext {
 }
 
 class CachingMethodObject {
-	public class UserRightsCalculator {
+	public static class UserRightsCalculator {
 		public void doStuff() {
-			System.out.println("Stupid Code");
+			System.out.println("Stupid Code ");// + CachingMethodObject.this.cache);
 			// what's the connection with the 'cache' field ?
 		}
 	}

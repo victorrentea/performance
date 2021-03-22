@@ -23,9 +23,10 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="0e1584f6-4d86-4d34-9539-64d7002532f5" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/src/main/java/victor/perf/ParameterObjectsTest.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../performance/src/main/java/victor/training/performance/leaks/ThreadLocals.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/victor/perf/StreamsCPUOnlyTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/victor/perf/StreamsCPUOnlyTest.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../performance/src/main/java/victor/training/performance/leaks/Leak1.java" beforeDir="false" afterPath="$PROJECT_DIR$/../performance/src/main/java/victor/training/performance/leaks/Leak1.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../performance/src/main/java/victor/training/performance/leaks/Leak2.java" beforeDir="false" afterPath="$PROJECT_DIR$/../performance/src/main/java/victor/training/performance/leaks/Leak2.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -49,6 +50,7 @@
     </option>
   </component>
   <component name="Git.Settings">
+    <option name="PREVIEW_PUSH_PROTECTED_ONLY" value="true" />
     <option name="RECENT_BRANCH_BY_REPOSITORY">
       <map>
         <entry key="$PROJECT_DIR$/.." value="UniCredit2020_10" />
@@ -187,7 +189,7 @@
       <workItem from="1611324562832" duration="1627000" />
       <workItem from="1615375354448" duration="4004000" />
       <workItem from="1615542353352" duration="2103000" />
-      <workItem from="1616402929468" duration="424000" />
+      <workItem from="1616402929468" duration="1504000" />
     </task>
     <task id="LOCAL-00001" summary="add FizzBuzz JMH">
       <created>1582668553526</created>
@@ -245,7 +247,14 @@
       <option name="project" value="LOCAL" />
       <updated>1616168457041</updated>
     </task>
-    <option name="localTasksCounter" value="9" />
+    <task id="LOCAL-00009" summary="Parameter ojbec JMH">
+      <created>1616403462302</created>
+      <option name="number" value="00009" />
+      <option name="presentableId" value="LOCAL-00009" />
+      <option name="project" value="LOCAL" />
+      <updated>1616403462302</updated>
+    </task>
+    <option name="localTasksCounter" value="10" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -302,7 +311,8 @@
     <MESSAGE value="cleanup" />
     <MESSAGE value="+Observable" />
     <MESSAGE value="skip RX benchmark" />
-    <option name="LAST_COMMIT_MESSAGE" value="skip RX benchmark" />
+    <MESSAGE value="Parameter ojbec JMH" />
+    <option name="LAST_COMMIT_MESSAGE" value="Parameter ojbec JMH" />
   </component>
   <component name="masterDetails">
     <states>
