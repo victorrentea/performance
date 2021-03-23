@@ -31,13 +31,13 @@ public class ExceptionsTest {
    }
 
    @Benchmark
-   public String printStack() throws ExecutionException, InterruptedException {
+   public Writer printStack() throws ExecutionException, InterruptedException {
       try {
          throw new IllegalArgumentException();
       } catch (IllegalArgumentException e) {
          Writer sw = new StringWriter();
          e.printStackTrace(new PrintWriter(sw));
-         return sw.toString();
+         return sw;
       }
    }
 
