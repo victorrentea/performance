@@ -37,7 +37,18 @@ public class SheepController {
       AsyncContext asyncContext = request.startAsync();
       log.debug("create " + name);
       service.create(name)
-         .thenAccept(id -> writeStuff(asyncContext, id));
+         .thenAccept(id -> writeStuff(asyncContext, id))
+         .exceptionally(ex -> {
+            log.error("Cannot create sheep", ex);
+            try {
+               asyncContext.getResponse().getWriter().println("ERROR");
+            } catch (IOException e) {
+               throw new RuntimeException(e);
+            }
+            asyncContext.complete();
+            return null;
+         })
+      ;
    }
 
    @SneakyThrows
@@ -73,7 +84,11 @@ class SheepService {
       log.debug("Persist");
 
 
-      CompletableFuture<Sheep> futureSheep = futureSN.thenApply(sn -> new Sheep(name, sn));
+      CompletableFuture<Sheep> futureSheep = futureSN.thenApply(sn -> new Sheep(name, sn))
+//          .thenApply(sheep -> {
+//             throw new RuntimeException("Intentionat");
+//          })
+          ;
       CompletableFuture<Long> futureId = futureSheep.thenApply(sheep -> repo.save(sheep).getId());
 
       return futureId;
