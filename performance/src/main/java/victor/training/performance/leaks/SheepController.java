@@ -15,7 +15,10 @@ import victor.training.performance.ConcurrencyUtil;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import javax.servlet.AsyncContext;
+import javax.servlet.http.HttpServletRequest;
 import javax.sql.DataSource;
+import java.io.IOException;
 import java.util.List;
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
@@ -30,9 +33,17 @@ public class SheepController {
    private final SheepService service;
 
    @GetMapping("create")
-   public CompletableFuture<Long> create(@RequestParam(defaultValue = "Bisisica") String name) {
+   public void create(@RequestParam(defaultValue = "Bisisica") String name, HttpServletRequest request) {
+      AsyncContext asyncContext = request.startAsync();
       log.debug("create " + name);
-      return service.create(name);
+      service.create(name)
+         .thenAccept(id -> writeStuff(asyncContext, id));
+   }
+
+   @SneakyThrows
+   private void writeStuff(AsyncContext asyncContext, Long id)  {
+      asyncContext.getResponse().getWriter().println(id);
+      asyncContext.complete();
    }
    // TODO Starve Connections
    // TODO Starve Threads
