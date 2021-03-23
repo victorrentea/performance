@@ -24,8 +24,7 @@
   <component name="ChangeListManager">
     <list default="true" id="0e1584f6-4d86-4d34-9539-64d7002532f5" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/victor/perf/ExceptionsTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/victor/perf/ExceptionsTest.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/victor/perf/ParameterObjectsTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/victor/perf/ParameterObjectsTest.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../performance/src/main/java/victor/training/performance/APlusPlus.java" beforeDir="false" afterPath="$PROJECT_DIR$/../performance/src/main/java/victor/training/performance/APlusPlus.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -253,7 +252,21 @@
       <option name="project" value="LOCAL" />
       <updated>1616403462302</updated>
     </task>
-    <option name="localTasksCounter" value="10" />
+    <task id="LOCAL-00010" summary="Exceptions more JMH">
+      <created>1616489608347</created>
+      <option name="number" value="00010" />
+      <option name="presentableId" value="LOCAL-00010" />
+      <option name="project" value="LOCAL" />
+      <updated>1616489608347</updated>
+    </task>
+    <task id="LOCAL-00011" summary="Exceptions more JMH">
+      <created>1616489743970</created>
+      <option name="number" value="00011" />
+      <option name="presentableId" value="LOCAL-00011" />
+      <option name="project" value="LOCAL" />
+      <updated>1616489743970</updated>
+    </task>
+    <option name="localTasksCounter" value="12" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -300,6 +313,8 @@
     <option name="oldMeFiltersMigrated" value="true" />
   </component>
   <component name="VcsManagerConfiguration">
+    <option name="CHECK_CODE_SMELLS_BEFORE_PROJECT_COMMIT" value="false" />
+    <option name="CHECK_NEW_TODO" value="false" />
     <option name="ADD_EXTERNAL_FILES_SILENTLY" value="true" />
     <MESSAGE value="add FizzBuzz JMH" />
     <MESSAGE value="add set vs list" />
@@ -311,7 +326,8 @@
     <MESSAGE value="+Observable" />
     <MESSAGE value="skip RX benchmark" />
     <MESSAGE value="Parameter ojbec JMH" />
-    <option name="LAST_COMMIT_MESSAGE" value="Parameter ojbec JMH" />
+    <MESSAGE value="Exceptions more JMH" />
+    <option name="LAST_COMMIT_MESSAGE" value="Exceptions more JMH" />
   </component>
   <component name="masterDetails">
     <states>
