@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+
+<mapper namespace="victor.training.MyBatisMapper">
+    <!--<insert id="insertMessage" parameterType="victor.training.spring.transactions.Message">
+        INSERT INTO MESSAGE(id, MESSAGE)
+        VALUES (#{id}, #{message})
+    </insert>-->
+
+
+    <select id="selectData" resultType="victor.training.ImportOrgUnit">
+    <![CDATA[
+        SELECT ROWID,
+               entry_id entryId,
+               import_correlation_id,
+               correlation_entry_no,
+               operation,
+               row_status,
+               org_unit_id,
+               TRIM (ext_org_unit_code) extOrgUnitCode,
+               parent_org_unit_id,
+               ext_parent_org_unit_code,
+               TRIM (org_unit_name) 		-- force to NULL if the name is empty
+        FROM bo_import_org_unit
+        WHERE import_jrn_id			  = #{importId}
+          AND COALESCE (row_status, ' ') < #{STATUS_DONE}
+        LIMIT 50
+        OFFSET 50
+       ORDER BY correlation_entry_no
+    ]]>
+    </select>
+
+    <sql id="ceVreiTuOracle">
+
+
+    </sql>
+
+    <select id="search" resultType="victor.training.spring.transactions.Message">
+        SELECT message, id from MESSAGE where id = #{id}
+        <!--WHERE 1=1
+        <if test="name != null">
+            AND upper(name) like '%' || UPPER(#{name}) || '%'
+        </if>
+        <if test="phoneNumber != null">
+            AND upper(phone_number) like '%' || UPPER(#{phoneNumber}) || '%'
+        </if>-->
+    </select>
+
+</mapper>
