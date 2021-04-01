@@ -22,9 +22,8 @@
     <select />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="0e1584f6-4d86-4d34-9539-64d7002532f5" name="Default Changelist" comment="">
+    <list default="true" id="0e1584f6-4d86-4d34-9539-64d7002532f5" name="Default Changelist" comment="streams">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/victor/perf/OptionalCost.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/victor/perf/OptionalCost.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -83,7 +82,7 @@
     <property name="WebServerToolWindowFactoryState" value="false" />
     <property name="aspect.path.notification.shown" value="true" />
     <property name="extract.method.default.visibility" value="private" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/../../intellij-tips" />
     <property name="nodejs_interpreter_path.stuck_in_default_project" value="undefined stuck path" />
     <property name="nodejs_npm_path_reset_for_default_project" value="true" />
     <property name="nodejs_package_manager_path" value="npm" />
@@ -117,19 +116,6 @@
         <option name="Make" enabled="true" />
       </method>
     </configuration>
-    <configuration default="true" type="ArquillianTestNG" factoryName="" nameIsGenerated="true">
-      <option name="arquillianRunConfiguration">
-        <value>
-          <option name="containerStateName" value="" />
-        </value>
-      </option>
-      <option name="TEST_OBJECT" value="CLASS" />
-      <properties />
-      <listeners />
-      <method v="2">
-        <option name="Make" enabled="true" />
-      </method>
-    </configuration>
     <configuration name="IOParallel.set1000" type="jmh-id" temporary="true" program-parameters="victor.perf.IOParallel.set1000" working-dir="C:\workspace\performance\performance-jmh" benchmark-type="METHOD" benchmark-class="victor.perf.IOParallel">
       <module name="performance-jmh" />
       <method v="2">
@@ -156,17 +142,17 @@
     </configuration>
     <list>
       <item itemvalue="Application.PlayMe" />
-      <item itemvalue="Jmh.StreamsCPUMixedTest" />
-      <item itemvalue="Jmh.StreamsCPUOnlyTest" />
       <item itemvalue="Jmh.IOParallel.set1000" />
+      <item itemvalue="Jmh.StreamsCPUMixedTest" />
       <item itemvalue="Jmh.StreamsCPUMixedTest.streamSerial" />
+      <item itemvalue="Jmh.StreamsCPUOnlyTest" />
     </list>
     <recent_temporary>
       <list>
-        <item itemvalue="Jmh.StreamsCPUMixedTest.streamSerial" />
-        <item itemvalue="Jmh.IOParallel.set1000" />
         <item itemvalue="Jmh.StreamsCPUOnlyTest" />
+        <item itemvalue="Jmh.StreamsCPUMixedTest.streamSerial" />
         <item itemvalue="Jmh.StreamsCPUMixedTest" />
+        <item itemvalue="Jmh.IOParallel.set1000" />
         <item itemvalue="Application.PlayMe" />
       </list>
     </recent_temporary>
@@ -197,6 +183,7 @@
       <workItem from="1615375354448" duration="4004000" />
       <workItem from="1615542353352" duration="2103000" />
       <workItem from="1616402929468" duration="424000" />
+      <workItem from="1617085662975" duration="590000" />
     </task>
     <task id="LOCAL-00001" summary="add FizzBuzz JMH">
       <created>1582668553526</created>
@@ -261,7 +248,14 @@
       <option name="project" value="LOCAL" />
       <updated>1617008029003</updated>
     </task>
-    <option name="localTasksCounter" value="10" />
+    <task id="LOCAL-00010" summary="streams">
+      <created>1617015477306</created>
+      <option name="number" value="00010" />
+      <option name="presentableId" value="LOCAL-00010" />
+      <option name="project" value="LOCAL" />
+      <updated>1617015477306</updated>
+    </task>
+    <option name="localTasksCounter" value="11" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -319,7 +313,8 @@
     <MESSAGE value="+Observable" />
     <MESSAGE value="skip RX benchmark" />
     <MESSAGE value="Optionals cost" />
-    <option name="LAST_COMMIT_MESSAGE" value="Optionals cost" />
+    <MESSAGE value="streams" />
+    <option name="LAST_COMMIT_MESSAGE" value="streams" />
   </component>
   <component name="masterDetails">
     <states>
