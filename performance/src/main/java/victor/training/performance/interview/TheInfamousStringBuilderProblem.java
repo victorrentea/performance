@@ -5,6 +5,8 @@ import static java.util.stream.Collectors.toList;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.io.Writer;
+import java.sql.Connection;
+import java.sql.ResultSet;
 import java.util.List;
 import java.util.stream.IntStream;
 
@@ -24,6 +26,14 @@ public class TheInfamousStringBuilderProblem {
 
         long t1 = System.currentTimeMillis();
 
+
+//        ResultSet rs;
+//        while (rs.next()) {
+//            rs.getString("COL1")
+//            rs.getString("COL1")
+//        }
+
+
         System.out.println("\n Took: " + (t1-t0));
 
 //        System.out.println(s);
@@ -32,10 +42,16 @@ public class TheInfamousStringBuilderProblem {
         // TODO JFR +=
     }
 
+
+
+
+
+//    static String atribut
     private static void generate(Writer writer, List<String> elements) throws IOException {
 //        StringBuilder s = new StringBuilder();
         for (String element : elements) {
             writer.write(element);
+            // s += element;
 //            s.append(element);
         }
 //        return s.toString();

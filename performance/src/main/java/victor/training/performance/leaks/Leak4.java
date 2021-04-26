@@ -16,10 +16,18 @@ public class Leak4 {
 	@GetMapping
 	public String test() {
 		MyAppRequestContext requestContext = new MyAppRequestContext();
+		requestContext.rights = new CachingMethodObject().createRightsCalculator();
+		// aici obiectul CachingMethodObject poate disparea din mem la GC
 		threadLocal.set(requestContext);
-		requestContext.rights = new CachingMethodObject()
-				.createRightsCalculator();
+		try {
+			metDeBiz();
+		} finally {
+			threadLocal.remove();
+		}
 		return "the most subtle";
+	}
+
+	private void metDeBiz() {
 	}
 }
 
@@ -27,10 +35,10 @@ class MyAppRequestContext {
     public UserRightsCalculator rights;
 }
 
-class CachingMethodObject {
-	public class UserRightsCalculator {
+class CachingMethodObject { // 40 MB
+	static public class UserRightsCalculator { // nested
 		public void doStuff() {
-			System.out.println("Stupid Code");
+			System.out.println("Stupid Code ");
 			// what's the connection with the 'cache' field ?
 		}
 	}
