@@ -2,11 +2,15 @@ package victor.training.performance.leaks;
 
 
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
+import javax.servlet.http.HttpServletResponse;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
@@ -15,14 +19,17 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+@RestController
+@RequestMapping("leak10")
 @Slf4j
-public class LeakDom {
+public class Leak10_XmlDom {
 
    public static final int LOTS_OF_XMLs = 1000;
-   private static DocumentBuilderFactory documentBuilderFactory = DocumentBuilderFactory.newInstance();
-   private static XPathFactory xPathFactory = XPathFactory.newInstance();
+   private static final DocumentBuilderFactory documentBuilderFactory = DocumentBuilderFactory.newInstance();
+   private static final XPathFactory xPathFactory = XPathFactory.newInstance();
 
-   public static void main(String[] args) throws ParserConfigurationException, IOException, SAXException, XPathExpressionException {
+   @GetMapping
+   public void countPlugins(HttpServletResponse response) throws ParserConfigurationException, SAXException, XPathExpressionException, IOException {
 
       List<Node> allDependencies = new ArrayList<>();
 
@@ -33,8 +40,10 @@ public class LeakDom {
 
       log.info("Loaded {} nodes", allDependencies.size());
       log.info(allDependencies.get(0).getClass().toString());
+
+
       // How many Node instances do you expect to have in memory here ?
-      while (true) {
+      while (true) { // imagine a long task here...
       }
 
       // RUN this in OQL in jvisualVM : select x.name from com.sun.org.apache.xerces.internal.dom.DeferredElementImpl x

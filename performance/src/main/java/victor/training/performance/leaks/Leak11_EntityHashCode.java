@@ -3,7 +3,6 @@ package victor.training.performance.leaks;
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.retry.annotation.Retryable;
 import org.springframework.stereotype.Component;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -21,18 +20,18 @@ import java.util.stream.Stream;
 import static java.util.stream.Collectors.toList;
 
 @RestController
-@RequestMapping("leak10")
+@RequestMapping("leak11")
 @Slf4j
-public class Leak10_Hash {
+public class Leak11_EntityHashCode {
    private final PersisterInPages service;
 
-   public Leak10_Hash(PersisterInPages service) {
+   public Leak11_EntityHashCode(PersisterInPages service) {
       this.service = service;
    }
 
    @GetMapping
-   public void startBatch(HttpServletResponse response) {
-      Set<SomeEntity> preexistingPlusThisPage = loadPreExistingData();
+   public void startBatch() {
+      Set<SomeEntity> preexistingPlusThisPage = new HashSet<>();
 
       Iterable<List<String>> inputData = readLargeDataSetInPages(500, 1_000_000);
       int pageIndex = 0;
@@ -49,10 +48,6 @@ public class Leak10_Hash {
 //         ConcurrencyUtil.sleepq(1); // nice mem graph
          log.info("Persisted Page {}...", pageIndex ++);
       }
-   }
-
-   private HashSet<SomeEntity> loadPreExistingData() {
-      return new HashSet<>();
    }
 
    private Iterable<List<String>> readLargeDataSetInPages(int pageSize, int pages) {

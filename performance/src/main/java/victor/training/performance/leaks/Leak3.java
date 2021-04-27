@@ -25,7 +25,7 @@ public class Leak3 {
 	public String test() throws Exception {
 		String uuid = UUID.randomUUID().toString();
 		userData.tryCache(uuid, BigObject20MB::new);
-		return "even more subtle, know your frameworks!";
+		return "Session data in Spring: know your frameworks!";
 	}
 }
 

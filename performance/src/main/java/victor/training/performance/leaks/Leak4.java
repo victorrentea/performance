@@ -19,7 +19,7 @@ public class Leak4 {
 		threadLocal.set(requestContext);
 		requestContext.rights = new CachingMethodObject()
 				.createRightsCalculator();
-		return "the most subtle";
+		return "the most subtle: do you know Java?";
 	}
 }
 
@@ -28,7 +28,7 @@ class MyAppRequestContext {
 }
 
 class CachingMethodObject {
-	public class UserRightsCalculator {
+	public class UserRightsCalculator { // an instance is kept on thread
 		public void doStuff() {
 			System.out.println("Stupid Code");
 			// what's the connection with the 'cache' field ?

@@ -27,6 +27,6 @@ public class Leak6_TheMostCommon {
          // simulate a lot more load --< hit with jmeter
          smallEntriesCantHurt.put(UUID.randomUUID().toString(), 1);
       }
-      return "real-life case: no more obvious suspect 20MB int[]";
+      return "real-life case: no more obvious suspect 20MB int[] + only happens under stress test";
    }
 }

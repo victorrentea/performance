@@ -19,7 +19,7 @@ public class Leak7_Cacheable {
 	@GetMapping
 	public String test() {
 		BigObject20MB data = stuff.returnCachedDataForDay(LocalDateTime.now());
-		return "Tools won't always shield you from mistakes: " + data;
+		return "Tools won't always shield you from mistakes: " + System.identityHashCode(data);
 		// but they still offer max-size, expiration..
 		// https://www.ehcache.org/documentation/2.8/configuration/cache-size.html
 	}
@@ -30,7 +30,7 @@ public class Leak7_Cacheable {
 class Stuff {
 	@Cacheable("stuff")
 	public BigObject20MB returnCachedDataForDay(LocalDateTime timestamp) {
-		 log.debug("Fetch lots of data for date {}", timestamp.format(DateTimeFormatter.ISO_DATE_TIME));
+		 log.debug("Fetch lots of data for date {}", timestamp.format(DateTimeFormatter.ISO_DATE));
 	    return new BigObject20MB();
 	}
 }

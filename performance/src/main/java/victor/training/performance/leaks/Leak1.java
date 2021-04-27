@@ -12,22 +12,21 @@ public class Leak1 {
 	
 	@GetMapping
 	public String test() {
-		BigObject20MB bigData = new BigObject20MB();
-		String s = "Just allocated: " + bigData.largeArray.length*4 + " Bytes.";
-		s+="Remaining Memory: " + Runtime.getRuntime().freeMemory();
-		
-		threadLocal.set(bigData);
-		businessMethod();
-		return s;
+		BigObject20MB bigObject = new BigObject20MB();
+
+		threadLocal.set(bigObject);
+		businessMethod1();
+
+		return "Magic can harm you";
 	}
 
 
-
-
-
-
-	private void businessMethod() {
-		System.out.println("Call business method here");
+	private void businessMethod1() {
+		businessMethod2();
+	}
+	private void businessMethod2() {
+		BigObject20MB bigObject = threadLocal.get();
+		System.out.println("Business logic using " + bigObject);
 		// TODO think of throw new RuntimeException();
 	}
 }
