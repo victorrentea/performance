@@ -35,41 +35,44 @@ public class Leak5 {
 
 @Service
 class KillOne {
-//   public synchronized void f() {
+   //   public synchronized void f() {
 //      synchronized (this) {
 //      	//chestii
 //      }
 //   }
    public static synchronized void entryPoint() { // /one cheama asta din Th1
       synchronized (KillOne.class) {
-			log("start One.a1()");
+         log("start One.a1()");
          sleepq(3_000);
-         KillTwo.internalMethod();
+         synchronized (KillTwo.class) {
+            KillTwo.internalMethod();
+         }
          log("start One.a1()");
       }
    }
+
    public static void internalMethod() {
-      synchronized (KillOne.class) {
-			log("start One.b1()");
-			sleepq(3_000);
-			log("end One.b1()");
-		}
+      log("start One.b1()");
+      sleepq(3_000);
+      log("end One.b1()");
    }
 }
+
 class KillTwo {
    public static void entryPoint() { // /two cheama asta din Th2
+         synchronized (KillOne.class) {
       synchronized (KillTwo.class) {
-			log("start Two.a2()");
-			sleepq(3_000);
-			KillOne.internalMethod();
-			log("start Two.a2()");
-		}
+         log("start Two.a2()");
+         sleepq(3_000);
+            KillOne.internalMethod();
+         }
+         log("start Two.a2()");
+      }
    }
+
    public static void internalMethod() {
-      synchronized (KillTwo.class) {
-			log("start Two.b2()");
-			sleepq(3_000);
-			log("end Two.b2()");
-		}
+         log("start Two.b2()");
+         sleepq(3_000);
+         log("end Two.b2()");
    }
 }

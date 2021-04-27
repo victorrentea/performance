@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
@@ -18,7 +19,7 @@ public class Leak7_Cacheable {
     private  Stuff stuff;
 	@GetMapping
 	public String test() {
-		BigObject20MB data = stuff.returnCachedDataForDay(LocalDateTime.now());
+		BigObject20MB data = stuff.returnCachedDataForDay(LocalDate.now());
 		return "Tools won't always shield you from mistakes: " + data;
 		// but they still offer max-size, expiration..
 		// https://www.ehcache.org/documentation/2.8/configuration/cache-size.html
@@ -29,8 +30,8 @@ public class Leak7_Cacheable {
 @Slf4j
 class Stuff {
 	@Cacheable("stuff")
-	public BigObject20MB returnCachedDataForDay(LocalDateTime timestamp) {
-		 log.debug("Fetch lots of data for date {}", timestamp.format(DateTimeFormatter.ISO_DATE_TIME));
+	public BigObject20MB returnCachedDataForDay(LocalDate timestamp) {
+		 log.debug("Fetch lots of data for date {}", timestamp.format(DateTimeFormatter.ISO_DATE));
 	    return new BigObject20MB();
 	}
 }
