@@ -22,9 +22,15 @@
     <select />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="0e1584f6-4d86-4d34-9539-64d7002532f5" name="Default Changelist" comment="">
+    <list default="true" id="0e1584f6-4d86-4d34-9539-64d7002532f5" name="Default Changelist" comment="Optionals cost">
+      <change afterPath="$PROJECT_DIR$/../performance/src/main/java/victor/training/performance/ConcatString.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/victor/perf/OptionalCost.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/victor/perf/OptionalCost.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/run.bat" beforeDir="false" afterPath="$PROJECT_DIR$/run.bat" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/victor/perf/StreamsCPUOnlyTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/victor/perf/StreamsCPUOnlyTest.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/victor/perf/StringBuilderTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/victor/perf/StringBuilderTest.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../performance/jMeter.jmx" beforeDir="false" afterPath="$PROJECT_DIR$/../performance/jMeter.jmx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../performance/src/main/java/victor/training/performance/ConcurrencyUtil.java" beforeDir="false" afterPath="$PROJECT_DIR$/../performance/src/main/java/victor/training/performance/ConcurrencyUtil.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../performance/src/main/java/victor/training/performance/jfr/tlab/Garbage.java" beforeDir="false" afterPath="$PROJECT_DIR$/../performance/src/main/java/victor/training/performance/jfr/tlab/Garbage.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -50,7 +56,7 @@
   <component name="Git.Settings">
     <option name="RECENT_BRANCH_BY_REPOSITORY">
       <map>
-        <entry key="$PROJECT_DIR$/.." value="UniCredit2020_10" />
+        <entry key="$PROJECT_DIR$/.." value="master" />
       </map>
     </option>
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$/.." />
@@ -103,7 +109,7 @@
       <recent name="victor.proxy" />
     </key>
   </component>
-  <component name="RunManager" selected="Jmh.StreamsCPUMixedTest.streamSerial">
+  <component name="RunManager" selected="Jmh.StreamsCPUMixedTest">
     <configuration name="PlayMe" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
       <option name="MAIN_CLASS_NAME" value="victor.proxy.PlayMe" />
       <module name="performance-jmh" />
@@ -117,15 +123,13 @@
         <option name="Make" enabled="true" />
       </method>
     </configuration>
-    <configuration default="true" type="ArquillianTestNG" factoryName="" nameIsGenerated="true">
+    <configuration default="true" type="ArquillianJUnit" factoryName="" nameIsGenerated="true">
       <option name="arquillianRunConfiguration">
         <value>
           <option name="containerStateName" value="" />
         </value>
       </option>
-      <option name="TEST_OBJECT" value="CLASS" />
-      <properties />
-      <listeners />
+      <option name="TEST_OBJECT" value="class" />
       <method v="2">
         <option name="Make" enabled="true" />
       </method>
@@ -163,10 +167,10 @@
     </list>
     <recent_temporary>
       <list>
+        <item itemvalue="Jmh.StreamsCPUMixedTest" />
         <item itemvalue="Jmh.StreamsCPUMixedTest.streamSerial" />
         <item itemvalue="Jmh.IOParallel.set1000" />
         <item itemvalue="Jmh.StreamsCPUOnlyTest" />
-        <item itemvalue="Jmh.StreamsCPUMixedTest" />
         <item itemvalue="Application.PlayMe" />
       </list>
     </recent_temporary>
@@ -197,6 +201,7 @@
       <workItem from="1615375354448" duration="4004000" />
       <workItem from="1615542353352" duration="2103000" />
       <workItem from="1616402929468" duration="424000" />
+      <workItem from="1619514170475" duration="5080000" />
     </task>
     <task id="LOCAL-00001" summary="add FizzBuzz JMH">
       <created>1582668553526</created>

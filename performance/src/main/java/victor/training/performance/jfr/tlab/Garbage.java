@@ -8,7 +8,7 @@ public class Garbage {
       new Scanner(System.in).nextLine();
       System.out.println("Start...");
       String s = "";
-      for (int i = 0; i < 300_000; i++) {
+      for (int i = 0; i < 100_000; i++) {
          s += i + " ";
          if (i % 1000 == 0) {
             System.out.println(i);

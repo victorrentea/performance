@@ -49,6 +49,15 @@ public class ConcurrencyUtil {
 	
 	static List<String> position = new ArrayList<>();
 	public static void log(String message) {
+
+
+//		long t0 = System.currentTimeMillis();
+//		// dureaza minim 2-3 min. sau daca deployezi asta pe server si e cod incins acolo.
+//		long t1 = System.currentTimeMillis();
+//
+//		System.out.println(t1 - t0);
+
+
 		int PAD_SIZE = 20;
 		String line = new SimpleDateFormat("hh:mm:ss.SSS").format(new Date()) + " ";
 		String pad;
