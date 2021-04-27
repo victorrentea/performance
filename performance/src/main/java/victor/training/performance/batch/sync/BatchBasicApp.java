@@ -19,7 +19,7 @@ import org.springframework.oxm.jaxb.Jaxb2Marshaller;
 import javax.persistence.EntityManagerFactory;
 import java.io.IOException;
 
-import static victor.training.performance.ConcurrencyUtil.measureCall;
+import static victor.training.performance.PerformanceUtil.measureCall;
 
 
 @SpringBootApplication

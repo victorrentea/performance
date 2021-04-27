@@ -4,8 +4,8 @@ import java.math.BigDecimal;
 import java.util.HashMap;
 import java.util.Map;
 
-import static victor.training.performance.ConcurrencyUtil.log;
-import static victor.training.performance.ConcurrencyUtil.measureCall;
+import static victor.training.performance.PerformanceUtil.log;
+import static victor.training.performance.PerformanceUtil.measureCall;
 
 public class CPUTask implements Runnable {
     private static final Map<Long, Long> WORK_FOR_MILLIS = new HashMap<>();

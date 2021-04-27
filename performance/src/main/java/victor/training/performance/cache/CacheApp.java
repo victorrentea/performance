@@ -11,7 +11,7 @@ import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
-import victor.training.performance.ConcurrencyUtil;
+import victor.training.performance.PerformanceUtil;
 
 import javax.annotation.PostConstruct;
 import java.io.*;
@@ -82,7 +82,7 @@ class EmployeeRepo {
 
     @SneakyThrows
     public int getSalary() {
-        ConcurrencyUtil.sleepq(3000);
+        PerformanceUtil.sleepq(3000);
 
         return read();
     }

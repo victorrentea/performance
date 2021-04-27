@@ -1,6 +1,6 @@
 package victor.training.performance.waitnotify;
 
-import victor.training.performance.ConcurrencyUtil;
+import victor.training.performance.PerformanceUtil;
 
 public class OddEvenIncrementer {
 	static int n = 0; 
@@ -12,24 +12,24 @@ public class OddEvenIncrementer {
 		@Override
 		public void run() {
 			while(n<20) {
-				ConcurrencyUtil.log("Testing "+ n);
+				PerformanceUtil.log("Testing " + n);
 				synchronized(OddEvenIncrementer.class) {
 					synchronized(odd) {
 						while (n % 2 == 0) {
 							try {
-								ConcurrencyUtil.log("Waiting to become odd");
+								PerformanceUtil.log("Waiting to become odd");
 								odd.wait();
 							} catch (InterruptedException e) {
 								e.printStackTrace();
 							}
 						}
 						// n e odd SIGUR
-						ConcurrencyUtil.log("Incrementing "+ n);
+						PerformanceUtil.log("Incrementing " + n);
 						n++;
 						even.notifyAll(); // a devenit odd
 					}
 				}
-				ConcurrencyUtil.sleepq(1);
+				PerformanceUtil.sleepq(1);
 			}
 		}
 	}
@@ -38,24 +38,24 @@ public class OddEvenIncrementer {
 		@Override
 		public void run() {
 			while(n<20) {
-				ConcurrencyUtil.log("Testing "+ n);
+				PerformanceUtil.log("Testing " + n);
 				synchronized(even) {
 					synchronized(odd) {
 						while (n % 2 == 1) {
 							try {
-								ConcurrencyUtil.log("Waiting to become even");
+								PerformanceUtil.log("Waiting to become even");
 								even.wait();
 							} catch (InterruptedException e) {
 								e.printStackTrace();
 							}
 						}
 						// n e even SIGUR
-						ConcurrencyUtil.log("Incrementing "+ n);
+						PerformanceUtil.log("Incrementing " + n);
 						n++;
 						odd.notifyAll(); // a devenit odd
 					}
 				}
-				ConcurrencyUtil.sleepq(1);
+				PerformanceUtil.sleepq(1);
 			}
 		}
 	}

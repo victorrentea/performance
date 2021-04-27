@@ -1,6 +1,6 @@
 package victor.training.performance.pools.throttling;
 
-import victor.training.performance.ConcurrencyUtil;
+import victor.training.performance.PerformanceUtil;
 import victor.training.performance.pools.tasks.FragileEndpointTask;
 
 import java.util.concurrent.ExecutorService;
@@ -12,7 +12,7 @@ public class Throttling {
     public static void main(String[] args) {
         ExecutorService httpPool = Executors.newFixedThreadPool(20);
         for (int i = 0; i < 100; i++) {
-            ConcurrencyUtil.log("Requesting " + i);
+            PerformanceUtil.log("Requesting " + i);
             httpPool.submit(fragile);
         }
         httpPool.shutdown();

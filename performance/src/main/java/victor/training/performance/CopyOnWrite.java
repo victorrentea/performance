@@ -3,7 +3,7 @@ package victor.training.performance;
 import java.util.ArrayList;
 import java.util.List;
 
-import static victor.training.performance.ConcurrencyUtil.sleepq;
+import static victor.training.performance.PerformanceUtil.sleepq;
 
 public class CopyOnWrite {
 

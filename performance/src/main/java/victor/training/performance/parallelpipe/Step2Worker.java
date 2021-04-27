@@ -1,14 +1,14 @@
 package victor.training.performance.parallelpipe;
 
-import static victor.training.performance.ConcurrencyUtil.log;
-import static victor.training.performance.ConcurrencyUtil.sleepSomeTime;
+import static victor.training.performance.PerformanceUtil.log;
+import static victor.training.performance.PerformanceUtil.sleepSomeTime;
 
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.RejectedExecutionHandler;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 
-import victor.training.performance.ConcurrencyUtil;
+import victor.training.performance.PerformanceUtil;
 
 
 public class Step2Worker implements Runnable {
@@ -33,7 +33,7 @@ class Stuff2 {
 		RejectedExecutionHandler rejectionPolicy = new RejectedExecutionHandler() {
 			public void rejectedExecution(Runnable r, ThreadPoolExecutor executor) {
 				log("I'm here!!!! Ignor: " + r);
-				ConcurrencyUtil.sleepq(10);
+				PerformanceUtil.sleepq(10);
 				executor.execute(r);
 			}
 		};

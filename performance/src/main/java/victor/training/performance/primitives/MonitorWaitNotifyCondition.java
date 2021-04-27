@@ -4,8 +4,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 
-import static victor.training.performance.ConcurrencyUtil.log;
-import static victor.training.performance.ConcurrencyUtil.sleepSomeTime;
+import static victor.training.performance.PerformanceUtil.log;
+import static victor.training.performance.PerformanceUtil.sleepSomeTime;
 
 public class MonitorWaitNotifyCondition {
 	static Drop drop = new Drop();

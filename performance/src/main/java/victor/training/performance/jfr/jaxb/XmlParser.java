@@ -1,6 +1,6 @@
 package victor.training.performance.jfr.jaxb;
 
-import victor.training.performance.ConcurrencyUtil;
+import victor.training.performance.PerformanceUtil;
 
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
@@ -14,7 +14,7 @@ public class XmlParser {
       File file = new File("data.txt");
       XmlGenerator.generate(file, 50000);
 
-      ConcurrencyUtil.waitForEnter();
+      PerformanceUtil.waitForEnter();
 
       int sum = 0;
       for (int i = 0; i < 1000; i++) {

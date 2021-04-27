@@ -1,6 +1,6 @@
 package victor.training.performance.pools.tasks;
 
-import victor.training.performance.ConcurrencyUtil;
+import victor.training.performance.PerformanceUtil;
 
 public class IOTask implements Runnable {
     private final long millis;
@@ -11,6 +11,6 @@ public class IOTask implements Runnable {
 
     public void run() {
         // emulate waiting for external resources eg: filesystem/network
-        ConcurrencyUtil.sleepq(millis);
+        PerformanceUtil.sleepq(millis);
     }
 }

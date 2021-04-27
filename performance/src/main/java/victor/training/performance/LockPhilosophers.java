@@ -1,8 +1,8 @@
 package victor.training.performance;
 
-import static victor.training.performance.ConcurrencyUtil.log;
-import static victor.training.performance.ConcurrencyUtil.sleepq;
-import static victor.training.performance.ConcurrencyUtil.sleepSomeTime;
+import static victor.training.performance.PerformanceUtil.log;
+import static victor.training.performance.PerformanceUtil.sleepq;
+import static victor.training.performance.PerformanceUtil.sleepSomeTime;
 
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;

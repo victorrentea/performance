@@ -1,6 +1,6 @@
 package victor.training.performance;
 
-import static victor.training.performance.ConcurrencyUtil.log;
+import static victor.training.performance.PerformanceUtil.log;
 
 public class ThreadLocals {
 

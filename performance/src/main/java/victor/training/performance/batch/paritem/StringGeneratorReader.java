@@ -4,7 +4,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.RandomStringUtils;
 import org.springframework.batch.item.ItemReader;
 
-import static victor.training.performance.ConcurrencyUtil.sleepq;
+import static victor.training.performance.PerformanceUtil.sleepq;
 
 @Slf4j
 public class StringGeneratorReader implements ItemReader<String> {

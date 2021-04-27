@@ -7,7 +7,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import victor.training.performance.ConcurrencyUtil;
+import victor.training.performance.PerformanceUtil;
 
 import java.util.Random;
 import java.util.function.Function;
@@ -31,7 +31,7 @@ public class Leak9_Java8 {
 class Worker {
 	@Async
 	public void workHard(int param, Function<Integer, Integer> lookup) {
-		ConcurrencyUtil.sleepq(10_000); // imagine other tasks doing this on the same pool
+		PerformanceUtil.sleepq(10_000); // imagine other tasks doing this on the same pool
 		int result = param + lookup.apply((int) Math.sqrt(param));
 		log.debug("Computed " + result);
 	}

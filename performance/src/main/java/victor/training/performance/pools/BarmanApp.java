@@ -3,7 +3,6 @@ package victor.training.performance.pools;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.CustomScopeConfigurer;
-import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration;
@@ -13,16 +12,8 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.support.SimpleThreadScope;
 import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
-import org.springframework.stereotype.Component;
-import org.springframework.stereotype.Service;
-import victor.training.performance.pools.drinks.Beer;
-import victor.training.performance.pools.drinks.Vodka;
 
-import java.util.List;
-
-import static java.util.Arrays.asList;
 import static java.util.concurrent.CompletableFuture.supplyAsync;
-import static victor.training.performance.ConcurrencyUtil.sleepq;
 
 @Slf4j
 @EnableAsync(proxyTargetClass = true)

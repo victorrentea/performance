@@ -1,7 +1,7 @@
 package victor.training.performance.primitives;
 
-import static victor.training.performance.ConcurrencyUtil.log;
-import static victor.training.performance.ConcurrencyUtil.sleepq;
+import static victor.training.performance.PerformanceUtil.log;
+import static victor.training.performance.PerformanceUtil.sleepq;
 
 import java.util.Collections;
 import java.util.HashSet;

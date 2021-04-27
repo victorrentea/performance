@@ -2,9 +2,9 @@ package victor.training.performance.primitives;
 
 import java.util.concurrent.CountDownLatch;
 
-import static victor.training.performance.ConcurrencyUtil.log;
-import static victor.training.performance.ConcurrencyUtil.sleepq;
-import static victor.training.performance.ConcurrencyUtil.sleepSomeTime;
+import static victor.training.performance.PerformanceUtil.log;
+import static victor.training.performance.PerformanceUtil.sleepq;
+import static victor.training.performance.PerformanceUtil.sleepSomeTime;
 
 public class Latch {
 	static CountDownLatch startLatch;

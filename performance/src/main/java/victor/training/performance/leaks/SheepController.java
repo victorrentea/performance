@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-import victor.training.performance.ConcurrencyUtil;
+import victor.training.performance.PerformanceUtil;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -63,7 +63,7 @@ class SheepService {
 class ShepardService {
     public String registerSheep(String name) {
         log.debug("Calling external WS");
-        ConcurrencyUtil.sleepq(500);
+        PerformanceUtil.sleepq(500);
         return UUID.randomUUID().toString();
     }
 }

@@ -1,7 +1,7 @@
 package victor.training.performance.primitives;
 
-import static victor.training.performance.ConcurrencyUtil.log;
-import static victor.training.performance.ConcurrencyUtil.sleepSomeTime;
+import static victor.training.performance.PerformanceUtil.log;
+import static victor.training.performance.PerformanceUtil.sleepSomeTime;
 
 public class ReadersWriterLock {
 	

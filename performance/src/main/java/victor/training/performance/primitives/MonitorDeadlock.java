@@ -1,6 +1,6 @@
 package victor.training.performance.primitives;
 
-import static victor.training.performance.ConcurrencyUtil.log;
+import static victor.training.performance.PerformanceUtil.log;
 
 
 public class MonitorDeadlock {

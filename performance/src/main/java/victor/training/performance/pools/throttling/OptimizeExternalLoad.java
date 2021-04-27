@@ -11,7 +11,7 @@ import java.util.concurrent.Future;
 import java.util.stream.IntStream;
 
 import static java.util.stream.Collectors.toList;
-import static victor.training.performance.ConcurrencyUtil.measuring;
+import static victor.training.performance.PerformanceUtil.measuring;
 
 public class OptimizeExternalLoad {
 

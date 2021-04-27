@@ -1,10 +1,11 @@
 package victor.training.performance;
 
+import java.lang.management.ManagementFactory;
 import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.concurrent.Callable;
 
-public class ConcurrencyUtil {
+public class PerformanceUtil {
 	static Random random = new Random();
 	
 	public static void sleepSomeTime() {
@@ -56,7 +57,7 @@ public class ConcurrencyUtil {
 		if (position.contains(threadName)) {
 			pad = String.format("%" + (1+position.indexOf(threadName) * PAD_SIZE) + "s", "");
 		} else {
-			synchronized (ConcurrencyUtil.class) {
+			synchronized (PerformanceUtil.class) {
 				pad = String.format("%" + (1+ position.size() * PAD_SIZE ) + "s", "");
 				System.out.println(line + pad + threadName);
 				System.out.println(line + pad + "=============");
@@ -70,5 +71,11 @@ public class ConcurrencyUtil {
 		System.out.println("[ENTER] to continue");
 		new Scanner(System.in).nextLine();
 		System.out.println("Start!");
+	}
+
+	public static void printUsedHeap() {
+		long usedHeapBytes = ManagementFactory.getMemoryMXBean().getHeapMemoryUsage().getUsed();
+		System.out.println(String.format("Used heap: %,d B", usedHeapBytes).replace(",", " "));
+
 	}
 }

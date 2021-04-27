@@ -12,7 +12,7 @@ import victor.training.performance.pools.drinks.Vodka;
 import java.util.List;
 
 import static java.util.Arrays.asList;
-import static victor.training.performance.ConcurrencyUtil.sleepq;
+import static victor.training.performance.PerformanceUtil.sleepq;
 
 @Component
 @Slf4j
