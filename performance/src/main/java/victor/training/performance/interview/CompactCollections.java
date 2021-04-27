@@ -3,25 +3,27 @@ package victor.training.performance.interview;
 import victor.training.performance.PerformanceUtil;
 
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.LongStream;
+
+import static java.util.stream.Collectors.toList;
+import static java.util.stream.Collectors.toSet;
 
 public class CompactCollections {
 
-
    public static void main(String[] args) {
-      List<Long> list = generate();
-      System.out.println("Allocated " + list.hashCode());
+      List<Long> list = LongStream.range(0, 1_000_000).boxed().collect(Collectors.toList());
+      // TODO HashSet
+      // TODO LinkedList
+      // TODO Long[]
+      // TODO long[] .stream().mapToLong(i -> i).toArray();
+      // TODO int[]
+      System.out.println("Allocated!");
       System.gc();
 
       PerformanceUtil.printUsedHeap();
    }
 
-   private static List<Long> generate() {
-      List<Long> list = new ArrayList<>();
-      for (long i = 0; i < 1_000_000; i++) {
-         list.add(i);
-      }
-      return list;
-      //Tp: .stream().mapToInt(i -> i.intValue()).toArray();
-   }
 }
