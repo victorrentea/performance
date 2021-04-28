@@ -17,14 +17,14 @@ import java.util.UUID;
 @Slf4j
 public class Leak6_TheMostCommon {
 
-   // NEVER hand-make your own cache, plugin a professional one
+   // hand-made cache: NEVER
    private static final Map<String, Integer> smallEntriesCantHurt = new HashMap<>();
 
    @GetMapping
    public String test() {
       log.info("Catch me if you can");
       for (int i = 0; i < 1_000; i++) {
-         // simulate a lot more load --< hit with jmeter
+         // simulate a lot more load with jmeter
          smallEntriesCantHurt.put(UUID.randomUUID().toString(), 1);
       }
       return "real-life case: no more obvious suspect 20MB int[] + only happens under stress test";

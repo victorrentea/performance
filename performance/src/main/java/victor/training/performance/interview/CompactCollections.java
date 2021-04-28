@@ -2,14 +2,9 @@ package victor.training.performance.interview;
 
 import victor.training.performance.PerformanceUtil;
 
-import java.util.ArrayList;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.LongStream;
-
-import static java.util.stream.Collectors.toList;
-import static java.util.stream.Collectors.toSet;
 
 public class CompactCollections {
 
@@ -21,9 +16,8 @@ public class CompactCollections {
       // TODO long[] .stream().mapToLong(i -> i).toArray();
       // TODO int[]
       System.out.println("Allocated!");
-      System.gc();
 
-      PerformanceUtil.printUsedHeap();
+      System.out.println(PerformanceUtil.getUsedHeap());
    }
 
 }

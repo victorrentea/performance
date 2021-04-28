@@ -3,63 +3,43 @@ package victor.training.performance.leaks;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import victor.training.performance.leaks.CachingMethodObject.UserRightsCalculator;
 
-import static victor.training.performance.PerformanceUtil.log;
-import static victor.training.performance.PerformanceUtil.sleepq;
+import java.util.HashMap;
+import java.util.Map;
 
 @RestController
 @RequestMapping("leak5")
 public class Leak5 {
-
-	// CATE DOI, CATE DOI ... : https://youtu.be/V798MhKfdZ8
-
+	static ThreadLocal<MyAppRequestContext> threadLocal = new ThreadLocal<>();
+	
 	@GetMapping
-	public String root() throws Exception {
-		return "call <a href='./leak5/one'>/one</a> and <a href='./leak5/two'>/two</a> withing 3 secs..";
-	}
-	
-	@GetMapping("/one")
-	public String one() throws Exception {
-		KillOne.entryPoint();
-		return "--> You didn't call /two within the last 3 secs, didn't you?..";
-	}
-	
-	@GetMapping("/two")
-	public String two() throws Exception {
-		KillTwo.entryPoint();
-		return "--> You didn't call /one within the last 3 secs, didn't you?..";
+	public String test() {
+		MyAppRequestContext requestContext = new MyAppRequestContext();
+		threadLocal.set(requestContext);
+		requestContext.rights = new CachingMethodObject()
+				.createRightsCalculator();
+		return "the most subtle: do you know Java?";
 	}
 }
 
-
-
-class KillOne {
-	public static synchronized void entryPoint() {
-		log("start One.a1()");
-		sleepq(3_000);
-		KillTwo.internalMethod();
-		log("start One.a1()");
-	}
-
-	public static synchronized void internalMethod() {
-		log("start One.b1()");
-		sleepq(3_000);
-		log("end One.b1()");
-	}
+class MyAppRequestContext {
+    public UserRightsCalculator rights;
 }
 
-
-
-class KillTwo {
-	public static synchronized void entryPoint() {
-		log("start Two.a2()");
-		sleepq(3_000);
-		KillOne.internalMethod();
-		log("start Two.a2()");
+class CachingMethodObject {
+	public class UserRightsCalculator { // an instance of this is kept on thread
+		public void doStuff() {
+			System.out.println("Stupid Code");
+			// what's the connection with the 'cache' field ?
+		}
 	}
-	public static synchronized void internalMethod() {
-		log("start Two.b2()");
-		sleepq(3_000);
-		log("end Two.b2()");
+
+	private Map<String, BigObject20MB> cache = new HashMap<>();
+
+	public UserRightsCalculator createRightsCalculator() {
+		cache.put("a", new BigObject20MB());
+		cache.put("b", new BigObject20MB());
+		return new UserRightsCalculator(); // returns a new instance
 	}
 }
