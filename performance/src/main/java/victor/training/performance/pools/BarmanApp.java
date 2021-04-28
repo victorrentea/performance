@@ -42,12 +42,24 @@ public class BarmanApp {
    private PropagateRequestContext propagateRequestContext;
 
    @Bean
-   public ThreadPoolTaskExecutor executor(@Value("${barman.thread.count}") int barmanThreadCount) {
+   public ThreadPoolTaskExecutor beerExecutor(@Value("${beer.thread.count}") int barmanThreadCount) {
       ThreadPoolTaskExecutor executor = new ThreadPoolTaskExecutor();
       executor.setCorePoolSize(barmanThreadCount);
       executor.setMaxPoolSize(barmanThreadCount);
       executor.setQueueCapacity(500);
-      executor.setThreadNamePrefix("barman-");
+      executor.setThreadNamePrefix("beer-");
+      executor.initialize();
+      executor.setTaskDecorator(propagateRequestContext);
+      executor.setWaitForTasksToCompleteOnShutdown(true);
+      return executor;
+   }
+   @Bean
+   public ThreadPoolTaskExecutor vodkaExecutor(@Value("${vodka.thread.count}") int barmanThreadCount) {
+      ThreadPoolTaskExecutor executor = new ThreadPoolTaskExecutor();
+      executor.setCorePoolSize(barmanThreadCount);
+      executor.setMaxPoolSize(barmanThreadCount);
+      executor.setQueueCapacity(500);
+      executor.setThreadNamePrefix("vodka-");
       executor.initialize();
       executor.setTaskDecorator(propagateRequestContext);
       executor.setWaitForTasksToCompleteOnShutdown(true);

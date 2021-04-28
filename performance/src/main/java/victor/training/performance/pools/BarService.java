@@ -28,20 +28,28 @@ public class BarService {
 
    //   static ExecutorService pool = Executors.newFixedThreadPool(2);
    @Autowired
-   private ThreadPoolTaskExecutor pool;
+   private ThreadPoolTaskExecutor beerExecutor;
+   @Autowired
+   private ThreadPoolTaskExecutor vodkaExecutor;
 
    @SneakyThrows
    public CompletableFuture<DillyDilly> orderDrinks() {
       log.debug("Submitting my order to barman: " + barman.getClass());
 
-      CompletableFuture<Beer> futureBeer = barman.pourBeer();
+      CompletableFuture<Beer> futureBeer = barman.pourBeer()
+//          .exceptionally(t -> null)
+          ;
       CompletableFuture<Vodka> futureVodka = barman.pourVodka();
+
+//      futureBeer.get()
 
 //      Beer beer = futureBeer.get(); // blocheaza main() pt 1 sec pana e gata berea
 //      Vodka vodka = futureVodka.get(); // ia uite ! vodka e deja gata. si nu mai blocheaza nimic.
 
       CompletableFuture<DillyDilly> futureDilly = futureBeer.thenCombine(futureVodka,
-          (beer, vodka) -> new DillyDilly(beer, vodka));
+          (beer, vodka) -> new DillyDilly(beer, vodka))
+          .exceptionally(t -> null)
+          ;
 
 
       return futureDilly;
@@ -67,15 +75,18 @@ class Barman {
    @Autowired
    private MyRequestContext requestContext;
 
-   @Async
+   @Async("beerExecutor")
    public CompletableFuture<Beer> pourBeer() {
+      boolean farabere = true;
+//      if (farabere) throw new RuntimeException("Nu MAI E BEREEEE!");
+
       String currentUsername = null; // TODO ThreadLocals... , requestContext.getCurrentUser()
       log.debug("Pouring Beer to " + currentUsername + "...");
       sleepq(1000);
       return CompletableFuture.completedFuture(new Beer());
    }
 
-   @Async
+   @Async("vodkaExecutor")
    public CompletableFuture<Vodka> pourVodka() {
       log.debug("Pouring Vodka...");
       sleepq(1000);
