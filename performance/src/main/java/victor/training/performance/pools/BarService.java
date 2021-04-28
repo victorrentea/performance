@@ -52,6 +52,8 @@ public class BarService {
           ;
 
 
+      barman.injura();
+
       return futureDilly;
    }
 }
@@ -91,5 +93,10 @@ class Barman {
       log.debug("Pouring Vodka...");
       sleepq(1000);
       return CompletableFuture.completedFuture(new Vodka());
+   }
+
+   @Async
+   public void injura() {
+      throw new IllegalArgumentException("te omor");
    }
 }
