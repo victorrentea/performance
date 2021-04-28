@@ -3,6 +3,7 @@ package victor.training.performance.pools;
 import java.util.Scanner;
 import java.util.concurrent.*;
 import java.util.concurrent.ThreadPoolExecutor.CallerRunsPolicy;
+import java.util.concurrent.ThreadPoolExecutor.DiscardOldestPolicy;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import static victor.training.performance.ConcurrencyUtil.log;
@@ -23,7 +24,7 @@ public class ThreadPools {
           2, 4,
           1, TimeUnit.SECONDS,
           new ArrayBlockingQueue<>(2),
-          new CallerRunsPolicy());
+          new DiscardOldestPolicy());
 
       for (int i = 0; i < 40; i++) {
          MyTask task = new MyTask();
