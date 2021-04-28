@@ -1,6 +1,7 @@
 package victor.training.performance.pools;
 
 
+import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
@@ -10,6 +11,8 @@ import victor.training.performance.pools.drinks.Beer;
 import victor.training.performance.pools.drinks.Vodka;
 
 import java.util.List;
+import java.util.concurrent.*;
+import java.util.concurrent.atomic.AtomicReference;
 
 import static java.util.Arrays.asList;
 import static victor.training.performance.ConcurrencyUtil.sleepq;
@@ -28,11 +31,18 @@ public class BarService implements CommandLineRunner {
       requestContext.setCurrentUser("jdoe");
       log.debug("" + orderDrinks());
    }
+   static ExecutorService pool = Executors.newFixedThreadPool(2);
 
+   @SneakyThrows
    public List<Object> orderDrinks() {
       log.debug("Submitting my order");
-      Beer beer = barman.pourBeer();
-      Vodka vodka = barman.pourVodka();
+
+      Future<Beer> futureBeer = pool.submit(() -> barman.pourBeer());
+      Future<Vodka> futureVodka = pool.submit(() -> barman.pourVodka());
+
+      Beer beer = futureBeer.get(); // blocheaza main() pt 1 sec pana e gata berea
+      Vodka vodka = futureVodka.get(); // ia uite ! vodka e deja gata. si nu mai blocheaza nimic.
+
       log.debug("Got my order: " + asList(beer, vodka));
       return null;
    }
@@ -45,7 +55,7 @@ class Barman {
    @Autowired
    private MyRequestContext requestContext;
 
-   public Beer pourBeer() {
+   public  Beer pourBeer() {
       String currentUsername = null; // TODO ThreadLocals... , requestContext.getCurrentUser()
       log.debug("Pouring Beer to " + currentUsername + "...");
       sleepq(1000);
