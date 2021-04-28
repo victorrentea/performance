@@ -1,52 +1,64 @@
 package victor.training.performance.pools;
 
 
+import lombok.Data;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.CommandLineRunner;
+import org.springframework.scheduling.annotation.Async;
+import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 import victor.training.performance.pools.drinks.Beer;
 import victor.training.performance.pools.drinks.Vodka;
 
-import java.util.List;
-import java.util.concurrent.*;
-import java.util.concurrent.atomic.AtomicReference;
+import java.util.concurrent.CompletableFuture;
 
-import static java.util.Arrays.asList;
 import static victor.training.performance.ConcurrencyUtil.sleepq;
 
 @Component
 @Slf4j
-public class BarService implements CommandLineRunner {
+public class BarService {
    @Autowired
    private Barman barman;
 
    @Autowired
    private MyRequestContext requestContext;
 
-   @Override
-   public void run(String... args) {
-      requestContext.setCurrentUser("jdoe");
-      log.debug("" + orderDrinks());
-   }
-   static ExecutorService pool = Executors.newFixedThreadPool(2);
+
+   //   static ExecutorService pool = Executors.newFixedThreadPool(2);
+   @Autowired
+   private ThreadPoolTaskExecutor pool;
 
    @SneakyThrows
-   public List<Object> orderDrinks() {
-      log.debug("Submitting my order");
+   public CompletableFuture<DillyDilly> orderDrinks() {
+      log.debug("Submitting my order to barman: " + barman.getClass());
 
-      Future<Beer> futureBeer = pool.submit(() -> barman.pourBeer());
-      Future<Vodka> futureVodka = pool.submit(() -> barman.pourVodka());
+      CompletableFuture<Beer> futureBeer = barman.pourBeer();
+      CompletableFuture<Vodka> futureVodka = barman.pourVodka();
 
-      Beer beer = futureBeer.get(); // blocheaza main() pt 1 sec pana e gata berea
-      Vodka vodka = futureVodka.get(); // ia uite ! vodka e deja gata. si nu mai blocheaza nimic.
+//      Beer beer = futureBeer.get(); // blocheaza main() pt 1 sec pana e gata berea
+//      Vodka vodka = futureVodka.get(); // ia uite ! vodka e deja gata. si nu mai blocheaza nimic.
 
-      log.debug("Got my order: " + asList(beer, vodka));
-      return null;
+      CompletableFuture<DillyDilly> futureDilly = futureBeer.thenCombine(futureVodka,
+          (beer, vodka) -> new DillyDilly(beer, vodka));
+
+
+      return futureDilly;
    }
+}
 
+@Data
+@Slf4j
+class DillyDilly {
+   private final Beer beer;
+   private final Vodka vodka;
+
+   public DillyDilly(Beer beer, Vodka vodka) {
+      log.debug("Amestec {} cu {}", beer, vodka);
+      this.beer = beer;
+      this.vodka = vodka;
+   }
 }
 
 @Service
@@ -55,16 +67,18 @@ class Barman {
    @Autowired
    private MyRequestContext requestContext;
 
-   public  Beer pourBeer() {
+   @Async
+   public CompletableFuture<Beer> pourBeer() {
       String currentUsername = null; // TODO ThreadLocals... , requestContext.getCurrentUser()
       log.debug("Pouring Beer to " + currentUsername + "...");
       sleepq(1000);
-      return new Beer();
+      return CompletableFuture.completedFuture(new Beer());
    }
 
-   public Vodka pourVodka() {
+   @Async
+   public CompletableFuture<Vodka> pourVodka() {
       log.debug("Pouring Vodka...");
       sleepq(1000);
-      return new Vodka();
+      return CompletableFuture.completedFuture(new Vodka());
    }
 }
