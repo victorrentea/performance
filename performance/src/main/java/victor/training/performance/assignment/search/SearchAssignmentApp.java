@@ -6,7 +6,6 @@ import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.transaction.annotation.Transactional;
-import springfox.documentation.swagger2.annotations.EnableSwagger2;
 
 import javax.persistence.EntityManager;
 import java.util.*;
@@ -14,7 +13,6 @@ import java.util.*;
 import static java.util.stream.Collectors.toSet;
 
 @Slf4j
-@EnableSwagger2
 @SpringBootApplication
 public class SearchAssignmentApp implements CommandLineRunner {
 
@@ -24,6 +22,7 @@ public class SearchAssignmentApp implements CommandLineRunner {
 
     @Autowired
     EntityManager em;
+
 
     @Transactional
     @Override

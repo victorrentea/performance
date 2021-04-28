@@ -13,12 +13,9 @@ import org.springframework.stereotype.Service;
 public class CustomMBean {
     private String name;
 
-    @Autowired
-    private TrickyProcess process;
-
     @ManagedOperation
-    public void setCollectMetrics(boolean enabled) {
-        process.setCollectMetrics(enabled);
+    public void changeCriticalParamAtRuntime(String param) {
+        System.out.println("Update param to : " + param);
     }
 
     @ManagedAttribute
@@ -37,21 +34,5 @@ public class CustomMBean {
         @ManagedOperationParameter(name = "y", description = "The second number")})
     public int add(int x, int y) {
         return x + y;
-    }
-}
-
-@Service
-class TrickyProcess {
-    private boolean collectMetrics;
-
-    public void setCollectMetrics(boolean collectMetrics) {
-        this.collectMetrics = collectMetrics;
-    }
-
-    @Scheduled(fixedRate = 1000)
-    public void myProcess() {
-        if (collectMetrics) {
-            System.out.println("Collect metrics");
-        }
     }
 }

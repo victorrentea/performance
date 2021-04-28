@@ -7,7 +7,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import victor.training.performance.PerformanceUtil;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
@@ -20,7 +22,7 @@ public class Leak4_Cacheable {
    @GetMapping
    public String test() {
       BigObject20MB data = stuff.returnCachedDataForDay(LocalDateTime.now());
-      return "Tools won't always shield you from mistakes: " + System.identityHashCode(data);
+      return "Tools won't always shield you from mistakes: data=" + data + ", " + PerformanceUtil.getUsedHeap();
       // but they still offer max-size, expiration..
       // https://www.ehcache.org/documentation/2.8/configuration/cache-size.html
    }
