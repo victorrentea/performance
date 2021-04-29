@@ -5,8 +5,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping("leak8")
-public class Leak8_Weird {
+@RequestMapping("leak5")
+public class Leak5_LongStackFrame {
 	@GetMapping
 	public String test() {
 		BigObject80MB big = new BigObject80MB();

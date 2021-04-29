@@ -14,8 +14,8 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
 @RestController
-@RequestMapping("leak4")
-public class Leak4_Cacheable {
+@RequestMapping("leak7")
+public class Leak7_Cache {
    @Autowired
    private Stuff stuff;
 
@@ -23,8 +23,6 @@ public class Leak4_Cacheable {
    public String test() {
       BigObject20MB data = stuff.returnCachedDataForDay(LocalDateTime.now());
       return "Tools won't always shield you from mistakes: data=" + data + ", " + PerformanceUtil.getUsedHeap();
-      // but they still offer max-size, expiration..
-      // https://www.ehcache.org/documentation/2.8/configuration/cache-size.html
    }
 }
 

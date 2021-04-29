@@ -13,12 +13,12 @@ import java.util.Map;
 import java.util.UUID;
 
 @RestController
-@RequestMapping("leak6")
+@RequestMapping("leak2")
 @Slf4j
-public class Leak6_TheMostCommon {
+public class Leak2_Statics {
 
    // hand-made cache: NEVER
-   private static final Map<String, Integer> smallEntriesCantHurt = new HashMap<>();
+   private /*static*/ final Map<String, Integer> smallEntriesCantHurt = new HashMap<>();
 
    @GetMapping
    public String test() {

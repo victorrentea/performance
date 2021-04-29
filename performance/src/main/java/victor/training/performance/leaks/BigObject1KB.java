@@ -1,5 +1,6 @@
 package victor.training.performance.leaks;
 
+import org.apache.commons.lang.RandomStringUtils;
 import org.apache.commons.lang.StringUtils;
 
 import java.io.Serializable;
@@ -10,6 +11,10 @@ public class BigObject1KB implements Serializable {
    private static AtomicInteger counter = new AtomicInteger();
 
    public BigObject1KB() {
-      largeString = StringUtils.repeat("x", 500) + counter.incrementAndGet();
+      largeString = counter.incrementAndGet() + " - " + RandomStringUtils.random(500, true, false);
+   }
+
+   public String getLargeString() {
+      return largeString;
    }
 }

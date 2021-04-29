@@ -9,8 +9,8 @@ import java.util.HashMap;
 import java.util.Map;
 
 @RestController
-@RequestMapping("leak5")
-public class Leak5 {
+@RequestMapping("leak3")
+public class Leak3_Inner {
 	static ThreadLocal<MyAppRequestContext> threadLocal = new ThreadLocal<>();
 	
 	@GetMapping
@@ -19,7 +19,7 @@ public class Leak5 {
 		threadLocal.set(requestContext);
 		requestContext.rights = new CachingMethodObject()
 				.createRightsCalculator();
-		return "the most subtle: do you know Java?";
+		return "Do you know Java?";
 	}
 }
 
