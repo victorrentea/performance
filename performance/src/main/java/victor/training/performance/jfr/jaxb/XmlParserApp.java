@@ -1,7 +1,5 @@
 package victor.training.performance.jfr.jaxb;
 
-import victor.training.performance.PerformanceUtil;
-
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Unmarshaller;
@@ -9,18 +7,22 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 
-public class XmlParser {
+public class XmlParserApp {
    public static void main(String[] args) throws JAXBException, IOException {
-      File file = new File("data.txt");
-      XmlGenerator.generate(file, 50000);
+      File file = new File("jaxb-parsed.xml");
+      XmlGenerator.generate(file, 100);
 
-      PerformanceUtil.waitForEnter();
+//      PerformanceUtil.waitForEnter();
 
+      System.out.println("Start parsing...");
+      long t0 = System.currentTimeMillis();
       int sum = 0;
       for (int i = 0; i < 1000; i++) {
          sum += sumRecords(file);
       }
-      System.out.println(sum);
+      long t1 = System.currentTimeMillis();
+      System.out.println("Took " + (t1 - t0) + " ms to get sum=" + sum);
+      System.out.println("TODO: run this program with JFR and inspect flame graph");
    }
 
    private static int sumRecords(File file) throws JAXBException, IOException {
