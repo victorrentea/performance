@@ -15,7 +15,7 @@ public class Leak9_Deadlock {
 
 	@GetMapping
 	public String root() throws Exception {
-		return "call <a href='./leak5/one'>/one</a> and <a href='./leak5/two'>/two</a> withing 3 secs..";
+		return "call <a href='./leak9/one'>/one</a> and <a href='./leak9/two'>/two</a> withing 3 secs..";
 	}
 	
 	@GetMapping("/one")
