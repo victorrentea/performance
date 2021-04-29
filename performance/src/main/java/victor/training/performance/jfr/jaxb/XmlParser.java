@@ -12,7 +12,7 @@ import java.io.IOException;
 public class XmlParser {
    public static void main(String[] args) throws JAXBException, IOException {
       File file = new File("data.txt");
-      XmlGenerator.generate(file, 50000);
+      XmlGenerator.generate(file, 500);
 
       ConcurrencyUtil.waitForEnter();
 
