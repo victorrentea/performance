@@ -22,8 +22,10 @@ import static java.util.stream.Collectors.joining;
 @RestController
 @RequestMapping("leak4")
 @RequiredArgsConstructor
+// Suffocated heap example
 public class Leak4_Session {
 	private final UserSession userSession;
+
 
 	@GetMapping
 	public String test(HttpServletRequest request) {
@@ -36,6 +38,7 @@ public class Leak4_Session {
 		} else {
 			list = (List<BigObject1KB>) session.getAttribute("lastSearchResults");
 		}
+		log.debug("plugin count: " + Leak10_XmlDom.extractPluginsFromPom(10).size());
 
 		String listStr = list.stream().map(BigObject1KB::getLargeString).collect(joining("<br>"));
 		return "Subtle, hard to find before stress tests.<br>Try 4000 concurrent users with jMeter.<br> Last Search Results: <br>" + listStr;

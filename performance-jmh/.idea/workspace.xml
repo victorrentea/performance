@@ -23,11 +23,10 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="0e1584f6-4d86-4d34-9539-64d7002532f5" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/../performance/big-entity.txt" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../performance/src/main/java/victor/training/performance/leaks/Leak8_Hibernate.java" beforeDir="false" afterPath="$PROJECT_DIR$/../performance/src/main/java/victor/training/performance/leaks/Leak8_Hibernate.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../performance/src/main/java/victor/training/performance/leaks/Leak9_Deadlock.java" beforeDir="false" afterPath="$PROJECT_DIR$/../performance/src/main/java/victor/training/performance/leaks/Leak9_Deadlock.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../performance/src/main/resources/application.properties" beforeDir="false" afterPath="$PROJECT_DIR$/../performance/src/main/resources/application.properties" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../performance/jMeter.jmx" beforeDir="false" afterPath="$PROJECT_DIR$/../performance/jMeter.jmx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../performance/src/main/java/victor/training/performance/leaks/Leak10_XmlDom.java" beforeDir="false" afterPath="$PROJECT_DIR$/../performance/src/main/java/victor/training/performance/leaks/Leak10_XmlDom.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../performance/src/main/java/victor/training/performance/leaks/Leak4_Session.java" beforeDir="false" afterPath="$PROJECT_DIR$/../performance/src/main/java/victor/training/performance/leaks/Leak4_Session.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
