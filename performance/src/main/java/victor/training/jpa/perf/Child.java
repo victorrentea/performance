@@ -15,6 +15,10 @@ public class Child {
     private Child() {
     }
 
+    public String getName() {
+        return name;
+    }
+
     public Child(String name) {
         this.name = name;
     }

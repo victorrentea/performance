@@ -24,7 +24,15 @@
   <component name="ChangeListManager">
     <list default="true" id="0e1584f6-4d86-4d34-9539-64d7002532f5" name="Default Changelist" comment="Optionals cost">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../performance/src/main/java/victor/training/performance/APlusPlus.java" beforeDir="false" afterPath="$PROJECT_DIR$/../performance/src/main/java/victor/training/performance/APlusPlus.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../performance/data.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../performance/data.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../performance/src/main/java/victor/training/jpa/perf/Child.java" beforeDir="false" afterPath="$PROJECT_DIR$/../performance/src/main/java/victor/training/jpa/perf/Child.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../performance/src/main/java/victor/training/jpa/perf/Parent.java" beforeDir="false" afterPath="$PROJECT_DIR$/../performance/src/main/java/victor/training/jpa/perf/Parent.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../performance/src/main/java/victor/training/performance/batch/sync/BatchBasicApp.java" beforeDir="false" afterPath="$PROJECT_DIR$/../performance/src/main/java/victor/training/performance/batch/sync/BatchBasicApp.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../performance/src/main/java/victor/training/performance/batch/sync/MyEntity.java" beforeDir="false" afterPath="$PROJECT_DIR$/../performance/src/main/java/victor/training/performance/batch/sync/MyEntity.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../performance/src/main/java/victor/training/performance/batch/sync/MyEntityProcessor.java" beforeDir="false" afterPath="$PROJECT_DIR$/../performance/src/main/java/victor/training/performance/batch/sync/MyEntityProcessor.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../performance/src/main/resources/application.properties" beforeDir="false" afterPath="$PROJECT_DIR$/../performance/src/main/resources/application.properties" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../performance/src/test/java/victor/training/jpa/perf/NPlusOneTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/../performance/src/test/java/victor/training/jpa/perf/NPlusOneTest.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../performance/src/test/java/victor/training/jpa/perf/UberEntityTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/../performance/src/test/java/victor/training/jpa/perf/UberEntityTest.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />

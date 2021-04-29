@@ -16,10 +16,9 @@ import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityManager;
 import java.util.Collection;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
+import static java.util.stream.Collectors.joining;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @RunWith(SpringRunner.class)
@@ -51,23 +50,24 @@ public class NPlusOneTest {
 
 	@Test
 	public void nPlusOne() {
-		List<Parent> parents = em.createQuery("FROM Parent", Parent.class).getResultList();
+		List<Parent> parents = em.createQuery("SELECT DISTINCT p FROM Parent p LEFT JOIN FETCH p.children", Parent.class).getResultList();
 
-		int totalChildren = anotherMethod(parents);
-		assertThat(totalChildren).isEqualTo(5);
+		System.out.println(anotherMethod(parents));
+//		assertThat(totalChildren).isEqualTo(5);
 	}
 
 
 
 
-	private int anotherMethod(Collection<Parent> parents) {
+	private String anotherMethod(Collection<Parent> parents) {
 		log.debug("Start iterating over {} parents: {}", parents.size(), parents);
-		int total = 0;
+		String summary = "";
 		for (Parent parent : parents) {
-			total += parent.getChildren().size();
+			String childrenCsv = parent.getChildren().stream().map(Child::getName).collect(joining(","));
+			summary += parent.getName() + ": " + childrenCsv;
 		}
-		log.debug("Done counting: {} children", total);
-		return total;
+		log.debug("Done counting: {} children", summary);
+		return summary;
 	}
 
 	@Autowired
@@ -75,6 +75,7 @@ public class NPlusOneTest {
 
 	@Test
 	public void entityOnView() {
+//		em.createQuery("SELECT ps FROM ParentSearch ps JOIN Parent p ON p.id = ps.id ")
 		searchRepo.findAll().forEach(System.out::println);
 		assertThat(searchRepo.findAll()).anyMatch(ps -> ps.getChildrenNames().contains("Vlad,Emma"));
 	}

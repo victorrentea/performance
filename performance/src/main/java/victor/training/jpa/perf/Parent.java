@@ -16,9 +16,13 @@ public class Parent {
 
     private String name;
 
-    @OneToMany(cascade = CascadeType.ALL)
+    @OneToMany(cascade = CascadeType.ALL)//, fetch =FetchType.EAGER) // ori de cate orig hibernate va aduce Parent din DB va incarca si copiii
     @JoinColumn(name = "PARENT_ID")
     private Set<Child> children = new HashSet<>();
+
+    public String getName() {
+        return name;
+    }
 
     private Parent() {
     }

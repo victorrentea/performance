@@ -1,5 +1,6 @@
 package victor.training.jpa.perf;
 
+import lombok.Value;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.slf4j.Logger;
@@ -13,6 +14,9 @@ import org.springframework.test.context.transaction.TestTransaction;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityManager;
+import javax.persistence.Query;
+import javax.persistence.TypedQuery;
+import java.util.List;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
@@ -37,6 +41,7 @@ public class UberEntityTest {
 
 
         UberEntity uber = new UberEntity()
+                .setName("aaa")
                 .setFiscalCountry(romania)
                 .setOriginCountry(romania)
                 .setInvoicingCountry(romania)
@@ -49,10 +54,26 @@ public class UberEntityTest {
         TestTransaction.start();
 
         log.info("Now, loading by id...");
-        UberEntity uberEntity = em.find(UberEntity.class, uber.getId());
+//        UberEntity uberEntity = em.find(UberEntity.class, uber.getId());
+//        TypedQuery<UberEntity> query = em.createQuery("SELECT u FROM UberEntity u WHERE u.id=:id", UberEntity.class);
+//        Query query = em.createQuery("SELECT u.name, u.originCountry.name FROM UberEntity u WHERE u.id=:id");
+//        Query query = em.createQuery("SELECT u.name, u.originCountry.name FROM UberEntity u WHERE u.id=:id");
+        TypedQuery<UberSearchResult> query = em.createQuery("SELECT new victor.training.jpa.perf.UberSearchResult(u.name, u.originCountry.name)" +
+                                     " FROM UberEntity u WHERE u.id=:id", UberSearchResult.class);
+        query.setParameter("id", uber.getId());
+        UberSearchResult result = query.getSingleResult();
+
+
         log.info("Loaded");
         // TODO 1 change link types?
         // TODO 2 fetch only the necessary data
-        System.out.println(uberEntity.getName() + "|" + uberEntity.getOriginCountry().getName());
+//        System.out.println(u.getName() + "|" + u.getOriginCountry().getName());
+//        System.out.println(u[0] + "|" + u[1]);
+        System.out.println(result);
     }
+}
+@Value
+class UberSearchResult {
+    String name;
+    String originCountry;
 }

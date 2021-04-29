@@ -7,6 +7,7 @@ import org.springframework.batch.core.configuration.annotation.JobBuilderFactory
 import org.springframework.batch.core.configuration.annotation.StepBuilderFactory;
 import org.springframework.batch.core.launch.support.RunIdIncrementer;
 import org.springframework.batch.item.ItemReader;
+import org.springframework.batch.item.ItemWriter;
 import org.springframework.batch.item.database.JpaItemWriter;
 import org.springframework.batch.item.xml.StaxEventItemReader;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -41,7 +42,7 @@ public class BatchBasicApp {
     public Step basicChunkStep() {
         // TODO optimize: tune chunk size
         return stepBuilderFactory.get("basicChunkStep")
-                .<MyEntityFileRecord, MyEntity>chunk(5)
+                .<MyEntityFileRecord, MyEntity>chunk(50)
                 .reader(xmlReader())
                 .processor(processor())
                 // TODO optimize: tune ID generation
@@ -60,7 +61,7 @@ public class BatchBasicApp {
     @Autowired
     private EntityManagerFactory emf;
 
-    private JpaItemWriter<MyEntity> jpaWriter() {
+    private ItemWriter<MyEntity> jpaWriter() {
         JpaItemWriter<MyEntity> writer = new JpaItemWriter<>();
         writer.setEntityManagerFactory(emf);
         return writer;
