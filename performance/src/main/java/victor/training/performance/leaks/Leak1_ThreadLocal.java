@@ -1,8 +1,13 @@
 package victor.training.performance.leaks;
 
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.stereotype.Component;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+
+import javax.servlet.*;
+import java.io.IOException;
 
 @RestController
 @RequestMapping("leak1")
@@ -30,18 +35,3 @@ public class Leak1_ThreadLocal {
 }
 
 
-//@Slf4j
-//@Component
-//class SomeFilter implements Filter {
-//
-//   public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
-//      log.debug("In a servlet filter");
-//      BigObject20MB bigObject = new BigObject20MB();
-//      try {
-//         threadLocal.set(bigObject);
-//      } finally {
-//         threadLocal.remove();
-//      }
-//      chain.doFilter(request, response);
-//   }
-//}
