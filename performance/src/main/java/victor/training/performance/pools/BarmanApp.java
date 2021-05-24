@@ -49,6 +49,7 @@ public class BarmanApp {
       executor.setQueueCapacity(500);
       executor.setThreadNamePrefix("barman-");
       executor.initialize();
+//      executor.reje
       executor.setTaskDecorator(propagateRequestContext);
       executor.setWaitForTasksToCompleteOnShutdown(true);
       return executor;
