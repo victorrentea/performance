@@ -24,4 +24,7 @@ hs_err_pid*
 .idea
 *.iml
 target
-performance/big-entity.txt
+big-entity.txt
+data.txt
+big.json
+
