@@ -12,11 +12,12 @@ import java.util.stream.IntStream;
 
 public class TheInfamousStringBuilderProblem {
     public static void main(String[] args) throws IOException {
-        List<String> elements = IntStream.range(1, 10).mapToObj(String::valueOf).collect(toList());
+        List<String> elements = IntStream.range(1, 10)
+            .mapToObj(String::valueOf).collect(toList());
 
         // TODO join elements with "," and print them on the console
 
-        // TODO 300K
+        // TODO 30K
         // TODO JFR +=
     }
 }

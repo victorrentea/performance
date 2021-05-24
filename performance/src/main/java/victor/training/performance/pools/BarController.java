@@ -14,7 +14,7 @@ public class BarController {
    private MyRequestContext requestContext;
 
    @GetMapping
-   public String getDrinks() {
+   public String getDrinks() throws Exception {
       return "" + service.orderDrinks();
    }
 }

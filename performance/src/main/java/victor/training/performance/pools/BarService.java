@@ -24,16 +24,18 @@ public class BarService implements CommandLineRunner {
    private MyRequestContext requestContext;
 
    @Override
-   public void run(String... args) {
+   public void run(String... args) throws Exception {
       requestContext.setCurrentUser("jdoe");
       log.debug("" + orderDrinks());
    }
 
    public List<Object> orderDrinks() {
       log.debug("Submitting my order");
+      long t0 = System.currentTimeMillis();
       Beer beer = barman.pourBeer();
       Vodka vodka = barman.pourVodka();
-      log.debug("Got my order: " + asList(beer, vodka));
+      long t1 = System.currentTimeMillis();
+      log.debug("Got my order in {} ms : {}", t1-t0, asList(beer, vodka));
       return null;
    }
 
