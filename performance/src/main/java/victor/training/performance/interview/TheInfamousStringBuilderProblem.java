@@ -15,7 +15,8 @@ public class TheInfamousStringBuilderProblem {
         List<String> elements = IntStream.range(1, 10)
             .mapToObj(String::valueOf).collect(toList());
 
-        // TODO join elements with "," and print them on the console
+
+
 
         // TODO 30K
         // TODO JFR +=
