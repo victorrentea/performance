@@ -4,14 +4,18 @@ package victor.training.performance.pools;
 import lombok.Value;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 import victor.training.performance.pools.drinks.Beer;
 import victor.training.performance.pools.drinks.Vodka;
 
-import java.util.concurrent.*;
+import javax.servlet.http.HttpServletRequest;
+import java.io.FileReader;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutionException;
 
+import static java.util.concurrent.CompletableFuture.completedFuture;
 import static victor.training.performance.PerformanceUtil.sleepq;
 
 @Component
@@ -24,24 +28,26 @@ public class BarService {
    private MyRequestContext requestContext;
 
 //   ExecutorService pool = Executors.newFixedThreadPool(4);
-   @Autowired
-   ThreadPoolTaskExecutor pool;
 
    public CompletableFuture<DillyDilly> orderDrinks() throws ExecutionException, InterruptedException {
-      log.debug("Submitting my order");
+      log.debug("Submitting my order to " + barman.getClass());
 
 
-      CompletableFuture<Beer> futureBeer = CompletableFuture.supplyAsync(() -> barman.pourBeer());
-      CompletableFuture<Vodka> futureVodka = CompletableFuture.supplyAsync(() -> barman.pourVodka());
+      CompletableFuture<Void> futurePayment = CompletableFuture.runAsync(() -> log.debug("Accept payment"));
 
-      CompletableFuture<DillyDilly> futureDilly = futureBeer.thenCombineAsync(futureVodka, (b, v) -> new DillyDilly(b, v));
+//      futurePayment.thenApply(v -> barman.pourBeer());
+//      futurePayment.thenApply(v -> barman.pourVodka());
 
-//      Beer beer = futureBeer.get(); // main blocks here for 1s
-//      Vodka vodka = futureVodka.get(); // main doesn't block here
+      CompletableFuture<Beer> futureBeer = barman.pourBeer();
+      futureBeer.cancel(true);
+      CompletableFuture<Vodka> futureVodka = barman.pourVodka();
 
-//      DillyDilly dilly = futureDilly.get();
+      CompletableFuture<DillyDilly> futureDilly = futureBeer
+          .thenCombineAsync(futureVodka, (b, v) -> new DillyDilly(b, v));
 
-//      log.debug("Got my order: " + dilly);
+      barman.curse("!&$^@!&^@!&$^&@!^$");
+      System.out.println("Do I still get back home safely ");
+
       return futureDilly;
    }
 }
@@ -58,16 +64,25 @@ class Barman {
    @Autowired
    private MyRequestContext requestContext;
 
-   public Beer pourBeer() {
+   @Async("beerPool")
+   public CompletableFuture<Beer> pourBeer() {
       String currentUsername = null; // TODO ThreadLocals... , requestContext.getCurrentUser()
       log.debug("Pouring Beer to " + currentUsername + "...");
       sleepq(1000);
-      return new Beer();
+      return completedFuture(new Beer());
    }
 
-   public Vodka pourVodka() {
+   @Async("vodkaPool")
+   public CompletableFuture<Vodka> pourVodka() {
       log.debug("Pouring Vodka..."); // WS call
       sleepq(1000);
-      return new Vodka();
+      return completedFuture(new Vodka());
+   }
+
+   @Async
+   public void curse(String curse) {
+      if (curse != null) {
+         throw new IllegalArgumentException("Te mato!");
+      }
    }
 }

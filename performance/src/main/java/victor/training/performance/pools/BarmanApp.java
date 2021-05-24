@@ -11,6 +11,7 @@ import org.springframework.boot.autoconfigure.jdbc.DataSourceTransactionManagerA
 import org.springframework.boot.autoconfigure.orm.jpa.HibernateJpaAutoConfiguration;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.support.SimpleThreadScope;
+import org.springframework.core.task.TaskDecorator;
 import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 
@@ -42,12 +43,37 @@ public class BarmanApp {
    private PropagateRequestContext propagateRequestContext;
 
    @Bean
-   public ThreadPoolTaskExecutor executor(@Value("${barman.count}") int barmanCount) {
+   public ThreadPoolTaskExecutor beerPool() {
+      ThreadPoolTaskExecutor executor = new ThreadPoolTaskExecutor();
+      executor.setCorePoolSize(1);
+      executor.setMaxPoolSize(1);
+      executor.setQueueCapacity(500);
+      executor.setThreadNamePrefix("beer-");
+      executor.initialize();
+      executor.setTaskDecorator(new TaskDecorator() {
+         @Override
+         public Runnable decorate(Runnable submittedWork) {
+            // here I am in the submitter thread.
+            long t0 = System.currentTimeMillis();
+            return ()->{
+               long t1 = System.currentTimeMillis();
+               // here I am in the worker thread
+               System.out.println("What is this: (millis): " + (t1-t0));
+               submittedWork.run();
+            };
+         }
+      });
+      executor.setWaitForTasksToCompleteOnShutdown(true);
+      return executor;
+   }
+
+   @Bean
+   public ThreadPoolTaskExecutor vodkaPool(@Value("${barman.count}") int barmanCount) {
       ThreadPoolTaskExecutor executor = new ThreadPoolTaskExecutor();
       executor.setCorePoolSize(barmanCount);
       executor.setMaxPoolSize(barmanCount);
       executor.setQueueCapacity(500);
-      executor.setThreadNamePrefix("barman-");
+      executor.setThreadNamePrefix("vodka-");
       executor.initialize();
 //      executor.reje
       executor.setTaskDecorator(propagateRequestContext);
