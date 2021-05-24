@@ -18,6 +18,7 @@ import org.springframework.oxm.jaxb.Jaxb2Marshaller;
 
 import javax.persistence.EntityManagerFactory;
 import java.io.IOException;
+import java.sql.Connection;
 
 import static victor.training.performance.PerformanceUtil.measureCall;
 
@@ -41,7 +42,7 @@ public class BatchBasicApp {
     public Step basicChunkStep() {
         // TODO optimize: tune chunk size
         return stepBuilderFactory.get("basicChunkStep")
-                .<MyEntityFileRecord, MyEntity>chunk(5)
+                .<MyEntityFileRecord, MyEntity>chunk(500)
                 .reader(xmlReader())
                 .processor(processor())
                 // TODO optimize: tune ID generation
