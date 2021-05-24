@@ -1,37 +1,51 @@
 package victor.training.performance;
 
-public class APlusPlus {
-    private static Integer population = 0;
+import java.sql.CallableStatement;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.concurrent.*;
+import java.util.concurrent.atomic.AtomicInteger;
 
-    public static class ThreadA extends Thread {
-        public void run() {
-            for (int i = 0; i < 10_000; i++) {
-                population++;
+public class APlusPlus {
+    private static AtomicInteger population = new AtomicInteger();
+    static List<String> names = Collections.synchronizedList(new ArrayList<>());
+
+    public static class ThreadA implements Callable<Integer> {
+        public Integer call() {
+            int localCount = 0;
+            for (int i = 0; i < 1000_000; i++) {
+                localCount++;
+//                names.add("a");
             }
+            return localCount;
         }
     }
 
-    public static class ThreadB extends Thread {
-        public void run() {
-            for (int i = 0; i < 10_000; i++) {
-                population++;
+    public static class ThreadB implements Callable<Integer> {
+        public Integer call() {
+            int localCount= 0;
+            for (int i = 0; i < 1000_000; i++) {
+//                names.add("a");
+                localCount++;
             }
+            return localCount;
         }
     }
 
     // TODO (bonus): ConcurrencyUtil.useCPU(1)
     // TODO (extra bonus): Analyze with JFR
 
-    public static void main(String[] args) throws InterruptedException {
-        ThreadA threadA = new ThreadA();
-        ThreadB threadB = new ThreadB();
+    public static void main(String[] args) throws InterruptedException, ExecutionException {
+        ExecutorService pool = Executors.newFixedThreadPool(2);
 
         long t0 = System.currentTimeMillis();
 
-        threadA.start();
-        threadB.start();
-        threadA.join();
-        threadB.join();
+        Future<Integer> fa = pool.submit(new ThreadA());
+        Future<Integer> fb = pool.submit(new ThreadB());
+
+
+        int population = fa.get() + fb.get();
 
         long t1 = System.currentTimeMillis();
         System.out.println("Total = " + population);

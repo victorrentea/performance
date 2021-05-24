@@ -33,8 +33,8 @@ public class LockPhilosophers {
 		}
 
 		public void run() {
-			Fork firstFork = leftFork;
-			Fork secondFork = rightFork;
+			Fork firstFork = leftFork.id < rightFork.id ? leftFork : rightFork;
+			Fork secondFork =leftFork.id < rightFork.id ? rightFork : leftFork;
 
 			for (int i=0;i<50;i++) {
 				sleepSomeTime();
