@@ -25,8 +25,17 @@ public class XmlParserApp {
       System.out.println("TODO: run this program with JFR and inspect flame graph");
    }
 
+      static JAXBContext context;
+
+   static {
+      try {
+         context = JAXBContext.newInstance(Records.class, Record.class);
+      } catch (JAXBException e) {
+         e.printStackTrace();
+      }
+   }
+
    private static int sumRecords(File file) throws JAXBException, IOException {
-      JAXBContext context = JAXBContext.newInstance(Records.class, Record.class);
       Unmarshaller unmarshaller = context.createUnmarshaller();
       int sum = 0;
       try (FileReader reader = new FileReader(file)) {
