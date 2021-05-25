@@ -60,6 +60,7 @@ public class Leak8_Hibernate {
       log.debug("Exporting....");
       try (Writer writer = new FileWriter("big-entity.txt")) {
          repo.streamAll()
+             .peek(e -> em.detach(e))
              .map(BigEntity::getDescription)
              .forEach(Unchecked.consumer(writer::write));
       }

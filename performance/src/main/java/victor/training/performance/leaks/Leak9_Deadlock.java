@@ -31,17 +31,19 @@ public class Leak9_Deadlock {
 	}
 }
 
-
-
 class KillOne {
-	public static synchronized void entryPoint() {
-		log("start One.a1()");
-		sleepq(3_000);
-		KillTwo.internalMethod();
-		log("start One.a1()");
+	public static void entryPoint() { // entry 1
+		synchronized (KillOne.class) {
+			log("start One.a1()");
+			sleepq(3_000);
+			synchronized (KillTwo.class) {
+				KillTwo.internalMethod();
+			}
+			log("start One.a1()");
+		}
 	}
 
-	public static synchronized void internalMethod() {
+	public static void internalMethod() {
 		log("start One.b1()");
 		sleepq(3_000);
 		log("end One.b1()");
@@ -51,15 +53,19 @@ class KillOne {
 
 
 class KillTwo {
-	public static synchronized void entryPoint() {
-		log("start Two.a2()");
-		sleepq(3_000);
-		KillOne.internalMethod();
-		log("start Two.a2()");
+	public static void entryPoint() { // entry 2
+			synchronized (KillOne.class) {
+		synchronized (KillTwo.class) {
+			log("start Two.a2()");
+			sleepq(3_000);
+				KillOne.internalMethod();
+			}
+			log("start Two.a2()");
+		}
 	}
-	public static synchronized void internalMethod() {
-		log("start Two.b2()");
-		sleepq(3_000);
-		log("end Two.b2()");
+	public static void internalMethod() {
+			log("start Two.b2()");
+			sleepq(3_000);
+			log("end Two.b2()");
 	}
 }
