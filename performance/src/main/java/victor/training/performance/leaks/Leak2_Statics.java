@@ -1,9 +1,6 @@
 package victor.training.performance.leaks;
 
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.cache.annotation.Cacheable;
-import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -18,7 +15,8 @@ import java.util.UUID;
 public class Leak2_Statics {
 
    // hand-made cache: NEVER
-   private /*static*/ final Map<String, Integer> smallEntriesCantHurt = new HashMap<>();
+   private static final Map<String, Integer> smallEntriesCantHurt = new HashMap<>();
+//   private /*static*/ final Map<String, Integer> smallEntriesCantHurt = new HashMap<>();
 
    @GetMapping
    public String test() {

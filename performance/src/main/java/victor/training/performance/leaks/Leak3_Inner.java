@@ -22,11 +22,9 @@ public class Leak3_Inner {
 		return "Do you know Java?";
 	}
 }
-
 class MyAppRequestContext {
     public UserRightsCalculator rights;
 }
-
 class CachingMethodObject {
 	public class UserRightsCalculator { // an instance of this is kept on thread
 		public void doStuff() {
