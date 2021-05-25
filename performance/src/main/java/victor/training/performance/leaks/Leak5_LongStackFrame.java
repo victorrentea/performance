@@ -9,8 +9,20 @@ import org.springframework.web.bind.annotation.RestController;
 public class Leak5_LongStackFrame {
 	@GetMapping
 	public String test() {
-		BigObject80MB big = new BigObject80MB();
+		String whatIActuallUseFromBig = extractMinumumData();
+
+		System.out.println(whatIActuallUseFromBig);
 		while (true) ; // or wait for a loong network call, or sleep 60 sec, or deadlock
 		// Conclusion?...
+	}
+
+	private String extractMinumumData() {
+		BigObject80MB big = new BigObject80MB();
+		String whatIActuallUseFromBig = extract(big);
+		return whatIActuallUseFromBig;
+	}
+
+	private String extract(BigObject80MB wholeData) {
+		return "My useful data: " + wholeData.date;
 	}
 }

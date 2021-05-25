@@ -30,7 +30,7 @@ class MyAppRequestContext {
     public UserRightsCalculator rights;
 }
 class CachingMethodObject {
-	public class UserRightsCalculator { // INNER CLASS // an instance of this is kept on thread
+	public static class UserRightsCalculator { // INNER CLASS // an instance of this is kept on thread
 		public void doStuff() {
 			System.out.println("Stupid Code " );
 			// what's the connection with the 'cache' field ?

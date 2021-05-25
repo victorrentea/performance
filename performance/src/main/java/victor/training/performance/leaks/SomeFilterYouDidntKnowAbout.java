@@ -15,6 +15,10 @@ public class SomeFilterYouDidntKnowAbout implements Filter {
    public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
       BigObject20MB bigObject = new BigObject20MB();
       threadLocal.set(bigObject);
-      chain.doFilter(request, response);
+      try {
+         chain.doFilter(request, response);
+      } finally {
+         threadLocal.remove();
+      }
    }
 }
