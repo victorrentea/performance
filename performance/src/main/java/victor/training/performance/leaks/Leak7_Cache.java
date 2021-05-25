@@ -37,3 +37,4 @@ class Stuff {
       return new BigObject20MB();
    }
 }
+// Avoid creating your own cache
