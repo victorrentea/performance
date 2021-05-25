@@ -15,8 +15,6 @@ import org.springframework.core.task.TaskDecorator;
 import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 
-import static java.util.concurrent.CompletableFuture.supplyAsync;
-
 @Slf4j
 @EnableAsync(proxyTargetClass = true)
 @SpringBootApplication(exclude = {
@@ -58,7 +56,7 @@ public class BarmanApp {
             return ()->{
                long t1 = System.currentTimeMillis();
                // here I am in the worker thread
-               System.out.println("What is this: (millis): " + (t1-t0));
+               System.out.println("Queue waiting time: (millis): " + (t1-t0));
                submittedWork.run();
             };
          }
