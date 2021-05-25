@@ -20,12 +20,12 @@ import java.util.stream.Stream;
 import static java.util.stream.Collectors.toList;
 
 @RestController
-@RequestMapping("leak11")
+@RequestMapping("leak12")
 @Slf4j
-public class Leak11_EntityHashCode {
+public class Leak12_EntityHashCode {
    private final PersisterInPages service;
 
-   public Leak11_EntityHashCode(PersisterInPages service) {
+   public Leak12_EntityHashCode(PersisterInPages service) {
       this.service = service;
    }
 

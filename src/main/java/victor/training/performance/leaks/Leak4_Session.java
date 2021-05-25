@@ -14,7 +14,6 @@ import javax.servlet.http.HttpSession;
 import java.io.Serializable;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import static java.util.stream.Collectors.joining;
 
@@ -38,7 +37,6 @@ public class Leak4_Session {
 		} else {
 			list = (List<BigObject1KB>) session.getAttribute("lastSearchResults");
 		}
-		log.debug("plugin count: " + Leak10_XmlDom.extractPluginsFromPom(10).size());
 
 		String listStr = list.stream().map(BigObject1KB::getLargeString).collect(joining("<br>"));
 		return "Subtle, hard to find before stress tests.<br>Try 4000 concurrent users with jMeter.<br> Last Search Results: <br>" + listStr;

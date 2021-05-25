@@ -22,7 +22,7 @@ public class Leak6_Java8 {
 	public String test() {
 		BigObject20MB big = new BigObject20MB();
 		worker.workHard(new Random().nextInt(100), big::lookup);
-		return "Keep calling this 5 times fast";
+		return "Keep calling this 20 times within 10 seconds";
 	}
 }
 

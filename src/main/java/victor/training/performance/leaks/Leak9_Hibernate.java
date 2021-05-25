@@ -31,8 +31,8 @@ import static java.util.stream.Collectors.toList;
 @Slf4j
 @RequiredArgsConstructor
 @RestController
-@RequestMapping("leak8")
-public class Leak8_Hibernate {
+@RequestMapping("leak9")
+public class Leak9_Hibernate {
    private final BigEntityRepo repo;
    private final EntityManager em;
    private final FastInserter persister;

@@ -8,14 +8,14 @@ import static victor.training.performance.PerformanceUtil.log;
 import static victor.training.performance.PerformanceUtil.sleepq;
 
 @RestController
-@RequestMapping("leak9")
-public class Leak9_Deadlock {
+@RequestMapping("leak10")
+public class Leak10_Deadlock {
 
-	// CATE DOI, CATE DOI ... : https://youtu.be/V798MhKfdZ8
+	// [RO] CATE DOI, CATE DOI ... : https://youtu.be/V798MhKfdZ8
 
 	@GetMapping
 	public String root() throws Exception {
-		return "call <a href='./leak9/one'>/one</a> and <a href='./leak9/two'>/two</a> withing 3 secs..";
+		return "call <a href='./leak10/one'>/one</a> and <a href='./leak10/two'>/two</a> withing 3 secs..";
 	}
 	
 	@GetMapping("/one")
