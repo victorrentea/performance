@@ -17,18 +17,22 @@ public class Leak3_Inner {
 	public String test() {
 		MyAppRequestContext requestContext = new MyAppRequestContext();
 		threadLocal.set(requestContext);
-		requestContext.rights = new CachingMethodObject()
-				.createRightsCalculator();
-		return "Do you know Java?";
+		try {
+			requestContext.rights = new CachingMethodObject()
+					.createRightsCalculator();
+			return "Do you know Java?";
+		} finally {
+			threadLocal.remove();
+		}
 	}
 }
 class MyAppRequestContext {
     public UserRightsCalculator rights;
 }
 class CachingMethodObject {
-	public class UserRightsCalculator { // an instance of this is kept on thread
+	public class UserRightsCalculator { // INNER CLASS // an instance of this is kept on thread
 		public void doStuff() {
-			System.out.println("Stupid Code");
+			System.out.println("Stupid Code " );
 			// what's the connection with the 'cache' field ?
 		}
 	}
