@@ -1,11 +1,14 @@
 package victor.training.jpa.perf;
 
+import lombok.Value;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.annotation.Rollback;
 import org.springframework.test.context.junit4.SpringRunner;
@@ -13,6 +16,7 @@ import org.springframework.test.context.transaction.TestTransaction;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityManager;
+import java.util.List;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
@@ -38,7 +42,7 @@ public class UberEntityTest {
 
         UberEntity uber = new UberEntity()
                 .setFiscalCountry(romania)
-                .setOriginCountry(romania)
+                .setOriginCountryId(romania.getId())
                 .setInvoicingCountry(romania)
                 .setCreatedBy(testUser)
                 .setNationality(romania)
@@ -49,10 +53,27 @@ public class UberEntityTest {
         TestTransaction.start();
 
         log.info("Now, loading by id...");
-        UberEntity uberEntity = em.find(UberEntity.class, uber.getId());
+        repo.findById(uber.getId());
+        List<UberDto> uberEntity = repo.getForExport(uber.getId());
         log.info("Loaded");
         // TODO 1 change link types?
         // TODO 2 fetch only the necessary data
-        System.out.println(uberEntity.getName() + "|" + uberEntity.getOriginCountry().getName());
+        System.out.println(uberEntity);
     }
+    @Autowired
+    UberEntityRepo repo;
+}
+
+interface UberEntityRepo extends JpaRepository<UberEntity, Long> {
+    @Query("SELECT new victor.training.jpa.perf.UberDto(u.id, u.name, oc.name) " +
+       " FROM UberEntity u " +
+           " JOIN Country oc ON u.originCountryId = oc.id  WHERE u.id = ?1")
+    List<UberDto> getForExport(Long id);
+}
+
+@Value
+class UberDto { // sent as JSON
+    Long id;
+    String name;
+    String originCountryName;
 }

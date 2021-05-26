@@ -8,6 +8,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.annotation.Rollback;
 import org.springframework.test.context.junit4.SpringRunner;
@@ -51,16 +52,16 @@ public class NPlusOneTest {
 
 	@Test
 	public void nPlusOne() {
-		List<Parent> parents = em.createQuery("FROM Parent", Parent.class).getResultList();
+		Set<Parent> parents = new HashSet<>(em.createQuery("SELECT p FROM Parent p " +
+																			"LEFT JOIN FETCH p.children " +
+																			" ", Parent.class).getResultList());
 
-		int totalChildren = anotherMethod(parents);
+//		"SELECT d FROM Dog d where d.parent.id IN (:idList)").setParamter("idList", list1000Ids)
+		int totalChildren = countChildren(parents);
 		assertThat(totalChildren).isEqualTo(5);
 	}
 
-
-
-
-	private int anotherMethod(Collection<Parent> parents) {
+	private int countChildren(Collection<Parent> parents) {
 		log.debug("Start iterating over {} parents: {}", parents.size(), parents);
 		int total = 0;
 		for (Parent parent : parents) {
@@ -81,4 +82,6 @@ public class NPlusOneTest {
 }
 
 interface ParentSearchRepo extends JpaRepository<ParentSearch, Long> {
+	@Query("SELECT p FROM ParentSearch ps JOIN Parent p on ps.id= p.id WHERE ps.childrenNames LIKE ('%' || ?1 ||'%')")
+	List<Parent> searchContainsChild(String childNamePart);
 }
