@@ -44,7 +44,7 @@ public class Leak9_Hibernate {
 
    @GetMapping
    public String test() {
-      return "First persist <a href=\"leak8/persist\">a little data</a>, then <a href=\"leak8/export\"> export it</a>. Then try persisting <a href=\"leak8/persist-more\">more data</a>";
+      return "First <a href=\"leak8/persist\">persist the data</a>, then <a href=\"leak8/export\"> export it to a file</a>.";
    }
 
    @GetMapping("persist")

@@ -26,11 +26,11 @@ public class XmlParserApp {
    }
 
    private static int sumRecords(File file) throws JAXBException, IOException {
-      JAXBContext context = JAXBContext.newInstance(Records.class, Record.class);
+      JAXBContext context = JAXBContext.newInstance(RecordList.class, Record.class);
       Unmarshaller unmarshaller = context.createUnmarshaller();
       int sum = 0;
       try (FileReader reader = new FileReader(file)) {
-         Records rez = (Records) unmarshaller.unmarshal(reader);
+         RecordList rez = (RecordList) unmarshaller.unmarshal(reader);
          for (Record record : rez.getRecord()) {
             sum += record.getValue();
          }

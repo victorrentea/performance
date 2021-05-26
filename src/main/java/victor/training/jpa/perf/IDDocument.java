@@ -6,5 +6,6 @@ import javax.persistence.*;
 public class IDDocument {
 
     @Id
+    @GeneratedValue
     private Long id;
 }

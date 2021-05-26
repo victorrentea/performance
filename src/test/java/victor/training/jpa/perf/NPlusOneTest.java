@@ -1,40 +1,30 @@
 package victor.training.jpa.perf;
 
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.annotation.Rollback;
-import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.context.transaction.TestTransaction;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityManager;
 import java.util.Collection;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-@RunWith(SpringRunner.class)
+@Slf4j
 @SpringBootTest
 @Transactional
 @Rollback(false)
-@DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_EACH_TEST_METHOD)
 public class NPlusOneTest {
-
-	private static final Logger log = LoggerFactory.getLogger(NPlusOneTest.class);
 
 	@Autowired
 	private EntityManager em;
 
-	@Before
+	@BeforeEach
 	public void persistData() {
 		em.persist(new Parent("Victor")
 				.addChild(new Child("Emma"))
@@ -53,14 +43,11 @@ public class NPlusOneTest {
 	public void nPlusOne() {
 		List<Parent> parents = em.createQuery("FROM Parent", Parent.class).getResultList();
 
-		int totalChildren = anotherMethod(parents);
+		int totalChildren = countChildren(parents);
 		assertThat(totalChildren).isEqualTo(5);
 	}
 
-
-
-
-	private int anotherMethod(Collection<Parent> parents) {
+	private int countChildren(Collection<Parent> parents) {
 		log.debug("Start iterating over {} parents: {}", parents.size(), parents);
 		int total = 0;
 		for (Parent parent : parents) {
@@ -70,15 +57,4 @@ public class NPlusOneTest {
 		return total;
 	}
 
-	@Autowired
-	private ParentSearchRepo searchRepo;
-
-	@Test
-	public void entityOnView() {
-		searchRepo.findAll().forEach(System.out::println);
-		assertThat(searchRepo.findAll()).anyMatch(ps -> ps.getChildrenNames().contains("Vlad,Emma"));
-	}
-}
-
-interface ParentSearchRepo extends JpaRepository<ParentSearch, Long> {
 }
