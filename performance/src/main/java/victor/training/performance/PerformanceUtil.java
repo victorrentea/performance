@@ -75,7 +75,10 @@ public class PerformanceUtil {
 
 	public static String getUsedHeap() {
 		System.gc();
-		long usedHeapBytes = ManagementFactory.getMemoryMXBean().getHeapMemoryUsage().getUsed();
-		return String.format("Used heap: %,d B", usedHeapBytes).replace(",", " ");
+		return String.format("Used heap: %,d B", getUsedHeapBytes()).replace(",", " ");
+	}
+
+	public static long getUsedHeapBytes() {
+		return ManagementFactory.getMemoryMXBean().getHeapMemoryUsage().getUsed();
 	}
 }
