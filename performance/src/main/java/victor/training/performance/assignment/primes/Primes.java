@@ -1,27 +1,23 @@
 package victor.training.performance.assignment.primes;
 
-import java.util.ArrayList;
-import java.util.List;
-
 public class Primes {
 
-    public static final int N_MAX = 1000_000;
+    public static final int N_START = 10_000;
+    public static final int N_END = 1000_000;
 
     public static void main(String[] args) {
 
-        //System.out.println(getPrimes(1, 100));
-
         long t0 = System.currentTimeMillis();
-        int expected = countPrimes(1, N_MAX);
+        int expected = countPrimes(N_START, N_END);
         long t1 = System.currentTimeMillis();
         long dt0 = t1-t0;
         System.out.println("First run took " + (t1-t0));
 
         t0 = System.currentTimeMillis();
-        int actual = countPrimesFaster(1,N_MAX);
+        int actual = countPrimesFaster(N_END, N_END);
         t1 = System.currentTimeMillis();
         long dt1 = t1-t0;
-        System.out.println("Your implem took " + (t1-t0));
+        System.out.println("Your solution took " + (t1-t0));
 
         if (actual != expected) {
             System.err.println("You have a bug: expected to find " + expected + " primes, but you returned " + actual);
@@ -47,7 +43,7 @@ public class Primes {
         return count;
     }
 
-
+    // TIP: you don't need to optimize this function
     public static boolean isPrime(long n) {
         if (n == 1 || n == 2) {
             return true;
