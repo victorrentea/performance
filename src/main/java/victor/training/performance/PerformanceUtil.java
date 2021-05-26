@@ -70,7 +70,7 @@ public class PerformanceUtil {
 	public static void waitForEnter() {
 		System.out.println("[ENTER] to continue");
 		new Scanner(System.in).nextLine();
-		System.out.println("Start!");
+		System.out.println("Continue...");
 	}
 
 	public static String getUsedHeap() {

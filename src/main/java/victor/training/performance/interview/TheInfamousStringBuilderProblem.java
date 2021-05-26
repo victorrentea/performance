@@ -1,24 +1,32 @@
 package victor.training.performance.interview;
 
-import static java.util.Arrays.asList;
-import static java.util.stream.Collectors.toList;
+import org.apache.commons.io.FileUtils;
+import victor.training.performance.PerformanceUtil;
 
-import java.io.FileWriter;
+import java.io.File;
 import java.io.IOException;
-import java.io.Writer;
 import java.util.List;
-import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
+import static java.util.stream.Collectors.toList;
+
 public class TheInfamousStringBuilderProblem {
-    public static void main(String[] args) throws IOException {
-        List<String> elements = IntStream.range(1, 10)
-            .mapToObj(String::valueOf).collect(toList());
+   public static void main(String[] args) throws IOException {
+      List<String> elements = IntStream.range(1, 30_000)
+          .mapToObj(n -> "elem").collect(toList());
 
+      PerformanceUtil.waitForEnter();
+      long t0 = System.currentTimeMillis();
 
+      String s = "";
+      for (String element : elements) {
+         s += element;
+      }
+      FileUtils.writeStringToFile(new File("out.txt"), s);
 
-
-        // TODO 30K
-        // TODO JFR +=
-    }
+      // TODO 30K
+      // TODO JFR +=
+      System.out.println("Done. Took " + (System.currentTimeMillis() - t0));
+      PerformanceUtil.waitForEnter();
+   }
 }
