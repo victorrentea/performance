@@ -12,8 +12,8 @@ import static java.util.stream.Collectors.toList;
 
 public class TheInfamousStringBuilderProblem {
    public static void main(String[] args) throws IOException {
-      List<String> elements = IntStream.range(1, 30_000)
-          .mapToObj(n -> "elem").collect(toList());
+      List<String> elements = IntStream.range(1, 50_000) // try 50K x 6 chars : see TLAB
+          .mapToObj(n -> "hahaha").collect(toList());
 
       PerformanceUtil.waitForEnter();
       long t0 = System.currentTimeMillis();
@@ -24,8 +24,6 @@ public class TheInfamousStringBuilderProblem {
       }
       FileUtils.writeStringToFile(new File("out.txt"), s);
 
-      // TODO 30K
-      // TODO JFR +=
       System.out.println("Done. Took " + (System.currentTimeMillis() - t0));
       PerformanceUtil.waitForEnter();
    }
