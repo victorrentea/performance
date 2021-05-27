@@ -12,16 +12,12 @@ import org.springframework.batch.core.configuration.annotation.StepScope;
 import org.springframework.batch.core.launch.support.RunIdIncrementer;
 import org.springframework.batch.item.ItemReader;
 import org.springframework.batch.item.database.JpaItemWriter;
-import org.springframework.batch.item.support.SynchronizedItemStreamReader;
 import org.springframework.batch.item.xml.StaxEventItemReader;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
 import org.springframework.core.io.FileSystemResource;
-import org.springframework.core.task.SimpleAsyncTaskExecutor;
-import org.springframework.core.task.TaskExecutor;
 import org.springframework.oxm.jaxb.Jaxb2Marshaller;
-import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 
 import javax.persistence.EntityManagerFactory;
 import java.io.IOException;
@@ -42,42 +38,10 @@ public class BatchApp {
       System.out.println("Batch took " + dt + " ms");
    }
 
-
-   public Step insertCitiesStep() {
-      return stepBuilder.get("insertCities")
-          .<PersonXml, City>chunk(500)
-          .reader(xmlReader())
-          .processor(cityMerger())
-          .writer(cityWriter(null))
-          .taskExecutor(singleThread())
-          .build();
-   }
-
-   @Bean
-   public TaskExecutor singleThread() {
-      ThreadPoolTaskExecutor executor = new ThreadPoolTaskExecutor();
-      executor.setMaxPoolSize(1);
-      executor.setCorePoolSize(1);
-      executor.initialize();
-      return executor;
-   }
-
-   @Bean
-   public JpaItemWriter<City> cityWriter(EntityManagerFactory emf) {
-      JpaItemWriter<City> writer = new JpaItemWriter<>();
-      writer.setEntityManagerFactory(emf);
-      return writer;
-   }
-
-   @Bean
-   public CityMerger cityMerger() {
-      return new CityMerger();
-   }
-
    public Step basicChunkStep() {
       return stepBuilder.get("basicChunkStep")
           // TODO optimize: tune chunk size
-          .<PersonXml, Person>chunk(500)
+          .<PersonXml, Person>chunk(5)
           .reader(xmlReader())
           // TODO optimize: reduce READS
           .processor(personProcessor())
@@ -85,20 +49,20 @@ public class BatchApp {
           // TODO optimize: enable JDBC batch mode
           .writer(jpaWriter(null))
           .listener(new MyChunkListener())
-          .listener(new MyStepExecutionListener())
+          .listener(stepListener())
           .build();
-         // TODO optimize: run insert in multithread.
+         // TODO optimize: run insert in multithread. > SynchronizedItemStreamReader
          // TODO templetize input filename
    }
 
    @Bean
-   public TaskExecutor taskExecutor() {
-      return new SimpleAsyncTaskExecutor("spring_batch");
+   @StepScope
+   public MyStepExecutionListener stepListener() {
+      return new MyStepExecutionListener();
    }
 
 
    @Bean
-   @StepScope
    public PersonProcessor personProcessor() {
       return new PersonProcessor();
    }
@@ -120,18 +84,14 @@ public class BatchApp {
       Jaxb2Marshaller unmarshaller = new Jaxb2Marshaller();
       unmarshaller.setClassesToBeBound(PersonXml.class);
       reader.setUnmarshaller(unmarshaller);
-
-      SynchronizedItemStreamReader<PersonXml> syncReader = new SynchronizedItemStreamReader<>();
-      syncReader.setDelegate(reader);
-      return syncReader;
+      return reader;
    }
 
    @Bean
    public Job basicJob() {
       return jobBuilder.get("basicJob")
           .incrementer(new RunIdIncrementer())
-          .start(insertCitiesStep())
-          .next(basicChunkStep())
+          .start(basicChunkStep())
           .listener(new MyJobListener())
           .build();
 

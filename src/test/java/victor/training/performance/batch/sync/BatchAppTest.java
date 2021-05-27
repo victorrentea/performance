@@ -28,7 +28,7 @@ public class BatchAppTest extends AbstractTestcontainersTestBase{
    JobRepository jobRepository;
    @Test
    public void test() throws Exception {
-      int N = 20_000;
+      int N = 4_000;
       XmlFileGenerator.generateFile(N);
       JobExecution run = launcher.run(job, new JobParameters());
       while (run.getExitStatus().isRunning()) {
