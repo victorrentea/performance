@@ -29,3 +29,6 @@ data.txt
 big.json
 
 performance/jaxb-parsed.xml
+/out.txt
+/data.xml
+/recording.jfr

@@ -7,9 +7,8 @@ import org.springframework.batch.core.launch.JobLauncher;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
-@SpringBootTest
-public class BatchBasicAppTest {
-
+@SpringBootTest(properties = "spring.batch.job.enabled=false")
+public class BatchAppTest extends AbstractTestcontainersTestBase{
    @Autowired
    Job job;
 
@@ -22,6 +21,7 @@ public class BatchBasicAppTest {
 //      System.out.println("Batch took " + dt + " ms");
 
       System.out.println("------------------------------");
+
       launcher.run(job, new JobParameters());
    }
 }

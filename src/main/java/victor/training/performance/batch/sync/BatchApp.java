@@ -1,5 +1,7 @@
 package victor.training.performance.batch.sync;
 
+import lombok.SneakyThrows;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.batch.core.Job;
 import org.springframework.batch.core.Step;
 import org.springframework.batch.core.configuration.annotation.EnableBatchProcessing;
@@ -21,7 +23,7 @@ import java.io.IOException;
 
 import static victor.training.performance.PerformanceUtil.measureCall;
 
-
+@Slf4j
 @SpringBootApplication
 @EnableBatchProcessing
 public class BatchApp {
@@ -66,9 +68,13 @@ public class BatchApp {
         return writer;
     }
 
+    @SneakyThrows
     private ItemReader<MyEntityFileRecord> xmlReader() {
         StaxEventItemReader<MyEntityFileRecord> reader = new StaxEventItemReader<>();
-        reader.setResource(new FileSystemResource("data.xml"));
+        FileSystemResource inputFile = new FileSystemResource("data.xml");
+        log.debug("Processing " + inputFile + " size = " + inputFile.contentLength());
+        reader.setResource(inputFile);
+        reader.setStrict(true);
         reader.setFragmentRootElementName("data");
         Jaxb2Marshaller unmarshaller = new Jaxb2Marshaller();
         unmarshaller.setClassesToBeBound(MyEntityFileRecord.class);;
