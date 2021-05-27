@@ -1,6 +1,5 @@
 package victor.training.performance.batch.sync;
 
-import lombok.extern.log4j.Log4j;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.batch.item.ItemProcessor;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,7 +17,9 @@ public class MyEntityProcessor implements ItemProcessor<MyEntityFileRecord, MyEn
 //        log.debug("Proceesing item: " + item);
         MyEntity entity = new MyEntity();
         entity.setName(record.getName());
-        List<City> citiesInDb = em.createQuery("SELECT c FROM Tag c WHERE c.name=:name", City.class).setParameter("name", record.getCity()).getResultList();
+        List<City> citiesInDb = em.createQuery("SELECT c FROM City c WHERE c.name=:name", City.class)
+            .setParameter("name", record.getCity())
+            .getResultList();
         City city = resolveCity(record, citiesInDb);
         entity.setCity(city);
         return entity;

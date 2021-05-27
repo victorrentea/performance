@@ -24,11 +24,11 @@ import static victor.training.performance.PerformanceUtil.measureCall;
 
 @SpringBootApplication
 @EnableBatchProcessing
-public class BatchBasicApp {
+public class BatchApp {
 
     public static void main(String[] args) throws IOException {
         DataFileGenerator.generateFile(10_000);
-        int dt = measureCall(() -> SpringApplication.run(BatchBasicApp.class, args).close());
+        int dt = measureCall(() -> SpringApplication.run(BatchApp.class, args).close());
         System.out.println("Batch took " + dt + " ms");
     }
 
