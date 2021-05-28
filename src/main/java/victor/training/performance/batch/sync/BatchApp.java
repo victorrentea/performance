@@ -42,7 +42,7 @@ public class BatchApp {
    public Step basicChunkStep() {
       return stepBuilder.get("basicChunkStep")
           // TODO optimize: tune chunk size
-          .<PersonXml, Person>chunk(5)
+          .<PersonXml, Person>chunk(100)
 
           .reader(xmlReader())
           // TODO optimize: reduce READS

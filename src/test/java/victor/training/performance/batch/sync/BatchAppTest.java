@@ -34,6 +34,9 @@ public class BatchAppTest extends AbstractTestcontainersTestBase{
       while (run.getExitStatus().isRunning()) {
          sleepq(1);
       }
+
+
+
       System.out.println("JOB FINISHED");
       assertThat(run.getExitStatus()).isEqualTo(ExitStatus.COMPLETED);
       assertThat(personRepo.count()).isEqualTo(N);
