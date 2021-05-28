@@ -32,7 +32,10 @@ public class BatchAppTest extends AbstractTestcontainersTestBase{
    public void test() throws Exception {
       int N = 40_000;
       XmlFileGenerator.generateFile(N);
-      JobExecution run = launcher.run(job, new JobParameters());
+      JobParameters jobParameters = new JobParameters();
+      // "filename", file.getAbsolutePat
+//      jobParameters.
+      JobExecution run = launcher.run(job, jobParameters);
       while (run.getExitStatus().isRunning()) {
          sleepq(1);
       }
