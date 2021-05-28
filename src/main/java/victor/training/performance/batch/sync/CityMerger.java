@@ -2,6 +2,7 @@ package victor.training.performance.batch.sync;
 
 import org.springframework.batch.item.ItemProcessor;
 import org.springframework.beans.factory.annotation.Autowired;
+import victor.training.performance.batch.sync.domain.City;
 
 import javax.annotation.PostConstruct;
 import java.util.Set;

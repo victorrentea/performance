@@ -3,6 +3,8 @@ package victor.training.performance.batch.sync;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.batch.item.ItemProcessor;
 import org.springframework.beans.factory.annotation.Autowired;
+import victor.training.performance.batch.sync.domain.City;
+import victor.training.performance.batch.sync.domain.Person;
 
 @Slf4j
 public class PersonProcessor implements ItemProcessor<PersonXml, Person> {
