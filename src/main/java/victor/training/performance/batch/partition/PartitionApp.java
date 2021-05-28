@@ -8,20 +8,24 @@ import org.springframework.batch.core.Step;
 import org.springframework.batch.core.configuration.annotation.EnableBatchProcessing;
 import org.springframework.batch.core.configuration.annotation.JobBuilderFactory;
 import org.springframework.batch.core.configuration.annotation.StepBuilderFactory;
+import org.springframework.batch.core.configuration.annotation.StepScope;
 import org.springframework.batch.core.launch.support.RunIdIncrementer;
 import org.springframework.batch.item.ItemProcessor;
-import org.springframework.batch.item.ItemWriter;
 import org.springframework.batch.item.database.JpaPagingItemReader;
+import org.springframework.batch.item.file.FlatFileItemWriter;
 import org.springframework.batch.item.file.builder.FlatFileItemWriterBuilder;
 import org.springframework.batch.item.file.transform.BeanWrapperFieldExtractor;
 import org.springframework.batch.item.file.transform.DelimitedLineAggregator;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.autoconfigure.domain.EntityScan;
 import org.springframework.context.annotation.Bean;
 import org.springframework.core.io.FileSystemResource;
+import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
+import victor.training.performance.batch.sync.MyJobListener;
+import victor.training.performance.batch.sync.PersonXml;
 import victor.training.performance.batch.sync.domain.Person;
-import victor.training.performance.batch.sync.*;
 
 import javax.persistence.EntityManagerFactory;
 import java.io.IOException;
@@ -31,7 +35,7 @@ import java.io.IOException;
 @EnableBatchProcessing
 @RequiredArgsConstructor
 @EntityScan("victor.training.performance.batch.sync.domain")
-public class PartitionApp {
+public class PartitionApp  {
    private final JobBuilderFactory jobBuilder;
    private final StepBuilderFactory stepBuilder;
    private final EntityManagerFactory emf;
@@ -40,12 +44,27 @@ public class PartitionApp {
       SpringApplication.run(PartitionApp.class, args).close();
    }
 
+   @Bean
    public Step partitionedStep() {
       return stepBuilder.get("partitionedStep")
-          .partitioner(exportPartition())
           .partitioner("workerStep", partitioner())
+          .step(exportOnePartition())
+          .gridSize(4)
+          .taskExecutor(partitionExecutor())
+//          .partitionHandler() > can send executions to happen over network to other machines
           .build()
           ;
+   }
+
+   @Bean
+   public ThreadPoolTaskExecutor partitionExecutor() {
+      ThreadPoolTaskExecutor executor = new ThreadPoolTaskExecutor();
+      executor.setCorePoolSize(4);
+      executor.setMaxPoolSize(4);
+      executor.setQueueCapacity(500);
+      executor.setThreadNamePrefix("partition-");
+      executor.initialize();
+      return executor;
    }
 
    @Bean
@@ -53,32 +72,41 @@ public class PartitionApp {
       return new MyPartitioner();
    }
 
-   public Step exportPartition() {
+   @Bean
+   public Step exportOnePartition() {
       return stepBuilder.get("exportPartition")
-          .<Person, PersonXml>chunk(5)
-          .reader(jpaReader())
-          .processor(toXmlProcessor())
-          .writer(flatFileWriter())
+          .<Person, PersonXml>chunk(100)
+          .reader(jpaReader(null))
+          .processor(toOutputDto())
+          .writer(flatFileWriter(null))
           .build();
    }
 
-   private ItemProcessor<Person, PersonXml> toXmlProcessor() {
+   private ItemProcessor<Person, PersonXml> toOutputDto() {
       return person -> {
+//         log.info("Out");
          return new PersonXml(person);
       };
    }
 
 
    @Bean
-   public JpaPagingItemReader<Person> jpaReader() {
+   @StepScope
+   public JpaPagingItemReader<Person> jpaReader(@Value("#{stepExecutionContext['MOD']}")  Integer partitionIndex) {
+      log.info("Creating Reader for MOD==="+partitionIndex);
+
       JpaPagingItemReader<Person> reader = new JpaPagingItemReader<>();
-      reader.setQueryString("SELECT p FROM Person p");
+      reader.setQueryString("SELECT p FROM Person p WHERE p.id % 4 = " + partitionIndex);
       reader.setEntityManagerFactory(emf);
       return reader;
    }
 
    @SneakyThrows
-   private ItemWriter<PersonXml> flatFileWriter() {
+   @Bean
+   @StepScope
+   public FlatFileItemWriter<PersonXml> flatFileWriter(@Value("#{stepExecutionContext['MOD']}")  Integer partitionIndex) {
+      log.info("Creating Writer for MOD==="+partitionIndex);
+
       BeanWrapperFieldExtractor<PersonXml> fieldExtractor = new BeanWrapperFieldExtractor<>();
       fieldExtractor.setNames(new String[]{"name", "city"});
       fieldExtractor.afterPropertiesSet();
@@ -89,7 +117,7 @@ public class PartitionApp {
 
       return new FlatFileItemWriterBuilder<PersonXml>()
           .name("itemWriter")
-          .resource(new FileSystemResource("data-output.txt"))
+          .resource(new FileSystemResource("data-output-"+partitionIndex+".txt"))
           .lineAggregator(lineAggregator)
           .build();
    }
@@ -97,11 +125,17 @@ public class PartitionApp {
    @Bean
    public Job basicJob() {
       return jobBuilder.get("basicJob")
+          .listener(persistData())
           .incrementer(new RunIdIncrementer())
-          .start(exportPartition())
+          .start(partitionedStep())
           .listener(new MyJobListener())
           .build();
 
+   }
+
+   @Bean
+   public PersistDataBeforeJob persistData() {
+      return new PersistDataBeforeJob();
    }
 }
 
