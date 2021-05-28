@@ -53,6 +53,7 @@ public class BatchApp {
           .build();
          // TODO optimize: run insert in multithread. > SynchronizedItemStreamReader
          // TODO templetize input filename
+         // [bonus] TODO implement progress tracking%
    }
 
    @Bean
