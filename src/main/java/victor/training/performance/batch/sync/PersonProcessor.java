@@ -21,6 +21,7 @@ public class PersonProcessor implements ItemProcessor<PersonXml, Person> {
     
     @PostConstruct
     public void loadExistingCities() {
+        log.info("ACUM INCARC ORASELE");
         citiesByName = cityRepo.findAll().stream().collect(Collectors.toMap(City::getName,City::getId));
     }
 
@@ -32,11 +33,11 @@ public class PersonProcessor implements ItemProcessor<PersonXml, Person> {
         Long cityId = citiesByName.get(xml.getCity());
 
 
-        if (cityId == null) {
-            City newCity = cityRepo.save(new City(xml.getCity()));
-            cityId = newCity.getId();
-            citiesByName.put(newCity.getName(), cityId);
-        }
+//        if (cityId == null) {
+//            City newCity = cityRepo.save(new City(xml.getCity()));
+//            cityId = newCity.getId();
+//            citiesByName.put(newCity.getName(), cityId);
+//        }
 
         City city = cityRepo.getOne(cityId);
         entity.setCity(city);

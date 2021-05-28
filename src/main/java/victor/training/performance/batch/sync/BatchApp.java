@@ -10,6 +10,7 @@ import org.springframework.batch.core.configuration.annotation.JobBuilderFactory
 import org.springframework.batch.core.configuration.annotation.StepBuilderFactory;
 import org.springframework.batch.core.configuration.annotation.StepScope;
 import org.springframework.batch.core.launch.support.RunIdIncrementer;
+import org.springframework.batch.item.ItemProcessor;
 import org.springframework.batch.item.ItemReader;
 import org.springframework.batch.item.database.JpaItemWriter;
 import org.springframework.batch.item.support.SynchronizedItemStreamReader;
@@ -21,6 +22,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.core.io.FileSystemResource;
 import org.springframework.oxm.jaxb.Jaxb2Marshaller;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
+import victor.training.performance.batch.sync.domain.City;
 import victor.training.performance.batch.sync.domain.Person;
 
 import javax.persistence.EntityManagerFactory;
@@ -42,12 +44,16 @@ public class BatchApp {
       System.out.println("Batch took " + dt + " ms");
    }
 
-   public Step basicChunkStep() {
-      return stepBuilder.get("basicChunkStep")
-          .<PersonXml, Person>chunk(100)
+   public Step insertPerson() {
+      return stepBuilder.get("insertPerson")
+          .<PersonXml, Person>chunk(500)
           .reader(xmlReader())
           .processor(personProcessor())
           .writer(jpaWriter())
+          .faultTolerant()
+               .skip(MissingPersonPhoneException.class)
+               .skipLimit(5)
+//          .build()
           .listener(new MyChunkListener())
           .listener(stepListener())
           .taskExecutor(chunkExecutor())
@@ -55,6 +61,19 @@ public class BatchApp {
          // TODO optimize: run insert in multithread. > SynchronizedItemStreamReader
          // TODO templetize input filename
          // [bonus] TODO implement progress tracking%
+   }
+   public Step insertCities() {
+      return stepBuilder.get("insertCities")
+          .<PersonXml, City>chunk(2000)
+          .reader(xmlReader())
+          .processor(cityProcessor())
+          .writer(cityJpaWriter())
+          .build();
+   }
+
+   @Bean
+   public ItemProcessor<PersonXml, City> cityProcessor() {
+      return new CityProcessor();
    }
 
    @Bean
@@ -76,12 +95,19 @@ public class BatchApp {
 
 
    @Bean
+   @StepScope
    public PersonProcessor personProcessor() {
       return new PersonProcessor();
    }
 
    @Autowired
    EntityManagerFactory emf;
+   @Bean
+   public JpaItemWriter<City> cityJpaWriter() {
+      JpaItemWriter<City> writer = new JpaItemWriter<>();
+      writer.setEntityManagerFactory(emf);
+      return writer;
+   }
    @Bean
    public JpaItemWriter<Person> jpaWriter() {
       JpaItemWriter<Person> writer = new JpaItemWriter<>();
@@ -109,7 +135,8 @@ public class BatchApp {
    public Job basicJob() {
       return jobBuilder.get("basicJob")
           .incrementer(new RunIdIncrementer())
-          .start(basicChunkStep())
+          .start(insertCities())
+          .next(insertPerson())
 //          .next(zipGeneratedFileStep())
 //          .next(updateIndexes())
 //          .next(callSomeProcedure())

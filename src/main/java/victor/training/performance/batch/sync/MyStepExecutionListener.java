@@ -6,7 +6,7 @@ import org.springframework.batch.core.StepExecution;
 
 @Slf4j
 public class MyStepExecutionListener implements  org.springframework.batch.core.StepExecutionListener {
-//    @Value("#{jobExecutionContext['START_TIME']}")
+//    @Value("#{jobParameters['arg_de_command_line_cu_care_ai_portin_spring_boot']}")
 //    private LocalDateTime startTime;
     @Override
     public void beforeStep(StepExecution stepExecution) {
