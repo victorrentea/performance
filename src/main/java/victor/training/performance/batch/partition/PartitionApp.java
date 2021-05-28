@@ -17,8 +17,10 @@ import org.springframework.batch.item.file.transform.BeanWrapperFieldExtractor;
 import org.springframework.batch.item.file.transform.DelimitedLineAggregator;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.boot.autoconfigure.domain.EntityScan;
 import org.springframework.context.annotation.Bean;
 import org.springframework.core.io.FileSystemResource;
+import victor.training.performance.batch.sync.domain.Person;
 import victor.training.performance.batch.sync.*;
 
 import javax.persistence.EntityManagerFactory;
@@ -28,13 +30,14 @@ import java.io.IOException;
 @SpringBootApplication
 @EnableBatchProcessing
 @RequiredArgsConstructor
+@EntityScan("victor.training.performance.batch.sync.domain")
 public class PartitionApp {
    private final JobBuilderFactory jobBuilder;
    private final StepBuilderFactory stepBuilder;
    private final EntityManagerFactory emf;
 
    public static void main(String[] args) throws IOException {
-      SpringApplication.run(BatchApp.class, args).close();
+      SpringApplication.run(PartitionApp.class, args).close();
    }
 
    public Step partitionedStep() {
@@ -65,14 +68,11 @@ public class PartitionApp {
       };
    }
 
-   @Bean
-   public PersonProcessor personProcessor() {
-      return new PersonProcessor();
-   }
 
    @Bean
    public JpaPagingItemReader<Person> jpaReader() {
       JpaPagingItemReader<Person> reader = new JpaPagingItemReader<>();
+      reader.setQueryString("SELECT p FROM Person p");
       reader.setEntityManagerFactory(emf);
       return reader;
    }
