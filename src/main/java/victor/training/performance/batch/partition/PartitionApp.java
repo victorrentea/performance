@@ -37,14 +37,14 @@
 //   }
 //
 //   public Step partitionedStep() {
-//      stepBuilder.get("partitionedStep")
+//      return stepBuilder.get("partitionedStep")
 //          .partitioner(exportPartition())
 //          .partitioner("workerStep", partitioner())
-//
 //      ;
 //   }
-//   public Partitioner partitioner() {
-//      Partitioner partitioner =
+//   @Bean
+//   public MyPartitioner partitioner() {
+//      return new MyPartitioner();
 //   }
 //   public Step exportPartition() {
 //      return stepBuilder.get("exportPartition")
