@@ -21,6 +21,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.core.io.FileSystemResource;
 import org.springframework.oxm.jaxb.Jaxb2Marshaller;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
+import victor.training.performance.batch.sync.domain.Person;
 
 import javax.persistence.EntityManagerFactory;
 import java.io.IOException;

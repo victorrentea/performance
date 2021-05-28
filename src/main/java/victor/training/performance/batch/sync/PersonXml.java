@@ -2,6 +2,7 @@ package victor.training.performance.batch.sync;
 
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import victor.training.performance.batch.sync.domain.Person;
 
 import javax.xml.bind.annotation.XmlRootElement;
 
