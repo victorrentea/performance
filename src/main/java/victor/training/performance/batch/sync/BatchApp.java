@@ -12,6 +12,7 @@ import org.springframework.batch.core.configuration.annotation.StepScope;
 import org.springframework.batch.core.launch.support.RunIdIncrementer;
 import org.springframework.batch.item.ItemReader;
 import org.springframework.batch.item.database.JpaItemWriter;
+import org.springframework.batch.item.support.SynchronizedItemStreamReader;
 import org.springframework.batch.item.xml.StaxEventItemReader;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringApplication;
@@ -19,6 +20,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
 import org.springframework.core.io.FileSystemResource;
 import org.springframework.oxm.jaxb.Jaxb2Marshaller;
+import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 
 import javax.persistence.EntityManagerFactory;
 import java.io.IOException;
@@ -41,21 +43,28 @@ public class BatchApp {
 
    public Step basicChunkStep() {
       return stepBuilder.get("basicChunkStep")
-          // TODO optimize: tune chunk size
           .<PersonXml, Person>chunk(100)
-
           .reader(xmlReader())
-          // TODO optimize: reduce READS
           .processor(personProcessor())
-          // TODO optimize: tune ID generation
-          // TODO optimize: enable JDBC batch mode
           .writer(jpaWriter())
           .listener(new MyChunkListener())
           .listener(stepListener())
+          .taskExecutor(chunkExecutor())
           .build();
          // TODO optimize: run insert in multithread. > SynchronizedItemStreamReader
          // TODO templetize input filename
          // [bonus] TODO implement progress tracking%
+   }
+
+   @Bean
+   public ThreadPoolTaskExecutor chunkExecutor() {
+      ThreadPoolTaskExecutor executor = new ThreadPoolTaskExecutor();
+      executor.setCorePoolSize(4);
+      executor.setMaxPoolSize(4);
+      executor.setQueueCapacity(500);
+      executor.setThreadNamePrefix("chunk-");
+      executor.initialize();
+      return executor;
    }
 
    @Bean
@@ -89,7 +98,10 @@ public class BatchApp {
       Jaxb2Marshaller unmarshaller = new Jaxb2Marshaller();
       unmarshaller.setClassesToBeBound(PersonXml.class);
       reader.setUnmarshaller(unmarshaller);
-      return reader;
+
+      SynchronizedItemStreamReader singleThreadedReader = new SynchronizedItemStreamReader();
+      singleThreadedReader.setDelegate(reader);
+      return singleThreadedReader;
    }
 
    @Bean
