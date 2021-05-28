@@ -12,7 +12,7 @@ public class PersonProcessor implements ItemProcessor<PersonXml, Person> {
     @Override
     public Person process(PersonXml xml) {
         Person entity = new Person();
-        entity.setName(xml.getName());
+        entity.setName(xml.getName()+"X");
         City city = cityRepo.findByName(xml.getCity())
             .orElseGet(() -> cityRepo.save(new City(xml.getCity())));
 

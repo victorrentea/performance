@@ -13,6 +13,7 @@ import org.springframework.batch.core.launch.support.RunIdIncrementer;
 import org.springframework.batch.item.ItemReader;
 import org.springframework.batch.item.database.JpaItemWriter;
 import org.springframework.batch.item.xml.StaxEventItemReader;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
@@ -42,12 +43,13 @@ public class BatchApp {
       return stepBuilder.get("basicChunkStep")
           // TODO optimize: tune chunk size
           .<PersonXml, Person>chunk(5)
+
           .reader(xmlReader())
           // TODO optimize: reduce READS
           .processor(personProcessor())
           // TODO optimize: tune ID generation
           // TODO optimize: enable JDBC batch mode
-          .writer(jpaWriter(null))
+          .writer(jpaWriter())
           .listener(new MyChunkListener())
           .listener(stepListener())
           .build();
@@ -68,8 +70,10 @@ public class BatchApp {
       return new PersonProcessor();
    }
 
+   @Autowired
+   EntityManagerFactory emf;
    @Bean
-   public JpaItemWriter<Person> jpaWriter(EntityManagerFactory emf) {
+   public JpaItemWriter<Person> jpaWriter() {
       JpaItemWriter<Person> writer = new JpaItemWriter<>();
       writer.setEntityManagerFactory(emf);
       return writer;
@@ -93,6 +97,9 @@ public class BatchApp {
       return jobBuilder.get("basicJob")
           .incrementer(new RunIdIncrementer())
           .start(basicChunkStep())
+//          .next(zipGeneratedFileStep())
+//          .next(updateIndexes())
+//          .next(callSomeProcedure())
           .listener(new MyJobListener())
           .build();
 
