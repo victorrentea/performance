@@ -32,3 +32,4 @@ performance/jaxb-parsed.xml
 /out.txt
 /data.xml
 /recording.jfr
+data-output*.txt
