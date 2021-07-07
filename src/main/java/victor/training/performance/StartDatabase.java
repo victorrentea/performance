@@ -1,8 +1,5 @@
-package victor.training;
+package victor.training.performance;
 
-import org.springframework.util.FileSystemUtils;
-
-import java.io.File;
 import java.sql.SQLException;
 
 public class StartDatabase {

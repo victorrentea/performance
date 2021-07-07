@@ -1,0 +1,12 @@
+{
+  "request": {
+    "method": "GET",
+    "urlPathPattern": "/api/call/.*"
+  },
+  "response": {
+    "status": 200,
+
+    "fixedDelayMilliseconds": 100
+
+  }
+}

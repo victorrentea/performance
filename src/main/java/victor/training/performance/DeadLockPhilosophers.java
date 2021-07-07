@@ -1,13 +1,11 @@
 package victor.training.performance;
 
-import static victor.training.performance.PerformanceUtil.log;
-import static victor.training.performance.PerformanceUtil.sleepq;
-import static victor.training.performance.PerformanceUtil.sleepSomeTime;
-
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
-public class LockPhilosophers {
+import static victor.training.performance.PerformanceUtil.*;
+
+public class DeadLockPhilosophers {
 	static class Fork {
 		public final int id;
 		private final Lock lock = new ReentrantLock();

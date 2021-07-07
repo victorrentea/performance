@@ -81,4 +81,12 @@ public class PerformanceUtil {
 	public static long getUsedHeapBytes() {
 		return ManagementFactory.getMemoryMXBean().getHeapMemoryUsage().getUsed();
 	}
+
+	public static void onEnterExit() {
+		new Thread(() -> {
+			new Scanner(System.in).nextLine();
+			System.out.println("ENTER detected. System.exit(0);");
+			System.exit(0);
+		}).start();
+	}
 }

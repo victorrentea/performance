@@ -1,5 +1,7 @@
 package victor.training.performance.jfr.jaxb;
 
+import victor.training.performance.PerformanceUtil;
+
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Unmarshaller;
@@ -12,7 +14,7 @@ public class XmlParserApp {
       File file = new File("jaxb-parsed.xml");
       XmlGenerator.generate(file, 100);
 
-//      PerformanceUtil.waitForEnter();
+      PerformanceUtil.waitForEnter();
 
       System.out.println("Start parsing...");
       long t0 = System.currentTimeMillis();

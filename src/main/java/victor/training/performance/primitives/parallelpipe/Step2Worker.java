@@ -1,4 +1,4 @@
-package victor.training.performance.parallelpipe;
+package victor.training.performance.primitives.parallelpipe;
 
 import static victor.training.performance.PerformanceUtil.log;
 import static victor.training.performance.PerformanceUtil.sleepSomeTime;

@@ -1,4 +1,4 @@
-package victor.training.performance.waitnotify;
+package victor.training.performance.primitives.waitnotify;
 
 import victor.training.performance.PerformanceUtil;
 
