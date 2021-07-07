@@ -1,0 +1,18 @@
+{
+  "request": {
+    "method": "GET",
+    "urlPathPattern": "/api/register-sheep"
+  },
+  "response": {
+    "status": 200,
+    "jsonBody" : {
+      "sn": "{{randomValue type='UUID'}}"
+    },
+    "headers": {
+      "Content-Type": "application/json"
+    },
+
+    "fixedDelayMilliseconds": 1000
+
+  }
+}

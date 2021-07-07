@@ -5,20 +5,18 @@ import lombok.Data;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-import victor.training.performance.PerformanceUtil;
+import org.springframework.web.client.RestTemplate;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import java.util.List;
-import java.util.UUID;
-import java.util.concurrent.CompletableFuture;
 
 @Slf4j
 @RestController
@@ -28,7 +26,7 @@ public class SheepController {
     private final SheepService service;
 
     @GetMapping("create")
-    public CompletableFuture<Long> create(@RequestParam(defaultValue = "Bisisica") String name) {
+    public Long createSheep(@RequestParam(defaultValue = "Bisisica") String name) {
         log.debug("create " + name);
         return service.create(name);
     }
@@ -36,7 +34,7 @@ public class SheepController {
     // TODO Starve Threads
 
     @GetMapping("search")
-    public List<Sheep> search(@RequestParam(defaultValue = "Bisisica") String name) {
+    public List<Sheep> searchSheep(@RequestParam(defaultValue = "Bisisica") String name) {
         log.debug("search for " + name);
         return service.search(name);
     }
@@ -45,21 +43,15 @@ public class SheepController {
 @Slf4j
 @Service
 @RequiredArgsConstructor
+@Transactional
 class SheepService {
     private final SheepRepo repo;
     private final ShepardService shepard;
 
-//    @Transactional
-    public CompletableFuture<Long> create(String name) {
-//        Sheep sheep = repo.save(new Sheep(name, sn));
-        return shepard.registerSheep(name)
-            .thenApplyAsync(sn -> new Sheep(name, sn))
-            .thenApply(repo::save)
-            .thenApply(Sheep::getId);
-
-
-//        Sheep sheep = repo.save(new Sheep(name, sn));
-//        return sheep.getId();
+    public Long create(String name) {
+        String sn = shepard.registerSheep(name);
+        Sheep sheep = repo.save(new Sheep(name, sn));
+        return sheep.getId();
     }
     public List<Sheep> search(String name) {
         return repo.getByNameLike(name);
@@ -69,14 +61,18 @@ class SheepService {
 @Service
 class ShepardService {
     @Timed("shepard")
-    @Async("shepardPool")
-    public CompletableFuture<String> registerSheep(String name) {
-//        HttpServletRequest req;
-//        req.startAsync()
-        log.debug("Calling external WS");
-        PerformanceUtil.sleepq(500);
-        return CompletableFuture.completedFuture(UUID.randomUUID().toString());
+    public String registerSheep(String name) {
+        SheepRegistrationResponse response = new RestTemplate()
+            .getForObject("http://localhost:9999/api/register-sheep", SheepRegistrationResponse.class);
+        return response.getSn();
+//        log.debug("Calling external WS");
+//        PerformanceUtil.sleepq(500);
+//        return UUID.randomUUID().toString();
     }
+}
+@Data
+class SheepRegistrationResponse {
+    private String sn;
 }
 
 interface SheepRepo extends JpaRepository<Sheep, Long> {
@@ -85,7 +81,7 @@ interface SheepRepo extends JpaRepository<Sheep, Long> {
 
 
 @Entity
-@Data // Don't
+@Data // just a demo
 class Sheep {
     @GeneratedValue
     @Id

@@ -27,7 +27,7 @@ public class Hashing {
       }
    }
 
-   private static void someRequest() {
+   public static void someRequest() {
       System.out.println("\nIteration");
       Collection<?> targetIds = generate(20_000);
       Collection<?> allIds = generate(20_000);
