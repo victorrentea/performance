@@ -23,9 +23,9 @@ import org.springframework.boot.autoconfigure.domain.EntityScan;
 import org.springframework.context.annotation.Bean;
 import org.springframework.core.io.FileSystemResource;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
-import victor.training.performance.batch.sync.MyJobListener;
-import victor.training.performance.batch.sync.PersonXml;
-import victor.training.performance.batch.sync.domain.Person;
+import victor.training.performance.batch.core.MyJobListener;
+import victor.training.performance.batch.core.PersonXml;
+import victor.training.performance.batch.core.domain.Person;
 
 import javax.persistence.EntityManagerFactory;
 import java.io.IOException;

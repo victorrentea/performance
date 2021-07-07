@@ -4,8 +4,8 @@ import org.springframework.batch.core.JobExecution;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
-import victor.training.performance.batch.sync.domain.City;
-import victor.training.performance.batch.sync.domain.Person;
+import victor.training.performance.batch.core.domain.City;
+import victor.training.performance.batch.core.domain.Person;
 
 import javax.persistence.EntityManager;
 import java.util.ArrayList;
