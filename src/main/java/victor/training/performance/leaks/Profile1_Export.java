@@ -4,20 +4,20 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
-import java.util.stream.Collectors;
-import java.util.stream.IntStream;
 
 @RestController
 @RequiredArgsConstructor
 @Slf4j
-public class Export implements CommandLineRunner {
+public class Profile1_Export implements CommandLineRunner {
    private final SmallRepo smallRepo;
+   private final JdbcTemplate jdbc;
 
    @GetMapping("/export")
    public String memoryMe() {
@@ -30,8 +30,8 @@ public class Export implements CommandLineRunner {
 
    @Override
    public void run(String... args) throws Exception {
-      log.info("Persisting data");
-      smallRepo.saveAll(IntStream.range(0, 50_000).mapToObj(i -> new Small("123456")).collect(Collectors.toList()));
+      log.info("Persist...");
+      jdbc.update("INSERT INTO SMALL(ID, NAME) SELECT X, '123456' FROM SYSTEM_RANGE(1, 50*1000)");
       log.info("DONE");
    }
 }

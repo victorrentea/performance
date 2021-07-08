@@ -65,9 +65,6 @@ class ShepardService {
         SheepRegistrationResponse response = new RestTemplate()
             .getForObject("http://localhost:9999/api/register-sheep", SheepRegistrationResponse.class);
         return response.getSn();
-//        log.debug("Calling external WS");
-//        PerformanceUtil.sleepq(500);
-//        return UUID.randomUUID().toString();
     }
 }
 @Data

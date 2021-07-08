@@ -5,27 +5,29 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 import java.util.Random;
 
 @Slf4j
-//@RestController // TODO uncomment me!
+@RestController // TODO uncomment me!
 @RequiredArgsConstructor
-public class LongQuery implements CommandLineRunner {
+public class Profile4_LongQuery implements CommandLineRunner {
    private final JdbcTemplate jdbc;
    @Override
    public void run(String... args) throws Exception {
-      log.info("Inserting Huge Data...");
+      log.info("Persisting...");
       jdbc.update("DROP TABLE IF EXISTS TEST");
       jdbc.update("CREATE TABLE TEST(ID BIGINT PRIMARY KEY, ACCOUNT BIGINT, TXID BIGINT)");
+
       jdbc.update("INSERT INTO TEST SELECT X, RAND()*100, X FROM SYSTEM_RANGE(1, 2000000)");
-//      jdbc.update("CREATE Unique INDEX IDX_TEST_ACCOUNT_TXID ON `test` (account, txId DESC);");
-      log.info("Done");
+//      jdbc.update("CREATE Unique INDEX IDX_TEST_ACCOUNT_TXID ON TEST (account, txId DESC);");
+      log.info("DONE");
    }
 
    @GetMapping("long")
    public List<Long> indexMiss() {
-      return jdbc.queryForList("select txid from test where account=? AND txid<9999999 order by txid desc limit 25", Long.class, new Random().nextInt(100));
+      return jdbc.queryForList("select txid from test where account=? AND txid<9999999 order by account, txid desc limit 25", Long.class, new Random().nextInt(100));
    }
 }

@@ -9,7 +9,7 @@ import victor.training.performance.interview.Hashing;
 @RestController
 @RequiredArgsConstructor
 @Slf4j
-public class HighschoolSurprise {
+public class Profile3_Complexities {
    private final SmallRepo smallRepo;
 
    @GetMapping("/profile-me")

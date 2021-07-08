@@ -18,7 +18,7 @@ public class SomeFilterYouDidntKnowAbout implements Filter {
       if (httpRequest.getRequestURI().contains("leak8")) {
          log.debug("doFilter");
          BigObject20MB bigObject = new BigObject20MB();
-         someFrameworkThreadLocal.set(bigObject);
+//         someFrameworkThreadLocal.set(bigObject);
          chain.doFilter(request, response);
       } else {
          chain.doFilter(request, response);
