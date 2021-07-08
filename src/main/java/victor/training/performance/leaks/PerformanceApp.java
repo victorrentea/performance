@@ -14,7 +14,7 @@ import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 @EnableAsync
 @EnableCaching
 @SpringBootApplication
-public class LeaksApp {
+public class PerformanceApp {
     @Bean
     public TimedAspect timedAspect(MeterRegistry meterRegistry) {
         return new TimedAspect(meterRegistry);
@@ -34,6 +34,6 @@ public class LeaksApp {
     }
 
     public static void main(String[] args) {
-        SpringApplication.run(LeaksApp.class, args);
+        SpringApplication.run(PerformanceApp.class, args);
     }
 }
