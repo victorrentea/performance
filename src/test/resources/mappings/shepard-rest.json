@@ -5,11 +5,11 @@
   },
   "response": {
     "status": 200,
-    "jsonBody" : {
-      "sn": "{{randomValue type='UUID'}}"
-    },
     "headers": {
       "Content-Type": "application/json"
+    },
+    "jsonBody" : {
+      "sn": "{{randomValue type='UUID'}}"
     },
 
     "fixedDelayMilliseconds": 1000

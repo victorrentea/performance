@@ -23,11 +23,11 @@ public class Hashing {
       System.out.println("Calling in a loop the same code, until ENTER pressed");
       PerformanceUtil.onEnterExit();
       while (true) {
-         someRequest();
+         intersectCollections();
       }
    }
 
-   public static void someRequest() {
+   public static void intersectCollections() {
       System.out.println("\nIteration");
       Collection<?> targetIds = generate(20_000);
       Collection<?> allIds = generate(20_000);
@@ -35,9 +35,9 @@ public class Hashing {
       match(targetIds, allIds);
    }
 
-   private static Collection<?> generate(int max) {
-      System.out.printf("Generating shuffled sequence of %,d elements...%n", max);
-      List<String> result = IntStream.rangeClosed(1, max)
+   private static Collection<?> generate(int n) {
+      System.out.printf("Generating shuffled sequence of %,d elements...%n", n);
+      List<String> result = IntStream.rangeClosed(1, n)
           .mapToObj(i -> "A" + i)
           .collect(toList());
       Collections.shuffle(result);
