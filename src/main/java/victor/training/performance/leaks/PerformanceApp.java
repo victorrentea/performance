@@ -5,14 +5,18 @@ import io.micrometer.core.instrument.MeterRegistry;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.boot.context.event.ApplicationReadyEvent;
 import org.springframework.cache.annotation.EnableCaching;
+import org.springframework.cloud.openfeign.EnableFeignClients;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.event.EventListener;
 import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 
 @Slf4j
 @EnableAsync
 @EnableCaching
+@EnableFeignClients
 @SpringBootApplication
 public class PerformanceApp {
     @Bean
@@ -31,6 +35,11 @@ public class PerformanceApp {
         executor.initialize();
         executor.setWaitForTasksToCompleteOnShutdown(true);
         return executor;
+    }
+
+    @EventListener
+    public void onStart(ApplicationReadyEvent event) {
+        log.info(">>>>>> All Initializations Finised <<<<<<\n==================================================\n");
     }
 
     public static void main(String[] args) {

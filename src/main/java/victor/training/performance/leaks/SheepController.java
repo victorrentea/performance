@@ -4,6 +4,7 @@ import io.micrometer.core.annotation.Timed;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -11,7 +12,6 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.client.RestTemplate;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -59,13 +59,22 @@ class SheepService {
 }
 @Slf4j
 @Service
+@RequiredArgsConstructor
 class ShepardService {
+    private final ShepardClient client;
     @Timed("shepard")
     public String registerSheep(String name) {
-        SheepRegistrationResponse response = new RestTemplate()
-            .getForObject("http://localhost:9999/api/register-sheep", SheepRegistrationResponse.class);
+//        SheepRegistrationResponse response = new RestTemplate()
+//            .getForObject("http://localhost:9999/api/register-sheep", SheepRegistrationResponse.class);
+        SheepRegistrationResponse response = client.registerSheep();
         return response.getSn();
     }
+}
+
+@FeignClient(name = "shepard", url="http://localhost:9999/api")
+interface ShepardClient {
+    @GetMapping("register-sheep")
+    SheepRegistrationResponse registerSheep();
 }
 @Data
 class SheepRegistrationResponse {
