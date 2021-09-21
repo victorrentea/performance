@@ -28,8 +28,8 @@ public class BarService implements CommandLineRunner {
 
    @Override
    public void run(String... args) throws Exception {
-      requestContext.setCurrentUser("jdoe");
-      log.debug("" + orderDrinks());
+//      requestContext.setCurrentUser("jdoe");
+//      log.debug("" + orderDrinks());
    }
 
    @Autowired
@@ -46,8 +46,8 @@ public class BarService implements CommandLineRunner {
       Future<Vodka> futureVodka = pool.submit(() -> barman.pourVodka());
       log.debug("Pleaca chelnerul");
 
-      Beer beer = futureBeer.get(); // 1 sec main sta aici
-      Vodka vodka = futureVodka.get(); // main nu sta de loc aici
+      Beer beer = futureBeer.get(); // 1 sec threadul http sta blocat aici
+      Vodka vodka = futureVodka.get(); // threadul http nu sta de loc aici
 
 
       long t1 = System.currentTimeMillis();
@@ -66,13 +66,13 @@ class Barman {
    public Beer pourBeer() {
       String currentUsername = null; // TODO ThreadLocals... , requestContext.getCurrentUser()
       log.debug("Pouring Beer to " + currentUsername + "...");
-      sleepq(1000);
+      sleepq(100); // imagine:  REST API/ soap
       return new Beer();
    }
 
    public Vodka pourVodka() {
       log.debug("Pouring Vodka...");
-      sleepq(1000);
+      sleepq(100); //  imagine:  DB SELECT heavy
       return new Vodka();
    }
 }

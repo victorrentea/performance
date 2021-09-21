@@ -14,7 +14,11 @@ public class BarController {
    private MyRequestContext requestContext;
 
    @GetMapping
-   public String getDrinks() throws Exception {
+   public String searchINRemote() throws Exception {
       return "" + service.orderDrinks();
+   }
+   @GetMapping("/alt-api")
+   public String getCustomerById() throws Exception {
+      return "currentUserDetails";
    }
 }
