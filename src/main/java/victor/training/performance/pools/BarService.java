@@ -4,6 +4,7 @@ package victor.training.performance.pools;
 import lombok.SneakyThrows;
 import lombok.Value;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.scheduling.annotation.Async;
@@ -42,15 +43,28 @@ public class BarService implements CommandLineRunner {
 
       // promise-uri din JS
 
-      CompletableFuture<Beer> futureBeer = barman.pourBeer();
+      CompletableFuture<Beer> futureBeer = barman.pourBeer()
+          .exceptionally(e -> {
+             log.error("EROARE: " + e, e);
+             if (e.getCause() instanceof NuMaiEBerEeBlonda) {
+                return new Beer("bruna");
+             } else {
+                throw new RuntimeException(e);
+             }
+          }) // catch(NuMaiBereBlonda)
+          .thenApply(beer -> beer.addIce())
+          ;
+
       CompletableFuture<Vodka> futureVodka = barman.pourVodka();
-//      Future<Beer> futureBeer = pool.submit(() -> barman.pourBeer());
-//      Future<Vodka> futureVodka = pool.submit(() -> barman.pourVodka());
       log.debug("Pleaca chelnerul");
 
-//futureBeer.thenAccept(beer -> System.out.println("Beu " +beer));
+
       CompletableFuture<DillyDilly> futureDilly = futureBeer.thenCombineAsync(futureVodka, DillyDilly::new);
 
+      //store file in temp folder
+      barman.injura("%^$#&!%**!&#&!*@&%"/*, file*/); // fire and forget : chemi o metoda @Async care return void
+
+      // return la client "AM PRIMIT: uite uploadID-ul tau"
       log.debug("ACum scapa threadul de HTTP");
       return futureDilly;
    }
@@ -61,7 +75,9 @@ class DillyDilly {
    Beer beer;
    Vodka vodka;
 }
+class NuMaiEBerEeBlonda  extends RuntimeException{
 
+}
 @Service
 @Slf4j
 class Barman {
@@ -75,8 +91,11 @@ class Barman {
    public CompletableFuture<Beer> pourBeer() {
       String currentUsername = null; // TODO ThreadLocals... , requestContext.getCurrentUser()
       log.debug("Pouring Beer to " + currentUsername + "...");
+      if (true) {
+         throw new NuMaiEBerEeBlonda();
+      }
       sleepq(100); // imagine:  REST API/ soap
-      return CompletableFuture.completedFuture(new Beer());
+      return CompletableFuture.completedFuture(new Beer("blond"));
    }
    // aveam niste query-uri de search care rulau cat 10 min.
    // daca aveam ghinionul sa vina 20 de astfel de searchuri (fat pigs) simultan ,epuizam DB Conn pool
@@ -92,5 +111,12 @@ class Barman {
       log.debug("Pouring Vodka...");
       sleepq(100); //  imagine:  DB SELECT heavy
       return CompletableFuture.completedFuture(new Vodka());
+   }
+   @Async
+   public void injura(String uratura) {
+
+      if (StringUtils.isNotBlank(uratura)) {
+         throw new IllegalArgumentException("Te casez/ iti fac buzunar!");
+      }
    }
 }

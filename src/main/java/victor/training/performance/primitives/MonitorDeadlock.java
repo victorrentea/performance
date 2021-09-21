@@ -29,10 +29,10 @@ public class MonitorDeadlock {
 			try {
 				
 				 // TODO Fix Deadlock
-				synchronized (monitorB) {
+				synchronized (monitorA) {
+					synchronized (monitorB) { // SELECT FOR UPDATE; LOCK USERS; MERGE
 					log("Acquired Monitor B");
 					Thread.sleep(1);
-					synchronized (monitorA) {
 						log("Acquired Monitor A");
 						Thread.sleep(1);
 						log("Run");

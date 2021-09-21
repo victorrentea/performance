@@ -31,10 +31,10 @@ public class DeadLockPhilosophers {
 		}
 
 		public void run() {
-			Fork firstFork = leftFork;
-			Fork secondFork = rightFork;
+			Fork firstFork = leftFork.id < rightFork.id ? leftFork: rightFork;
+			Fork secondFork = leftFork.id < rightFork.id ? rightFork: leftFork;
 
-			for (int i=0;i<50;i++) {
+			for (int i=0;i<500;i++) {
 				sleepSomeTime();
 				log("I'm hungry!");
 				

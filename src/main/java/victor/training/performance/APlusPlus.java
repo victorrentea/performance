@@ -1,20 +1,35 @@
 package victor.training.performance;
 
 public class APlusPlus {
-    private static Integer population = 0;
+    private static int population = 0;
+    private static final Object MONITOR = new Object();
 
     public static class ThreadA extends Thread {
         public void run() {
-            for (int i = 0; i < 10_000; i++) {
-                population++;
+            int populationLocal = 0;
+            for (int i = 0; i < 1000_000; i++) {
+//                synchronized (MONITOR) {
+//                    population.incrementAndGet();
+//                }
+                populationLocal++;
+            }
+            synchronized (MONITOR) {
+                population += populationLocal;
             }
         }
     }
 
     public static class ThreadB extends Thread {
         public void run() {
-            for (int i = 0; i < 10_000; i++) {
-                population++;
+            int populationLocal = 0;
+            for (int i = 0; i < 1000_000; i++) {
+//                synchronized (MONITOR) {
+//                    population.incrementAndGet();
+//                }
+                populationLocal++;
+            }
+            synchronized (MONITOR) {
+                population += populationLocal;
             }
         }
     }

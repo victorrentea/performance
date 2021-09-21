@@ -9,7 +9,7 @@ public class PerformanceUtil {
 	static Random random = new Random();
 	
 	public static void sleepSomeTime() {
-		sleepSomeTime(10,100);
+		sleepSomeTime(5,20);
 	}
 	
 	public static void sleepSomeTime(int min, int max) {
