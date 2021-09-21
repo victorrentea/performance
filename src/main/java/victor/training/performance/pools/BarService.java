@@ -5,14 +5,13 @@ import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
+import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 import victor.training.performance.pools.drinks.Beer;
 import victor.training.performance.pools.drinks.Vodka;
 
 import java.util.List;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 
 import static java.util.Arrays.asList;
@@ -33,13 +32,15 @@ public class BarService implements CommandLineRunner {
       log.debug("" + orderDrinks());
    }
 
+   @Autowired
+   ThreadPoolTaskExecutor pool;
+
+   //global, per app
    // Requ: optimize drinking sa beu mai repede.
    @SneakyThrows
    public List<Object> orderDrinks() {
       log.debug("Submitting my order");
       long t0 = System.currentTimeMillis();
-
-      ExecutorService pool = Executors.newFixedThreadPool(2);
 
       Future<Beer> futureBeer = pool.submit(() -> barman.pourBeer());
       Future<Vodka> futureVodka = pool.submit(() -> barman.pourVodka());
