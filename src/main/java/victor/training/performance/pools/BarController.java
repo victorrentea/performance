@@ -5,6 +5,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.concurrent.CompletableFuture;
+
 @Slf4j
 @RestController
 public class BarController {
@@ -14,8 +16,8 @@ public class BarController {
    private MyRequestContext requestContext;
 
    @GetMapping
-   public String searchINRemote() throws Exception {
-      return "" + service.orderDrinks();
+   public CompletableFuture<DillyDilly> searchINRemote() throws Exception {
+      return service.orderDrinks();
    }
    @GetMapping("/alt-api")
    public String getCustomerById() throws Exception {

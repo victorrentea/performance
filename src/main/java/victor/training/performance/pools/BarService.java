@@ -2,6 +2,7 @@ package victor.training.performance.pools;
 
 
 import lombok.SneakyThrows;
+import lombok.Value;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
@@ -11,10 +12,8 @@ import org.springframework.stereotype.Service;
 import victor.training.performance.pools.drinks.Beer;
 import victor.training.performance.pools.drinks.Vodka;
 
-import java.util.List;
-import java.util.concurrent.Future;
+import java.util.concurrent.CompletableFuture;
 
-import static java.util.Arrays.asList;
 import static victor.training.performance.PerformanceUtil.sleepq;
 
 @Component
@@ -38,23 +37,31 @@ public class BarService implements CommandLineRunner {
    //global, per app
    // Requ: optimize drinking sa beu mai repede.
    @SneakyThrows
-   public List<Object> orderDrinks() {
+   public CompletableFuture<DillyDilly> orderDrinks() {
       log.debug("Submitting my order");
       long t0 = System.currentTimeMillis();
 
-      Future<Beer> futureBeer = pool.submit(() -> barman.pourBeer());
-      Future<Vodka> futureVodka = pool.submit(() -> barman.pourVodka());
+
+      // promise-uri din JS
+
+      CompletableFuture<Beer> futureBeer = CompletableFuture.supplyAsync(() -> barman.pourBeer());
+      CompletableFuture<Vodka> futureVodka = CompletableFuture.supplyAsync(() -> barman.pourVodka());
+//      Future<Beer> futureBeer = pool.submit(() -> barman.pourBeer());
+//      Future<Vodka> futureVodka = pool.submit(() -> barman.pourVodka());
       log.debug("Pleaca chelnerul");
 
-      Beer beer = futureBeer.get(); // 1 sec threadul http sta blocat aici
-      Vodka vodka = futureVodka.get(); // threadul http nu sta de loc aici
+//futureBeer.thenAccept(beer -> System.out.println("Beu " +beer));
+      CompletableFuture<DillyDilly> futureDilly = futureBeer.thenCombineAsync(futureVodka, DillyDilly::new);
 
-
-      long t1 = System.currentTimeMillis();
-      log.debug("Got my order in {} ms : {}", t1-t0, asList(beer, vodka));
-      return null;
+      log.debug("ACum scapa threadul de HTTP");
+      return futureDilly;
    }
+}
 
+@Value
+class DillyDilly {
+   Beer beer;
+   Vodka vodka;
 }
 
 @Service
