@@ -1,6 +1,7 @@
 package victor.training.performance.pools;
 
 
+import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
@@ -10,6 +11,9 @@ import victor.training.performance.pools.drinks.Beer;
 import victor.training.performance.pools.drinks.Vodka;
 
 import java.util.List;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
 
 import static java.util.Arrays.asList;
 import static victor.training.performance.PerformanceUtil.sleepq;
@@ -29,11 +33,22 @@ public class BarService implements CommandLineRunner {
       log.debug("" + orderDrinks());
    }
 
+   // Requ: optimize drinking sa beu mai repede.
+   @SneakyThrows
    public List<Object> orderDrinks() {
       log.debug("Submitting my order");
       long t0 = System.currentTimeMillis();
-      Beer beer = barman.pourBeer();
-      Vodka vodka = barman.pourVodka();
+
+      ExecutorService pool = Executors.newFixedThreadPool(2);
+
+      Future<Beer> futureBeer = pool.submit(() -> barman.pourBeer());
+      Future<Vodka> futureVodka = pool.submit(() -> barman.pourVodka());
+      log.debug("Pleaca chelnerul");
+
+      Beer beer = futureBeer.get(); // 1 sec main sta aici
+      Vodka vodka = futureVodka.get(); // main nu sta de loc aici
+
+
       long t1 = System.currentTimeMillis();
       log.debug("Got my order in {} ms : {}", t1-t0, asList(beer, vodka));
       return null;
