@@ -42,7 +42,7 @@ public class BarmanApp {
 //      static ExecutorService pool = Executors.newFixedThreadPool(16);
 
    @Bean
-   public ThreadPoolTaskExecutor executor(@Value("${barman.count}")int barmanCount) {
+   public ThreadPoolTaskExecutor vodkaPool(@Value("${barman.count}")int barmanCount) {
       ThreadPoolTaskExecutor executor = new ThreadPoolTaskExecutor();
       executor.setCorePoolSize(40);
       executor.setMaxPoolSize(40); // pp ca pana ieri faceam in acest thread pool doar cpu (eg image rendering)
@@ -58,10 +58,22 @@ public class BarmanApp {
 
       // rejected execution handler = leave default (exception) >> limit upstream impact (client of client)
 
-      executor.setThreadNamePrefix("barman-");
+      executor.setThreadNamePrefix("vodka-");
       executor.initialize();
 //      executor.setRejectedExecutionHandler(new CallerRunsPolicy());
 
+      executor.setTaskDecorator(propagateRequestContext);
+      executor.setWaitForTasksToCompleteOnShutdown(true);
+      return executor;
+   }
+   @Bean
+   public ThreadPoolTaskExecutor beerPool() {
+      ThreadPoolTaskExecutor executor = new ThreadPoolTaskExecutor();
+      executor.setCorePoolSize(10);
+      executor.setMaxPoolSize(10); // pp ca pana ieri faceam in acest thread pool doar cpu (eg image rendering)
+      executor.setQueueCapacity(500);
+      executor.setThreadNamePrefix("beer-");
+      executor.initialize();
       executor.setTaskDecorator(propagateRequestContext);
       executor.setWaitForTasksToCompleteOnShutdown(true);
       return executor;

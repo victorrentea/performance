@@ -6,7 +6,7 @@ import lombok.Value;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
-import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 import victor.training.performance.pools.drinks.Beer;
@@ -31,8 +31,6 @@ public class BarService implements CommandLineRunner {
 //      log.debug("" + orderDrinks());
    }
 
-   @Autowired
-   ThreadPoolTaskExecutor pool;
 
    //global, per app
    // Requ: optimize drinking sa beu mai repede.
@@ -44,8 +42,8 @@ public class BarService implements CommandLineRunner {
 
       // promise-uri din JS
 
-      CompletableFuture<Beer> futureBeer = CompletableFuture.supplyAsync(() -> barman.pourBeer());
-      CompletableFuture<Vodka> futureVodka = CompletableFuture.supplyAsync(() -> barman.pourVodka());
+      CompletableFuture<Beer> futureBeer = barman.pourBeer();
+      CompletableFuture<Vodka> futureVodka = barman.pourVodka();
 //      Future<Beer> futureBeer = pool.submit(() -> barman.pourBeer());
 //      Future<Vodka> futureVodka = pool.submit(() -> barman.pourVodka());
       log.debug("Pleaca chelnerul");
@@ -70,16 +68,29 @@ class Barman {
    @Autowired
    private MyRequestContext requestContext;
 
-   public Beer pourBeer() {
+
+   // ei NU ACCEPTA MAI MULT DE 2 requesturi in paralel
+   // sau constati ca acel sistem extern se comporta optim la 10 req in paralel maxim
+   @Async("beerPool")
+   public CompletableFuture<Beer> pourBeer() {
       String currentUsername = null; // TODO ThreadLocals... , requestContext.getCurrentUser()
       log.debug("Pouring Beer to " + currentUsername + "...");
       sleepq(100); // imagine:  REST API/ soap
-      return new Beer();
+      return CompletableFuture.completedFuture(new Beer());
    }
+   // aveam niste query-uri de search care rulau cat 10 min.
+   // daca aveam ghinionul sa vina 20 de astfel de searchuri (fat pigs) simultan ,epuizam DB Conn pool
 
-   public Vodka pourVodka() {
+//   @Async("fatPigPool") // 2 max
+//   public CompletableFuture<Vodka> fat() {
+//      log.debug("Pouring Vodka...");
+//      SELECT
+//      return CompletableFuture.completedFuture(new Vodka());
+//   }
+   @Async("vodkaPool") // 50 max
+   public CompletableFuture<Vodka> pourVodka() {
       log.debug("Pouring Vodka...");
       sleepq(100); //  imagine:  DB SELECT heavy
-      return new Vodka();
+      return CompletableFuture.completedFuture(new Vodka());
    }
 }
