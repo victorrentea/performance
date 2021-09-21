@@ -1,22 +1,18 @@
 package victor.training.performance.interview;
 
-import static java.util.stream.Collectors.toList;
-
-import java.util.List;
 import java.util.stream.LongStream;
 
 public class SummingBoxes {
 
     public static void main(String[] args) {
-        List<Long> list = LongStream.range(1, 10_000_000)
-				.boxed().collect(toList());
+        long[] list = LongStream.range(1, 10_000_000).toArray();
 
         // TODO how about memory efficiency?
 
         long t0 = System.currentTimeMillis();
 
-        Long sum = 0L;
-        for (Long i : list) {
+        long sum = 0L;
+        for (long i : list) {
             sum += i;
         }
 
