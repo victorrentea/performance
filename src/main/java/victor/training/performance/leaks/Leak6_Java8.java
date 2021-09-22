@@ -21,7 +21,7 @@ public class Leak6_Java8 {
 	@GetMapping
 	public String test() {
 		BigObject20MB big = new BigObject20MB();
-		worker.workHard(new Random().nextInt(100), big::lookup);
+		worker.workHard(new Random().nextInt(100), index -> big.lookup(index));
 		return "Keep calling this 20 times within 10 seconds";
 	}
 }
@@ -36,3 +36,4 @@ class Worker {
 		log.debug("Computed " + result);
 	}
 }
+// UNDE se va acumula memorie la load mare ?

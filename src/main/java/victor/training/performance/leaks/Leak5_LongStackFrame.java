@@ -11,14 +11,23 @@ import org.springframework.web.bind.annotation.RestController;
 public class Leak5_LongStackFrame {
 	@GetMapping
 	public String longRunningFunction() {
-		BigObject80MB big = new BigObject80MB();
+		// List<BigDto50Campuri> x 5.000 elem
+		// List<SmallValueObject3Fields> x 100 elem
+		BigObject80MB big = restCall();
 		String useful = big.getInterestingPart();
+//		big == null;// PAZEA: aici nu vrem sa tinem obiec...
 		while (true) {
 			// or wait for a loong network call, or sleep 60 sec, or deadlock
 			if (useful != null) {
-				log.trace("Using useful");
+				log.trace("Using usefulX " + big.largeArray.length);
 			}
 		}
 		// Conclusion?...
+	}
+
+	// supposed to return minimum data tokeep in memory.
+
+	private BigObject80MB restCall() {
+		return new BigObject80MB();
 	}
 }

@@ -18,7 +18,11 @@ public class Leak3_Inner {
 	public String test() {
 		UserRightsCalculator calculator = new CachingMethodObject().createRightsCalculator();
 		threadLocal.set(calculator);
-		bizLogicUsingCalculator();
+		try {
+			bizLogicUsingCalculator();
+		} finally {
+			threadLocal.remove();
+		}
 		return "Do you know Java?";
 	}
 
@@ -31,7 +35,7 @@ public class Leak3_Inner {
 
 
 class CachingMethodObject {
-	public class UserRightsCalculator { // an instance of this is kept on current thread
+	public /*static*/ class UserRightsCalculator { // an instance of this is kept on current thread
 		public boolean hasRight(String task) {
 			System.out.println("Stupid Code");
 			// what's the connection with the 'bigMac' field ?
