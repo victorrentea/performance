@@ -1,25 +1,27 @@
 package victor.training.performance.leaks;
 
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.stereotype.Component;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-
-import javax.servlet.*;
-import java.io.IOException;
 
 @RestController
 @RequestMapping("leak1")
 public class Leak1_ThreadLocal {
    public static ThreadLocal<BigObject20MB> threadLocal = new ThreadLocal<>();
 
+//   @Transactional
+//   @PreAuthorized
+//   @RolesAllowed
    @GetMapping
    public String test() {
       BigObject20MB bigObject = new BigObject20MB();
       threadLocal.set(bigObject);
 
-      businessMethod1();
+      try {
+         businessMethod1();
+      } finally {
+         threadLocal.remove();
+      }
       return "Magic can do harm.";
    }
 
