@@ -1,41 +1,44 @@
 package victor.training.performance.interview;
 
-import org.apache.commons.io.FileUtils;
+import lombok.SneakyThrows;
 import victor.training.performance.PerformanceUtil;
 
 import java.io.File;
+import java.io.FileWriter;
 import java.io.IOException;
+import java.util.LinkedList;
 import java.util.List;
+import java.util.Queue;
 import java.util.stream.IntStream;
 
 import static java.util.stream.Collectors.toList;
 
 public class TheInfamousStringBuilderProblem {
    public static void main(String[] args) throws IOException {
-      List<String> elements = IntStream.range(1, 100_000) // try 50K x 6 chars : see TLAB
+      List<String> elements = IntStream.range(1, 1000_000) // try 50K x 6 chars : see TLAB
           .mapToObj(n -> "hahaha").collect(toList());
 
       PerformanceUtil.waitForEnter();
       long t0 = System.currentTimeMillis();
 
 
-      String s = met(elements);
+      try (FileWriter writer = new FileWriter(new File("out.txt"))) {
+         met(elements, writer);
+      }
 
 
-      FileUtils.writeStringToFile(new File("out.txt"), s);
+      Queue<Integer> q = new LinkedList<>();
 
-      System.out.println("Done. Took " + (System.currentTimeMillis() - t0) + " final string = "+s.length());
+
+      System.out.println("Done. Took " + (System.currentTimeMillis() - t0) + " final string = ");
       PerformanceUtil.waitForEnter();
    }
 
-   private static String met(List<String> elements) {
-      String s = ""; // pe method stack frame, cat ocupa var s = 4octeti (64bit)
-      // daca stringul are lungimea 10M
-
+   @SneakyThrows
+   private static void met(List<String> elements, FileWriter writer) {
       for (String element : elements) { // daca sunt 10-100 : impactul e ns
-         s += element;
+         writer.write(element);
       }
-      return s;
    }
 }
 class OClasaOrarecareFaraHashCode {

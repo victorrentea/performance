@@ -10,6 +10,7 @@ import org.springframework.boot.CommandLineRunner;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.RestTemplate;
 import victor.training.performance.pools.drinks.Beer;
 import victor.training.performance.pools.drinks.Vodka;
 
@@ -54,9 +55,12 @@ public class BarService implements CommandLineRunner {
           }) // catch(NuMaiBereBlonda)
           .thenApply(beer -> beer.addIce())
           ;
+//      futureBeer.cancel(true);
 
       CompletableFuture<Vodka> futureVodka = barman.pourVodka();
       log.debug("Pleaca chelnerul");
+
+      futureVodka.thenAcceptAsync(vodka -> audit(vodka));
 
 
       CompletableFuture<DillyDilly> futureDilly = futureBeer.thenCombineAsync(futureVodka, DillyDilly::new);
@@ -67,6 +71,10 @@ public class BarService implements CommandLineRunner {
       // return la client "AM PRIMIT: uite uploadID-ul tau"
       log.debug("ACum scapa threadul de HTTP");
       return futureDilly;
+   }
+
+   private void audit(Vodka vodka) {
+      log.debug("Audit separat de vodka " + vodka);
    }
 }
 
@@ -95,6 +103,22 @@ class Barman {
          throw new NuMaiEBerEeBlonda();
       }
       sleepq(100); // imagine:  REST API/ soap
+
+      String response = new RestTemplate().getForObject("httpL", String.class); // blocheaza threadul curent, oricare e ala.
+      // sA nu blocam thread de la tomcat
+      // dar tot trebuie sa arzi un thread pe altarul HTTP
+      // feign client = clienti java genrati din swagger.yaml/json
+
+      // in spring 5 WebFlux
+//      Mono<Response> r= HttpClient.get().... > niciun thread nu se blocheaza
+
+//      ReactiveMongoJDBC
+//          ReactiveOracle
+//      Reactive
+//      Flux<Rand> flux = jdbc.select()
+
+      //retrofit (pe BE!) >> Observable<Response> reactivex3
+
       return CompletableFuture.completedFuture(new Beer("blond"));
    }
    // aveam niste query-uri de search care rulau cat 10 min.
