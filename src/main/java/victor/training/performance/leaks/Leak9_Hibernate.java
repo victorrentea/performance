@@ -44,13 +44,13 @@ public class Leak9_Hibernate {
 
    @GetMapping
    public String test() {
-      return "First <a href=\"leak8/persist\">persist the data</a>, then <a href=\"leak8/export\"> export it to a file</a>.";
+      return "First <a href=\"/leak9/persist\">persist the data</a>, then <a href=\"/leak9/export\"> export it to a file</a>.";
    }
 
    @GetMapping("persist")
    public String persist() {
       persister.insert(500);
-      return "Persisted data. Now <a href=\"export\">export</a> and check the logs";
+      return "Persisted data. Now <a href=\"/leak9/export\">export</a> and check the logs";
    }
 
 
