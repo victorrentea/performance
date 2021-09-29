@@ -1,4 +1,4 @@
-<h1>See some Leaks</h1>
+<h1>Trace some Leaks</h1>
 <ul>
     <li><a href="leak1">Leak1</a></li>
     <li><a href="leak2">Leak2</a></li>
@@ -9,4 +9,19 @@
     <li><a href="leak7">Leak7</a></li>
     <li><a href="leak8">Leak8</a></li>
     <li><a href="leak9">Leak9</a></li>
+</ul>
+<h1>Profile flows</h1>
+Add -javaagent:glowroot.jar to app startup params (like explained <a href="https://glowroot.org/https://glowroot.org/">here</a>), <br />
+and then open glowroot on this app: <a href="http://localhost:4000" target="_blank">http://localhost:4000</a>.
+<ul>
+    <li><a href="profile/export">A naive export</a></li>
+    <li><a href="profile/nplus1">N plus 1 queries</a></li>
+    <li><a href="profile/cpu">Strange CPU activity</a></li>
+    <li><a href="profile/long-query">Long Query</a></li>
+    <li>Connection Pool/Thread Exhaustion
+        <ul>
+            <li><a href="profile/sheep/create">create</a></li>
+            <li><a href="profile/sheep/search">search</a></li>
+        </ul>
+    </li>
 </ul>

@@ -6,26 +6,29 @@ import org.springframework.boot.CommandLineRunner;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 
-@RestController
-@RequiredArgsConstructor
 @Slf4j
+@RestController
+@RequestMapping("profile/export")
+@RequiredArgsConstructor
 public class Profile1_Export implements CommandLineRunner {
    private final SmallRepo smallRepo;
    private final JdbcTemplate jdbc;
 
-   @GetMapping("/export")
+   @GetMapping
    public String memoryMe() {
       String result = "";
       for (Small small : smallRepo.findAll()) {
          result += small.getName();
       }
-      return result;
+
+      return "Exported characters: " + result.length();
    }
 
    @Override

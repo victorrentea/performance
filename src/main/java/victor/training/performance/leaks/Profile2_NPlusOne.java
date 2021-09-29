@@ -10,15 +10,17 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.persistence.*;
 import java.util.HashSet;
 import java.util.Set;
 
-@RestController
-@RequiredArgsConstructor
 @Slf4j
+@RestController
+@RequestMapping("profile/nplus1")
+@RequiredArgsConstructor
 public class Profile2_NPlusOne implements CommandLineRunner {
    private final ParentRepo repo;
    private final JdbcTemplate jdbc;
@@ -31,7 +33,7 @@ public class Profile2_NPlusOne implements CommandLineRunner {
       log.info("DONE");
    }
 
-   @GetMapping("nplus1")
+   @GetMapping
    public Page<Parent> query() {
       return repo.findByNameLike("%ar%", PageRequest.of(0, 20));
 

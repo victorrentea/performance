@@ -20,9 +20,9 @@ import java.util.List;
 
 @Slf4j
 @RestController
-@RequestMapping("sheep")
+@RequestMapping("profile/sheep")
 @RequiredArgsConstructor
-public class SheepController {
+class SheepController {
     private final SheepService service;
 
     @GetMapping("create")

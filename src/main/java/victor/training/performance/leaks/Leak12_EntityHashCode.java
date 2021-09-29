@@ -5,12 +5,12 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Component;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
 
 import javax.annotation.PostConstruct;
-import javax.persistence.*;
-import javax.servlet.http.HttpServletResponse;
+import javax.persistence.ElementCollection;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
 import javax.transaction.Transactional;
 import java.time.LocalDateTime;
 import java.util.*;
@@ -19,8 +19,9 @@ import java.util.stream.Stream;
 
 import static java.util.stream.Collectors.toList;
 
-@RestController
-@RequestMapping("leak12")
+// WORK IN PROGRESS
+//@RestController
+//@RequestMapping("leak12")
 @Slf4j
 public class Leak12_EntityHashCode {
    private final PersisterInPages service;

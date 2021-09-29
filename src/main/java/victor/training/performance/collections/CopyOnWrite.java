@@ -1,4 +1,4 @@
-package victor.training.performance;
+package victor.training.performance.collections;
 
 import java.util.ArrayList;
 import java.util.List;

@@ -1,4 +1,4 @@
-package victor.training.performance;
+package victor.training.performance.primitives;
 
 // https://dzone.com/articles/shared-variable-optimization-within-a-loop
 public class VolatilePuzzle {
