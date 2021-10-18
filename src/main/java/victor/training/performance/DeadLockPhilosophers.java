@@ -31,8 +31,8 @@ public class DeadLockPhilosophers {
 		}
 
 		public void run() {
-			Fork firstFork = leftFork;
-			Fork secondFork = rightFork;
+			Fork firstFork = leftFork.id < rightFork.id ? leftFork : rightFork;
+			Fork secondFork = leftFork.id < rightFork.id ?  rightFork : leftFork;
 
 			for (int i=0;i<50;i++) {
 				sleepSomeTime();
@@ -56,7 +56,7 @@ public class DeadLockPhilosophers {
 
 		private void eat() {
 			log("Took both forks. Eating...");
-			sleepSomeTime();
+//			sleepSomeTime();
 			log("I had enough. I'm putting down the forks");
 		}
 	}

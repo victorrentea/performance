@@ -31,11 +31,14 @@ public class BarService implements CommandLineRunner {
    public void run(String... args) throws Exception {
       log.debug("" + orderDrinks());
    }
+
+
+
    public List<Object> orderDrinks() throws ExecutionException, InterruptedException {
       log.debug("Submitting my order");
       long t0 = System.currentTimeMillis();
 
-      ExecutorService pool = Executors.newFixedThreadPool(2);
+      ExecutorService pool = Executors.newFixedThreadPool(2); // TERRIBLY WRONG
 
       Future<Beer> futureBeer = pool.submit(() -> barman.pourBeerApi());
       Future<Vodka> futureVodka = pool.submit(() -> barman.pourVodkaOtherApi());
