@@ -6,6 +6,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -16,6 +17,7 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import java.util.List;
+import java.util.concurrent.CompletableFuture;
 
 @Slf4j
 @RestController
@@ -25,7 +27,7 @@ class SheepController {
     private final SheepService service;
 
     @GetMapping("create")
-    public Long createSheep(@RequestParam(defaultValue = "Bisisica") String name) {
+    public CompletableFuture<Long> createSheep(@RequestParam(defaultValue = "Bisisica") String name) {
         log.debug("create " + name);
         return service.create(name);
     }
@@ -45,10 +47,13 @@ class SheepService {
     private final ShepardService shepard;
 
 //@Transactional
-    public Long create(String name) {
-        String sn = shepard.registerSheep(name);
-        Sheep sheep = repo.save(new Sheep(name, sn));
-        return sheep.getId();
+    public CompletableFuture<Long> create(String name) {
+        return shepard.registerSheep(name)
+            .thenApply(sn -> new Sheep(name, sn))
+            .thenApply(repo::save)
+            .thenApply(Sheep::getId);
+//        Sheep sheep = repo.save(new Sheep(name, sn));
+//        return sheep.getId();
     }
 
     public List<Sheep> search(String name) {
@@ -61,18 +66,19 @@ class SheepService {
 class ShepardService {
     private final ShepardClient client;
     @Timed("shepard")
-    public String registerSheep(String name) {
+    @Async("shepardPool")
+    public CompletableFuture<String> registerSheep(String name) {
 //        SheepRegistrationResponse response = new RestTemplate()
 //            .getForObject("http://localhost:9999/api/register-sheep", SheepRegistrationResponse.class);
         SheepRegistrationResponse response = client.registerSheep();
-        return response.getSn();
+        return CompletableFuture.completedFuture(response.getSn());
     }
 }
 
 @FeignClient(name = "shepard", url="http://localhost:9999/api")
 interface ShepardClient {
     @GetMapping("register-sheep")
-    SheepRegistrationResponse registerSheep();
+    /*Mono<*/SheepRegistrationResponse registerSheep();
 }
 @Data
 class SheepRegistrationResponse {
