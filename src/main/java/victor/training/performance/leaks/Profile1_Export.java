@@ -14,7 +14,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 
 @Slf4j
-@RestController
+//@RestController
 @RequestMapping("profile/export")
 @RequiredArgsConstructor
 public class Profile1_Export implements CommandLineRunner {

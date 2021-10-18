@@ -6,14 +6,13 @@ import org.springframework.boot.CommandLineRunner;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 import java.util.Random;
 
 @Slf4j
 @RequestMapping("profile/long-query")
-@RestController // TODO uncomment me!
+//@RestController // TODO uncomment me!
 @RequiredArgsConstructor
 public class Profile4_LongQuery implements CommandLineRunner {
    private final JdbcTemplate jdbc;
