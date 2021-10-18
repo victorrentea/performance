@@ -1,12 +1,16 @@
 package victor.training.performance;
 
+// race bug
 public class APlusPlus {
     private static Integer population = 0;
+    private static final Object LOCK = new Object();
 
     public static class ThreadA extends Thread {
         public void run() {
             for (int i = 0; i < 10_000; i++) {
-                population++;
+                synchronized (LOCK) { // resource
+                    population++;
+                }
             }
         }
     }
@@ -14,7 +18,9 @@ public class APlusPlus {
     public static class ThreadB extends Thread {
         public void run() {
             for (int i = 0; i < 10_000; i++) {
-                population++;
+                synchronized (LOCK) {
+                    population++;
+                }
             }
         }
     }
