@@ -1,65 +1,64 @@
 package victor.training.performance.pools;
 
 
+import lombok.Value;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.CommandLineRunner;
+import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 import victor.training.performance.pools.drinks.Beer;
 import victor.training.performance.pools.drinks.Vodka;
 
-import java.util.List;
+import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
+import java.util.function.Supplier;
 
 import static java.util.Arrays.asList;
 import static victor.training.performance.PerformanceUtil.sleepq;
 
 @Component
 @Slf4j
-public class BarService implements CommandLineRunner {
+public class BarService {
    @Autowired
    private Barman barman;
 
    @Autowired
-   private MyRequestContext requestContext;
+   private ThreadPoolTaskExecutor pool;
 
-   @Override
-   public void run(String... args) throws Exception {
-      log.debug("" + orderDrinks());
-   }
-
-
-
-   public List<Object> orderDrinks() throws ExecutionException, InterruptedException {
+   public String orderDrinks() throws ExecutionException, InterruptedException {
       log.debug("Submitting my order");
       long t0 = System.currentTimeMillis();
 
-      ExecutorService pool = Executors.newFixedThreadPool(2); // TERRIBLY WRONG
 
       Future<Beer> futureBeer = pool.submit(() -> barman.pourBeerApi());
       Future<Vodka> futureVodka = pool.submit(() -> barman.pourVodkaOtherApi());
+//
+
+//      CompletableFuture<Beer> futureBeer = CompletableFuture.supplyAsync(() -> barman.pourBeerApi());
 
       Beer beer = futureBeer.get();
-      // line 1 = delta 1 sec
       Vodka vodka = futureVodka.get();
-      // line 2  - line 1 = delta 0 sec
+
+
+      DillyDilly dilly = new DillyDilly(beer, vodka);
 
       long t1 = System.currentTimeMillis();
       log.debug("Got my order in {} ms : {}", t1-t0, asList(beer, vodka));
-      return null;
+      return dilly.toString();
    }
+}
 
+@Value
+class DillyDilly {
+   Beer beer;
+   Vodka vodka;
 }
 
 @Service
 @Slf4j
 class Barman {
-   @Autowired
-   private MyRequestContext requestContext;
 
    public Beer pourBeerApi() {
       log.debug("Pouring Beer to ...");

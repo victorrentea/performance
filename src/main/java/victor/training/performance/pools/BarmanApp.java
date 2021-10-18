@@ -2,6 +2,7 @@ package victor.training.performance.pools;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.beans.factory.config.CustomScopeConfigurer;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -12,8 +13,6 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.support.SimpleThreadScope;
 import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
-
-import static java.util.concurrent.CompletableFuture.supplyAsync;
 
 @Slf4j
 @EnableAsync(proxyTargetClass = true)
@@ -41,10 +40,10 @@ public class BarmanApp {
    private PropagateRequestContext propagateRequestContext;
 
    @Bean
-   public ThreadPoolTaskExecutor executor() {
+   public ThreadPoolTaskExecutor executor(@Value("${barman.count}") int barmanCount) {
       ThreadPoolTaskExecutor executor = new ThreadPoolTaskExecutor();
-      executor.setCorePoolSize(1);
-      executor.setMaxPoolSize(1);
+      executor.setCorePoolSize(barmanCount);
+      executor.setMaxPoolSize(barmanCount);
       executor.setQueueCapacity(500);
       executor.setThreadNamePrefix("barman-");
       executor.initialize();

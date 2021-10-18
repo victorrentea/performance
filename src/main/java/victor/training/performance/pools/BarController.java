@@ -15,6 +15,6 @@ public class BarController {
 
    @GetMapping
    public String getDrinks() throws Exception {
-      return "" + service.orderDrinks();
+      return service.orderDrinks() + "";
    }
 }
