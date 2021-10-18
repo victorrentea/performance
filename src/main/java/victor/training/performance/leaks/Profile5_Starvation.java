@@ -7,7 +7,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -30,8 +29,6 @@ class SheepController {
         log.debug("create " + name);
         return service.create(name);
     }
-    // TODO Starve Connections
-    // TODO Starve Threads
 
     @GetMapping("search")
     public List<Sheep> searchSheep(@RequestParam(defaultValue = "Bisisica") String name) {
@@ -43,16 +40,17 @@ class SheepController {
 @Slf4j
 @Service
 @RequiredArgsConstructor
-@Transactional
 class SheepService {
     private final SheepRepo repo;
     private final ShepardService shepard;
 
+//@Transactional
     public Long create(String name) {
         String sn = shepard.registerSheep(name);
         Sheep sheep = repo.save(new Sheep(name, sn));
         return sheep.getId();
     }
+
     public List<Sheep> search(String name) {
         return repo.getByNameLike(name);
     }
@@ -87,6 +85,7 @@ interface SheepRepo extends JpaRepository<Sheep, Long> {
 
 
 @Entity
+//@SequenceGenerator("my_seq", al)
 @Data // just a demo
 class Sheep {
     @GeneratedValue
