@@ -5,6 +5,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.concurrent.CompletableFuture;
+
 @Slf4j
 @RestController
 public class BarController {
@@ -14,7 +16,13 @@ public class BarController {
    private MyRequestContext requestContext;
 
    @GetMapping
-   public String getDrinks() throws Exception {
-      return service.orderDrinks() + "";
+   public CompletableFuture<DillyDilly> getDrinks() throws Exception {
+      long t0 = System.currentTimeMillis();
+      try {
+         return service.orderDrinks();
+      } finally {
+         long t1 = System.currentTimeMillis();
+         System.out.println("Delta : " + (t1 - t0));
+      }
    }
 }

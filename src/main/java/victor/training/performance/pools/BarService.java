@@ -12,10 +12,7 @@ import victor.training.performance.pools.drinks.Vodka;
 
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
-import java.util.concurrent.Future;
-import java.util.function.Supplier;
 
-import static java.util.Arrays.asList;
 import static victor.training.performance.PerformanceUtil.sleepq;
 
 @Component
@@ -27,26 +24,20 @@ public class BarService {
    @Autowired
    private ThreadPoolTaskExecutor pool;
 
-   public String orderDrinks() throws ExecutionException, InterruptedException {
+   public CompletableFuture<DillyDilly> orderDrinks() throws ExecutionException, InterruptedException {
       log.debug("Submitting my order");
-      long t0 = System.currentTimeMillis();
 
-
-      Future<Beer> futureBeer = pool.submit(() -> barman.pourBeerApi());
-      Future<Vodka> futureVodka = pool.submit(() -> barman.pourVodkaOtherApi());
+//      Future<Beer> futureBeer = pool.submit(() -> barman.pourBeerApi());
+//      Future<Vodka> futureVodka = pool.submit(() -> barman.pourVodkaOtherApi());
 //
+      CompletableFuture<Beer> futureBeer = CompletableFuture.supplyAsync(() -> barman.pourBeerApi());
+      CompletableFuture<Vodka> futureVodka = CompletableFuture.supplyAsync(() -> barman.pourVodkaOtherApi());
 
-//      CompletableFuture<Beer> futureBeer = CompletableFuture.supplyAsync(() -> barman.pourBeerApi());
+      CompletableFuture<DillyDilly> futureDilly = futureBeer.thenCombine(futureVodka, (b, v) -> new DillyDilly(b, v));
 
-      Beer beer = futureBeer.get();
-      Vodka vodka = futureVodka.get();
-
-
-      DillyDilly dilly = new DillyDilly(beer, vodka);
-
-      long t1 = System.currentTimeMillis();
-      log.debug("Got my order in {} ms : {}", t1-t0, asList(beer, vodka));
-      return dilly.toString();
+      // see Venkat for more :
+      /// https://www.youtube.com/watch?v=0hQvWIdwnw4
+      return futureDilly;
    }
 }
 
