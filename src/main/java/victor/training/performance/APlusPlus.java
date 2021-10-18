@@ -1,16 +1,20 @@
 package victor.training.performance;
 
+import java.util.concurrent.atomic.AtomicInteger;
+
 // race bug
 public class APlusPlus {
-    private static Integer population = 0;
-    private static final Object LOCK = new Object();
+//    private static Integer population = 0;
+//    private static final Object LOCK = new Object();
+    private static AtomicInteger population = new AtomicInteger(0);
 
     public static class ThreadA extends Thread {
         public void run() {
             for (int i = 0; i < 10_000; i++) {
-                synchronized (LOCK) { // resource
-                    population++;
-                }
+//                synchronized (LOCK) { // resource
+//                    population++;
+//                }
+                population.incrementAndGet();
             }
         }
     }
@@ -18,9 +22,10 @@ public class APlusPlus {
     public static class ThreadB extends Thread {
         public void run() {
             for (int i = 0; i < 10_000; i++) {
-                synchronized (LOCK) {
-                    population++;
-                }
+//                synchronized (LOCK) {
+//                    population++;
+//                }
+                population.incrementAndGet();
             }
         }
     }
