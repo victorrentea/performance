@@ -4,7 +4,7 @@ package victor.training.performance.pools;
 import lombok.Value;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 import victor.training.performance.pools.drinks.Beer;
@@ -21,8 +21,6 @@ public class BarService {
    @Autowired
    private Barman barman;
 
-   @Autowired
-   private ThreadPoolTaskExecutor pool;
 
    public CompletableFuture<DillyDilly> orderDrinks() throws ExecutionException, InterruptedException {
       log.debug("Submitting my order");
@@ -30,8 +28,11 @@ public class BarService {
 //      Future<Beer> futureBeer = pool.submit(() -> barman.pourBeerApi());
 //      Future<Vodka> futureVodka = pool.submit(() -> barman.pourVodkaOtherApi());
 //
-      CompletableFuture<Beer> futureBeer = CompletableFuture.supplyAsync(() -> barman.pourBeerApi());
-      CompletableFuture<Vodka> futureVodka = CompletableFuture.supplyAsync(() -> barman.pourVodkaOtherApi());
+
+      System.out.println(barman.getClass() + " is a proxy");
+
+      CompletableFuture<Beer> futureBeer = barman.pourBeerApi();
+      CompletableFuture<Vodka> futureVodka = barman.pourVodkaOtherApi();
 
       CompletableFuture<DillyDilly> futureDilly = futureBeer.thenCombine(futureVodka, (b, v) -> new DillyDilly(b, v));
 
@@ -39,6 +40,11 @@ public class BarService {
       /// https://www.youtube.com/watch?v=0hQvWIdwnw4
       return futureDilly;
    }
+   // TODO
+   exceptions
+   how many threads ?
+   how executors work under the hood, queue
+
 }
 
 @Value
@@ -51,15 +57,17 @@ class DillyDilly {
 @Slf4j
 class Barman {
 
-   public Beer pourBeerApi() {
+   @Async("beerBarman")
+   public CompletableFuture<Beer> pourBeerApi() {
       log.debug("Pouring Beer to ...");
       sleepq(1000); // calling a REST API
-      return new Beer();
+      return CompletableFuture.completedFuture(new Beer());
    }
 
-   public Vodka pourVodkaOtherApi() {
+   @Async("vodkaBarman")
+   public CompletableFuture<Vodka> pourVodkaOtherApi() {
       log.debug("Pouring Vodka...");
       sleepq(1000); // calling a LONG SELECT
-      return new Vodka();
+      return CompletableFuture.completedFuture(new Vodka());
    }
 }

@@ -2,7 +2,6 @@ package victor.training.performance.pools;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.beans.factory.config.CustomScopeConfigurer;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -40,12 +39,24 @@ public class BarmanApp {
    private PropagateRequestContext propagateRequestContext;
 
    @Bean
-   public ThreadPoolTaskExecutor executor(@Value("${barman.count}") int barmanCount) {
+   public ThreadPoolTaskExecutor vodkaBarman() {
       ThreadPoolTaskExecutor executor = new ThreadPoolTaskExecutor();
-      executor.setCorePoolSize(barmanCount);
-      executor.setMaxPoolSize(barmanCount);
+      executor.setCorePoolSize(4);
+      executor.setMaxPoolSize(4);
       executor.setQueueCapacity(500);
-      executor.setThreadNamePrefix("barman-");
+      executor.setThreadNamePrefix("vodka-");
+      executor.initialize();
+      executor.setTaskDecorator(propagateRequestContext);
+      executor.setWaitForTasksToCompleteOnShutdown(true);
+      return executor;
+   }
+   @Bean
+   public ThreadPoolTaskExecutor beerBarman() {
+      ThreadPoolTaskExecutor executor = new ThreadPoolTaskExecutor();
+      executor.setCorePoolSize(2);
+      executor.setMaxPoolSize(2);
+      executor.setQueueCapacity(500);
+      executor.setThreadNamePrefix("beer-");
       executor.initialize();
       executor.setTaskDecorator(propagateRequestContext);
       executor.setWaitForTasksToCompleteOnShutdown(true);
