@@ -41,9 +41,9 @@ public class BarService {
       return futureDilly;
    }
    // TODO
-   exceptions
-   how many threads ?
-   how executors work under the hood, queue
+//   exceptions
+//   how many threads ?
+//   how executors work under the hood, queue
 
 }
 

@@ -12,8 +12,6 @@ import java.util.concurrent.CompletableFuture;
 public class BarController {
    @Autowired
    private BarService service;
-   @Autowired
-   private MyRequestContext requestContext;
 
    @GetMapping
    public CompletableFuture<DillyDilly> getDrinks() throws Exception {

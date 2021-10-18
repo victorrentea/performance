@@ -13,6 +13,8 @@ import org.springframework.context.support.SimpleThreadScope;
 import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 
+import java.util.concurrent.ThreadPoolExecutor.CallerRunsPolicy;
+
 @Slf4j
 @EnableAsync(proxyTargetClass = true)
 @SpringBootApplication(exclude = {
@@ -41,9 +43,9 @@ public class BarmanApp {
    @Bean
    public ThreadPoolTaskExecutor vodkaBarman() {
       ThreadPoolTaskExecutor executor = new ThreadPoolTaskExecutor();
-      executor.setCorePoolSize(4);
-      executor.setMaxPoolSize(4);
-      executor.setQueueCapacity(500);
+      executor.setCorePoolSize(1); // min
+      executor.setMaxPoolSize(1);
+      executor.setQueueCapacity(2);
       executor.setThreadNamePrefix("vodka-");
       executor.initialize();
       executor.setTaskDecorator(propagateRequestContext);
@@ -57,6 +59,7 @@ public class BarmanApp {
       executor.setMaxPoolSize(2);
       executor.setQueueCapacity(500);
       executor.setThreadNamePrefix("beer-");
+      executor.setRejectedExecutionHandler(new CallerRunsPolicy());
       executor.initialize();
       executor.setTaskDecorator(propagateRequestContext);
       executor.setWaitForTasksToCompleteOnShutdown(true);
