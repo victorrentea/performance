@@ -5,6 +5,7 @@ import victor.training.performance.PerformanceUtil;
 import java.time.LocalDate;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
 import java.util.stream.IntStream;
 
@@ -30,7 +31,10 @@ public class Hashing {
    public static void intersectCollections() {
       System.out.println("\nIteration");
       Collection<?> targetIds = generate(20_000);
-      Collection<?> allIds = generate(20_000);
+      Collection<?> allIds = new HashSet<>(generate(20_000));
+
+//      new HashSet<SomeStruct>(someStruct -> )
+
 
       match(targetIds, allIds);
    }
@@ -44,12 +48,12 @@ public class Hashing {
       return result;
    }
 
-   private static void match(Collection<?> targetIds, Collection<?> allIds) {
+   private static void match(Collection<?> collectionA, Collection<?> collectionB) {
       System.out.println("Matching...");
       long t0 = System.currentTimeMillis();
       int n = 0;
-      for (Object a : targetIds) {
-         if (allIds.contains(a)) {
+      for (Object a : collectionA) {
+         if (collectionB.contains(a)) {
             n++;
          }
       }
