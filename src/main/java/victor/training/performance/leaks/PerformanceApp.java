@@ -36,6 +36,16 @@ public class PerformanceApp {
         executor.setWaitForTasksToCompleteOnShutdown(true);
         return executor;
     }
+    @Bean
+    public ThreadPoolTaskExecutor fatPig() {
+        ThreadPoolTaskExecutor executor = new ThreadPoolTaskExecutor();
+        executor.setCorePoolSize(2);
+        executor.setMaxPoolSize(2);
+        executor.setQueueCapacity(40);
+        executor.setThreadNamePrefix("fat-");
+        executor.initialize();
+        return executor;
+    }
 
     @EventListener
     public void onStart(ApplicationReadyEvent event) {

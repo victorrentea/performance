@@ -65,5 +65,6 @@ public class BarmanApp {
       executor.setWaitForTasksToCompleteOnShutdown(true);
       return executor;
    }
+
 }
 
