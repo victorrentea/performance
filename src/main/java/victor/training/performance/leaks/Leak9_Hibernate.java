@@ -21,6 +21,7 @@ import javax.sql.DataSource;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.Writer;
+import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.IntStream;
@@ -55,11 +56,13 @@ public class Leak9_Hibernate {
 
 
    @GetMapping("export")
-   @Transactional
+   @Transactional(readOnly = true) // removing this line will crash Hibernate when trying to open the 'streaming query' below,
+   // as the connection is not retained on thread -> impossible to iterate the resultset.
    public void export() throws IOException {
       log.debug("Exporting....");
       try (Writer writer = new FileWriter("big-entity.txt")) {
          repo.streamAll()
+             .peek(entity -> em.detach(entity))
              .map(BigEntity::getDescription)
              .forEach(Unchecked.consumer(writer::write));
       }
@@ -80,13 +83,18 @@ class FastInserter {
       AtomicInteger percent = new AtomicInteger(0);
       JdbcTemplate jdbc = new JdbcTemplate(dataSource);
 
+
+      List<Integer> numbers = Arrays.asList(1, 2, 3, 4, 5, 6, 7, 8, 9, 10);
+
       IntStream.range(0, 10).parallel() // bad practice in real projects = DB/REST in ForkJoinPool.commonPool
           .forEach(x -> {
-             String s = RandomStringUtils.random(500_000);
+             String s = RandomStringUtils.randomAlphabetic(1);
+
              List<Object[]> params = IntStream.range(0, mb / 10)
                  .mapToObj(n -> new Object[]{s})
                  .collect(toList());
-             jdbc.batchUpdate("INSERT INTO BIG_ENTITY(ID, DESCRIPTION) VALUES ( HIBERNATE_SEQUENCE.nextval, ?)", params);
+             jdbc.batchUpdate("INSERT INTO BIG_ENTITY(ID, DESCRIPTION) " +
+                        "VALUES ( HIBERNATE_SEQUENCE.nextval, repeat(? ,500000))",params); // random letter repeated 500.000 times
              log.debug("Persist {}0%", percent.incrementAndGet());
           });
       log.debug("DONE inserting {} MB in {} ms", mb, System.currentTimeMillis() - t0);

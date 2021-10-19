@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import javax.persistence.*;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 @Slf4j
@@ -34,25 +35,32 @@ public class Profile2_NPlusOne implements CommandLineRunner {
    }
 
    @GetMapping
-   public Page<Parent> query() {
-      return repo.findByNameLike("%ar%", PageRequest.of(0, 20));
+   public List<Parent> query() {
+//      return repo.findByNameLikeAStupid("%ar%").subList(0,20);
+//      return repo.findByNameLike("%ar%", PageRequest.of(0, 20));
 
-//      Page<Long> idPage = repo.findByNameLike("%ar%", PageRequest.of(0, 10));
-//      List<Long> parentIds = idPage.getContent();
-//      Map<Long, Parent> parents = repo.findParentsWithChildren(parentIds).stream().collect(toMap(Parent::getId, identity()));
-//      return idPage.map(parents::get);
+      Page<Long> idPage = repo.findByNameLike("%ar%", PageRequest.of(0, 10));
+      List<Long> parentIds = idPage.getContent();
+
+      List<Parent> parents = repo.findParentsWithChildren(idPage.getContent());
+
+      return parents;
    }
 }
 
 interface ParentRepo extends JpaRepository<Parent, Long> {
+   @Query("SELECT p.id FROM Parent p WHERE p.name LIKE ?1 ")
+   Page<Long> findByNameLike(String namePart, Pageable page);
+
    @Query("SELECT p FROM Parent p WHERE p.name LIKE ?1")
-   Page<Parent> findByNameLike(String namePart, Pageable page);
+   List<Parent> findByNameLikeAStupid(String namePart);
 
 //   @Query("SELECT p.id FROM Parent p WHERE p.name LIKE ?1")
 //   Page<Long> findByNameLike(String namePart, Pageable page);
 
-//   @Query("SELECT p FROM Parent p LEFT JOIN FETCH p.children WHERE p.id IN ?1")
-//   Set<Parent> findParentsWithChildren(List<Long> parentIds);
+   @Query("SELECT distinct p FROM Parent p LEFT JOIN FETCH p.children" +
+          " WHERE p.id IN ?1")
+   List<Parent> findParentsWithChildren(List<Long> parentIds);
 }
 
 @Entity
