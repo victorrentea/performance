@@ -11,7 +11,7 @@ import java.io.IOException;
 
 public class XmlParserApp {
    public static void main(String[] args) throws JAXBException, IOException {
-      File file = new File("jaxb-parsed.xml");
+      File file = new File("target/jaxb-parsed.xml");
       XmlGenerator.generate(file, 100);
 
       PerformanceUtil.waitForEnter();
