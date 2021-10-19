@@ -2,8 +2,8 @@ package victor.training.performance.pools.tasks;
 
 import java.util.concurrent.atomic.AtomicInteger;
 
-import static victor.training.performance.PerformanceUtil.log;
-import static victor.training.performance.PerformanceUtil.sleepq;
+import static victor.training.performance.util.PerformanceUtil.log;
+import static victor.training.performance.util.PerformanceUtil.sleepq;
 
 public class FragileEndpointTask implements Runnable {
     private final int maxParallel;

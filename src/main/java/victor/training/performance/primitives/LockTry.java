@@ -3,9 +3,9 @@ package victor.training.performance.primitives;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
-import static victor.training.performance.PerformanceUtil.log;
-import static victor.training.performance.PerformanceUtil.sleepq;
-import static victor.training.performance.PerformanceUtil.sleepSomeTime;
+import static victor.training.performance.util.PerformanceUtil.log;
+import static victor.training.performance.util.PerformanceUtil.sleepq;
+import static victor.training.performance.util.PerformanceUtil.sleepSomeTime;
 
 public class LockTry {
 	static class Friend extends Thread {

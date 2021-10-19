@@ -11,7 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static victor.training.performance.PerformanceUtil.sleepq;
+import static victor.training.performance.util.PerformanceUtil.sleepq;
 
 @SpringBootTest(properties = "spring.batch.job.enabled=false")
 public class BatchAppTest extends AbstractTestcontainersTestBase{

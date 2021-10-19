@@ -1,6 +1,6 @@
 package victor.training.performance.jfr.jaxb;
 
-import victor.training.performance.PerformanceUtil;
+import victor.training.performance.util.PerformanceUtil;
 
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;

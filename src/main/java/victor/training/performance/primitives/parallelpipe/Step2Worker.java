@@ -1,14 +1,14 @@
 package victor.training.performance.primitives.parallelpipe;
 
-import static victor.training.performance.PerformanceUtil.log;
-import static victor.training.performance.PerformanceUtil.sleepSomeTime;
+import static victor.training.performance.util.PerformanceUtil.log;
+import static victor.training.performance.util.PerformanceUtil.sleepSomeTime;
 
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.RejectedExecutionHandler;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 
-import victor.training.performance.PerformanceUtil;
+import victor.training.performance.util.PerformanceUtil;
 
 
 public class Step2Worker implements Runnable {

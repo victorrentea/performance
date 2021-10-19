@@ -1,8 +1,7 @@
 package victor.training.performance.interview;
 
-import victor.training.performance.PerformanceUtil;
+import victor.training.performance.util.PerformanceUtil;
 
-import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.LongStream;

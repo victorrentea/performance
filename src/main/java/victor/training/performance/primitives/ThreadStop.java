@@ -1,7 +1,7 @@
 package victor.training.performance.primitives;
 
-import static victor.training.performance.PerformanceUtil.log;
-import static victor.training.performance.PerformanceUtil.sleepSomeTime;
+import static victor.training.performance.util.PerformanceUtil.log;
+import static victor.training.performance.util.PerformanceUtil.sleepSomeTime;
 
 public class ThreadStop {
 

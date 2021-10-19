@@ -4,8 +4,8 @@ import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.atomic.AtomicInteger;
 
-import static victor.training.performance.PerformanceUtil.log;
-import static victor.training.performance.PerformanceUtil.sleepSomeTime;
+import static victor.training.performance.util.PerformanceUtil.log;
+import static victor.training.performance.util.PerformanceUtil.sleepSomeTime;
 
 public class ThreadPools {
 
@@ -14,9 +14,12 @@ public class ThreadPools {
       ExecutorService executor = null; //Executors. ?
 
       // TODO Executor that grows the thread pool as necessary, and kills inactive ones after 1 min
-      // TODO ExecutorService executor = Executors. ?
+      // ExecutorService executor = Executors. ?
 
-      // TODO Executor that have at least 3 thread but can grow up to 10 threads. Inactive threads die in 1 second.
+      // TODO Executor that have at least 3 thread but can grow up to 10 threads,
+      // with a queue of max 5 elements. Inactive threads die in 1 second.
+      // ExecutorService executor = new ThreadPoolExecutor(...)
+
       // TODO Vary the fixed-sized queue to see it grow the pool and then Rejecting tasks
 
       for (int i = 0; i < 40; i++) {

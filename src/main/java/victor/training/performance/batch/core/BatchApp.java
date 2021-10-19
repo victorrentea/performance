@@ -23,7 +23,7 @@ import victor.training.performance.batch.core.domain.Person;
 import javax.persistence.EntityManagerFactory;
 import java.io.IOException;
 
-import static victor.training.performance.PerformanceUtil.measureCall;
+import static victor.training.performance.util.PerformanceUtil.measureCall;
 
 @Slf4j
 @SpringBootApplication

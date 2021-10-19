@@ -1,6 +1,6 @@
 package victor.training.performance.swing;
 
-import victor.training.performance.PerformanceUtil;
+import victor.training.performance.util.PerformanceUtil;
 
 import java.awt.*;
 import java.awt.event.ActionEvent;

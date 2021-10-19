@@ -1,74 +1,61 @@
 package victor.training.performance;
 
-import java.util.concurrent.locks.Lock;
-import java.util.concurrent.locks.ReentrantLock;
+import lombok.Value;
 
-import static victor.training.performance.PerformanceUtil.*;
+import static victor.training.performance.util.PerformanceUtil.log;
+import static victor.training.performance.util.PerformanceUtil.sleepq;
 
 public class DeadLockPhilosophers {
-	static class Fork {
-		public final int id;
-		private final Lock lock = new ReentrantLock();
-		public Fork(int id) {
-			this.id = id;
-		}
-		public void take() {
-			lock.lock();
-		}
-		public void putDown() {
-			lock.unlock();
-		}
-	}
-	
-	static class Philosopher extends Thread {
-		private final Fork leftFork;
-		private final Fork rightFork;
-		
-		public Philosopher(String name, Fork leftFork, Fork rightFork) {
-			super(name);
-			this.leftFork = leftFork;
-			this.rightFork = rightFork;
-		}
+   @Value
+   static class Fork {
+      int id;
+   }
 
-		public void run() {
-			Fork firstFork = leftFork;
-			Fork secondFork = rightFork;
+   static class Philosopher extends Thread {
+      private final Fork leftFork;
+      private final Fork rightFork;
 
-			for (int i=0;i<50;i++) {
-				sleepSomeTime();
-				log("I'm hungry!");
-				
-				log("Waiting for first fork (" + firstFork.id + ")");
-				firstFork.take();
-				log("Took it");
-				sleepSomeTime();
-				log("Taking second fork (" + secondFork.id + ")");
-				secondFork.take();
-				
-				eat();
-				
-				firstFork.putDown();
-				sleepSomeTime();
-				secondFork.putDown();
-				log("Put down forks. Thinking...");
-			}
-		}
+      public Philosopher(String name, Fork leftFork, Fork rightFork) {
+         super(name);
+         this.leftFork = leftFork;
+         this.rightFork = rightFork;
+      }
 
-		private void eat() {
-			log("Took both forks. Eating...");
-			sleepSomeTime();
-			log("I had enough. I'm putting down the forks");
-		}
-	}
-	
-	public static void main(String[] args) {
-		log("Start");
-		Fork[] forks = new Fork[] {new Fork(1), new Fork(2), new Fork(3), new Fork(4), new Fork(5)};
-		new Philosopher("Plato", forks[0], forks[1]).start();
-		new Philosopher("Konfuzius", forks[1], forks[2]).start();
-		new Philosopher("Socrates", forks[2], forks[3]).start();
-		new Philosopher("Voltaire", forks[3], forks[4]).start();
-		sleepq(1000);
-		new Philosopher("Descartes", forks[4], forks[0]).start();
-	}
+      public void run() {
+         Fork firstFork = leftFork;
+         Fork secondFork = rightFork;
+
+         for (int i = 0; i < 5000; i++) {
+            log("I want to eat!");
+
+            log("Waiting for first fork (id=" + firstFork.id + ")");
+            synchronized (firstFork) {
+               log("Took the first");
+               log("Taking second fork (id=" + secondFork.id + ")");
+               synchronized (secondFork) {
+                  log("Took the second");
+                  log("Took both forks. Eating...");
+                  eat();
+                  log("I had enough. I'm putting down the forks");
+               }
+            }
+            log("Put down forks. Thinking...");
+         }
+      }
+
+      private void eat() {
+         // stuff
+      }
+   }
+
+   public static void main(String[] args) {
+      log("Start");
+      Fork[] forks = {new Fork(1), new Fork(2), new Fork(3), new Fork(4), new Fork(5)};
+      new Philosopher("Plato", forks[0], forks[1]).start();
+      new Philosopher("Confucius", forks[1], forks[2]).start();
+      new Philosopher("Socrates", forks[2], forks[3]).start();
+      new Philosopher("Voltaire", forks[3], forks[4]).start();
+      sleepq(1000);
+      new Philosopher("Descartes", forks[4], forks[0]).start();
+   }
 }

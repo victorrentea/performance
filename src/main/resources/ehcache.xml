@@ -9,14 +9,14 @@
 
     <cache alias="stuff" >
         <key-type>java.time.LocalDateTime</key-type>
-        <value-type>victor.training.performance.leaks.BigObject20MB</value-type>
+        <value-type>victor.training.performance.util.BigObject20MB</value-type>
         <expiry>
             <ttl unit="seconds">30</ttl>
         </expiry>
 
         <listeners>
             <listener>
-                <class>victor.training.performance.leaks.EhCacheEventLogger</class>
+                <class>victor.training.performance.util.EhCacheEventLogger</class>
                 <event-firing-mode>ASYNCHRONOUS</event-firing-mode>
                 <event-ordering-mode>UNORDERED</event-ordering-mode>
                 <events-to-fire-on>CREATED</events-to-fire-on>

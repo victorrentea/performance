@@ -1,7 +1,7 @@
 package victor.training.performance.interview;
 
 import org.apache.commons.io.FileUtils;
-import victor.training.performance.PerformanceUtil;
+import victor.training.performance.util.PerformanceUtil;
 
 import java.io.File;
 import java.io.IOException;

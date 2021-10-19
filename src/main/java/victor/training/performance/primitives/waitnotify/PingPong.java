@@ -1,7 +1,7 @@
 package victor.training.performance.primitives.waitnotify;
 
-import static victor.training.performance.PerformanceUtil.log;
-import static victor.training.performance.PerformanceUtil.sleepq;
+import static victor.training.performance.util.PerformanceUtil.log;
+import static victor.training.performance.util.PerformanceUtil.sleepq;
 
 public class PingPong {
     public static final int PING = 1;

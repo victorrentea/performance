@@ -1,6 +1,6 @@
 package victor.training.performance.pools.tasks;
 
-import victor.training.performance.PerformanceUtil;
+import victor.training.performance.util.PerformanceUtil;
 
 public class IOTask implements Runnable {
     private final long millis;

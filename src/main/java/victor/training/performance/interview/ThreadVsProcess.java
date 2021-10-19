@@ -1,7 +1,7 @@
 package victor.training.performance.interview;
 
 //import static java.util.Arrays.asList;
-import static victor.training.performance.PerformanceUtil.log;
+import static victor.training.performance.util.PerformanceUtil.log;
 
 public class ThreadVsProcess {
 
