@@ -24,21 +24,21 @@ public class CachingController {
 
     // ---- editable data ----
     @GetMapping("users")
-    public List<UserDto> count() {
+    public List<UserDto> getAllUsers() {
         return service.getAllUsers().stream().map(UserDto::new).collect(toList());
     }
     @GetMapping("users/create")
-    public String create() {
+    public String createUser() {
         return service.createUser();
     }
 
     @GetMapping("users/{id}") // (mis)using GET for testing from browser
-    public UserDto get(@PathVariable long id) {
+    public UserDto getUser(@PathVariable long id) {
         return service.getUser(id);
     }
 
     @GetMapping("users/{id}/update") // (mis)using GET for testing from browser
-    public void update(@PathVariable long id) {
+    public void updateUser(@PathVariable long id) {
         String newName = RandomStringUtils.randomAlphabetic(10);
         UserDto dto = new UserDto();
         dto.id = id;
