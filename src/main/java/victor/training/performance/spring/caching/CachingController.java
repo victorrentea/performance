@@ -27,6 +27,10 @@ public class CachingController {
     public List<UserDto> getAllUsers() {
         return service.getAllUsers().stream().map(UserDto::new).collect(toList());
     }
+    @GetMapping("users/count")
+    public long countUsers() {
+        return service.getAllUsers().size();
+    }
     @GetMapping("users/create")
     public String createUser() {
         return service.createUser();
