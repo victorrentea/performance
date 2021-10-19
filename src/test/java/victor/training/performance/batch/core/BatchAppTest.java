@@ -14,7 +14,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static victor.training.performance.PerformanceUtil.sleepq;
 
 @SpringBootTest(properties = "spring.batch.job.enabled=false")
-public class BatchAppTest extends AbstractTestcontainersTestBase{
+public class BatchAppTest extends AbstractTestcontainersTestBase {
    @Autowired
    Job job;
    @Autowired
@@ -26,6 +26,7 @@ public class BatchAppTest extends AbstractTestcontainersTestBase{
 
    @Autowired
    JobRepository jobRepository;
+
    @Test
    public void test() throws Exception {
       int N = 4_000;
@@ -37,6 +38,7 @@ public class BatchAppTest extends AbstractTestcontainersTestBase{
       System.out.println("JOB FINISHED");
       assertThat(run.getExitStatus()).isEqualTo(ExitStatus.COMPLETED);
       assertThat(personRepo.count()).isEqualTo(N);
-      assertThat(cityRepo.count()).isEqualTo(N/1000);
+      assertThat(cityRepo.count()).isEqualTo(N / 1000);
    }
+
 }
