@@ -5,7 +5,7 @@ import lombok.Value;
 import static victor.training.performance.util.PerformanceUtil.log;
 import static victor.training.performance.util.PerformanceUtil.sleepq;
 
-public class DeadLockPhilosophers {
+public class DeadLocks {
    @Value
    static class Fork {
       int id;
