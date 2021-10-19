@@ -1,6 +1,8 @@
 package victor.training.performance.cache;
 
-public class UserDto {
+import java.io.Serializable;
+
+public class UserDto implements Serializable {
    public Long id;
    public String name;
    public UserRole profile;
