@@ -46,8 +46,12 @@ class SheepService {
     private final SheepRepo repo;
     private final ShepardService shepard;
 
-//@Transactional
     public CompletableFuture<Long> create(String name) {
+//        Connection conn;
+//        conn.abort();
+        // SELECT
+
+
         return shepard.registerSheep(name)
             .thenApply(sn -> new Sheep(name, sn))
             .thenApply(repo::save)
