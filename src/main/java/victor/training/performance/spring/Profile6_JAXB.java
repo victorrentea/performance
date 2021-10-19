@@ -1,18 +1,21 @@
 package victor.training.performance.spring;
 
+import lombok.Data;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-import victor.training.performance.jfr.jaxb.Record;
-import victor.training.performance.jfr.jaxb.RecordList;
 
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Unmarshaller;
+import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlType;
 import java.io.StringReader;
+import java.util.ArrayList;
+import java.util.List;
 
 @Slf4j
 @RestController
@@ -36,4 +39,23 @@ public class Profile6_JAXB {
       }
       return sum;
    }
+
+   @XmlType
+   @Data
+   public static class Record {
+      private String a;
+      private String b;
+      private int value;
+   }
+
+   @Data
+   @XmlRootElement(name = "records")
+   public static class RecordList {
+      List<Record> record = new ArrayList<>();
+   }
+
 }
+
+
+
+
