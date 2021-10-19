@@ -5,7 +5,6 @@ import org.apache.commons.lang3.RandomStringUtils;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RestController;
-import victor.training.performance.cache.UserService;
 
 @RestController
 @RequiredArgsConstructor
@@ -38,6 +37,7 @@ public class UserController {
         UserDto dto = new UserDto();
         dto.id = id;
         dto.name = newName;
+        dto.profile = UserRole.ADMIN;
         service.updateUser(id, dto.name);
     }
 

@@ -4,7 +4,6 @@ import io.micrometer.core.aop.TimedAspect;
 import io.micrometer.core.instrument.MeterRegistry;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.SpringApplication;
-import org.springframework.boot.actuate.autoconfigure.metrics.MeterRegistryCustomizer;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.context.event.ApplicationReadyEvent;
 import org.springframework.cache.annotation.EnableCaching;
@@ -25,13 +24,6 @@ public class PerformanceApp {
         return new TimedAspect(meterRegistry);
     }
 
-    @Bean
-    MeterRegistryCustomizer<MeterRegistry> metricsCommonTags() {
-        return registry -> registry.config()
-            .commonTags(
-                "application", "spring-perf",
-                "region", "ro");
-    }
 
     @Bean
     public ThreadPoolTaskExecutor shepardPool() {
