@@ -82,11 +82,12 @@ class FastInserter {
 
       IntStream.range(0, 10).parallel() // bad practice in real projects = DB/REST in ForkJoinPool.commonPool
           .forEach(x -> {
-             String s = RandomStringUtils.random(500_000);
-             List<Object[]> params = IntStream.range(0, mb / 10)
-                 .mapToObj(n -> new Object[]{s})
+             List<Object[]> params = IntStream.range(0, mb / 5)
+                 .mapToObj(n -> new Object[]{RandomStringUtils.randomAlphabetic(1)})
                  .collect(toList());
-             jdbc.batchUpdate("INSERT INTO BIG_ENTITY(ID, DESCRIPTION) VALUES ( HIBERNATE_SEQUENCE.nextval, ?)", params);
+
+             jdbc.batchUpdate("INSERT INTO BIG_ENTITY(ID, DESCRIPTION) " +
+                        "VALUES ( HIBERNATE_SEQUENCE.nextval, repeat(? ,500000))",params); // random letter repeated 500.000 times
              log.debug("Persist {}0%", percent.incrementAndGet());
           });
       log.debug("DONE inserting {} MB in {} ms", mb, System.currentTimeMillis() - t0);
