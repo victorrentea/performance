@@ -15,7 +15,7 @@ import java.util.function.Function;
 
 @RestController
 @RequestMapping("leak6")
-public class Leak6_Java8 {
+public class Leak6_Async {
 	@Autowired
 	private Worker worker;
 
