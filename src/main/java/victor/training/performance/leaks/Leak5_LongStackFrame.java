@@ -13,8 +13,9 @@ public class Leak5_LongStackFrame {
 	@GetMapping
 	public String longRunningFunction() {
 //		String useful = savingHUgeMemoryAsGCWillEvictBigObj();
-		BigObject80MB big = new BigObject80MB();
-		String useful = big.getInterestingPart();
+		String useful = savingHUgeMemoryAsGCWillEvictBigObj();
+		int[] ids10M = {}; // 6x less memory than a Set<Long>
+//		List<String>
 		PerformanceUtil.sleepq(20000);
 		System.out.println("Long logic using only " + useful + " parts of the big data");
 		// Conclusion?...

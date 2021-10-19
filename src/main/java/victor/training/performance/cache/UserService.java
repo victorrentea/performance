@@ -59,6 +59,7 @@ public class UserService {
         // TODO 6 update profile too -> pass Dto
         User user = userRepo.findById(id).get();
         user.setName(newName);
+
     }
 
 
