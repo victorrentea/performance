@@ -123,10 +123,10 @@
             <groupId>javax.cache</groupId>
             <artifactId>cache-api</artifactId>
         </dependency>
-        <dependency>
+       <!-- <dependency>
             <groupId>org.ehcache</groupId>
             <artifactId>ehcache</artifactId>
-        </dependency>
+        </dependency>-->
         <!-- Test Containers -->
         <dependency>
             <groupId>org.postgresql</groupId>
