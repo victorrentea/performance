@@ -53,6 +53,7 @@ public class Leak4_Session {
 }
 
 
+//@SessionScoped
 @Component
 @Scope(scopeName = "session", proxyMode = ScopedProxyMode.TARGET_CLASS)
 class UserSession implements Serializable {

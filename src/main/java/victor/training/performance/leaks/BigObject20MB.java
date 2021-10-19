@@ -16,3 +16,8 @@ public class BigObject20MB implements Serializable {
 		return someString;
 	}
 }
+
+
+// int *arr
+//int x = *(arr + 2)
+//int x = arr[2]
