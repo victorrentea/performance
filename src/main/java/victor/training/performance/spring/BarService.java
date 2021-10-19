@@ -11,6 +11,7 @@ import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
@@ -72,6 +73,7 @@ class Vodka {
 
 // TODO when called from web, protect the http thread
 @Slf4j
+@RequestMapping("bar/drink")
 @RestController
 class BarController {
    //<editor-fold desc="Web">
