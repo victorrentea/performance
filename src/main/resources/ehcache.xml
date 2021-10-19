@@ -14,7 +14,7 @@
             <ttl unit="seconds">30</ttl>
         </expiry>
 
-        <listeners>
+       <!-- <listeners>
             <listener>
                 <class>victor.training.performance.util.EhCacheEventLogger</class>
                 <event-firing-mode>ASYNCHRONOUS</event-firing-mode>
@@ -22,7 +22,7 @@
                 <events-to-fire-on>CREATED</events-to-fire-on>
                 <events-to-fire-on>EXPIRED</events-to-fire-on>
             </listener>
-        </listeners>
+        </listeners>-->
 
         <resources>
 
