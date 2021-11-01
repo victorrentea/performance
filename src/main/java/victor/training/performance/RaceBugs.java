@@ -3,6 +3,10 @@ package victor.training.performance;
 import victor.training.performance.util.PerformanceUtil;
 
 import java.util.*;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.IntStream;
 
@@ -11,21 +15,22 @@ import static java.util.stream.Collectors.toList;
 public class RaceBugs {
     private static Integer population = 0;
     private static List<String> emails = new ArrayList<>();
-
     public static final int N = 10_000;
-    public static class ThreadA extends Thread {
+
+    // TODO Collect all emails with EmailFetcher.retrieveEmail(i)
+    // TODO Avoid duplicated emails
+    // TODO All email should be checked with EmailFetcher.checkEmail(email)
+    // TODO Reduce the no of calls to checkEmail
+
+    public static class Worker1 implements Runnable {
         public void run() {
             for (int i = 0; i < N; i++) {
                 population++;
-
-                // TODO Collect all emails with EmailFetcher.retrieveEmail(i)
-                // TODO Avoid duplicated emails
-                // TODO All email should be checked with EmailFetcher.checkEmail(email)
             }
         }
     }
 
-    public static class ThreadB extends Thread {
+    public static class Worker2 implements Runnable {
         public void run() {
             for (int i = N; i < N+N; i++) {
                 population++;
@@ -33,25 +38,21 @@ public class RaceBugs {
         }
     }
 
-    // TODO (bonus): ConcurrencyUtil.useCPU(1)
-    // TODO (extra bonus): Analyze with JFR
-
-    public static void main(String[] args) throws InterruptedException {
-        ThreadA threadA = new ThreadA();
-        ThreadB threadB = new ThreadB();
-
+    public static void main(String[] args) throws InterruptedException, ExecutionException {
+        ExecutorService pool = Executors.newFixedThreadPool(2);
 
         System.out.println("Started");
         long t0 = System.currentTimeMillis();
 
-        threadA.start();
-        threadB.start();
-        threadA.join();
+        Future<?> future1 = pool.submit(new Worker1());
+        Future<?> future2 = pool.submit(new Worker2());
 
-        threadB.join(); // waits for the thread to finish
+        // wait for the tasks to complete
+        future1.get();
+        future2.get();
 
         long t1 = System.currentTimeMillis();
-        System.out.printf("Result: %,d\n", population);
+        System.out.printf("Result: %,d\n", population.intValue());
 //        System.out.printf("Emails.size: %,d\n", emails.size());
 //        System.out.printf("  Emails.size expected: %,d total, %,d unique\n", N*2, N);
 //        System.out.printf("Emails checks: %,d\n", EmailFetcher.emailChecksCounter.get());
