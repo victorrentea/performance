@@ -67,10 +67,9 @@ public class RaceBugs {
               rawEmails2.stream())
           .distinct().collect(toList());
 
+      // phase 2 : check up the emails
       List<String> chunk1 = rawEmails.subList(0, rawEmails.size() / 2);
       List<String> chunk2 = rawEmails.subList(rawEmails.size() / 2, rawEmails.size());
-
-      // phase 2 : check up the emails
 
       Future<List<String>> checkedEmailFuture1 = pool.submit(() -> chunk1.stream().filter(EmailFetcher::checkEmail).collect(toList()));
       Future<List<String>> checkedEmailFuture2 = pool.submit(() -> chunk2.stream().filter(EmailFetcher::checkEmail).collect(toList()));
