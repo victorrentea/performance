@@ -43,8 +43,8 @@ public class BarService implements CommandLineRunner {
                 throw new RuntimeException(t);
              }
           });
-//          .exceptionally(t -> null)
-//          .thenApply(b -> (b == null) ? p.pb);
+
+      // akka actors, vert.x, rxjava, reactor<Spring5 WebFlux
 
       CompletableFuture<Vodka> futureVodka = barman.pourVodka()
           .thenApplyAsync(Vodka::withGheata);
