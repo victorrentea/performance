@@ -79,6 +79,11 @@ public class RaceBugs {
 
       List<String> allEmails = Stream.concat(part1.stream(), part2.stream()).collect(toList());
 
+
+
+
+
+
       long t1 = System.currentTimeMillis();
 //        System.out.printf("Result: %,d\n", population.longValue());
       System.out.printf("Emails.size: %,d\n", allEmails.size());
