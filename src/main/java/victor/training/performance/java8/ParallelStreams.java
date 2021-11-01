@@ -1,7 +1,6 @@
 package victor.training.performance.java8;
 
 import lombok.extern.slf4j.Slf4j;
-import victor.training.performance.util.PerformanceUtil;
 
 import java.util.List;
 import java.util.concurrent.ExecutionException;
@@ -21,8 +20,6 @@ public class ParallelStreams {
 
       Stream<Integer> iartama = numbers.parallelStream()
           .filter(n -> {
-             log.debug("Filtering " + n);
-             PerformanceUtil.sleepq(20);
              return n % 2 == 0;
           });
 
