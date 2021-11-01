@@ -6,7 +6,6 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.test.annotation.Rollback;
 import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.context.transaction.TestTransaction;
@@ -14,16 +13,14 @@ import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityManager;
 
-import static org.assertj.core.api.Assertions.assertThat;
-
 @Slf4j
 @SpringBootTest
 @Transactional
 @Rollback(false)
 @Sql("/create-view.sql")
-public class QueryOnView {
+public class QueryOnViewTest {
    @Autowired
-   private ParentSearchRepo searchRepo;
+   private ParentSearchViewRepo searchRepo;
    @Autowired
    private EntityManager em;
 
@@ -45,6 +42,3 @@ public class QueryOnView {
    }
 }
 
-
-interface ParentSearchRepo extends JpaRepository<ParentSearchView, Long> {
-}

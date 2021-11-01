@@ -11,6 +11,7 @@ public class Parent {
     private Long id;
 
     private String name;
+    private int age;
 
     @OneToMany(cascade = CascadeType.ALL)
     @JoinColumn(name = "PARENT_ID")
@@ -34,5 +35,18 @@ public class Parent {
 
     public Set<Child> getChildren() {
         return children;
+    }
+
+    public int getAge() {
+        return age;
+    }
+
+    public Parent setAge(int age) {
+        this.age = age;
+        return this;
+    }
+
+    public String getName() {
+        return name;
     }
 }

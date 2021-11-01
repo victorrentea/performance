@@ -15,17 +15,17 @@ import java.util.stream.Stream;
 @RequiredArgsConstructor
 public class CachingService implements CommandLineRunner {
     private final UserRepo userRepo;
-    private final CountryRepo countryRepo;
+    private final SiteRepo siteRepo;
 
     @Override
     public void run(String... args) throws Exception {
-        log.info("Persisting country static data");
-        Stream.of("Romania", "Serbia", "Belgium").map(Country::new).forEach(countryRepo::save);
+        log.info("Persisting site static data");
+        Stream.of("Romania", "Serbia", "Belgium").map(Site::new).forEach(siteRepo::save);
     }
 
     // TODO cache me
-    public List<Country> getAllCountries() {
-        return countryRepo.findAll();
+    public List<Site> getAllSites() {
+        return siteRepo.findAll();
     }
     // TODO imagine direct DB access (manual or script)
 
