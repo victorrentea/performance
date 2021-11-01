@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.concurrent.*;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.IntStream;
+import java.util.stream.Stream;
 
 import static java.util.stream.Collectors.toList;
 
@@ -35,7 +36,7 @@ public class RaceBugs {
       @Override
       public List<String> call() throws Exception {
          List<String> emailurileMele = new ArrayList<>();
-         for (int  i = N; i < N + N; i++) {
+         for (int i = N; i < N + N; i++) {
             String email = EmailFetcher.retrieveEmail(i);
             if (!emailurileMele.contains(email)) {
                emailurileMele.add(email);
@@ -53,18 +54,23 @@ public class RaceBugs {
       long t0 = System.currentTimeMillis();
 
       ExecutorService pool = Executors.newFixedThreadPool(2);
+
+      // phase 1 : retrieve the the emails
       Future<List<String>> futureA = pool.submit(new ThreadA());
       Future<List<String>> futureB = pool.submit(new ThreadB());
 
-      List<String> listA = futureA.get();
-      List<String> listB = futureB.get();
+      List<String> rawEmails1 = futureA.get();
+      List<String> rawEmails2 = futureB.get();
 
-      List<String> rawEmails = new ArrayList<>(listA); // 10 000
-      listB.stream().filter(o -> !rawEmails.contains(o)).forEach(rawEmails::add);
-
+      List<String> rawEmails = Stream.concat(
+              rawEmails1.stream(),
+              rawEmails2.stream())
+          .distinct().collect(toList());
 
       List<String> chunk1 = rawEmails.subList(0, rawEmails.size() / 2);
       List<String> chunk2 = rawEmails.subList(rawEmails.size() / 2, rawEmails.size());
+
+      // phase 2 : check up the emails
 
       Future<List<String>> checkedEmailFuture1 = pool.submit(() -> chunk1.stream().filter(EmailFetcher::checkEmail).collect(toList()));
       Future<List<String>> checkedEmailFuture2 = pool.submit(() -> chunk2.stream().filter(EmailFetcher::checkEmail).collect(toList()));
@@ -72,12 +78,7 @@ public class RaceBugs {
       List<String> part1 = checkedEmailFuture1.get();
       List<String> part2 = checkedEmailFuture2.get();
 
-      List<String> allEmails = new ArrayList<>(part1);
-      allEmails.addAll(part2);
-
-
-
-
+      List<String> allEmails = Stream.concat(part1.stream(), part2.stream()).collect(toList());
 
       long t1 = System.currentTimeMillis();
 //        System.out.printf("Result: %,d\n", population.longValue());
