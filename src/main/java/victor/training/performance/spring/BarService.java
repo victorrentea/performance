@@ -104,6 +104,11 @@ class Barman {
       return CompletableFuture.completedFuture(new Vodka(false));
    }
 
+//   @Async("longSQLPoolWith2ThreadsOnly")
+//   public CompletableFuture<Vodka> throttleLongSql() {
+//      return repo.longQuery();
+//   }
+
    public void injura(String uratura) {
       if (uratura != null) {
          log.error("Il omoara");
