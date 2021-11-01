@@ -1,7 +1,7 @@
 package victor.training.performance.pools;
 
-import java.util.concurrent.Callable;
-import java.util.concurrent.ExecutorService;
+import java.util.concurrent.*;
+import java.util.concurrent.ThreadPoolExecutor.CallerRunsPolicy;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import static victor.training.performance.util.PerformanceUtil.log;
@@ -11,14 +11,20 @@ public class ThreadPools {
 
    public static void main(String[] args) throws InterruptedException {
       // TODO Executor that keeps a fixed number (3) of threads until it is shut down
-      ExecutorService executor = null; //Executors. ?
+//      ExecutorService executor = Executors.newFixedThreadPool(3);
 
       // TODO Executor that grows the thread pool as necessary, and kills inactive ones after 1 min
-      // ExecutorService executor = Executors. ?
+//       ExecutorService executor = Executors.newCachedThreadPool();
 
       // TODO Executor that have at least 3 thread but can grow up to 10 threads,
       // with a queue of max 5 elements. Inactive threads die in 1 second.
-      // ExecutorService executor = new ThreadPoolExecutor(...)
+       ExecutorService executor = new ThreadPoolExecutor(
+           3, 10,
+           1, TimeUnit.SECONDS,
+           new ArrayBlockingQueue<>(5),
+           new CallerRunsPolicy()
+//           new DiscardOldestPolicy() // arunca baba
+       );
 
       // TODO Vary the fixed-sized queue to see it grow the pool and then Rejecting tasks
 
@@ -26,7 +32,7 @@ public class ThreadPools {
          MyTask task = new MyTask();
          log("Submitted new task #" + task.id);
          executor.submit(task);
-         sleepSomeTime(100, 200); // simulate random request rate
+         sleepSomeTime(10, 20); // simulate random request rate
       }
       // TODO shutdown the executor !
    }

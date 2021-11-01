@@ -5,6 +5,7 @@ import lombok.Data;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -17,8 +18,6 @@ import org.springframework.web.bind.annotation.RestController;
 import victor.training.performance.spring.caching.UserRepo;
 
 import java.util.List;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 
 import static java.util.Arrays.asList;
@@ -61,14 +60,14 @@ public class BarService implements CommandLineRunner {
    }
    UserRepo repo;
 
-
+   @Autowired
+   ThreadPoolTaskExecutor pool;
 
    @SneakyThrows
    public List<Object> orderDrinks() {
       log.debug("Requesting drinks...");
       long t0 = System.currentTimeMillis();
 
-      ExecutorService pool = Executors.newFixedThreadPool(1);
 
       Future<Beer> futureBeer = pool.submit(() -> barman.pourBeer());
       Future<Vodka> futureVodka = pool.submit(() -> barman.pourVodka());
@@ -83,6 +82,9 @@ public class BarService implements CommandLineRunner {
 
       long t1 = System.currentTimeMillis();
       List<Object> drinks = asList(beer, vodka);
+
+      pool.submit(() -> barman.injura("!$&!%@!%$^%^@!*^#"));
+
       log.debug("Got my order in {} ms : {}", t1 - t0, drinks);
       // TODO #1: reduce the waiting time (latency)
       return drinks;
@@ -97,6 +99,7 @@ class Barman {
    public Beer pourBeer() {
       log.debug("Pouring Beer...");
       sleepq(1000); // call de API REST
+//      if (true) throw new IllegalArgumentException("Nu mai e bere!!! Drama!");
       log.debug("AM terminat berea");
       return new Beer();
    }
@@ -105,6 +108,13 @@ class Barman {
       log.debug("Pouring Vodka...");
       sleepq(1000); // SQL CRIMINAL
       return new Vodka();
+   }
+
+   public void injura(String uratura) {
+      if (uratura != null) {
+         log.error("Il omoara");
+         throw new IllegalArgumentException("Iti fac buzunar");
+      }
    }
 }
 
@@ -141,10 +151,10 @@ class BarConfig {
 //   private PropagateThreadScope propagateThreadScope;
 
    @Bean
-   public ThreadPoolTaskExecutor pool() {
+   public ThreadPoolTaskExecutor pool(@Value("${barman.count}") int barmanCount) {
       ThreadPoolTaskExecutor executor = new ThreadPoolTaskExecutor();
-      executor.setCorePoolSize(1);
-      executor.setMaxPoolSize(1);
+      executor.setCorePoolSize(barmanCount);
+      executor.setMaxPoolSize(barmanCount);
       executor.setQueueCapacity(500);
       executor.setThreadNamePrefix("barman-");
       executor.initialize();
@@ -153,4 +163,6 @@ class BarConfig {
       return executor;
    }
    //</editor-fold>
+
+   // task avg duration = 1sec; am 20 threaduri; ==> 500 queue size ==> avg WAITING TIME = 500 / 20 * 1 sec = 25 sec = e tolerabil  pt clienti ?
 }
