@@ -14,6 +14,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import victor.training.performance.spring.caching.UserRepo;
 
 import java.util.List;
 import java.util.concurrent.ExecutorService;
@@ -33,19 +34,50 @@ public class BarService implements CommandLineRunner {
    public void run(String... args) throws Exception { // runs at app startup
       log.debug("Got " + orderDrinks());
    }
+//
+   public void method() {
+//      try {
+//         Thread.sleep(1000);
+//      } catch (InterruptedException e) {
+//         throw new RuntimeException(e);
+//      }
+
+//      synchronized ()
+
+//      FileReader fileReader = new FileReader("A.txt");
+//      int read = fileReader.read();
+//      if (read == 0 && Thread.currentThread().isInterrupted()) {
+//         throw new RuntimeException("Am fost intrerupt");
+//      }
+
+//      log.debug("")
+
+//      RestTemplate restTemplate = new RestTemplate();
+//      restTemplate.getForObject("http://oaie.neagra/call");
+
+      repo.findById(1L);
+      boolean interrupted = Thread.currentThread().isInterrupted();
+
+   }
+   UserRepo repo;
+
+
 
    @SneakyThrows
    public List<Object> orderDrinks() {
       log.debug("Requesting drinks...");
       long t0 = System.currentTimeMillis();
 
-      ExecutorService pool = Executors.newFixedThreadPool(2);
+      ExecutorService pool = Executors.newFixedThreadPool(1);
 
       Future<Beer> futureBeer = pool.submit(() -> barman.pourBeer());
       Future<Vodka> futureVodka = pool.submit(() -> barman.pourVodka());
 
+//      sleepq(500);
+//      futureBeer.cancel(false);
+
       Beer beer = futureBeer.get(); // main sta aici 1 sec
-      Vodka vodka = futureVodka.get(); // main nu mai sta deloc aici,
+      Vodka vodka = futureVodka.get(); // main nu mai sta deloc aici, + 1 ca a stat taskul in coada
       // caci in timp ce stateai dupa bere, barmanul #2 a turnat si vodka :) yeei
 
 
@@ -65,6 +97,7 @@ class Barman {
    public Beer pourBeer() {
       log.debug("Pouring Beer...");
       sleepq(1000); // call de API REST
+      log.debug("AM terminat berea");
       return new Beer();
    }
 
