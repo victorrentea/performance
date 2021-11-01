@@ -36,7 +36,13 @@ public class BarService implements CommandLineRunner {
       log.debug("Requesting drinks to {} ...", barman.getClass());
 
       CompletableFuture<Beer> futureBeer = barman.pourBeer("Heineken")
-          .exceptionally(t -> new Beer("Neumarkt"));
+          .exceptionally(t -> {
+             if (t.getCause() instanceof IllegalStateException) {
+                return new Beer("Neumarkt");
+             } else {
+                throw new RuntimeException(t);
+             }
+          });
 //          .exceptionally(t -> null)
 //          .thenApply(b -> (b == null) ? p.pb);
 
@@ -86,7 +92,7 @@ class Barman {
       log.debug("Pouring Beer...");
       sleepq(1000); // call de API REST
       if ("Heineken".equals(beerType)) {
-         throw new IllegalArgumentException("Nu mai e bere!!! Drama!");
+         throw new IllegalStateException("Nu mai e bere!!! Drama!");
       }
       log.debug("AM terminat berea");
       return CompletableFuture.completedFuture(new Beer(beerType));
