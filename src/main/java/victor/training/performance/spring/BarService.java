@@ -15,78 +15,48 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import victor.training.performance.spring.caching.UserRepo;
 
 import java.util.List;
 import java.util.concurrent.Future;
+import java.util.concurrent.ThreadPoolExecutor.CallerRunsPolicy;
 
 import static java.util.Arrays.asList;
 import static victor.training.performance.util.PerformanceUtil.sleepq;
 
 @Component
 @Slf4j
+@RestController("bar")
 public class BarService implements CommandLineRunner {
    @Autowired
    private Barman barman;
 
    @Override
    public void run(String... args) throws Exception { // runs at app startup
-      log.debug("Got " + orderDrinks());
+//      log.debug("Got " + orderDrinks());
    }
-//
-   public void method() {
-//      try {
-//         Thread.sleep(1000);
-//      } catch (InterruptedException e) {
-//         throw new RuntimeException(e);
-//      }
-
-//      synchronized ()
-
-//      FileReader fileReader = new FileReader("A.txt");
-//      int read = fileReader.read();
-//      if (read == 0 && Thread.currentThread().isInterrupted()) {
-//         throw new RuntimeException("Am fost intrerupt");
-//      }
-
-//      log.debug("")
-
-//      RestTemplate restTemplate = new RestTemplate();
-//      restTemplate.getForObject("http://oaie.neagra/call");
-
-      repo.findById(1L);
-      boolean interrupted = Thread.currentThread().isInterrupted();
-
-   }
-   UserRepo repo;
 
    @Autowired
    ThreadPoolTaskExecutor pool;
 
+   @GetMapping("drink")
    @SneakyThrows
    public List<Object> orderDrinks() {
       log.debug("Requesting drinks...");
       long t0 = System.currentTimeMillis();
 
-
       Future<Beer> futureBeer = pool.submit(() -> barman.pourBeer());
       Future<Vodka> futureVodka = pool.submit(() -> barman.pourVodka());
 
-//      sleepq(500);
-//      futureBeer.cancel(false);
-
-      Beer beer = futureBeer.get(); // main sta aici 1 sec
+      Beer beer = futureBeer.get(); // http thread sta aici 1 sec
       Vodka vodka = futureVodka.get(); // main nu mai sta deloc aici, + 1 ca a stat taskul in coada
-      // caci in timp ce stateai dupa bere, barmanul #2 a turnat si vodka :) yeei
 
 
       long t1 = System.currentTimeMillis();
       List<Object> drinks = asList(beer, vodka);
 
-      pool.submit(() -> barman.injura("!$&!%@!%$^%^@!*^#"));
+//      pool.submit(() -> barman.injura("!$&!%@!%$^%^@!*^#"));
 
       log.debug("Got my order in {} ms : {}", t1 - t0, drinks);
-      // TODO #1: reduce the waiting time (latency)
       return drinks;
    }
 
@@ -95,7 +65,6 @@ public class BarService implements CommandLineRunner {
 @Service
 @Slf4j
 class Barman {
-
    public Beer pourBeer() {
       log.debug("Pouring Beer...");
       sleepq(1000); // call de API REST
@@ -155,14 +124,22 @@ class BarConfig {
       ThreadPoolTaskExecutor executor = new ThreadPoolTaskExecutor();
       executor.setCorePoolSize(barmanCount);
       executor.setMaxPoolSize(barmanCount);
+//      executor.setCorePoolSize(8);
+//      executor.setMaxPoolSize(8); // mai repede <<< in general 95% din cazuri lasa MAX=CORE
+//      executor.setMaxPoolSize(40); // mult mai incet decat daca-i chemai APIul cu max 8 in paralel.
       executor.setQueueCapacity(500);
       executor.setThreadNamePrefix("barman-");
       executor.initialize();
 //      executor.setTaskDecorator(propagateThreadScope);
       executor.setWaitForTasksToCompleteOnShutdown(true);
+      executor.setRejectedExecutionHandler(new CallerRunsPolicy());
       return executor;
    }
    //</editor-fold>
 
-   // task avg duration = 1sec; am 20 threaduri; ==> 500 queue size ==> avg WAITING TIME = 500 / 20 * 1 sec = 25 sec = e tolerabil  pt clienti ?
+
+
+
+   // task avg duration = 1sec; am 20 threaduri; ==> 500 queue size ==> avg WAITING TIME
+   // = 500 / 20 * 1 sec = 25 sec = e tolerabil  pt clienti ?
 }
