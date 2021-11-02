@@ -44,8 +44,11 @@ public class CacheTest {
 
    @Test
    void test2ndLevelCacheAll() {
+      log.debug("Query1");
       int t1 = measureCall(() -> countryRepo.findAll());
+      log.debug("Query2");
       int t1bis = measureCall(() -> countryRepo.findAll());
+      log.debug("END");
 
       System.out.println("Countries: " + countryRepo.findAll());
 
