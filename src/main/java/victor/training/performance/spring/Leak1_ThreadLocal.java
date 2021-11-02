@@ -14,9 +14,12 @@ public class Leak1_ThreadLocal {
    public String test() {
       BigObject20MB bigObject = new BigObject20MB();
       threadLocal.set(bigObject);
-
-      businessMethod1();
-      return "Magic can do harm.";
+      try {
+         businessMethod1();
+         return "Magic can do harm.";
+      } finally {
+         threadLocal.remove(); // PATTERN
+      }
    }
 
    private void businessMethod1() {
