@@ -45,7 +45,7 @@ public class UberEntityTest {
                 .setName("Uber2")
                 .setStatus(Status.SUBMITTED)
                 .setFiscalCountry(romania)
-                .setOriginCountry(romania)
+                .setOriginCountryId(romania.getId())
                 .setInvoicingCountry(romania)
                 .setCreatedBy(testUser)
                 .setNationality(romania)
@@ -78,7 +78,10 @@ public class UberEntityTest {
         criteria.name = "Uber2";
 
         // --- prod code ---
-        String jpql = "SELECT u FROM UberEntity u WHERE 1 = 1 ";
+        String jpql = "SELECT    " +
+                      "new victor.training.performance.jpa.UberBriefDto(u.id, u.name, oc.name)" +
+                      "     FROM UberEntity u" +
+                      " LEFT JOIN Country oc ON oc.id = u.originCountryId WHERE 1 = 1 ";
         // se mai poate cu : CriteriaAPI, Criteria+Metamodel, QueryDSL, Spring Specifications
 
         Map<String, Object> params = new HashMap<>();
@@ -88,7 +91,7 @@ public class UberEntityTest {
             params.put("name", criteria.name);
         }
 
-        TypedQuery<UberEntity> query = em.createQuery(jpql, UberEntity.class);
+        TypedQuery<UberBriefDto> query = em.createQuery(jpql, UberBriefDto.class);
         for (String key : params.keySet()) {
             query.setParameter(key, params.get(key));
         }

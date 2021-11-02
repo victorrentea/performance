@@ -14,8 +14,12 @@ public class UberEntity {
     private Long id;
     private String name;
     private String firstName, lastName, ibanCode, cnp, ssn, passportNumber;
-    @ManyToOne
-    private Country originCountry;
+
+    // doar pt referentiale date statice comune
+//    @ManyToOne
+//    private Country originCountry;
+    private Long originCountryId; // Asta nu inseamna ca dau jos si FK, p-ala il las
+
     @ManyToOne
     private Country nationality;
     @ManyToOne
@@ -45,10 +49,6 @@ public class UberEntity {
         return this;
     }
 
-    public UberEntity setOriginCountry(Country originCountry) {
-        this.originCountry = originCountry;
-        return this;
-    }
 
     public UberEntity setNationality(Country nationality) {
         this.nationality = nationality;
@@ -73,10 +73,6 @@ public class UberEntity {
     public UberEntity setCreatedBy(User createdBy) {
         this.createdBy = createdBy;
         return this;
-    }
-
-    public Country getOriginCountry() {
-        return originCountry;
     }
 }
 
