@@ -25,8 +25,7 @@
         </listeners>-->
 
         <resources>
-
-            <heap unit="entries">100</heap>
+            <heap unit="MB">100</heap>
         </resources>
     </cache>
 

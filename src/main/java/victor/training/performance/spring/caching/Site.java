@@ -3,9 +3,10 @@ package victor.training.performance.spring.caching;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import java.io.Serializable;
 
 @Entity
-public class Site {
+public class Site implements Serializable {
    @Id
    @GeneratedValue
    private Long id;
