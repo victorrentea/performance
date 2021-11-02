@@ -16,9 +16,11 @@ import victor.training.performance.jpa.UberEntity.Status;
 
 import javax.persistence.EntityManager;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import static java.util.stream.Collectors.toList;
+import static org.assertj.core.api.Assertions.assertThat;
 
 @SpringBootTest
 @Transactional
@@ -64,6 +66,8 @@ public class UberEntityTest {
         TestTransaction.end();
         TestTransaction.start();
     }
+
+//    enum RecordStatus{ DRAFT("D"), SUMITTED("S")}  + / hibernate custom type  == > pe CHAR in DB
     @Test
     public void findByIdExcessive() {
         log.info("Loading a 'very OOP' @Entity by id...");
@@ -86,6 +90,14 @@ public class UberEntityTest {
         criteria.name = "::uberName::";
 
         // --- prod code ---
+        List<UberSearchResult> dtos = dynamicSearch(criteria);
+
+        // TODO fetch only the necessary data (List<UserBriefDto>)
+        System.out.println(dtos);
+        assertThat(dtos).map(UberSearchResult::getName).containsExactly("::uberName::");
+    }
+
+    private List<UberSearchResult> dynamicSearch(UberSearchCriteria criteria) {
         String jpql = "SELECT u FROM UberEntity u WHERE 1 = 1 ";
         // se mai poate cu : CriteriaAPI, Criteria+Metamodel, QueryDSL, Spring Specifications
 
@@ -101,10 +113,7 @@ public class UberEntityTest {
             query.setParameter(key, params.get(key));
         }
         var entities = query.getResultList();
-        var dtos = entities.stream().map(UberSearchResult::new).collect(toList());
-
-        // TODO fetch only the necessary data (List<UserBriefDto>)
-        System.out.println(dtos);
+        return entities.stream().map(UberSearchResult::new).collect(toList());
     }
 }
 class UberSearchCriteria {
