@@ -29,7 +29,7 @@ public class Leak7_Cache {
 @Service
 @Slf4j
 class Stuff {
-   @Cacheable("stuff")
+   @Cacheable("missed-cache")
    public BigObject20MB returnCachedDataForDay(LocalDateTime timestamp) {
       log.debug("Fetch data for date: {}", timestamp.format(DateTimeFormatter.ISO_DATE));
       return new BigObject20MB();

@@ -30,8 +30,10 @@ public class PerformanceApp {
     public void onStart(ApplicationReadyEvent event) {
         long t1 = System.currentTimeMillis();
 
-        log.info(">>>>>> All Initializations Finished in {} seconds <<<<<<\n==================================================\n", (t1-t0)/1000);
+        log.info(">>>>>> Spring Boot Started Finished initialization in {} seconds <<<<<<\n==================================================\n", (t1-t0)/1000);
     }
+
+
 
     public static void main(String[] args) {
         SpringApplication.run(PerformanceApp.class, args);
