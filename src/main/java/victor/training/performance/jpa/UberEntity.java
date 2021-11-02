@@ -12,6 +12,8 @@ public class UberEntity {
     private Long id;
     private String name;
     private String firstName, lastName, ibanCode, cnp, ssn, passportNumber;
+
+    // highschool style : OOP UTOPIA >> POOh
     @ManyToOne
     private Country originCountry;
     @ManyToOne
