@@ -7,26 +7,14 @@
 >
 
 
-    <cache alias="stuff" >
+    <cache alias="missed-cache" >
         <key-type>java.time.LocalDateTime</key-type>
         <value-type>victor.training.performance.util.BigObject20MB</value-type>
         <expiry>
-            <ttl unit="seconds">30</ttl>
+            <ttl unit="minutes">30</ttl>
         </expiry>
-
-       <!-- <listeners>
-            <listener>
-                <class>victor.training.performance.util.EhCacheEventLogger</class>
-                <event-firing-mode>ASYNCHRONOUS</event-firing-mode>
-                <event-ordering-mode>UNORDERED</event-ordering-mode>
-                <events-to-fire-on>CREATED</events-to-fire-on>
-                <events-to-fire-on>EXPIRED</events-to-fire-on>
-            </listener>
-        </listeners>-->
-
         <resources>
-
-            <heap unit="entries">100</heap>
+            <heap unit="MB">100</heap>
         </resources>
     </cache>
 

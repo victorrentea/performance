@@ -40,6 +40,5 @@ public class ConcurrentMapCacheMeterBinder extends CacheMeterBinder {
 
     @Override
     protected void bindImplementationSpecificMetrics(MeterRegistry meterRegistry) {
-
     }
 }
