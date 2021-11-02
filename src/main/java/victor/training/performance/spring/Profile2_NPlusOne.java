@@ -11,13 +11,14 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 import javax.persistence.*;
 import java.util.HashSet;
 import java.util.Set;
 
 @Slf4j
-//@RestController // TODO uncomment and study
+@RestController // TODO uncomment and study
 @RequestMapping("profile/nplus1")
 @RequiredArgsConstructor
 public class Profile2_NPlusOne implements CommandLineRunner {

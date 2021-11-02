@@ -16,9 +16,9 @@ import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityManager;
 import java.util.Collection;
+import java.util.List;
 import java.util.Set;
 
-import static java.util.stream.Collectors.joining;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.tuple;
 
@@ -84,22 +84,27 @@ public class NPlusOneTest {
 
 
 	@Test
-	@Sql("/create-view.sql")
+//	@Sql("/create-view.sql")
 	public void searchOnView() {
-		var parentViews = repo.findAll()
-			.stream().map(p -> new ParentSearchView(
-				p.getId(),
-				p.getName(),
-				p.getChildren().stream().map(Child::getName).sorted().collect(joining(","))
-			));
+//		var parentViews = searchRepo.findAll()
+//			.stream().map(p -> new ParentSearchView(
+//				p.getId(),
+//				p.getName(),
+//				p.getChildren().stream().map(Child::getName).sorted().collect(joining(","))
+//			)).collect(Collectors.toList());
+//
 //		var parentViews = searchRepo.findAll();
+
+		var parentViews = searchRepo.findByAgeAtLeast(40);
+
+		System.out.println(parentViews);
 
 		// TODO 1 restrict to first page (of 1 element)
 		// TODO 2 search by parent age >= 40
 		assertThat(parentViews)
 			.extracting("name","childrenNames")
 			.containsExactlyInAnyOrder(
-				tuple("Victor","Emma,Vlad"),
+//				tuple("Victor","Emma,Vlad"),
 				tuple("Peter","Maria,Paul,Stephan"))
 		;
 	}
@@ -118,4 +123,9 @@ interface ParentRepo extends JpaRepository<Parent, Long> {
 
 
 interface ParentSearchViewRepo extends JpaRepository<ParentSearchView, Long> {
+	@Query("SELECT psv " +
+			 "FROM ParentSearchView psv " +
+			 " JOIN Parent p ON p.id = psv.id" +
+			 " WHERE p.age > ?1 ")
+	List<ParentSearchView> findByAgeAtLeast(int age);
 }
