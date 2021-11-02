@@ -1,5 +1,6 @@
 package victor.training.performance.jpa;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -14,9 +15,10 @@ import org.springframework.transaction.annotation.Transactional;
 import victor.training.performance.jpa.UberEntity.Status;
 
 import javax.persistence.EntityManager;
-import javax.persistence.TypedQuery;
 import java.util.HashMap;
 import java.util.Map;
+
+import static java.util.stream.Collectors.toList;
 
 @SpringBootTest
 @Transactional
@@ -30,25 +32,31 @@ public class UberEntityTest {
     @Autowired
     private UberEntityRepo repo;
 
-    private final Country romania = new Country(1L, "Romania");
-    private final User testUser = new User(1L,"test");
-    private final Scope globalScope = new Scope(1L,"Global");
     private Long id;
 
     @BeforeEach
     final void before() {
+        Country romania = new Country(1L, "Romania");
+        Country belgium = new Country(2L, "Belgium");
+        Country france = new Country(3L, "France");
+        Country serbia = new Country(4L, "Serbia");
+        User testUser = new User(1L,"test");
+        Scope globalScope = new Scope(1L,"Global");
         em.persist(romania);
+        em.persist(belgium);
+        em.persist(france);
+        em.persist(serbia);
         em.persist(testUser);
         em.persist(globalScope);
 
         UberEntity uber = new UberEntity()
-                .setName("Uber2")
+                .setName("::uberName::")
                 .setStatus(Status.SUBMITTED)
                 .setFiscalCountry(romania)
-                .setOriginCountryId(romania.getId())
-                .setInvoicingCountry(romania)
+                .setOriginCountry(belgium)
+                .setInvoicingCountry(france)
+                .setNationality(serbia)
                 .setCreatedBy(testUser)
-                .setNationality(romania)
                 .setScope(globalScope);
         em.persist(uber);
         id = uber.getId();
@@ -75,13 +83,10 @@ public class UberEntityTest {
     public void searchQuery() {
         log.info("Searching a 'very OOP' @Entity...");
         UberSearchCriteria criteria = new UberSearchCriteria();
-        criteria.name = "Uber2";
+        criteria.name = "::uberName::";
 
         // --- prod code ---
-        String jpql = "SELECT    " +
-                      "new victor.training.performance.jpa.UberBriefDto(u.id, u.name, oc.name)" +
-                      "     FROM UberEntity u" +
-                      " LEFT JOIN Country oc ON oc.id = u.originCountryId WHERE 1 = 1 ";
+        String jpql = "SELECT u FROM UberEntity u WHERE 1 = 1 ";
         // se mai poate cu : CriteriaAPI, Criteria+Metamodel, QueryDSL, Spring Specifications
 
         Map<String, Object> params = new HashMap<>();
@@ -91,14 +96,15 @@ public class UberEntityTest {
             params.put("name", criteria.name);
         }
 
-        TypedQuery<UberBriefDto> query = em.createQuery(jpql, UberBriefDto.class);
+        var query = em.createQuery(jpql, UberEntity.class);
         for (String key : params.keySet()) {
             query.setParameter(key, params.get(key));
         }
-        var results = query.getResultList();
+        var entities = query.getResultList();
+        var dtos = entities.stream().map(UberSearchResult::new).collect(toList());
 
-        // TODO fetch only the necessary data
-        System.out.println(results);
+        // TODO fetch only the necessary data (List<UserBriefDto>)
+        System.out.println(dtos);
     }
 }
 class UberSearchCriteria {
@@ -107,8 +113,14 @@ class UberSearchCriteria {
     // etc
 }
 @Data
-class UberBriefDto {
+@AllArgsConstructor
+class UberSearchResult {
     private final Long id;
     private final String name;
     private final String originCountry;
+    public UberSearchResult(UberEntity entity) {
+        id = entity.getId();
+        name = entity.getName();
+        originCountry = entity.getOriginCountry().getName();
+    }
 }
