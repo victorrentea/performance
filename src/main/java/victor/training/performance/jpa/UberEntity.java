@@ -1,11 +1,13 @@
 package victor.training.performance.jpa;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
-import javax.persistence.ManyToOne;
+import lombok.Data;
+
+import javax.persistence.*;
+
+import static javax.persistence.EnumType.STRING;
 
 @Entity
+@Data
 public class UberEntity {
     @Id
     @GeneratedValue
@@ -24,6 +26,11 @@ public class UberEntity {
     private Scope scope;
     @ManyToOne
     private User createdBy;
+    @Enumerated(STRING)
+    private Status status;
+    public enum Status {
+        DRAFT, SUBMITTED, DELETED
+    }
 
     public Long getId() {
         return id;
