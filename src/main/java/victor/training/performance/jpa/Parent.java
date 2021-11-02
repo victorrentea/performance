@@ -5,6 +5,13 @@ import java.util.HashSet;
 import java.util.Set;
 
 @Entity
+class Biography {
+    @Id
+    @GeneratedValue
+    private Long id;
+
+}
+@Entity
 public class Parent {
     @Id
     @GeneratedValue
@@ -12,6 +19,8 @@ public class Parent {
 
     private String name;
     private int age;
+    @OneToOne(cascade = CascadeType.PERSIST)
+    private Biography bio;
 
     @OneToMany(cascade = CascadeType.ALL)
     @JoinColumn(name = "PARENT_ID")
@@ -22,6 +31,15 @@ public class Parent {
 
     public Parent(String name) {
         this.name = name;
+    }
+
+    public Biography getBio() {
+        return bio;
+    }
+
+    public Parent setBio(Biography bio) {
+        this.bio = bio;
+        return this;
     }
 
     public Long getId() {

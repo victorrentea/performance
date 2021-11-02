@@ -6,6 +6,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.annotation.DirtiesContext.ClassMode;
 import org.springframework.test.annotation.Rollback;
@@ -39,11 +40,13 @@ public class NPlusOneTest {
 	void persistData() {
 		repo.save(new Parent("Victor")
 				.setAge(36)
+				.setBio(new Biography())
 				.addChild(new Child("Emma"))
 				.addChild(new Child("Vlad"))
 		);
 		repo.save(new Parent("Peter")
 				.setAge(41)
+				.setBio(new Biography())
 				.addChild(new Child("Maria"))
 				.addChild(new Child("Paul"))
 				.addChild(new Child("Stephan"))
@@ -55,7 +58,8 @@ public class NPlusOneTest {
 
 	@Test
 	void nPlusOne() {
-		List<Parent> parents = repo.findAll();
+//		List<Parent> parents = repo.findAll();
+		List<Parent> parents = repo.findAllWithChildren();
 
 		// TODO reduce the number of queries ran inside countChildren
 		// TODO reduce the total number of queries ran to one
@@ -70,7 +74,7 @@ public class NPlusOneTest {
 		log.debug("Start counting children of {} parents: {}", parents.size(), parents);
 		int total = 0;
 		for (Parent parent : parents) {
-			total += parent.getChildren().size();
+			total += parent.getChildren().size(); // lazy load
 		}
 		log.debug("Done counting: {} children", total);
 		return total;
@@ -102,6 +106,12 @@ public class NPlusOneTest {
 }
 
 interface ParentRepo extends JpaRepository<Parent, Long> {
+	//JPA curat:		session.createQuery("SELECT p FROM Parent p LEFT JOIN FETCH p.children")
+	@Query("SELECT p FROM Parent p " +
+			 "LEFT JOIN FETCH p.children " +
+			 "LEFT JOIN FETCH p.bio")
+	List<Parent> findAllWithChildren();
+
 }
 
 
