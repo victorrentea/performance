@@ -15,7 +15,7 @@ import static java.util.stream.Collectors.toList;
 @Slf4j
 @Configuration
 // from https://medium.com/@iliamsharipov_56660/spring-boot-actuator-for-concurrentmapcache-2c7f0d290934
-public class MetereredSimpleCacheConfig extends CachingConfigurerSupport {
+public class MeteredSimpleCacheConfig extends CachingConfigurerSupport {
    @Value("${spring.cache.cache-names}")
    private List<String> cacheNames;
 
