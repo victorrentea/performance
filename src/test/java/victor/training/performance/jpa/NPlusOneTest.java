@@ -16,7 +16,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityManager;
 import java.util.Collection;
-import java.util.List;
+import java.util.Set;
 
 import static java.util.stream.Collectors.joining;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -59,7 +59,7 @@ public class NPlusOneTest {
 	@Test
 	void nPlusOne() {
 //		List<Parent> parents = repo.findAll();
-		List<Parent> parents = repo.findAllWithChildren();
+		Set<Parent> parents = repo.findAllWithChildren();
 
 		// TODO reduce the number of queries ran inside countChildren
 		// TODO reduce the total number of queries ran to one
@@ -109,8 +109,10 @@ interface ParentRepo extends JpaRepository<Parent, Long> {
 	//JPA curat:		session.createQuery("SELECT p FROM Parent p LEFT JOIN FETCH p.children")
 	@Query("SELECT p FROM Parent p " +
 			 "LEFT JOIN FETCH p.children " +
+//			 "LEFT JOIN FETCH p.vecini " +    NICIODATA nu face left join fetch pe mai mult de o colectie de copii!
+			 		// altfel patesti CROSS-JOIN intre copiii nelegati
 			 "LEFT JOIN FETCH p.bio")
-	List<Parent> findAllWithChildren();
+	Set<Parent> findAllWithChildren();
 
 }
 

@@ -26,6 +26,10 @@ public class Parent {
     @JoinColumn(name = "PARENT_ID")
     private Set<Child> children = new HashSet<>();
 
+//    @OneToMany(cascade = CascadeType.ALL)
+//    @JoinColumn(name = "PARENT_ID")
+//    private Set<Vecin> vecini = new HashSet<>();
+
     private Parent() {
     }
 
