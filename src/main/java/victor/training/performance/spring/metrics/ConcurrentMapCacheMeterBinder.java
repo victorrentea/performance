@@ -30,6 +30,23 @@ public class ConcurrentMapCacheMeterBinder extends CacheMeterBinder {
 
     @Override
     protected Long evictionCount() {
+//        new AsyncRestTemplate().getForEntity()
+//            .completable().theAcc
+            // CompletableFuture vs Future:
+        // 1) compozabilitate (thenCombine,zip,thenApply)
+        // 2) callbacks .thenAccept(handler)
+
+
+//        HttpServletRequest re;
+//        re.getReader().readLine();
+
+//        HttpServletRequest req;
+//        AsyncContext asyncContext = req.startAsync();
+//        // de aici incolo daca ieseai din met @GetMapping ,th tomcatului se intoarce langa fratii lui in piscina
+//        CompletableFuture cf;
+//
+//        cf.thenAccept(data -> asyncContext.getResponse().getWriter().println("Vag"  +date));
+
         return cache.getEvictCount();
     }
 
