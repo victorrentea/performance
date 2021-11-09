@@ -49,7 +49,7 @@ public class BatchApp {
           // TODO optimize: tune ID generation
           // TODO optimize: enable JDBC batch mode
           .writer(jpaWriter(null))
-          .listener(new MyChunkListener())
+          .listener(progressTrackingChunkListener())
           .listener(stepListener())
           .build();
          // TODO optimize: run insert in multithread. > SynchronizedItemStreamReader
@@ -59,8 +59,15 @@ public class BatchApp {
 
    @Bean
    @StepScope
-   public MyStepExecutionListener stepListener() {
-      return new MyStepExecutionListener();
+   public ProgressTrackingChunkListener progressTrackingChunkListener() {
+      return new ProgressTrackingChunkListener();
+   }
+
+
+   @Bean
+   @StepScope
+   public CountingTotalItemsStepListener stepListener() {
+      return new CountingTotalItemsStepListener();
    }
 
 
@@ -96,7 +103,6 @@ public class BatchApp {
           .start(basicChunkStep())
           .listener(new MyJobListener())
           .build();
-
    }
 }
 

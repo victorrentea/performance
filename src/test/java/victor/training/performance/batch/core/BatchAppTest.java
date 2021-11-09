@@ -1,14 +1,14 @@
 package victor.training.performance.batch.core;
 
 import org.junit.jupiter.api.Test;
-import org.springframework.batch.core.ExitStatus;
-import org.springframework.batch.core.Job;
-import org.springframework.batch.core.JobExecution;
-import org.springframework.batch.core.JobParameters;
+import org.springframework.batch.core.*;
 import org.springframework.batch.core.launch.JobLauncher;
 import org.springframework.batch.core.repository.JobRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+
+import java.io.File;
+import java.util.Map;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static victor.training.performance.util.PerformanceUtil.sleepq;
@@ -29,8 +29,9 @@ public class BatchAppTest extends AbstractTestcontainersTestBase{
    @Test
    public void test() throws Exception {
       int N = 4_000;
-      XmlFileGenerator.generateFile(N);
-      JobExecution run = launcher.run(job, new JobParameters());
+      File dataFile = XmlFileGenerator.generateFile(N);
+      Map<String, JobParameter> paramMap = Map.of("FILE_PATH", new JobParameter(dataFile.getAbsolutePath()));
+      JobExecution run = launcher.run(job, new JobParameters(paramMap));
       while (run.getExitStatus().isRunning()) {
          sleepq(1);
       }

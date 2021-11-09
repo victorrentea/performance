@@ -10,7 +10,7 @@ public class XmlFileGenerator {
         generateFile(10000000);
     }
 
-    public static void generateFile(int recordCount) throws IOException {
+    public static File generateFile(int recordCount) throws IOException {
         long t0 = System.currentTimeMillis();
         File dataFile = new File("data.xml");
         try (Writer writer = new FileWriter(dataFile)){ // TODO how to optimize this?
@@ -24,5 +24,6 @@ public class XmlFileGenerator {
         long t1 = System.currentTimeMillis();
 
         System.out.println("Generated "+recordCount+" records ("+dataFile.length()/1024+" kb) in " + (t1-t0) + " ms");
+        return dataFile;
     }
 }
