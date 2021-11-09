@@ -10,7 +10,7 @@ import java.time.LocalDateTime;
 @Slf4j
 public class MyStepExecutionListener implements  org.springframework.batch.core.StepExecutionListener {
     @Value("#{jobExecutionContext['START_TIME']}")
-    private LocalDateTime startTime;
+    private String startTime;
     @Override
     public void beforeStep(StepExecution stepExecution) {
         log.debug("step exec context: " + stepExecution.getExecutionContext());
