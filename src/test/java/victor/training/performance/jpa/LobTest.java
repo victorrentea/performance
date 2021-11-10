@@ -5,6 +5,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.test.annotation.Rollback;
 import org.springframework.transaction.annotation.Transactional;
@@ -45,7 +47,12 @@ public class LobTest {
    }
 }
 
-interface ProfRepo extends JpaRepository<Prof, Long> {}
+interface ProfRepo extends JpaRepository<Prof, Long> {
+
+}
+interface TagRepo extends JpaRepository<Tag, Long> {
+   Page<Tag> findTagsByProfId(Long profId, Pageable pageRequest);
+}
 interface ProfDataRepo extends JpaRepository<ProfData, Long> {
    ProfData findByProfId(Long profId);
 }
@@ -60,6 +67,18 @@ class Prof {
    private Long id;
    private String name;
 
+//   @OneToMany // asta doar pentru volume de 10-1000 max de elem
+//   List<Tag> tags; // ce te faci daca in lista asta sunt 1M de elemente
+}
+
+@Entity
+@Data
+class Tag {
+   @Id
+   @GeneratedValue
+   private Long id;
+   @ManyToOne
+   Prof prof;
 }
 
 @Entity
@@ -81,3 +100,5 @@ class ProfData {
 
 //strategia 1: Parinte ---OneToOne(fetch=LAZY)--> Copil cu CLOB
 //strategia 2: Parinte <---OneToOne-- Copil cu CLOB
+
+
