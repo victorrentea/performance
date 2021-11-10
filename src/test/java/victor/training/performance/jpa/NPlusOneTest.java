@@ -33,7 +33,7 @@ public class NPlusOneTest {
    @Autowired
    ParentRepo repo;
    @Autowired
-   ParentSearchViewRepo searchRepo;
+   ParentSearchViewRepo searchViewRepo;
 
    @BeforeEach
    void persistData() {
@@ -110,7 +110,7 @@ public class NPlusOneTest {
    @Test
    @Sql("/create-view.sql")
    public void searchOnView() {
-      var parentViews = searchRepo.findAll();
+      var parentViews = searchViewRepo.findAll();
       assertThat(parentViews)
           .extracting(ParentSearchView::getName, ParentSearchView::getChildrenNames)
           .containsExactlyInAnyOrder(
@@ -135,7 +135,7 @@ public class NPlusOneTest {
    @Test
    @Sql("/create-view.sql")
    public void searchOnViewOver40() {
-      var parentViews = searchRepo.findOver40();
+      var parentViews = searchViewRepo.findOver40();
 
       // TODO 2 search by parent age >= 40
       // TODO 2 search by parinti care au cel putin 3 copii (martiri)
