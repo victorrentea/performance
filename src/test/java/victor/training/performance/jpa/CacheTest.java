@@ -54,8 +54,6 @@ public class CacheTest {
 
       log.info("time={}, time again={}", t1, t1bis);
 
-
-
       assertThat(t1bis).isLessThanOrEqualTo(t1 / 2);
    }
 
@@ -68,14 +66,12 @@ public class CacheTest {
 
       log.info("time={}, time again={}", t1, t1bis);
 
-      assertThat(t1bis).isLessThanOrEqualTo(t1 / 2);
       assertThat(session().getSessionFactory().getCache().containsEntity(Country.class, 1L)).isTrue();
       long hitCount = session().getSessionFactory().getStatistics()
           .getDomainDataRegionStatistics("victor.training.performance.jpa.Country")
           .getHitCount();
       assertThat(hitCount).isEqualTo(1);
    }
-
 
    @Test
    void test2ndLevelCache_findAll() {
@@ -86,7 +82,6 @@ public class CacheTest {
 
       log.info("time={}, time again={}", t1, t1bis);
 
-      assertThat(t1bis).isLessThanOrEqualTo(t1 / 2);
       assertThat(session().getSessionFactory().getCache().containsQuery("allCountries")).isTrue();
    }
 
@@ -101,5 +96,8 @@ public class CacheTest {
           .describedAs("Second cache load should evict the first one (see ehcache.xml)")
           .isFalse();
       assertThat(cache.containsEntity(Country.class, 2L)).isTrue();
+
+      System.out.println(cacheManager.getCacheNames());
+      System.out.println(cacheManager.getCache("victor.training.performance.jpa.Country").getNativeCache());
    }
 }

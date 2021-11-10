@@ -14,8 +14,6 @@
 
 
     <cache alias="missed-cache" >
-        <key-type>java.time.LocalDateTime</key-type>
-        <value-type>victor.training.performance.util.BigObject20MB</value-type>
         <expiry>
             <ttl unit="minutes">30</ttl>
         </expiry>

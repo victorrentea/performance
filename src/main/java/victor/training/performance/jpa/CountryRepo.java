@@ -10,7 +10,7 @@ public interface CountryRepo extends JpaRepository<Country, Long> {
    // Only caches returned IDs => MUST also have @Cache on Country @Entity
     @QueryHints({
         @QueryHint(name = "org.hibernate.cacheable", value = "true"),
-//        @QueryHint(name = "org.hibernate.cacheRegion", value = "allCountries")
+        @QueryHint(name = "org.hibernate.cacheRegion", value = "allCountries")
     })
    List<Country> findAll();
 }
