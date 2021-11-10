@@ -13,7 +13,6 @@ import org.springframework.test.context.transaction.TestTransaction;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityManager;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
@@ -110,20 +109,17 @@ public class NPlusOneTest {
    @Test
    @Sql("/create-view.sql")
    public void searchOnView() {
-      var parentViews = repo.findAll()
-          .stream().map(p -> new ParentSearchView(
-              p.getId(),
-              p.getName(),
-              p.getChildren().stream().map(Child::getName).sorted().collect(joining(","))
-          ));
+      var parentViews = searchRepo.findAll();
 //		var parentViews = searchRepo.findAll();
 
       // TODO 1 restrict to first page (of 1 element)
       // TODO 2 search by parent age >= 40
       assertThat(parentViews)
-          .extracting("name", "childrenNames")
+          .extracting(ParentSearchView::getName, ParentSearchView::getChildrenNames)
+//          .extracting("name", "childrenNames")
           .containsExactlyInAnyOrder(
               tuple("Victor", "Emma,Vlad"),
+              tuple("Trofim", null),
               tuple("Peter", "Maria,Paul,Stephan"))
       ;
    }

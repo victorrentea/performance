@@ -8,7 +8,7 @@ import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
-@Table(name = "PARENT_SEARCH")
+@Table(name = "PARENT_WITH_CHILDREN")
 @Entity
 @Data
 @NoArgsConstructor
