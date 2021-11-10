@@ -1,5 +1,6 @@
 package victor.training.performance.batch.core;
 
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.springframework.batch.core.*;
 import org.springframework.batch.core.launch.JobLauncher;
@@ -26,7 +27,7 @@ public class BatchAppTest extends AbstractTestcontainersTestBase{
 
    @Autowired
    JobRepository jobRepository;
-   @Test
+   @Test@Disabled("takes time")
    public void test() throws Exception {
       int N = 4_000;
       File dataFile = XmlFileGenerator.generateFile(N);

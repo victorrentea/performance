@@ -28,9 +28,9 @@ public class LobTest {
 
    @Test
    void test() {
-      Prof prof = new Prof().setName("Tavi");
+      Prof prof = new Prof().setName("Tavi").setCvMarkdown("**MARE CHEF**");
       repo.save(prof);
-      dataRepo.save(new ProfData().setProf(prof).setCvMarkdown("**MARE CHEF**"));
+//      dataRepo.save(new ProfData().setProf(prof).setCvMarkdown("**MARE CHEF**"));
 
       em.flush();
       em.clear();
@@ -40,10 +40,6 @@ public class LobTest {
       for (Prof p : profList) {
          System.out.println(p.getName());
       }
-      System.out.println("Pana aici nici un query dupa markdown");
-      ProfData data = dataRepo.findByProfId(prof.getId());
-      System.out.println("Data " +data) ;
-
    }
 }
 
@@ -66,6 +62,11 @@ class Prof {
    @GeneratedValue
    private Long id;
    private String name;
+
+   @Basic(fetch = FetchType.LAZY)
+   @Lob
+   private String cvMarkdown; // BLOB  // requires load time weaving(load time)  or bytecode enhancement (compile)
+
 
 //   @OneToMany // asta doar pentru volume de 10-1000 max de elem
 //   List<Tag> tags; // ce te faci daca in lista asta sunt 1M de elemente
@@ -100,5 +101,6 @@ class ProfData {
 
 //strategia 1: Parinte ---OneToOne(fetch=LAZY)--> Copil cu CLOB
 //strategia 2: Parinte <---OneToOne-- Copil cu CLOB
+//strategia 3 (lenesa): Parinte are @Basic(fetch=LAZY) @Lob String data;
 
 
