@@ -60,8 +60,9 @@ public class UberEntityTest {
                 .setOriginCountry(belgium)
                 .setInvoicingCountry(france)
                 .setNationality(serbia)
-                .setCreatedBy(testUser)
-                .setScope(globalScope);
+                .setScope(globalScope)
+//                .setScopeEnum(ScopeEnum.GLOBAL)
+                .setCreatedBy(testUser);
         em.persist(uber);
         uberId = uber.getId();
 
@@ -74,7 +75,7 @@ public class UberEntityTest {
     public void findById() {
         log.info("Loading a 'very OOP' @Entity by id...");
         UberEntity uber = repo.findById(uberId).get(); // em.find(UberEntity.class, id); // plain JPA
-        log.info("Loaded using find (inspect the above query)");
+        log.info("Loaded using find (inspect the above query):\n" + uber);
 
         // Use-case: I only loaded UberEntity to get its status
         if (uber.getStatus() == Status.DRAFT) {
@@ -87,12 +88,11 @@ public class UberEntityTest {
     public void findAll() {
         log.info("Loading a 'very OOP' @Entity by id...");
         List<UberEntity> list = repo.findAll();
-        log.info("Loaded using JPQL (see how many queries are above)");
-        System.out.println(list);
+        log.info("Loaded using JPQL (see how many queries are above):\n" + list);
     }
 
     @Test
-    public void searchQuery() {
+    public void search() {
         log.info("Searching for 'very OOP' @Entity...");
         UberSearchCriteria criteria = new UberSearchCriteria();
         criteria.name = "::uberName::";

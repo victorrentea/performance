@@ -3,6 +3,7 @@ package victor.training.performance.jpa;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 
+// Possible values: see ScopeEnum
 @Entity
 public class Scope {
    @Id
