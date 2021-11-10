@@ -7,6 +7,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.annotation.DirtiesContext.ClassMode;
 import org.springframework.test.context.jdbc.Sql;
+import org.springframework.transaction.annotation.Transactional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static victor.training.performance.util.PerformanceUtil.measureCall;
@@ -28,6 +29,14 @@ public class CacheTest {
 //      countryRepo.save(new Country("Romania"));
 //   }
 
+   @Test
+   @Transactional
+   void firstLevelCache() { // transaction -scoped cache
+      Country c1 = countryRepo.findById(1L).get();
+      System.out.println(c1);
+      Country c2 = countryRepo.findById(1L).get();
+      System.out.println(c2);
+   }
    @Test
    void test2ndLevelCacheById() {
       int t1 = measureCall(() -> countryRepo.findById(1L).get());

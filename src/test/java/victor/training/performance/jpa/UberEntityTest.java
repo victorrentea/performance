@@ -93,6 +93,12 @@ public class UberEntityTest {
         log.info("Searching a 'very OOP' @Entity...");
     }
     @Test
+    public void searchQueryCuCachePeCountry() { // SOLVED
+        log.info("Searching a 'very OOP' @Entity...");
+        System.out.println(repo.findAll());
+        log.info("No more queries for Countries above, since @Cache solves it");
+    }
+    @Test
     public void searchQuery() { // SOLVED
         log.info("Searching a 'very OOP' @Entity...");
         UberSearchCriteria criteria = new UberSearchCriteria();
