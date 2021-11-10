@@ -67,6 +67,10 @@ public class PerformanceUtil {
 		System.out.println(line + pad + message);
 	}
 
+	public static void waitForEnter(String why) {
+		System.out.println(why);
+		waitForEnter();
+	}
 	public static void waitForEnter() {
 		System.out.println("[ENTER] to continue");
 		new Scanner(System.in).nextLine();
@@ -75,7 +79,11 @@ public class PerformanceUtil {
 
 	public static String getUsedHeap() {
 		System.gc();
-		return String.format("Used heap: %,d B", getUsedHeapBytes()).replace(",", " ");
+		return "Used heap: " + formatSize(getUsedHeapBytes()).replace(",", " ");
+	}
+
+	public static String formatSize(long usedHeapBytes) {
+		return String.format("%,d B", usedHeapBytes);
 	}
 
 	public static long getUsedHeapBytes() {
