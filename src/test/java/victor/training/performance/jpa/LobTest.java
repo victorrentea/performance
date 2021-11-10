@@ -23,7 +23,7 @@ import java.io.InputStream;
 import java.sql.Blob;
 import java.sql.SQLException;
 
-import static victor.training.performance.util.PerformanceUtil.getUsedHeap;
+import static victor.training.performance.util.PerformanceUtil.printUsedHeap;
 
 @Slf4j
 @SpringBootTest
@@ -57,7 +57,7 @@ public class LobTest {
       File file = new File("glowroot.jar");
       System.out.println("File size: " + PerformanceUtil.formatSize(file.length()));
 
-      log.info("Initial: " + getUsedHeap());
+      printUsedHeap("Initial");
 
       // ============= WRITING ==================
       Session hibernateSession = (Session) em.getDelegate();
@@ -71,11 +71,11 @@ public class LobTest {
           .setName("Tavi")
           .setCvPdf(blob);
       Long profId = profRepo.save(prof).getId();
-      log.info("Before Commit: " + getUsedHeap());
+      printUsedHeap("Before Commit");
       TestTransaction.end();
       fileInputStream.close();
 
-      log.info("After Commit Insert: " + getUsedHeap());
+      printUsedHeap("Before Commit");
 
       // ============= READING ==================
       TestTransaction.start();
@@ -83,12 +83,12 @@ public class LobTest {
       Prof profLoaded = profRepo.findById(profId).get();
 
       log.info("Loaded prof name = " + profLoaded.getName());
-      log.info("After loaded entity: " + getUsedHeap());
+      printUsedHeap("After loaded entity");
 
       // usually profLoaded.getCvPdf().getBinaryStream is copied on disk / http response
       byte[] bytes = IOUtils.toByteArray(profLoaded.getCvPdf().getBinaryStream());
       System.out.println("blob size: " + PerformanceUtil.formatSize(bytes.length));
-      log.info("With contents in mem: " + getUsedHeap());
+      printUsedHeap("With byte[] in memory");
    }
 
 }

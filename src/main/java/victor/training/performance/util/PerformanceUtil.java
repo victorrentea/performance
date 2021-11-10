@@ -77,6 +77,9 @@ public class PerformanceUtil {
 		System.out.println("Continue...");
 	}
 
+	public static void printUsedHeap(String label) {
+		System.out.println(label + ": " + getUsedHeap());
+	}
 	public static String getUsedHeap() {
 		System.gc();
 		return "Used heap: " + formatSize(getUsedHeapBytes()).replace(",", " ");
