@@ -84,11 +84,7 @@ public class NPlusOneTest {
 	@Sql("/create-view.sql")
 	public void searchOnView() {
 		Stream<ParentSearchView> parentViews = repo.findAll()
-			.stream().map(p -> new ParentSearchView(
-				p.getId(),
-				p.getName(),
-				p.getChildren().stream().map(Child::getName).sorted().collect(joining(","))
-			));
+			.stream().map(p -> aggregateParentIntoDto(p));
 //		var parentViews = searchRepo.findAll();
 
 		// TODO 1 restrict to first page (of 1 element)
@@ -99,6 +95,11 @@ public class NPlusOneTest {
 				tuple("Victor","Emma,Vlad"),
 				tuple("Peter","Maria,Paul,Stephan"))
 		;
+	}
+
+	private ParentSearchView aggregateParentIntoDto(Parent p) {
+		String childrenNames = p.getChildren().stream().map(Child::getName).sorted().collect(joining(","));
+		return new ParentSearchView(p.getId(), p.getName(), childrenNames);
 	}
 }
 
