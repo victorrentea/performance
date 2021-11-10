@@ -16,7 +16,7 @@ import org.springframework.web.bind.annotation.RestController;
 import victor.training.performance.jpa.Parent;
 
 @Slf4j
-@RestController // TODO uncomment and study
+//@RestController // TODO uncomment and study
 @RequestMapping("profile/nplus1")
 @RequiredArgsConstructor
 public class Profile2_NPlusOne implements CommandLineRunner {
