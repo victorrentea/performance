@@ -43,7 +43,7 @@ public class UberEntityTest {
         Country france = new Country(3L, "France");
         Country serbia = new Country(4L, "Serbia");
         User testUser = new User(1L,"test");
-        Scope globalScope = new Scope(1L,"Global");
+        Scope globalScope = new Scope(1L,"Global"); // TODO enum
         em.persist(romania);
         em.persist(belgium);
         em.persist(france);
@@ -69,7 +69,7 @@ public class UberEntityTest {
 
 //    enum RecordStatus{ DRAFT("D"), SUMITTED("S")}  + / hibernate custom type  == > pe CHAR in DB
     @Test
-    public void findByIdExcessive() {
+    public void findById() {
         log.info("Loading a 'very OOP' @Entity by id...");
         UberEntity uber = em.find(UberEntity.class, id);
 //        UberEntity uber = repo.findById(id); // Spring Data
@@ -85,7 +85,7 @@ public class UberEntityTest {
     }
     @Test
     public void searchQuery() {
-        log.info("Searching a 'very OOP' @Entity...");
+        log.info("Searching for 'very OOP' @Entity...");
         UberSearchCriteria criteria = new UberSearchCriteria();
         criteria.name = "::uberName::";
 
