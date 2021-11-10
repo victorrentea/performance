@@ -15,16 +15,19 @@ public class UberEntity {
     private String name;
     private String firstName, lastName, ibanCode, cnp, ssn, passportNumber;
 
-    @ManyToOne//(fetch = FetchType.LAZY)
-    private Country originCountry;
 
-    public Country getOriginCountry() { // acum va fi hackuit de Hibernate LA COMPILARE
+    private Long originCountryId; // Pastrezi FK din baza
+
+//    @ManyToOne//(fetch = FetchType.LAZY)
+//    private Country originCountry;
+
+//    public Country getOriginCountry() { // acum va fi hackuit de Hibernate LA COMPILARE
 //        if (!originCountryLoaded) {
 //            originCountry = load din db;
 //            originCountryLoaded = true;
 //        }
-        return originCountry;
-    }
+//        return originCountry;
+//    }
 
     @ManyToOne
     private Country nationality;

@@ -19,7 +19,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import static java.util.stream.Collectors.toList;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @SpringBootTest
@@ -55,7 +54,7 @@ public class UberEntityTest {
                 .setName("::uberName::")
                 .setStatus(Status.SUBMITTED)
                 .setFiscalCountry(romania)
-                .setOriginCountry(belgium)
+                .setOriginCountryId(belgium.getId())
                 .setInvoicingCountry(france)
                 .setNationality(serbia)
                 .setCreatedBy(testUser)
@@ -87,12 +86,14 @@ public class UberEntityTest {
     }
     @Test
     public void findById() {
+        // standardul JPA il obliga pe Hibernate ca entitatile returnate sa aiba preincarcate
+        // toate relatiile @ManyToOne (fie cu JOIN inplus ca mai jos, fie cu SELECT succesive ca in searchQuery la inceput)
         UberEntity uber = repo.findById(id).get();
         uber.setStatus(Status.SUBMITTED);
         log.info("Searching a 'very OOP' @Entity...");
     }
     @Test
-    public void searchQuery() {
+    public void searchQuery() { // SOLVED
         log.info("Searching a 'very OOP' @Entity...");
         UberSearchCriteria criteria = new UberSearchCriteria();
         criteria.name = "::uberName::";
@@ -107,8 +108,10 @@ public class UberEntityTest {
 
     private List<UberSearchResult> dynamicSearch(UberSearchCriteria criteria) {
 //        String jpql = "SELECT u.id, u.name, u.originCountry.name FROM UberEntity u WHERE 1 = 1 ";
-        String jpql = "SELECT new victor.training.performance.jpa.UberSearchResult(u.id, u.name, u.originCountry.name)" +
-                      " FROM UberEntity u WHERE 1 = 1 ";
+        String jpql = "SELECT new victor.training.performance.jpa.UberSearchResult(u.id, u.name, originCountry.name)" +
+                      " FROM UberEntity u" +
+                      " LEFT JOIN Country originCountry ON u.originCountryId = originCountry.id" +
+                      " WHERE 1 = 1 ";
         // se mai poate cu : CriteriaAPI, Criteria+Metamodel, QueryDSL, Spring Specifications
 
         Map<String, Object> params = new HashMap<>();
@@ -138,9 +141,4 @@ class UberSearchResult {
     Long id;
     String name;
     String originCountry;
-    public UberSearchResult(UberEntity entity) {
-        id = entity.getId();
-        name = entity.getName();
-        originCountry = entity.getOriginCountry().getName();
-    }
 }
