@@ -1,7 +1,7 @@
 package victor.training.performance.jpa;
 
 import lombok.AllArgsConstructor;
-import lombok.Data;
+import lombok.Value;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
@@ -106,7 +106,9 @@ public class UberEntityTest {
     }
 
     private List<UberSearchResult> dynamicSearch(UberSearchCriteria criteria) {
-        String jpql = "SELECT u.id, u.name, u.originCountry.name FROM UberEntity u WHERE 1 = 1 ";
+//        String jpql = "SELECT u.id, u.name, u.originCountry.name FROM UberEntity u WHERE 1 = 1 ";
+        String jpql = "SELECT new victor.training.performance.jpa.UberSearchResult(u.id, u.name, u.originCountry.name)" +
+                      " FROM UberEntity u WHERE 1 = 1 ";
         // se mai poate cu : CriteriaAPI, Criteria+Metamodel, QueryDSL, Spring Specifications
 
         Map<String, Object> params = new HashMap<>();
@@ -116,27 +118,26 @@ public class UberEntityTest {
             params.put("name", criteria.name);
         }
 
-        var query = em.createQuery(jpql);
+        var query = em.createQuery(jpql, UberSearchResult.class);
         for (String key : params.keySet()) {
             query.setParameter(key, params.get(key));
         }
-        List<Object[]> entities = query.getResultList();
-        return entities.stream().map(arr ->
-             new UberSearchResult((Long)arr[0],(String) arr[1],(String) arr[2]) // scarbos: ca tr sa fac casturi de la Object[]
-            ).collect(toList());
+        List<UberSearchResult> dtos = query.getResultList();
+        return dtos;
     }
+
 }
 class UberSearchCriteria {
     public String name;
     public Status status;
     // etc
 }
-@Data
+@Value
 @AllArgsConstructor
 class UberSearchResult {
-    private final Long id;
-    private final String name;
-    private final String originCountry;
+    Long id;
+    String name;
+    String originCountry;
     public UberSearchResult(UberEntity entity) {
         id = entity.getId();
         name = entity.getName();
