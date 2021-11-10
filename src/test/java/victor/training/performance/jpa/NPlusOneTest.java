@@ -16,6 +16,7 @@ import org.springframework.transaction.annotation.Transactional;
 import javax.persistence.EntityManager;
 import java.util.Collection;
 import java.util.List;
+import java.util.stream.Stream;
 
 import static java.util.stream.Collectors.joining;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -58,12 +59,10 @@ public class NPlusOneTest {
 	@Test
 	void nPlusOne() {
 		List<Parent> parents = repo.findAll();
-
-		// TODO reduce the number of queries ran inside countChildren
-		// TODO reduce the total number of queries ran to one
-		// TODO how to paginate parents while prefetching children?
+		log.info("Loaded {} parents", parents.size());
 
 		int totalChildren = countChildren(parents);
+
 		assertThat(totalChildren).isEqualTo(5);
 	}
 
@@ -84,7 +83,7 @@ public class NPlusOneTest {
 	@Test
 	@Sql("/create-view.sql")
 	public void searchOnView() {
-		var parentViews = repo.findAll()
+		Stream<ParentSearchView> parentViews = repo.findAll()
 			.stream().map(p -> new ParentSearchView(
 				p.getId(),
 				p.getName(),

@@ -86,7 +86,7 @@ public class UberEntityTest {
 
     @Test
     public void findAll() {
-        log.info("Loading a 'very OOP' @Entity by id...");
+        log.info("Loading a 'very OOP' @Entity with JPQL ...");
         List<UberEntity> list = repo.findAll();
         log.info("Loaded using JPQL (see how many queries are above):\n" + list);
     }
