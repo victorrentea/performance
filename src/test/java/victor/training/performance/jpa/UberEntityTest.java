@@ -19,8 +19,10 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import static java.util.stream.Collectors.joining;
 import static java.util.stream.Collectors.toList;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.tuple;
 
 @SpringBootTest
 @Transactional
@@ -34,7 +36,7 @@ public class UberEntityTest {
     @Autowired
     private UberEntityRepo repo;
 
-    private Long id;
+    private Long uberId;
 
     @BeforeEach
     final void before() {
@@ -61,7 +63,7 @@ public class UberEntityTest {
                 .setCreatedBy(testUser)
                 .setScope(globalScope);
         em.persist(uber);
-        id = uber.getId();
+        uberId = uber.getId();
 
         TestTransaction.end();
         TestTransaction.start();
@@ -71,35 +73,41 @@ public class UberEntityTest {
     @Test
     public void findById() {
         log.info("Loading a 'very OOP' @Entity by id...");
-        UberEntity uber = em.find(UberEntity.class, id);
-//        UberEntity uber = repo.findById(id); // Spring Data
-        log.info("Loaded");
+        UberEntity uber = repo.findById(uberId).get(); // em.find(UberEntity.class, id); // plain JPA
+        log.info("Loaded using find (inspect the above query)");
 
-        // TODO change link types?
-
-        // --- prod code ---
-        if (uber.getStatus() == Status.DRAFT) { // i only loaded UberEntity to get its status
+        // Use-case: I only loaded UberEntity to get its status
+        if (uber.getStatus() == Status.DRAFT) {
             throw new IllegalArgumentException("Not submitted yet");
         }
-        // blah blah
+        // etc..
     }
+
+    @Test
+    public void findAll() {
+        log.info("Loading a 'very OOP' @Entity by id...");
+        List<UberEntity> list = repo.findAll();
+        log.info("Loaded using JPQL (see how many queries are above)");
+        System.out.println(list);
+    }
+
     @Test
     public void searchQuery() {
         log.info("Searching for 'very OOP' @Entity...");
         UberSearchCriteria criteria = new UberSearchCriteria();
         criteria.name = "::uberName::";
 
-        // --- prod code ---
-        List<UberSearchResult> dtos = dynamicSearch(criteria);
+        List<UberSearchResult> dtos = search(criteria);
 
-        // TODO fetch only the necessary data (List<UserBriefDto>)
-        System.out.println(dtos);
-        assertThat(dtos).map(UberSearchResult::getName).containsExactly("::uberName::");
+        System.out.println("Results: \n" + dtos.stream().map(UberSearchResult::toString).collect(joining("\n")));
+        assertThat(dtos)
+            .extracting("id", "name", "originCountry")
+            .containsExactly(tuple(uberId, "::uberName::", "Belgium"));
     }
 
-    private List<UberSearchResult> dynamicSearch(UberSearchCriteria criteria) {
+    private List<UberSearchResult> search(UberSearchCriteria criteria) {
         String jpql = "SELECT u FROM UberEntity u WHERE 1 = 1 ";
-        // se mai poate cu : CriteriaAPI, Criteria+Metamodel, QueryDSL, Spring Specifications
+        // alternative implementation: CriteriaAPI, Criteria+Metamodel, QueryDSL, Spring Specifications
 
         Map<String, Object> params = new HashMap<>();
 
@@ -127,6 +135,7 @@ class UberSearchResult {
     private final Long id;
     private final String name;
     private final String originCountry;
+
     public UberSearchResult(UberEntity entity) {
         id = entity.getId();
         name = entity.getName();

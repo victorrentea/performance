@@ -1,8 +1,11 @@
 package victor.training.performance.jpa;
 
+import lombok.Data;
+
 import javax.persistence.Entity;
 import javax.persistence.Id;
 
+@Data
 @Entity
 //@Cache(region = "countryCache", usage = CacheConcurrencyStrategy.READ_ONLY)
 public class Country {
