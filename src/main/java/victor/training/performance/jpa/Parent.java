@@ -1,55 +1,53 @@
 package victor.training.performance.jpa;
 
-import org.hibernate.annotations.BatchSize;
-
 import javax.persistence.*;
 import java.util.HashSet;
 import java.util.Set;
 
 @Entity
 public class Parent {
-    @Id
-    @GeneratedValue
-    private Long id;
+   @Id
+   @GeneratedValue
+   private Long id;
 
-    private String name;
-    private int age;
+   private String name;
+   private int age;
 
-    @BatchSize(size=10)
-    @OneToMany(cascade = CascadeType.ALL)
-    @JoinColumn(name = "PARENT_ID")
-    private Set<Child> children = new HashSet<>();
+   @OneToMany(mappedBy = "parent", cascade = CascadeType.PERSIST)
+   // @BatchSize(size=10) // too much magic
+   private Set<Child> children = new HashSet<>();
 
-    private Parent() {
-    }
+   private Parent() {
+   }
 
-    public Parent(String name) {
-        this.name = name;
-    }
+   public Parent(String name) {
+      this.name = name;
+   }
 
-    public Long getId() {
-        return id;
-    }
+   public Long getId() {
+      return id;
+   }
 
-    public Parent addChild(Child child) {
-        children.add(child);
-        return this;
-    }
+   public Parent addChild(Child child) {
+      children.add(child);
+      child.setParent(this);
+      return this;
+   }
 
-    public Set<Child> getChildren() {
-        return children;
-    }
+   public Set<Child> getChildren() {
+      return children;
+   }
 
-    public int getAge() {
-        return age;
-    }
+   public int getAge() {
+      return age;
+   }
 
-    public Parent setAge(int age) {
-        this.age = age;
-        return this;
-    }
+   public Parent setAge(int age) {
+      this.age = age;
+      return this;
+   }
 
-    public String getName() {
-        return name;
-    }
+   public String getName() {
+      return name;
+   }
 }

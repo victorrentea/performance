@@ -7,7 +7,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.test.annotation.DirtiesContext;
-import org.springframework.test.annotation.DirtiesContext.ClassMode;
 import org.springframework.test.annotation.Rollback;
 import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.context.transaction.TestTransaction;
@@ -21,12 +20,13 @@ import java.util.stream.Stream;
 import static java.util.stream.Collectors.joining;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.tuple;
+import static org.springframework.test.annotation.DirtiesContext.ClassMode.BEFORE_EACH_TEST_METHOD;
 
 @Slf4j
 @SpringBootTest
 @Transactional
-@Rollback(false)
-@DirtiesContext(classMode = ClassMode.AFTER_EACH_TEST_METHOD)
+@Rollback(false) // don't wipe the data
+@DirtiesContext(classMode = BEFORE_EACH_TEST_METHOD)
 public class NPlusOneTest {
 
 	@Autowired

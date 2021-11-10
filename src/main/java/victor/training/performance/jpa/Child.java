@@ -3,6 +3,7 @@ package victor.training.performance.jpa;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import javax.persistence.ManyToOne;
 
 @Entity
 public class Child {
@@ -11,6 +12,9 @@ public class Child {
     private Long id;
 
     private String name;
+
+    @ManyToOne
+    private Parent parent;
 
     private Child() {
     }
@@ -21,6 +25,10 @@ public class Child {
 
     public String getName() {
         return name;
+    }
+
+    public void setParent(Parent parent) {
+        this.parent = parent;
     }
 }
 

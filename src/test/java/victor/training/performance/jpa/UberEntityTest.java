@@ -23,11 +23,12 @@ import static java.util.stream.Collectors.joining;
 import static java.util.stream.Collectors.toList;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.tuple;
+import static org.springframework.test.annotation.DirtiesContext.ClassMode.BEFORE_EACH_TEST_METHOD;
 
 @SpringBootTest
 @Transactional
-@Rollback(false)
-@DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_EACH_TEST_METHOD)
+@Rollback(false) // don't wipe the data
+@DirtiesContext(classMode = BEFORE_EACH_TEST_METHOD)
 public class UberEntityTest {
     private static final Logger log = LoggerFactory.getLogger(UberEntityTest.class);
 
