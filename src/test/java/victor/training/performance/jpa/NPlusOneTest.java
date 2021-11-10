@@ -84,7 +84,7 @@ public class NPlusOneTest {
 	@Sql("/create-view.sql")
 	public void searchOnView() {
 		Stream<ParentSearchView> parentViews = repo.findAll()
-			.stream().map(p -> aggregateParentIntoDto(p));
+			.stream().map(p -> toDto(p));
 //		var parentViews = searchRepo.findAll();
 
 		// TODO 1 restrict to first page (of 1 element)
@@ -97,7 +97,7 @@ public class NPlusOneTest {
 		;
 	}
 
-	private ParentSearchView aggregateParentIntoDto(Parent p) {
+	private ParentSearchView toDto(Parent p) {
 		String childrenNames = p.getChildren().stream().map(Child::getName).sorted().collect(joining(","));
 		return new ParentSearchView(p.getId(), p.getName(), childrenNames);
 	}
