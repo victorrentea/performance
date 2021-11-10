@@ -1,6 +1,7 @@
 package victor.training.performance.spring.caching;
 
-import victor.training.performance.spring.caching.User.UserRole;
+import victor.training.performance.jpa.User;
+import victor.training.performance.jpa.User.UserRole;
 
 import java.io.Serializable;
 

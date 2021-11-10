@@ -5,7 +5,7 @@ import org.apache.commons.lang3.RandomStringUtils;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RestController;
-import victor.training.performance.spring.caching.User.UserRole;
+import victor.training.performance.jpa.User.UserRole;
 
 import java.util.List;
 

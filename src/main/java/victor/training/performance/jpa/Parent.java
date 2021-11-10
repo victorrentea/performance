@@ -1,9 +1,14 @@
 package victor.training.performance.jpa;
 
+import lombok.Getter;
+import lombok.Setter;
+
 import javax.persistence.*;
 import java.util.HashSet;
 import java.util.Set;
 
+@Getter
+@Setter
 @Entity
 public class Parent {
    @Id
@@ -11,11 +16,14 @@ public class Parent {
    private Long id;
 
    private String name;
-   private int age;
+   private Integer age;
 
    @OneToMany(mappedBy = "parent", cascade = CascadeType.PERSIST)
    // @BatchSize(size=10) // too much magic
    private Set<Child> children = new HashSet<>();
+
+   @ManyToOne
+   private Country country; // surprise !
 
    private Parent() {
    }
@@ -32,22 +40,5 @@ public class Parent {
       children.add(child);
       child.setParent(this);
       return this;
-   }
-
-   public Set<Child> getChildren() {
-      return children;
-   }
-
-   public int getAge() {
-      return age;
-   }
-
-   public Parent setAge(int age) {
-      this.age = age;
-      return this;
-   }
-
-   public String getName() {
-      return name;
    }
 }

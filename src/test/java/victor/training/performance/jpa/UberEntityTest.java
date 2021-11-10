@@ -45,7 +45,7 @@ public class UberEntityTest {
         Country belgium = new Country(2L, "Belgium");
         Country france = new Country(3L, "France");
         Country serbia = new Country(4L, "Serbia");
-        User testUser = new User(1L,"test");
+        User testUser = new User("test");
         Scope globalScope = new Scope(1L,"Global"); // TODO enum
         em.persist(romania);
         em.persist(belgium);
@@ -57,8 +57,8 @@ public class UberEntityTest {
         UberEntity uber = new UberEntity()
                 .setName("::uberName::")
                 .setStatus(Status.SUBMITTED)
-                .setFiscalCountry(romania)
                 .setOriginCountry(belgium)
+                .setFiscalCountry(romania)
                 .setInvoicingCountry(france)
                 .setNationality(serbia)
                 .setScope(globalScope)

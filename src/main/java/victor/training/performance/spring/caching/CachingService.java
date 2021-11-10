@@ -5,6 +5,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import victor.training.performance.jpa.User;
+import victor.training.performance.jpa.UserRepo;
 
 import java.util.List;
 import java.util.stream.Stream;
