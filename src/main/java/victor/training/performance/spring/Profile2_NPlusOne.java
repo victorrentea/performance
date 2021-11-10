@@ -11,6 +11,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -32,12 +33,21 @@ public class Profile2_NPlusOne implements CommandLineRunner {
    @Override
    public void run(String... args) throws Exception {
       log.warn("INSERTING data ...");
-      jdbc.update("INSERT INTO PARENT(ID, NAME) SELECT X, 'Parent' || X FROM SYSTEM_RANGE(1, 1000)");
+      jdbc.update("INSERT INTO COUNTRY(ID, NAME) SELECT X, 'Country' || X FROM SYSTEM_RANGE(1, 1000)");
+      jdbc.update("INSERT INTO PARENT(ID, NAME, COUNTRY_ID) SELECT X, 'Parent' || X, X FROM SYSTEM_RANGE(1, 1000)");
       jdbc.update("INSERT INTO CHILD(ID, NAME, PARENT_ID) SELECT X, 'Child' || X || '-1',X FROM SYSTEM_RANGE(1, 1000)");
       jdbc.update("INSERT INTO CHILD(ID, NAME, PARENT_ID) SELECT X + 1000, 'Child' || X || '-2', X FROM SYSTEM_RANGE(1, 1000)");
       log.info("DONE");
    }
 
+   @GetMapping("{id}")
+   public Parent findOne(@PathVariable Long id) {
+      return repo.findById(id).get();
+   }
+   @GetMapping("fara-copii/{id}")
+   public String findOneFaraCopii(@PathVariable Long id) {
+      return repo.findById(id).get().getName();
+   }
    @GetMapping
    public Page<Parent> query() {
       Page<Long> idPage = repo.findByNameLike("%ar%", PageRequest.of(1, 20).withSort(Direction.ASC, "name"));
@@ -55,11 +65,24 @@ interface ParentRepo extends JpaRepository<Parent, Long> {
    Page<Long> findByNameLike(String namePart, Pageable page);
 
    // fetching query
-   @Query("SELECT distinct p FROM Parent p LEFT JOIN FETCH p.children WHERE p.id IN ?1")
+   @Query("SELECT distinct p FROM Parent p " +
+          "LEFT JOIN FETCH p.children " +
+          "LEFT JOIN FETCH p.country " +
+          "WHERE p.id IN ?1")
    List<Parent> findParentsWithChildren(List<Long> parentIds);
 
 //   @Query("SELECT p.id FROM Parent p WHERE p.name LIKE ?1")
 //   Page<Long> findByNameLike(String namePart, Pageable page);
+
+}
+
+@Entity // doar pt ca demo
+@Data
+class Country {
+   @Id
+   @GeneratedValue
+   private Long id;
+   private String name;
 
 }
 
@@ -70,10 +93,10 @@ class Parent {
    @Id
    @GeneratedValue
    private Long id;
-
    private String name;
 
-
+   @ManyToOne
+   private Country country; // ma asteptam sa faca Parent LEFT JOIN Country si sa aduca coloanele Country automat intr-un singur query
    @OneToMany(cascade = CascadeType.ALL)
    @JoinColumn(name = "PARENT_ID")
    private Set<Child> children = new HashSet<>();
