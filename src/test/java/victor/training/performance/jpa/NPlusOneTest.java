@@ -80,8 +80,6 @@ public class NPlusOneTest {
       for (Object[] parent : parents) {
          System.out.println(Arrays.toString(parent));
       }
-
-
    }
 
    @Test
