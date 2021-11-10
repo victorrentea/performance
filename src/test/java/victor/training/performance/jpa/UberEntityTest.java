@@ -43,7 +43,7 @@ public class UberEntityTest {
         Country france = new Country(3L, "France");
         Country serbia = new Country(4L, "Serbia");
         User testUser = new User(1L,"test");
-        Scope globalScope = new Scope(1L,"Global");
+        Scope globalScope = new Scope(1L,"GLOBAL");
         em.persist(romania);
         em.persist(belgium);
         em.persist(france);
@@ -60,8 +60,10 @@ public class UberEntityTest {
                 .setNationality(serbia)
                 .setCreatedBy(testUser)
                 .setScope(globalScope);
+//                .setScope(ScopeEnum.GLOBAL);
         em.persist(uber);
         id = uber.getId();
+
 
         TestTransaction.end();
         TestTransaction.start();
@@ -84,6 +86,12 @@ public class UberEntityTest {
         // blah blah
     }
     @Test
+    public void findById() {
+        UberEntity uber = repo.findById(id).get();
+        uber.setStatus(Status.SUBMITTED);
+        log.info("Searching a 'very OOP' @Entity...");
+    }
+    @Test
     public void searchQuery() {
         log.info("Searching a 'very OOP' @Entity...");
         UberSearchCriteria criteria = new UberSearchCriteria();
@@ -98,7 +106,7 @@ public class UberEntityTest {
     }
 
     private List<UberSearchResult> dynamicSearch(UberSearchCriteria criteria) {
-        String jpql = "SELECT u FROM UberEntity u WHERE 1 = 1 ";
+        String jpql = "SELECT u.id, u.name, u.originCountry.name FROM UberEntity u WHERE 1 = 1 ";
         // se mai poate cu : CriteriaAPI, Criteria+Metamodel, QueryDSL, Spring Specifications
 
         Map<String, Object> params = new HashMap<>();
@@ -108,12 +116,14 @@ public class UberEntityTest {
             params.put("name", criteria.name);
         }
 
-        var query = em.createQuery(jpql, UberEntity.class);
+        var query = em.createQuery(jpql);
         for (String key : params.keySet()) {
             query.setParameter(key, params.get(key));
         }
-        var entities = query.getResultList();
-        return entities.stream().map(UberSearchResult::new).collect(toList());
+        List<Object[]> entities = query.getResultList();
+        return entities.stream().map(arr ->
+             new UberSearchResult((Long)arr[0],(String) arr[1],(String) arr[2]) // scarbos: ca tr sa fac casturi de la Object[]
+            ).collect(toList());
     }
 }
 class UberSearchCriteria {
