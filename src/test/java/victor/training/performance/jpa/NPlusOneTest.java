@@ -42,7 +42,8 @@ public class NPlusOneTest {
           .addChild(new Child("Emma"))
           .addChild(new Child("Vlad"))
       );
-      repo.save(new Parent("Trofim"));
+      repo.save(new Parent("Trofim")
+          .setAge(42));
       repo.save(new Parent("Peter")
           .setAge(41)
           .addChild(new Child("Maria"))
@@ -110,15 +111,38 @@ public class NPlusOneTest {
    @Sql("/create-view.sql")
    public void searchOnView() {
       var parentViews = searchRepo.findAll();
-//		var parentViews = searchRepo.findAll();
+      assertThat(parentViews)
+          .extracting(ParentSearchView::getName, ParentSearchView::getChildrenNames)
+          .containsExactlyInAnyOrder(
+              tuple("Victor", "Emma,Vlad"),
+              tuple("Trofim", null),
+              tuple("Peter", "Maria,Paul,Stephan"))
+      ;
+   }
+   @Autowired
+   ParentSearchSubselectRepo parentSearchSubselectRepo;
+   @Test
+   public void subselect() {
+      var parentViews = parentSearchSubselectRepo.findAll();
+      assertThat(parentViews)
+          .extracting(ParentSearchSubselect::getName, ParentSearchSubselect::getChildrenNames)
+          .containsExactlyInAnyOrder(
+              tuple("Victor", "Emma,Vlad"),
+              tuple("Trofim", null),
+              tuple("Peter", "Maria,Paul,Stephan"))
+      ;
+   }
+   @Test
+   @Sql("/create-view.sql")
+   public void searchOnViewOver40() {
+      var parentViews = searchRepo.findOver40();
 
-      // TODO 1 restrict to first page (of 1 element)
       // TODO 2 search by parent age >= 40
+      // TODO 2 search by parinti care au cel putin 3 copii (martiri)
       assertThat(parentViews)
           .extracting(ParentSearchView::getName, ParentSearchView::getChildrenNames)
 //          .extracting("name", "childrenNames")
           .containsExactlyInAnyOrder(
-              tuple("Victor", "Emma,Vlad"),
               tuple("Trofim", null),
               tuple("Peter", "Maria,Paul,Stephan"))
       ;
@@ -139,4 +163,13 @@ interface ParentRepo extends JpaRepository<Parent, Long> {
 
 
 interface ParentSearchViewRepo extends JpaRepository<ParentSearchView, Long> {
+
+   @Query("SELECT psv FROM ParentSearchView psv " +
+          "JOIN Parent p ON psv.id = p.id " +
+          "WHERE p.age >= 40")
+   List<ParentSearchView> findOver40();
+}
+
+interface ParentSearchSubselectRepo extends JpaRepository<ParentSearchSubselect, Long> {
+
 }
