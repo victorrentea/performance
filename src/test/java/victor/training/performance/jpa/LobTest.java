@@ -45,11 +45,11 @@ public class LobTest {
       TestTransaction.end();
       TestTransaction.start();
 
+      // TODO Goal: you should NOT see cvMarkdown SELECTED below
       Prof loadedProf = profRepo.findById(prof.getId()).get();
       System.out.println("Name: " + loadedProf.getName());
       // if you need data:
-      ProfData data = profDataRepo.findByProfId(prof.getId());
-      System.out.println("Data: " + prof.getCvMarkdown());
+      // TODO
    }
 
    @Test
@@ -109,6 +109,7 @@ class Prof {
    private Long id;
    private String name;
 
+   @Basic(fetch = FetchType.LAZY)
    @Lob // CLOB
    private String cvMarkdown; // BIG and dangerous, TODO move away
 
