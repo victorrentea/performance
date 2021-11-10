@@ -42,6 +42,8 @@ public class NPlusOneTest {
 				.addChild(new Child("Emma"))
 				.addChild(new Child("Vlad"))
 		);
+		repo.save(new Parent("Trofim") // burlac :P
+			.setAge(42));
 		repo.save(new Parent("Peter")
 				.setAge(41)
 				.addChild(new Child("Maria"))
