@@ -2,6 +2,7 @@ package victor.training.performance.spring;
 
 import lombok.*;
 import lombok.extern.slf4j.Slf4j;
+import org.hibernate.collection.internal.PersistentSet;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -16,7 +17,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.persistence.*;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -42,7 +42,10 @@ public class Profile2_NPlusOne implements CommandLineRunner {
 
    @GetMapping("{id}")
    public Parent findOne(@PathVariable Long id) {
-      return repo.findById(id).get();
+      Parent p = repo.findById(id).get();
+      log.info("returnez p");
+      // aici p are country luat cu JOIN dar NU are children
+      return p;
    }
    @GetMapping("fara-copii/{id}")
    public String findOneFaraCopii(@PathVariable Long id) {
@@ -83,6 +86,8 @@ class Country {
    @GeneratedValue
    private Long id;
    private String name;
+//   @ManyToOne
+//   private Region region;
 
 }
 
@@ -97,9 +102,10 @@ class Parent {
 
    @ManyToOne
    private Country country; // ma asteptam sa faca Parent LEFT JOIN Country si sa aduca coloanele Country automat intr-un singur query
+
    @OneToMany(cascade = CascadeType.ALL)
    @JoinColumn(name = "PARENT_ID")
-   private Set<Child> children = new HashSet<>();
+   private Set<Child> children = new PersistentSet();//   HashSet<>();
 
    public Parent() {}
 
