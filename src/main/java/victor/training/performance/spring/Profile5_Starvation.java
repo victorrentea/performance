@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.RestController;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Slf4j
@@ -28,15 +29,16 @@ class SheepController {
     private final SheepService service;
 
     @GetMapping("create")
-    public Long createSheep(@RequestParam(defaultValue = "Bisisica") String name) {
+    public Long createSheep(@RequestParam(required = false) String name) {
+        if (name == null) {
+            name = "Bisisica " + LocalDateTime.now();
+        }
         log.debug("create " + name);
         return service.create(name);
     }
-    // TODO Starve Connections
-    // TODO Starve Threads
 
     @GetMapping("search")
-    public List<Sheep> searchSheep(@RequestParam(defaultValue = "Bisisica") String name) {
+    public List<Sheep> searchSheep(@RequestParam(defaultValue = "Bisisica%") String name) {
         log.debug("search for " + name);
         return service.search(name);
     }
@@ -51,7 +53,7 @@ class SheepService {
     private final ShepardService shepard;
 
     public Long create(String name) {
-        String sn = shepard.registerSheep(name);
+        String sn = shepard.registerSheep(name); // Takes 1 second (HTTP call)
         Sheep sheep = repo.save(new Sheep(name, sn));
         return sheep.getId();
     }
