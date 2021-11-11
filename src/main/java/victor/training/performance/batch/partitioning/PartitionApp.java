@@ -40,6 +40,7 @@ public class PartitionApp  {
    private final StepBuilderFactory stepBuilder;
    private final EntityManagerFactory emf;
 
+
    public static void main(String[] args) throws IOException {
       SpringApplication.run(PartitionApp.class, args).close();
    }
