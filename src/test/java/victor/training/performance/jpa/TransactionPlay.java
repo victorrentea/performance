@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.*;
@@ -23,6 +24,8 @@ public class TransactionPlay {
       System.out.println(playground.getClass());
       System.out.println("------ ");
       playground.tx1(); // HTTP req 1
+      System.out.println("------ ");
+      playground.tx1bis(); // HTTP req 1
       System.out.println("------ ");
       playground.tx2(); // HTTP req 2
       System.out.println("------ ");
@@ -47,21 +50,22 @@ public class TransactionPlay {
 //   }
 
 @Service
-@Transactional//(propagation = ) // default (propagation = Propagation.REQUIRED)
-   // face un proxy in jurul TransactionPlayground
+    // face un proxy in jurul TransactionPlayground
 class TransactionPlayground {
    @Autowired
    MessageRepo messageRepo;
    @Autowired
    EntityManager entityManager;
+   private Long id;
 
+   @Transactional
    public void tx1() throws IOException {
       Message m = new Message("Mesaj1");
-      messageRepo.save(m);
+      id = messageRepo.save(m).getId();
       messageRepo.save(new Message("Mesaj1"));
       messageRepo.save(new Message("Mesaj1"));
       messageRepo.save(new Message("Mesaj1"));
-      System.out.println("dupa save entitatea ta sa capete ID: " + m.getId() );
+      System.out.println("dupa save entitatea ta sa capete ID: " + m.getId());
       // faptul ca INSERTurile le vad in log DUPA linia de println de mai sus, demontreaza ca
       // Hibernate functioneaza ca un WRITE CACHE: cand tu inseri, el :nimic. Doar la commit, face flush()
 
@@ -79,10 +83,68 @@ class TransactionPlayground {
 //      throw new IOException("e checked nu runtime"); // free tip: NU FOLOSITI NICIODATE ex checked in Java
    }
 
-   public void tx2() {
+   @Autowired
+   AuditService auditService;
+   @Autowired
+   CaVreauProxy caVreauProxy;
 
+   @Transactional
+   public void tx1bisNaiva() { // magie
+      Message m = messageRepo.findById(id).get();
+//      HTTP call de 100 ms >> blocheaza DB conn
+      m.setName("Altul");
+   }
+   public void tx1bis() { /// << <BUNA!!!
+      Message m = messageRepo.findById(id).get();
+//      HTTP call de 100 ms
+      m.setName("Altul");
+      messageRepo.save(m); // nu te bazezi pe autoflush
+   }
+
+   @Transactional
+   public void ptEduard() {
+      Message m = messageRepo.findById(id).get();
+//      HTTP call de 100 ms
+      m.setName("Altul");
+
+      Message m2 = new Message().setId(m.getId()).setName("Cu lumanarea");
+      messageRepo.save(m2);
+
+//      m2 e detasata aici
+      m2.setName("nu se scrie");
+   }
+
+   public void tx2() {
+      auditService.auditInTx(); // apelurile locale NU TREC PRIN PROXY: nu merge @Transactional pe apeluri locale
+      caVreauProxy.periculoasaInTx();
+   }
+
+}
+
+@Service
+class CaVreauProxy {
+   @Autowired
+   MessageRepo messageRepo;
+
+   //   @Transactional
+   public void periculoasaInTx() {
+//      httpCallDe2Sec();
+      messageRepo.save(new Message("Date de inserat din fluxul"));
+      throw new RuntimeException("Se mai intampla");
    }
 }
+
+@Service
+class AuditService {
+   @Autowired
+   MessageRepo messageRepo;
+
+   @Transactional(propagation = Propagation.REQUIRES_NEW)
+   public void auditInTx() {
+      messageRepo.save(new Message("AUDIT: s-a chemat tx2"));
+   }
+}
+
 
 @Getter
 @Setter
