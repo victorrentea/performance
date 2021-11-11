@@ -1,5 +1,6 @@
 package victor.training.performance.jpa;
 
+import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -13,7 +14,10 @@ import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.*;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
+
+import static lombok.AccessLevel.NONE;
 
 @SpringBootTest
 @Transactional
@@ -30,7 +34,7 @@ public class Modelare {
       Curs so = cursRepo.save(new Curs().setName("SO"));
       Student victor = studentRepo.save(new Student().setName("Victor"));
 
-      so.getStudenti().add(victor);
+      so.addStudent(victor);
 //      victor.getCursuri().add(so); // e gresit ca lipseste. Modelul de Java este inconsistent acum
 // sunt inca in tranzactie deschisa cu entitea Victor atasata
 
@@ -38,8 +42,15 @@ public class Modelare {
       // in hib nu mai e nimic
       TestTransaction.start();
 
-      Student student = studentRepo.findById(victor.getId()).get();
-      System.out.println(student.getCursuri());
+      Student victor2 = studentRepo.findById(victor.getId()).get();
+//      System.out.println(student.getCursuri());
+
+      Curs so2 = cursRepo.findById(so.getId()).get();
+      so2.removeStudent(victor2);
+
+      TestTransaction.end();
+      TestTransaction.start();
+
 
    }
 }
@@ -54,10 +65,16 @@ class Student {
    private Long id;
    private String name;
 
+   @Setter(AccessLevel.NONE)
    @ManyToMany(mappedBy = "studenti") // unidirectional
-   private List<Curs> cursuri = new ArrayList<>();
+   List<Curs> cursuri = new ArrayList<>();
 
+
+   public List<Curs> getCursuri() {
+      return Collections.unmodifiableList(cursuri);
+   }
 }
+// STUDENTUL NU ARE VOIE SA ISI MODIFIC ECURSURILE. SCHIMBARILE SE INTAMPLA DOAR PRIN CURS (add/remove student)
 
 interface StudentRepo extends JpaRepository<Student, Long> {
 
@@ -73,9 +90,23 @@ class Curs {
    private Long id;
    private String name;
 
+   @Setter(NONE)
    @ManyToMany
    private List<Student> studenti = new ArrayList<>();
 
+   public List<Student> getStudenti() {
+      return Collections.unmodifiableList(studenti);
+   }
+
+   public void addStudent(Student student) {
+      studenti.add(student);
+      student.cursuri.add(this);
+   }
+
+   public void removeStudent(Student student) {
+      studenti.remove(student);
+      student.cursuri.remove(this);
+   }
 }
 
 interface CursRepo extends JpaRepository<Curs, Long> {
