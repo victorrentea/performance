@@ -26,101 +26,126 @@ import java.util.List;
 @RequestMapping("profile/sheep")
 @RequiredArgsConstructor
 class SheepController {
-    private final SheepService service;
+   private final SheepService service;
 
-    @GetMapping("create")
-    public Long createSheep(@RequestParam(required = false) String name) {
-        if (name == null) {
-            name = "Bisisica " + LocalDateTime.now();
-        }
-        log.debug("create " + name);
-        return service.create(name);
-    }
+   @GetMapping("create")
+   public Long createSheep(@RequestParam(required = false) String name) {
+      if (name == null) {
+         name = "Bisisica " + LocalDateTime.now();
+      }
+      log.debug("create " + name);
+      return service.create(name);
+   }
 
-    @GetMapping("search")
-    public List<Sheep> searchSheep(@RequestParam(defaultValue = "Bisisica%") String name) {
-        log.debug("search for " + name);
-        return service.search(name);
-    }
+   @GetMapping("search")
+   public List<Sheep> searchSheep(@RequestParam(defaultValue = "Bisisica%") String name) {
+      log.debug("search for " + name);
+      return service.search(name);
+   }
 }
 
 @Slf4j
 @Service
 @RequiredArgsConstructor
-@Transactional
 class SheepService {
-    private final SheepRepo repo;
-    private final ShepardService shepard;
+   private final SheepRepo repo;
+   private final ShepardService shepard;
 
-    public Long create(String name) {
-        String sn = shepard.registerSheep(name);
-        Sheep sheep = repo.save(new Sheep(name, sn));
-        return sheep.getId();
-    }
-    public List<Sheep> search(String name) {
-        return repo.getByNameLike(name);
-    }
+   public Long create(String name) { // best, no @Transactional
+      if (repo.countByName(name) != 0) {
+         throw new IllegalArgumentException("Numele e deja luat");
+      }
+      String sn = shepard.registerSheep(name); // asta ia 1 sec
+      Sheep sheep = repo.save(new Sheep(name, sn));
+      return sheep.getId();
+   }
+   @Transactional
+   public Long create_OKwithAutocommit(String name) {
+      String sn = shepard.registerSheep(name); // asta ia 1 sec
+      Sheep sheep = repo.save(new Sheep(name, sn));
+      return sheep.getId();
+   }
+   @Transactional
+   public Long createBAD(String name) {
+      if (repo.countByName(name) != 0) { // would force the acquire of CONN despite autocommit
+         throw new IllegalArgumentException("Numele e deja luat");
+      }
+      String sn = shepard.registerSheep(name); // asta ia 1 sec
+      Sheep sheep = repo.save(new Sheep(name, sn));
+      return sheep.getId();
+   }
+
+   @Transactional
+   public List<Sheep> search(String name) {
+      return repo.getByNameLike(name);
+   }
 }
+
 @Slf4j
 @Service
 @RequiredArgsConstructor
 class ShepardService {
-    private final ShepardClient client;
-    @Timed("shepard")
-    public String registerSheep(String name) {
+   private final ShepardClient client;
+
+   @Timed("shepard")
+   public String registerSheep(String name) {
 //        SheepRegistrationResponse response = new RestTemplate()
 //            .getForObject("http://localhost:9999/api/register-sheep", SheepRegistrationResponse.class);
 
-        // or, using Feign client
+      // or, using Feign client
 
-        SheepRegistrationResponse response = client.registerSheep();
-        return response.getSn();
-    }
+      SheepRegistrationResponse response = client.registerSheep();
+      return response.getSn();
+   }
 }
 
-@FeignClient(name = "shepard", url="http://localhost:9999/api")
+@FeignClient(name = "shepard", url = "http://localhost:9999/api")
 interface ShepardClient {
-    @GetMapping("register-sheep")
-    SheepRegistrationResponse registerSheep();
+   @GetMapping("register-sheep")
+   SheepRegistrationResponse registerSheep();
 }
+
 @Data
 class SheepRegistrationResponse {
-    private String sn;
+   private String sn;
 }
 
 interface SheepRepo extends JpaRepository<Sheep, Long> {
-    List<Sheep> getByNameLike(String name);
+   List<Sheep> getByNameLike(String name);
+   int countByName(String name);
 }
 
 
 @Entity
 @Data
 class Sheep {
-    @GeneratedValue
-    @Id
-    private Long id;
+   @GeneratedValue
+   @Id
+   private Long id;
 
-    private String name;
-    private String sn;
+   private String name;
+   private String sn;
 
-    public Sheep() {}
-    public Sheep(String name, String sn) {
-        this.name = name;
-        this.sn = sn;
-    }
+   public Sheep() {
+   }
+
+   public Sheep(String name, String sn) {
+      this.name = name;
+      this.sn = sn;
+   }
 }
 
 //@Configuration //TODO uncomment me
 class SomeConfig {
-    @Bean
-    public ThreadPoolTaskExecutor shepardPool() {
-        ThreadPoolTaskExecutor executor = new ThreadPoolTaskExecutor();
-        executor.setCorePoolSize(20);
-        executor.setMaxPoolSize(20);
-        executor.setQueueCapacity(500);
-        executor.setThreadNamePrefix("shepard-");
-        executor.initialize();
-        return executor;
-    }
+   @Bean
+   public ThreadPoolTaskExecutor shepardPool() {
+      ThreadPoolTaskExecutor executor = new ThreadPoolTaskExecutor();
+      executor.setCorePoolSize(20);
+      executor.setMaxPoolSize(20);
+      executor.setQueueCapacity(500);
+      executor.setThreadNamePrefix("shepard-");
+      executor.initialize();
+      return executor;
+   }
 
 }
