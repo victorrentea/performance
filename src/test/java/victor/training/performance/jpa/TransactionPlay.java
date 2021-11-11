@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.*;
+import java.io.IOException;
 
 @SpringBootTest
 public class TransactionPlay {
@@ -18,7 +19,7 @@ public class TransactionPlay {
    TransactionPlayground playground;
 
    @Test
-   void test() { // netranzactiona, ca de ex dintr-un RestController
+   void test() throws IOException { // netranzactiona, ca de ex dintr-un RestController
       System.out.println(playground.getClass());
       System.out.println("------ ");
       playground.tx1(); // HTTP req 1
@@ -35,8 +36,11 @@ public class TransactionPlay {
 //            try {
 //               super.tx1();
 //               commitTx();
-//            } catch (Exception e) {
+//            } catch (RuntimeException e) {
 //               rollbackTx();
+//            } catch (Exception e) {
+//               commitTx(); // WHY THE HACK ? pt ca Spring e batran. si in tineretea lui a pacatuit
+// cand aaparut toti devii din BE java erau pe EJB 2. Din care au replicat comportamentul lui @TransactionAttribute
 //            }
 //         }
 //      }
@@ -51,7 +55,7 @@ class TransactionPlayground {
    @Autowired
    EntityManager entityManager;
 
-   public void tx1() {
+   public void tx1() throws IOException {
       Message m = new Message("Mesaj1");
       messageRepo.save(m);
       messageRepo.save(new Message("Mesaj1"));
@@ -69,6 +73,10 @@ class TransactionPlayground {
 
       System.out.println("END of method");
 //      messageRepo.save(new Message(null));
+
+//      throw new RuntimeException("Timeout HTTP");
+
+      throw new IOException("e checked nu runtime"); // free tip: NU FOLOSITI NICIODATE ex checked in Java
    }
 
    public void tx2() {
