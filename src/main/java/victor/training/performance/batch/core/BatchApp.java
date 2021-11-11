@@ -1,7 +1,6 @@
 package victor.training.performance.batch.core;
 
 import lombok.RequiredArgsConstructor;
-import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.batch.core.ChunkListener;
 import org.springframework.batch.core.Job;
@@ -11,17 +10,21 @@ import org.springframework.batch.core.configuration.annotation.JobBuilderFactory
 import org.springframework.batch.core.configuration.annotation.StepBuilderFactory;
 import org.springframework.batch.core.configuration.annotation.StepScope;
 import org.springframework.batch.core.launch.support.RunIdIncrementer;
-import org.springframework.batch.item.ItemReader;
+import org.springframework.batch.item.ItemStreamReader;
 import org.springframework.batch.item.database.JpaItemWriter;
 import org.springframework.batch.item.xml.StaxEventItemReader;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
 import org.springframework.core.io.FileSystemResource;
+import org.springframework.core.task.SimpleAsyncTaskExecutor;
+import org.springframework.core.task.TaskExecutor;
 import org.springframework.oxm.jaxb.Jaxb2Marshaller;
 import victor.training.performance.batch.core.domain.Person;
 
 import javax.persistence.EntityManagerFactory;
+import java.io.File;
 import java.io.IOException;
 
 import static victor.training.performance.util.PerformanceUtil.measureCall;
@@ -40,23 +43,24 @@ public class BatchApp {
       System.out.println("Batch took " + dt + " ms");
    }
 
+   @Bean
+   public TaskExecutor taskExecutor(){
+      return new SimpleAsyncTaskExecutor("spring_batch");
+   }
+
+
+   @Bean
    public Step basicChunkStep() {
       return stepBuilder.get("basicChunkStep")
-          // TODO optimize: tune chunk size
           .<PersonXml, Person>chunk(5)
-          .reader(xmlReader())
-          // TODO optimize: reduce READS
+          .reader(xmlReader(null))
           .processor(personProcessor())
-          // TODO optimize: tune ID generation
-          // TODO optimize: enable JDBC batch mode
           .writer(jpaWriter(null))
           .listener(logFirstChunkListener())
           .listener(progressTrackingChunkListener())
           .listener(stepListener())
           .build();
-         // TODO optimize: run insert in multithread. > SynchronizedItemStreamReader
-         // TODO templetize input filename
-         // [bonus] TODO implement progress tracking%
+      // TODO optimize: run insert in multithread. > SynchronizedItemStreamReader
    }
 
    private ChunkListener logFirstChunkListener() {
@@ -69,13 +73,11 @@ public class BatchApp {
       return new ProgressTrackingChunkListener();
    }
 
-
    @Bean
    @StepScope
    public CountingTotalItemsStepListener stepListener() {
       return new CountingTotalItemsStepListener();
    }
-
 
    @Bean
    public PersonProcessor personProcessor() {
@@ -89,17 +91,25 @@ public class BatchApp {
       return writer;
    }
 
-   @SneakyThrows
-   private ItemReader<PersonXml> xmlReader() {
+   @Bean
+   @StepScope
+   public ItemStreamReader<PersonXml> xmlReader(
+         @Value("#{jobParameters['FILE_PATH']}") File inputFile
+   ) {
+      log.info("Reading file from: {}", inputFile);
+      if (!inputFile.exists()) throw new IllegalArgumentException("Not Found: " + inputFile);
       StaxEventItemReader<PersonXml> reader = new StaxEventItemReader<>();
-      FileSystemResource inputFile = new FileSystemResource("data.xml");
-      reader.setResource(inputFile);
+      reader.setResource(new FileSystemResource(inputFile));
       reader.setStrict(true);
       reader.setFragmentRootElementName("person");
       Jaxb2Marshaller unmarshaller = new Jaxb2Marshaller();
       unmarshaller.setClassesToBeBound(PersonXml.class);
       reader.setUnmarshaller(unmarshaller);
       return reader;
+
+//      SynchronizedItemStreamReader<PersonXml> syncReader = new SynchronizedItemStreamReader<>();
+//      syncReader.setDelegate(reader);
+//      return syncReader;
    }
 
    @Bean
