@@ -42,12 +42,10 @@ public class BatchApp {
    public Step basicChunkStep() {
       return stepBuilder.get("basicChunkStep")
           // TODO optimize: tune chunk size
-          .<PersonXml, Person>chunk(5)
+          .<PersonXml, Person>chunk(500)
           .reader(xmlReader())
           // TODO optimize: reduce READS
           .processor(personProcessor())
-          // TODO optimize: tune ID generation
-          // TODO optimize: enable JDBC batch mode
           .writer(jpaWriter(null))
           .listener(progressTrackingChunkListener())
           .listener(stepListener())

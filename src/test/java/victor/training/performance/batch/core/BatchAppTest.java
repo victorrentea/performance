@@ -1,6 +1,5 @@
 package victor.training.performance.batch.core;
 
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.springframework.batch.core.*;
 import org.springframework.batch.core.launch.JobLauncher;
@@ -27,18 +26,46 @@ public class BatchAppTest extends AbstractTestcontainersTestBase{
 
    @Autowired
    JobRepository jobRepository;
-   @Test@Disabled("takes time")
+   @Test
+//   @Disabled("takes time")
    public void test() throws Exception {
-      int N = 4_000;
+      int N = 40_000;
       File dataFile = XmlFileGenerator.generateFile(N);
       Map<String, JobParameter> paramMap = Map.of("FILE_PATH", new JobParameter(dataFile.getAbsolutePath()));
       JobExecution run = launcher.run(job, new JobParameters(paramMap));
       while (run.getExitStatus().isRunning()) {
-         sleepq(1);
+         sleepq(10);
       }
       System.out.println("JOB FINISHED");
       assertThat(run.getExitStatus()).isEqualTo(ExitStatus.COMPLETED);
       assertThat(personRepo.count()).isEqualTo(N);
       assertThat(cityRepo.count()).isEqualTo(N/1000);
    }
+
+
+//   @Transactional
+//   void naiveImpl(File file) {
+//      // 2 zile de SO
+//data = now()
+//      try {
+//         while(maiam) {
+//            processPage(data);
+//         }
+//      } catch (Exception e) {
+//         delete from person where impotDate = data
+//      }
+//      Stream<PersonXml> streamXmlEntries;
+//
+//      streamXmlEntries.map(pxml -> pEntity);
+//
+//      Stream<Person> entityStream ;
+//      entityStream.forEach(e -> personRepo.save(e) );
+//   }
+//
+//   @Transactional // da in alta clasa sa mearga proxyurile
+//   private void processPage() {
+//      List<PersonXml> personXmlList =  citestePagina(xml);
+//      List<Person> personEntities = personXmlList.stream().map(xml -> entity.withImportDate(data));
+//      personRepo.saveAll(personEntities)
+//   }
 }
