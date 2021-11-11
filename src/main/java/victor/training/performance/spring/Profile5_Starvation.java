@@ -53,7 +53,7 @@ class SheepService {
     private final ShepardService shepard;
 
     public Long create(String name) {
-        String sn = shepard.registerSheep(name);
+        String sn = shepard.registerSheep(name); // Takes 1 second (HTTP call)
         Sheep sheep = repo.save(new Sheep(name, sn));
         return sheep.getId();
     }
