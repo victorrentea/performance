@@ -10,10 +10,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
+import javax.persistence.*;
 
 @SpringBootTest
 public class TransactionPlay {
@@ -55,8 +52,11 @@ class TransactionPlayground {
    public void tx1() {
       Message m = new Message("Mesaj1");
       messageRepo.save(m);
+      messageRepo.save(new Message("Mesaj1"));
+      messageRepo.save(new Message("Mesaj1"));
+      messageRepo.save(new Message("Mesaj1"));
       System.out.println("dupa save entitatea ta sa capete ID: " + m.getId() );
-      messageRepo.save(new Message(null));
+//      messageRepo.save(new Message(null));
    }
 
    public void tx2() {
@@ -68,9 +68,10 @@ class TransactionPlayground {
 @Setter
 @NoArgsConstructor
 @Entity
+@SequenceGenerator(name = "MessageSeq")
 class Message {
    @Id
-   @GeneratedValue
+   @GeneratedValue(generator = "MessageSeq")
    private Long id;
    @Column(nullable = false)
    private String name;
