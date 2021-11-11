@@ -3,6 +3,7 @@ package victor.training.performance.batch.core;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.batch.core.ChunkListener;
 import org.springframework.batch.core.Job;
 import org.springframework.batch.core.Step;
 import org.springframework.batch.core.configuration.annotation.EnableBatchProcessing;
@@ -49,12 +50,17 @@ public class BatchApp {
           // TODO optimize: tune ID generation
           // TODO optimize: enable JDBC batch mode
           .writer(jpaWriter(null))
+          .listener(logFirstChunkListener())
           .listener(progressTrackingChunkListener())
           .listener(stepListener())
           .build();
          // TODO optimize: run insert in multithread. > SynchronizedItemStreamReader
          // TODO templetize input filename
          // [bonus] TODO implement progress tracking%
+   }
+
+   private ChunkListener logFirstChunkListener() {
+      return new LogFirstChunkListener();
    }
 
    @Bean

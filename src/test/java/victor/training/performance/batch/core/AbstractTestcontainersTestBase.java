@@ -37,7 +37,7 @@ public class AbstractTestcontainersTestBase {
    @DynamicPropertySource
    public static void registerPgProperties(DynamicPropertyRegistry registry) {
       new JdbcContainerProperties(postgres)
-//          .withP6SPY() // Careful: logging every sql adds extra latency
+          .withP6SPY() // Careful: logging every sql adds extra latency
           .withNetworkDelay(2, toxiproxy)
           .apply(registry);
    }
