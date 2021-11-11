@@ -47,7 +47,7 @@ public class TransactionPlay {
 //   }
 
 @Service
-@Transactional // default (propagation = Propagation.REQUIRED)
+@Transactional//(propagation = ) // default (propagation = Propagation.REQUIRED)
    // face un proxy in jurul TransactionPlayground
 class TransactionPlayground {
    @Autowired
@@ -76,7 +76,7 @@ class TransactionPlayground {
 
 //      throw new RuntimeException("Timeout HTTP");
 
-      throw new IOException("e checked nu runtime"); // free tip: NU FOLOSITI NICIODATE ex checked in Java
+//      throw new IOException("e checked nu runtime"); // free tip: NU FOLOSITI NICIODATE ex checked in Java
    }
 
    public void tx2() {
