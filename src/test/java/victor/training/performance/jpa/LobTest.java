@@ -35,7 +35,7 @@ public class LobTest {
    @Autowired
    ProfDataRepo profDataRepo;
    @Autowired
-   EntityManager em;
+   EntityManager entityManager;
 
    @Test
    void splitEntity() {
@@ -54,17 +54,17 @@ public class LobTest {
 
    @Test
    void streamFromFileInOutDb() throws IOException, SQLException {
-      File file = new File("glowroot.jar");
-      System.out.println("File size: " + PerformanceUtil.formatSize(file.length()));
+      File tempFile = new File("glowroot.jar"); // 10 MB
+      System.out.println("File size: " + PerformanceUtil.formatSize(tempFile.length()));
 
       printUsedHeap("Initial");
 
       // ============= WRITING ==================
-      Session hibernateSession = (Session) em.getDelegate();
+      Session hibernateSession = (Session) entityManager.getDelegate();
       LobCreator lobCreator = Hibernate.getLobCreator(hibernateSession);
 
-      InputStream fileInputStream = new FileInputStream(file);
-      Blob blob = lobCreator.createBlob(fileInputStream, file.length());
+      InputStream fileInputStream = new FileInputStream(tempFile);
+      Blob blob = lobCreator.createBlob(fileInputStream, tempFile.length());
 
 
       Prof prof = new Prof()
@@ -75,7 +75,7 @@ public class LobTest {
       TestTransaction.end();
       fileInputStream.close();
 
-      printUsedHeap("Before Commit");
+      printUsedHeap("After Commit");
 
       // ============= READING ==================
       TestTransaction.start();
