@@ -28,15 +28,16 @@ class SheepController {
     private final SheepService service;
 
     @GetMapping("create")
-    public Long createSheep(@RequestParam(defaultValue = "Bisisica") String name) {
+    public Long createSheep(@RequestParam(required = false) String name) {
+        if (name == null) {
+            name = "Bisisica " + LocalDateTime.now();
+        }
         log.debug("create " + name);
         return service.create(name);
     }
-    // TODO Starve Connections
-    // TODO Starve Threads
 
     @GetMapping("search")
-    public List<Sheep> searchSheep(@RequestParam(defaultValue = "Bisisica") String name) {
+    public List<Sheep> searchSheep(@RequestParam(defaultValue = "Bisisica%") String name) {
         log.debug("search for " + name);
         return service.search(name);
     }
