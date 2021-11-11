@@ -11,19 +11,16 @@ import org.springframework.batch.core.scope.context.ChunkContext;
  */
 @Slf4j
 public class LogFirstChunkListener implements ChunkListener {
-   private Boolean logEnabled;
+   private int chunksLeft = 2;
    @Override
    public void beforeChunk(ChunkContext context) {
-      if (logEnabled == null) {
-         log.info("First Chunk Starting: ENABLE p6spy LOG");
-         log.info(" ---------------- START OF CHUNK -----------------");
+      if (chunksLeft > 0) {
+         chunksLeft--;
+         log.info(" ---------------- CHUNK -----------------");
          setLoggingLevel(Level.DEBUG);
-         logEnabled = true;
-      } else if (logEnabled == true) {
-         log.info(" ---------------- END OF  CHUNK -----------------");
-         log.info("Second Chunk Starting: DISABLE p6spy LOG");
+      } else {
+         log.info(" ---------------- CHUNK -----------------");
          setLoggingLevel(Level.OFF);
-         logEnabled = false;
       }
    }
 

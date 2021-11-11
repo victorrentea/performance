@@ -7,6 +7,7 @@ import javax.persistence.*;
 @Data
 @Entity
 @Table(uniqueConstraints = @UniqueConstraint(name = "UK_CITY_NAME",columnNames = {"name"}))
+//@Cache(usage = READ_ONLY)
 public class City {
     @Id
     @GeneratedValue
