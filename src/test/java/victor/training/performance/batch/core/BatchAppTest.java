@@ -7,7 +7,6 @@ import org.springframework.batch.core.launch.JobLauncher;
 import org.springframework.batch.core.repository.JobRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import victor.training.performance.batch.core.domain.City;
 
 import java.io.File;
 import java.util.Map;
@@ -30,9 +29,10 @@ public class BatchAppTest extends AbstractTestcontainersTestBase{
    @BeforeEach
    final void before() {
 //      cityRepo.save(new City("City 1"));
-      for (int i = 1; i <= 4; i++) {
-         cityRepo.save(new City("City " + i));
-      }
+
+//      for (int i = 1; i <= 4; i++) {
+//         cityRepo.save(new City("City " + i));
+//      }
    }
    @Test
    public void test() throws Exception {

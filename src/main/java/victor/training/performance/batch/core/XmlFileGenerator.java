@@ -22,8 +22,8 @@ public class XmlFileGenerator {
         try (Writer writer = new FileWriter(dataFile)){ // TODO how to optimize this?
             writer.write("<personList>\n");
             for (int i = 0; i < recordCount; i++) {
-                int cityId = 1 + i / 1000;
-//                int cityId = 1 + r.nextInt(100);
+//                int cityId = 1 + i / 1000;
+                int cityId = 1 + r.nextInt(4);
 
                 String cityName = "City " + cityId;
                 citiesNamesGenerated.add(cityName);
