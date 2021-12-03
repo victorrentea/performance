@@ -1,9 +1,14 @@
 package victor.training.performance.util;
 
 import java.lang.management.ManagementFactory;
+import java.lang.management.RuntimeMXBean;
 import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.concurrent.Callable;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
+import static java.lang.System.currentTimeMillis;
 
 public class PerformanceUtil {
 	static Random random = new Random();
@@ -20,13 +25,44 @@ public class PerformanceUtil {
 		return min + random.nextInt(max-min);
 	}
 
+	public static void printJfrFile() {
+		RuntimeMXBean runtimeMxBean = ManagementFactory.getRuntimeMXBean();
+		List<String> arguments = runtimeMxBean.getInputArguments();
+		Optional<String> jfrArg = arguments.stream().filter(a -> a.contains("StartFlightRecording")).findFirst();
+		if (jfrArg.isPresent()) {
+			Matcher matcher = Pattern.compile("[^\"]+.jfr").matcher(jfrArg.get());
+			if (matcher.find()) {
+				System.out.println("Load in Java Mission Control this file: " + matcher.group(0));
+				long t0 = currentTimeMillis();
+				Runtime.getRuntime().addShutdownHook(new Thread() {
+					@Override
+					public void run() {
+						System.out.println("Recorded " + (currentTimeMillis() - t0) + " millis");
+						System.out.println("Load in Java Mission Control this file: " + matcher.group(0));
+					}
+				});
+				return;
+			}
+		}
+		System.out.println("<JFR not started>");
+	}
+	
 	/**
-	 * Sleeps quietly (without throwing anything out)
+	 * Sleeps quietly (without throwing a checked exception)
 	 */
 	public static void sleepq(long millis) {
 		try {
 			Thread.sleep(millis);
 		} catch (InterruptedException e) {
+			Thread.currentThread().interrupt();
+			throw new RuntimeException(e);
+		}
+	}
+	public static void sleepNanos(int nanos) {
+		try {
+			Thread.sleep(0, nanos);
+		} catch (InterruptedException e) {
+			Thread.currentThread().interrupt();
 			throw new RuntimeException(e);
 		}
 	}
@@ -37,9 +73,9 @@ public class PerformanceUtil {
 
 
 	public static int measureCall(Runnable r) {
-		long t0 = System.currentTimeMillis();
+		long t0 = currentTimeMillis();
 		r.run();
-		long t1 = System.currentTimeMillis();
+		long t1 = currentTimeMillis();
 		return (int) (t1-t0);
 	}
 	public static Callable<Integer> measuring(Runnable r) {
