@@ -18,5 +18,6 @@
     - For this step, please set `PLOTTER_ACCEPTS_ONLY_PAGES` to `true` 
     - Hint: how do you accumulate a full page between threads?
     - IMPORTANT: don't mind about the previous test
-- [HARD] Make the test still pass
+- [HARD] Make the test still pass -> manual backpressure implementation
   - Hint: a queue of pages is too coarse-grained
+  
