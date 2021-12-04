@@ -20,8 +20,8 @@ class MonitoringSystemTest {
    @Test
    void discardsOldSamplesOnOverflow() {
       List<ValueAndDelay> responses = new ArrayList<>();
-      for (int i = 0; i < 41; i++) responses.add(new ValueAndDelay(0, 0));
-      for (int i = 0; i < 40; i++) responses.add(new ValueAndDelay(1, 0));
+      for (int i = 0; i < 41; i++) responses.add(new ValueAndDelay(0, 2));
+      for (int i = 0; i < 40; i++) responses.add(new ValueAndDelay(1, 2));
       Plotter plotter = new Plotter(10);
       MonitoringSystem target = new MonitoringSystem(new Probes(responses), plotter);
 
@@ -36,6 +36,7 @@ class MonitoringSystemTest {
              return newReceivedCount == lastReceivedCount.getAndSet(newReceivedCount);
           });
 
+      System.out.println(plotter.getReceivedValues());
       assertThat(plotter.getReceivedValues().stream().filter(v -> v == 0)).hasSizeLessThan(10);
       assertThat(plotter.getReceivedValues().stream().filter(v -> v == 1)).hasSizeGreaterThan(38);
    }
