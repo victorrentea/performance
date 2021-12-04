@@ -1,12 +1,12 @@
 package victor.training.performance.primitives;
 
-import static victor.training.performance.util.PerformanceUtil.log;
-import static victor.training.performance.util.PerformanceUtil.sleepq;
-
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.concurrent.Semaphore;
+
+import static victor.training.performance.util.PerformanceUtil.log;
+import static victor.training.performance.util.PerformanceUtil.sleepq;
 
 public class Semaphore1 {
 	static class BoundedHashSet<T> {
@@ -29,6 +29,8 @@ public class Semaphore1 {
 			return wasRemoved;
 		}
 	}
+
+//	https://www.red-gate.com/blog/software-development/code-kata-7-producer-consumer-problem
 	
 	public static void main(String[] args) {
 		final BoundedHashSet<String> set = new BoundedHashSet<>(3);
