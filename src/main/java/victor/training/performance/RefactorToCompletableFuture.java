@@ -7,7 +7,7 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 
-public class RaceBugs {
+public class RefactorToCompletableFuture {
    public static final int N = 100;
    private static final Object monitor = new Object();
    private static final Set<String> emails = new HashSet<>();
