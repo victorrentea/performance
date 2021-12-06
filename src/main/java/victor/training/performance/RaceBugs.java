@@ -2,9 +2,7 @@ package victor.training.performance;
 
 import victor.training.performance.util.PerformanceUtil;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
+import java.util.*;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -17,7 +15,7 @@ import static java.util.stream.Collectors.toList;
 public class RaceBugs {
    public static final int N = 100;
    private static final Object monitor = new Object();
-   private static final List<String> emails = Collections.synchronizedList(new ArrayList<>());
+   private static final Set<String> emails = Collections.synchronizedSet(new HashSet<>());
 
 
    // TODO Collect all emails with EmailFetcher.retrieveEmail(i)
@@ -41,8 +39,8 @@ public class RaceBugs {
       long t1 = System.currentTimeMillis();
 //      System.out.printf("Result: %,d\n", population.intValue());
       System.out.printf("Emails.size: %,d\n", emails.size());
-//        System.out.printf("  Emails.size expected: %,d total, %,d unique\n", N*2, N);
-//        System.out.printf("Emails checks: %,d\n", EmailFetcher.emailChecksCounter.get());
+        System.out.printf("  Emails.size expected: %,d total, %,d unique\n", N*2, N);
+        System.out.printf("Emails checks: %,d\n", EmailFetcher.emailChecksCounter.get());
       System.out.println("Time: " + (t1 - t0) + " ms");
       // Note: avoid doing new Thread() -> use thread pools in a real app
    }
@@ -51,9 +49,12 @@ public class RaceBugs {
       public void run() {
          for (int i = 0; i < N; i++) {
             String email = EmailFetcher.retrieveEmail(i);
-//            synchronized (monitor) {
-               emails.add(email);
-//            }
+
+            if (!emails.contains(email)) {
+               if (EmailFetcher.checkEmail(email)) {
+                  emails.add(email);
+               }
+            }
          }
       }
    }
@@ -61,10 +62,16 @@ public class RaceBugs {
    public static class Worker2 implements Runnable {
       public void run() {
          for (int i = N; i < N + N; i++) {
-            String email = EmailFetcher.retrieveEmail(i);
-//            synchronized (monitor) {
-               emails.add(email);
-//            }
+            String email = EmailFetcher.retrieveEmail(i); // a@b.com
+
+            if (!emails.contains(email)) {
+               // ----------- AICI
+               if (EmailFetcher.checkEmail(email)) {
+
+                  emails.add(email);
+
+               }
+            }
          }
       }
    }
