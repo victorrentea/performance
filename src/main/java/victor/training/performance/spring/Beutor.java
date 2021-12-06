@@ -1,12 +1,15 @@
 package victor.training.performance.spring;
 
 
+import io.micrometer.core.annotation.Timed;
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
@@ -15,9 +18,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
+import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 
 import static java.util.Arrays.asList;
@@ -31,21 +33,22 @@ public class Beutor implements CommandLineRunner {
 
    @Override
    public void run(String... args) throws Exception { // runs at app startup
-      log.debug("Got " + orderDrinks());
+//      log.debug("Got " + orderDrinks());
    }
+//   public static final ExecutorService pool = Executors.newFixedThreadPool(4);
+
+//   @Autowired
+//   ThreadPoolTaskExecutor pool;
 
    public List<Object> orderDrinks() throws ExecutionException, InterruptedException {
-      log.debug("Requesting drinks...");
+      log.debug("Requesting drinks to my friend the barman: {}...", barman.getClass());
       long t0 = System.currentTimeMillis();
 
-      ExecutorService pool = Executors.newFixedThreadPool(2);
 
-      Future<Beer> futureBeer = pool.submit(() -> barman.pourBeer());
-      Future<Vodka> futureVodka = pool.submit(() -> barman.pourVodka());
-// pana aici nici unul nu a pornit inca.
+      Future<Beer> futureBeer = barman.pourBeer();
+      Future<Vodka> futureVodka = barman.pourVodka();
 
-      Beer beer = futureBeer.get(); // cate secunde sta blocat aici th
-      // care executa orderDrinks : 0? 1? 2?
+      Beer beer = futureBeer.get();
       Vodka vodka = futureVodka.get(); // cate secunde stau aici: ~0
 
       long t1 = System.currentTimeMillis();
@@ -60,16 +63,19 @@ public class Beutor implements CommandLineRunner {
 @Slf4j
 class Barman {
 
-   public Beer pourBeer() {
-      log.debug("Pouring Beer...");
+   @Timed("beer time")
+   @Async("beerPool")
+   public CompletableFuture<Beer> pourBeer() {
+      log.debug("Pouring Beer..."); // 1 bere odata poate fi turnata !
       sleepq(1000); // simulez un call de retea cu RestTemplate sau JAXWS sau TCP
-      return new Beer();
+      return CompletableFuture.completedFuture(new Beer());
    }
 
-   public Vodka pourVodka() {
+   @Async("vodkaPool")
+   public CompletableFuture<Vodka> pourVodka() {
       log.debug("Pouring Vodka...");
       sleepq(1000);
-      return new Vodka();
+      return CompletableFuture.completedFuture(new Vodka());
    }
 }
 
@@ -106,14 +112,26 @@ class BarConfig {
 //   private PropagateThreadScope propagateThreadScope;
 
    @Bean
-   public ThreadPoolTaskExecutor pool() {
+   public ThreadPoolTaskExecutor beerPool(@Value("${beer.barman.count}") int barmanCount) {
       ThreadPoolTaskExecutor executor = new ThreadPoolTaskExecutor();
-      executor.setCorePoolSize(1);
-      executor.setMaxPoolSize(1);
+      executor.setCorePoolSize(barmanCount);
+      executor.setMaxPoolSize(barmanCount);
       executor.setQueueCapacity(500);
-      executor.setThreadNamePrefix("barman-");
+      executor.setThreadNamePrefix("beer-");
+//      executor.setRejectedExecutionHandler(new );
       executor.initialize();
-//      executor.setTaskDecorator(propagateThreadScope);
+      executor.setWaitForTasksToCompleteOnShutdown(true);
+      return executor;
+   }
+   @Bean
+   public ThreadPoolTaskExecutor vodkaPool(@Value("${vodka.barman.count}") int barmanCount) {
+      ThreadPoolTaskExecutor executor = new ThreadPoolTaskExecutor();
+      executor.setCorePoolSize(barmanCount);
+      executor.setMaxPoolSize(barmanCount);
+      executor.setQueueCapacity(500);
+      executor.setThreadNamePrefix("vodka-");
+//      executor.setRejectedExecutionHandler(new );
+      executor.initialize();
       executor.setWaitForTasksToCompleteOnShutdown(true);
       return executor;
    }
