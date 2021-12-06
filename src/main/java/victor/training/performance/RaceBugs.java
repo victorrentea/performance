@@ -3,6 +3,7 @@ package victor.training.performance;
 import victor.training.performance.util.PerformanceUtil;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
@@ -16,7 +17,7 @@ import static java.util.stream.Collectors.toList;
 public class RaceBugs {
    public static final int N = 100;
    private static final Object monitor = new Object();
-   private static final List<String> emails = new ArrayList<>();
+   private static final List<String> emails = Collections.synchronizedList(new ArrayList<>());
 
 
    // TODO Collect all emails with EmailFetcher.retrieveEmail(i)
@@ -50,9 +51,9 @@ public class RaceBugs {
       public void run() {
          for (int i = 0; i < N; i++) {
             String email = EmailFetcher.retrieveEmail(i);
-            synchronized (monitor) {
+//            synchronized (monitor) {
                emails.add(email);
-            }
+//            }
          }
       }
    }
@@ -61,9 +62,9 @@ public class RaceBugs {
       public void run() {
          for (int i = N; i < N + N; i++) {
             String email = EmailFetcher.retrieveEmail(i);
-            synchronized (monitor) {
+//            synchronized (monitor) {
                emails.add(email);
-            }
+//            }
          }
       }
    }
