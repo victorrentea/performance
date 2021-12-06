@@ -15,13 +15,17 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
 
 import static java.util.Arrays.asList;
 import static victor.training.performance.util.PerformanceUtil.sleepq;
 
-@Component
 @Slf4j
-public class BarService implements CommandLineRunner {
+@Component
+public class Beutor implements CommandLineRunner {
    @Autowired
    private Barman barman;
 
@@ -30,12 +34,19 @@ public class BarService implements CommandLineRunner {
       log.debug("Got " + orderDrinks());
    }
 
-   public List<Object> orderDrinks() {
+   public List<Object> orderDrinks() throws ExecutionException, InterruptedException {
       log.debug("Requesting drinks...");
       long t0 = System.currentTimeMillis();
 
-      Beer beer = barman.pourBeer();
-      Vodka vodka = barman.pourVodka();
+      ExecutorService pool = Executors.newFixedThreadPool(2);
+
+      Future<Beer> futureBeer = pool.submit(() -> barman.pourBeer());
+      Future<Vodka> futureVodka = pool.submit(() -> barman.pourVodka());
+// pana aici nici unul nu a pornit inca.
+
+      Beer beer = futureBeer.get(); // cate secunde sta blocat aici th
+      // care executa orderDrinks : 0? 1? 2?
+      Vodka vodka = futureVodka.get(); // cate secunde stau aici: ~0
 
       long t1 = System.currentTimeMillis();
       List<Object> drinks = asList(beer, vodka);
@@ -43,7 +54,6 @@ public class BarService implements CommandLineRunner {
       // TODO #1: reduce the waiting time (latency)
       return drinks;
    }
-
 }
 
 @Service
@@ -52,7 +62,7 @@ class Barman {
 
    public Beer pourBeer() {
       log.debug("Pouring Beer...");
-      sleepq(1000);
+      sleepq(1000); // simulez un call de retea cu RestTemplate sau JAXWS sau TCP
       return new Beer();
    }
 
@@ -78,7 +88,7 @@ class Vodka {
 class BarController {
    //<editor-fold desc="Web">
    @Autowired
-   private BarService service;
+   private Beutor service;
 
    @GetMapping
    public String getDrinks() throws Exception {
