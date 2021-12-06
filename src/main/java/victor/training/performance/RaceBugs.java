@@ -15,9 +15,10 @@ import static java.util.stream.Collectors.toList;
 public class RaceBugs {
     private static List<String> emails = new ArrayList<>();
 
-    private static Integer population = 0;
-    public static final int N = 10_000;
+    private static AtomicInteger population = new AtomicInteger(0);
+    public static final int N = 100_000;
     private static final Object monitor = new Object();
+
 
     // TODO Collect all emails with EmailFetcher.retrieveEmail(i)
     // TODO Avoid duplicated emails
@@ -27,9 +28,9 @@ public class RaceBugs {
     public static class Worker1 implements Runnable {
         public void run() {
             for (int i = 0; i < N; i++) {
-                synchronized (monitor) {
-                    population++;
-                }
+//                synchronized (monitor) {
+                    population.incrementAndGet();
+//                }
             }
         }
     }
@@ -37,9 +38,9 @@ public class RaceBugs {
     public static class Worker2 implements Runnable {
         public void run() {
             for (int i = 0; i < N; i++) {
-                synchronized (monitor) {
-                    population++;
-                }
+//                synchronized (monitor) {
+                    population.incrementAndGet();
+//                }
             }
         }
     }
