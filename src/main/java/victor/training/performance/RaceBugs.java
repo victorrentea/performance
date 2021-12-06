@@ -15,7 +15,7 @@ import static java.util.stream.Collectors.toList;
 public class RaceBugs {
    public static final int N = 100;
    private static final Object monitor = new Object();
-   private static final Set<String> emails = Collections.synchronizedSet(new HashSet<>());
+   private static final Set<String> emails = new HashSet<>();
 
 
    // TODO Collect all emails with EmailFetcher.retrieveEmail(i)
@@ -50,9 +50,11 @@ public class RaceBugs {
          for (int i = 0; i < N; i++) {
             String email = EmailFetcher.retrieveEmail(i);
 
-            if (!emails.contains(email)) {
-               if (EmailFetcher.checkEmail(email)) {
-                  emails.add(email);
+            synchronized (monitor) {
+               if (!emails.contains(email)) {
+                  if (EmailFetcher.checkEmail(email)) {
+                     emails.add(email);
+                  }
                }
             }
          }
@@ -62,14 +64,13 @@ public class RaceBugs {
    public static class Worker2 implements Runnable {
       public void run() {
          for (int i = N; i < N + N; i++) {
-            String email = EmailFetcher.retrieveEmail(i); // a@b.com
+            String email = EmailFetcher.retrieveEmail(i);
 
-            if (!emails.contains(email)) {
-               // ----------- AICI
-               if (EmailFetcher.checkEmail(email)) {
-
-                  emails.add(email);
-
+            synchronized (monitor) {
+               if (!emails.contains(email)) {
+                  if (EmailFetcher.checkEmail(email)) {
+                     emails.add(email);
+                  }
                }
             }
          }
