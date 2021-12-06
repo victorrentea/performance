@@ -14,9 +14,9 @@ import static java.util.stream.Collectors.toList;
 
 public class RaceBugs {
     private static Integer population = 0;
-    private static List<String> emails = new ArrayList<>();
-    public static final int N = 10_000;
+    public static final int N = 20_000;
 
+    // TODO Warmup: fix population++ race
     // TODO Collect all emails with EmailFetcher.retrieveEmail(i)
     // TODO Avoid duplicated emails
     // TODO All email should be checked with EmailFetcher.checkEmail(email)
@@ -24,7 +24,7 @@ public class RaceBugs {
 
     public static class Worker1 implements Runnable {
         public void run() {
-            for (int i = 0; i < N; i++) {
+            for (int i = 0; i < N/2; i++) {
                 population++;
             }
         }
@@ -32,7 +32,7 @@ public class RaceBugs {
 
     public static class Worker2 implements Runnable {
         public void run() {
-            for (int i = N; i < N+N; i++) {
+            for (int i = N/2; i < N; i++) {
                 population++;
             }
         }
@@ -68,7 +68,7 @@ class EmailFetcher {
 
     private static final List<String> ALL_EMAILS = new ArrayList<>();
     static {
-        List<String> list = IntStream.range(0, RaceBugs.N)
+        List<String> list = IntStream.range(0, RaceBugs.N/2)
             .mapToObj(i -> "email" + i + "@example.com") // = 50% overlap
             .collect(toList());
 //        Collections.shuffle(ALL_EMAILS); // randomize, or
