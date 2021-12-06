@@ -1,5 +1,6 @@
 package victor.training.performance;
 
+import lombok.extern.slf4j.Slf4j;
 import victor.training.performance.util.PerformanceUtil;
 
 import java.util.ArrayList;
@@ -9,6 +10,7 @@ import java.util.stream.IntStream;
 
 import static java.util.stream.Collectors.toList;
 
+@Slf4j
 public class EmailFetcher {
 
    private static final List<String> ALL_EMAILS = new ArrayList<>();
@@ -32,6 +34,7 @@ public class EmailFetcher {
    }
 
    public static boolean checkEmail(String email) {
+      log.debug("Chem network");
       emailChecksCounter.incrementAndGet();
       PerformanceUtil.sleepSomeTime(10, 10);
       return true;
