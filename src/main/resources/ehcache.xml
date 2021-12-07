@@ -12,13 +12,13 @@
         </resources>
     </cache>
 
-
     <cache alias="missed-cache" >
         <expiry>
             <ttl unit="minutes">30</ttl>
         </expiry>
         <resources>
             <heap unit="MB">100</heap>
+            <disk unit="GB">1</disk>
         </resources>
     </cache>
 

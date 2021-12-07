@@ -22,7 +22,7 @@ public class Leak6_Async {
 	@GetMapping
 	public String test() {
 		BigObject20MB big = new BigObject20MB();
-		worker.workHard(new Random().nextInt(100), big::lookup);
+		worker.workHard(new Random().nextInt(100), index -> big.lookup(index));
 		return "Keep calling this 20 times within 10 seconds";
 	}
 }
@@ -30,7 +30,7 @@ public class Leak6_Async {
 @Slf4j
 @Service
 class Worker {
-	@Async
+	@Async("beerPool")
 	public void workHard(int param, Function<Integer, Integer> lookup) {
 		PerformanceUtil.sleepq(10_000); // imagine other tasks doing this on the same pool
 		int result = param + lookup.apply((int) Math.sqrt(param));
