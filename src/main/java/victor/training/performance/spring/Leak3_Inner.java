@@ -14,15 +14,17 @@ import java.util.Map;
 @RequestMapping("leak3")
 public class Leak3_Inner {
 	public static ThreadLocal<UserRightsCalculator> threadLocal = new ThreadLocal<>();
-	
 	@GetMapping
 	public String test() {
 		UserRightsCalculator calculator = new CachingMethodObject().createRightsCalculator();
 		threadLocal.set(calculator);
-		bizLogicUsingCalculator();
+		try {
+			bizLogicUsingCalculator();
+		} finally {
+			threadLocal.remove();
+		}
 		return "Do you know Java?";
 	}
-
 	private void bizLogicUsingCalculator() {
 		if (threadLocal.get().hasRight("launch")) {
 			PerformanceUtil.sleepq(20_000); // long flow and/or heavy parallel load
@@ -30,18 +32,17 @@ public class Leak3_Inner {
 	}
 }
 
-
 class CachingMethodObject {
-	public class UserRightsCalculator { // an instance of this is kept on current thread
+	public static class UserRightsCalculator { // an instance of this is kept on current thread
+		//n-are campuri, deci o instanta din asta nu cantareste mai nimic.
 		public boolean hasRight(String task) {
 			System.out.println("Stupid Code");
 			// what's the connection with the 'bigMac' field ?
 			return true;
 		}
 	}
-
 	private Map<String, BigObject20MB> bigMac = new HashMap<>();
-
+// de ce o instanta de UserRightsCalculator tine in viata campul bigMac
 	public UserRightsCalculator createRightsCalculator() {
 		bigMac.put("a", new BigObject20MB());
 		bigMac.put("b", new BigObject20MB());

@@ -57,7 +57,7 @@ public class Leak4_Session {
 @Component
 @Scope(scopeName = "session", proxyMode = ScopedProxyMode.TARGET_CLASS)
 class UserSession implements Serializable {
-
+	int[] fun = new int[20_000_000/4];
 
 
 }

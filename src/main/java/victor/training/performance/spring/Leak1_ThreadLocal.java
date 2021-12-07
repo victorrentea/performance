@@ -1,7 +1,9 @@
 package victor.training.performance.spring;
 
 import lombok.Data;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Scope;
 import org.springframework.context.annotation.ScopedProxyMode;
 import org.springframework.stereotype.Component;
@@ -16,9 +18,10 @@ class RequestData {
    private BigObject20MB bigObject;
 }
 
+@Slf4j
 @RestController
 @RequestMapping("leak1")
-public class Leak1_ThreadLocal {
+public class Leak1_ThreadLocal implements CommandLineRunner {
    public static final ThreadLocal<BigObject20MB> threadLocal = new ThreadLocal<>();
    @Autowired
    RequestData requestData;
@@ -45,6 +48,16 @@ public class Leak1_ThreadLocal {
       BigObject20MB bigObject = threadLocal.get();
       System.out.println("Business logic using " + bigObject);
       // TODO think of throw new RuntimeException();
+   }
+
+   @Override
+   public void run(String... args) throws Exception {
+      for (ClassLoader loader = Leak1_ThreadLocal.class.getClassLoader();
+           loader != null;
+           loader = loader.getParent()) {
+
+         log.debug("Loader: " + loader);
+      }
    }
 }
 
