@@ -2,7 +2,7 @@ package victor.training.performance.primitives;
 
 // https://dzone.com/articles/shared-variable-optimization-within-a-loop
 public class VolatilePuzzle {
-	static boolean running = true;
+	static volatile boolean running = true;
 	public static void main(String[] args) throws InterruptedException {
 		Thread t = new Thread(() -> {
 			System.out.println("Thread starting");
@@ -14,9 +14,10 @@ public class VolatilePuzzle {
 		});
 		t.start();
 		Thread.sleep(5000);
-		
-		
-		System.out.println("Telling the thread to stop");
+
+
+		String telling_the_thread_to_stop = "Telling the thread to stop";
+		System.out.println(telling_the_thread_to_stop);
 		running = false;
 		System.out.println("Done");
 	}

@@ -1,9 +1,8 @@
 package victor.training.performance.interview;
 
-import org.apache.commons.io.FileUtils;
 import victor.training.performance.util.PerformanceUtil;
 
-import java.io.File;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.util.List;
 import java.util.stream.IntStream;
@@ -18,11 +17,14 @@ public class TheInfamousStringBuilderProblem {
       PerformanceUtil.waitForEnter();
       long t0 = System.currentTimeMillis();
 
-      String s = "";
-      for (String element : elements) {
-         s += element;
+
+      try (FileWriter writer = new FileWriter("out.txt")) {
+
+         for (String element : elements) {
+            writer.write(element);
+         }
       }
-      FileUtils.writeStringToFile(new File("out.txt"), s);
+
 
       System.out.println("Done. Took " + (System.currentTimeMillis() - t0));
       PerformanceUtil.waitForEnter();
