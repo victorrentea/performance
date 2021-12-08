@@ -5,6 +5,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Component;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
 
 import javax.annotation.PostConstruct;
 import javax.persistence.ElementCollection;
@@ -21,12 +22,12 @@ import static java.util.stream.Collectors.toList;
 
 // WORK IN PROGRESS
 //@RestController
-//@RequestMapping("leak12")
+@RequestMapping("leak13")
 @Slf4j
-public class Leak12_EntityHashCode {
+public class Leak13_EntityHashCode {
    private final PersisterInPages service;
 
-   public Leak12_EntityHashCode(PersisterInPages service) {
+   public Leak13_EntityHashCode(PersisterInPages service) {
       this.service = service;
    }
 

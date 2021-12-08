@@ -26,9 +26,9 @@ import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 @RestController
-@RequestMapping("leak11")
+@RequestMapping("leak12")
 @Slf4j
-public class Leak11_XmlDom {
+public class Leak12_XmlDom {
 
    public static final int LOTS_OF_XMLs = 1000;
    private static final DocumentBuilderFactory documentBuilderFactory = DocumentBuilderFactory.newInstance();
@@ -58,7 +58,7 @@ public class Leak11_XmlDom {
 
    public static List<Node> extractPluginsFromPom(int n) {
       return IntStream.range(0, n)
-          .mapToObj(Leak11_XmlDom::extractPluginsFromPom)
+          .mapToObj(Leak12_XmlDom::extractPluginsFromPom)
           .flatMap(Collection::stream)
           .collect(Collectors.toList());
    }
