@@ -70,6 +70,7 @@ class ShepardService {
             .getForEntity("http://localhost:9999/api/register-sheep", SheepRegistrationResponse.class)
             .completable()
             .thenApply(response -> response.getBody().getSn());
+
         // or, using Feign client
 
 //        SheepRegistrationResponse response = client.registerSheep(); // HTTP
