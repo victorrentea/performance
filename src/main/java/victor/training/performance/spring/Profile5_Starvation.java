@@ -9,7 +9,6 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -36,22 +35,18 @@ class SheepController {
         log.debug("create " + name);
         return service.create(name);
     }
-
     @GetMapping("search")
     public List<Sheep> searchSheep(@RequestParam(defaultValue = "Bisisica%") String name) {
         log.debug("search for " + name);
         return service.search(name);
     }
 }
-
 @Slf4j
 @Service
 @RequiredArgsConstructor
-@Transactional
 class SheepService {
     private final SheepRepo repo;
     private final ShepardService shepard;
-
     public Long create(String name) {
         String sn = shepard.registerSheep(name); // Takes 1 second (HTTP call)
         Sheep sheep = repo.save(new Sheep(name, sn));
@@ -70,10 +65,8 @@ class ShepardService {
     public String registerSheep(String name) {
 //        SheepRegistrationResponse response = new RestTemplate()
 //            .getForObject("http://localhost:9999/api/register-sheep", SheepRegistrationResponse.class);
-
         // or, using Feign client
-
-        SheepRegistrationResponse response = client.registerSheep();
+        SheepRegistrationResponse response = client.registerSheep(); // HTTP
         return response.getSn();
     }
 }
