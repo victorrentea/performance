@@ -13,12 +13,14 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.client.AsyncRestTemplate;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.concurrent.CompletableFuture;
 
 @Slf4j
 @RestController
@@ -28,7 +30,7 @@ class SheepController {
     private final SheepService service;
 
     @GetMapping("create")
-    public Long createSheep(@RequestParam(required = false) String name) {
+    public CompletableFuture<Long> createSheep(@RequestParam(required = false) String name) {
         if (name == null) {
             name = "Bisisica " + LocalDateTime.now();
         }
@@ -47,10 +49,10 @@ class SheepController {
 class SheepService {
     private final SheepRepo repo;
     private final ShepardService shepard;
-    public Long create(String name) {
-        String sn = shepard.registerSheep(name); // Takes 1 second (HTTP call)
-        Sheep sheep = repo.save(new Sheep(name, sn));
-        return sheep.getId();
+    public CompletableFuture<Long> create(String name) {
+        return shepard.registerSheep(name)
+            .thenApply(sn ->repo.save(new Sheep(name, sn)))
+            .thenApply(sheep -> sheep.getId());
     }
     public List<Sheep> search(String name) {
         return repo.getByNameLike(name);
@@ -62,12 +64,16 @@ class SheepService {
 class ShepardService {
     private final ShepardClient client;
     @Timed("shepard")
-    public String registerSheep(String name) {
-//        SheepRegistrationResponse response = new RestTemplate()
-//            .getForObject("http://localhost:9999/api/register-sheep", SheepRegistrationResponse.class);
+//    @Async("shepardPool")
+    public CompletableFuture<String> registerSheep(String name) {
+        return new AsyncRestTemplate()
+            .getForEntity("http://localhost:9999/api/register-sheep", SheepRegistrationResponse.class)
+            .completable()
+            .thenApply(response -> response.getBody().getSn());
         // or, using Feign client
-        SheepRegistrationResponse response = client.registerSheep(); // HTTP
-        return response.getSn();
+
+//        SheepRegistrationResponse response = client.registerSheep(); // HTTP
+//        return CompletableFuture.completedFuture(response.getSn());
     }
 }
 
@@ -108,8 +114,8 @@ class SomeConfig {
     @Bean
     public ThreadPoolTaskExecutor shepardPool() {
         ThreadPoolTaskExecutor executor = new ThreadPoolTaskExecutor();
-        executor.setCorePoolSize(20);
-        executor.setMaxPoolSize(20);
+        executor.setCorePoolSize(100);
+        executor.setMaxPoolSize(100);
         executor.setQueueCapacity(500);
         executor.setThreadNamePrefix("shepard-");
         executor.initialize();
