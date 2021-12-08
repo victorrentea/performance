@@ -16,15 +16,15 @@ import java.util.List;
 @RequestMapping("leak10")
 public class Leak10_SubList {
 
-   private List<BigObject20MB> lastRequestTimes = new ArrayList<>();
+   private List<BigObject20MB> lastest10Objects = new ArrayList<>();
 
    @GetMapping
    public synchronized int test() {
-      lastRequestTimes.add(new BigObject20MB());
-      if (lastRequestTimes.size() > 5) {
-         lastRequestTimes = lastRequestTimes.subList(1, lastRequestTimes.size());
+      lastest10Objects.add(new BigObject20MB());
+      if (lastest10Objects.size() > 10) {
+         lastest10Objects = lastest10Objects.subList(1, lastest10Objects.size());
       }
-      return lastRequestTimes.size();
+      return lastest10Objects.size();
    }
 
 }

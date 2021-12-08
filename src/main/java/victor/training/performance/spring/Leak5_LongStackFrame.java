@@ -5,7 +5,6 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import victor.training.performance.util.BigObject80MB;
-import victor.training.performance.util.PerformanceUtil;
 
 import static victor.training.performance.util.PerformanceUtil.sleepq;
 
@@ -22,5 +21,6 @@ public class Leak5_LongStackFrame {
 		if (useful != null) {
 			log.trace("Using useful part: " + useful);
 		}
+		return "end";
 	}
 }
