@@ -27,7 +27,7 @@ public class Parent {
    // @BatchSize(size=10) // too much magic
    private Set<Child> children = new HashSet<>();
 
-   @ManyToOne
+   @ManyToOne//(fetch = FetchType.LAZY)
    private Country country; // surprise !
 
    private Parent() {

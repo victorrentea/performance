@@ -3,9 +3,6 @@ package victor.training.performance.spring;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.CommandLineRunner;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -14,6 +11,8 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import victor.training.performance.jpa.Parent;
+
+import java.util.Set;
 
 @Slf4j
 @RestController // TODO uncomment and study
@@ -36,8 +35,8 @@ public class Profile2_NPlusOne implements CommandLineRunner {
 
    @GetMapping
    @Transactional
-   public Page<Parent> query() { // arunc Entitati JPA pe JSON
-      Page<Parent> parentPage = repo.findByNameLike("%ar%", PageRequest.of(0, 20));
+   public Set<Parent> query() { // arunc Entitati JPA pe JSON
+      Set<Parent> parentPage = repo.findByNameLike("%ar%");
       log.info("Returning");
       return parentPage;
 
@@ -49,8 +48,14 @@ public class Profile2_NPlusOne implements CommandLineRunner {
 }
 
 interface ParentRepo extends JpaRepository<Parent, Long> {
-   @Query("SELECT p FROM Parent p WHERE p.name LIKE ?1")
-   Page<Parent> findByNameLike(String namePart, Pageable page);
+   @Query("SELECT p FROM Parent p " +
+          "LEFT JOIN FETCH p.children " +
+//          "LEFT JOIN FETCH p.country " +
+          " WHERE p.name LIKE ?1")
+   Set<Parent> findByNameLike(String namePart);
+
+
+
 
 //   @Query("SELECT p.id FROM Parent p WHERE p.name LIKE ?1")
 //   Page<Long> findByNameLike(String namePart, Pageable page);

@@ -1,6 +1,5 @@
 package victor.training.performance.jpa;
 
-import lombok.AllArgsConstructor;
 import lombok.Data;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -20,7 +19,6 @@ import java.util.List;
 import java.util.Map;
 
 import static java.util.stream.Collectors.joining;
-import static java.util.stream.Collectors.toList;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.tuple;
 import static org.springframework.test.annotation.DirtiesContext.ClassMode.BEFORE_EACH_TEST_METHOD;
@@ -57,7 +55,7 @@ public class UberEntityTest {
         UberEntity uber = new UberEntity()
                 .setName("::uberName::")
                 .setStatus(Status.SUBMITTED)
-                .setOriginCountry(belgium)
+                .setOriginCountryId(belgium.getId())
                 .setFiscalCountry(romania)
                 .setInvoicingCountry(france)
                 .setNationality(serbia)
@@ -100,14 +98,28 @@ public class UberEntityTest {
 
         List<UberSearchResult> dtos = search(criteria);
 
-        System.out.println("Results: \n" + dtos.stream().map(UberSearchResult::toString).collect(joining("\n")));
+        System.out.println("Results: \n" + dtos.stream()
+            .map(UberSearchResult::toString)
+            .collect(joining("\n")));
         assertThat(dtos)
             .extracting("id", "name", "originCountry")
             .containsExactly(tuple(uberId, "::uberName::", "Belgium"));
     }
 
+
+
+
+
+
+
+
     private List<UberSearchResult> search(UberSearchCriteria criteria) {
-        String jpql = "SELECT u FROM UberEntity u WHERE 1 = 1 ";
+//        String jpql = "SELECT u FROM UberEntity u WHERE 1 = 1 "; // nicioada nu faci asa daca searchui entitati cu mai mult de 10-12 campuri
+        String jpql = "SELECT new victor.training.performance.jpa.UberSearchResult(" +
+                                " u.id, u.name, originCountry.name )" +
+                      " FROM UberEntity u " +
+                      " LEFT JOIN Country originCountry ON originCountry.id = u.originCountryId " +
+                      " WHERE 1 = 1 ";
         // alternative implementation: CriteriaAPI, Criteria+Metamodel, QueryDSL, Spring Specifications
 
         Map<String, Object> params = new HashMap<>();
@@ -117,12 +129,12 @@ public class UberEntityTest {
             params.put("name", criteria.name);
         }
 
-        var query = em.createQuery(jpql, UberEntity.class);
+        var query = em.createQuery(jpql, UberSearchResult.class);
         for (String key : params.keySet()) {
             query.setParameter(key, params.get(key));
         }
-        var entities = query.getResultList();
-        return entities.stream().map(UberSearchResult::new).collect(toList());
+        List<UberSearchResult> dtos = query.getResultList();
+        return dtos;
     }
 }
 class UberSearchCriteria {
@@ -131,15 +143,19 @@ class UberSearchCriteria {
     // etc
 }
 @Data
-@AllArgsConstructor
-class UberSearchResult {
+class UberSearchResult { // miroase a JSON
     private final Long id;
     private final String name;
     private final String originCountry;
 
-    public UberSearchResult(UberEntity entity) {
-        id = entity.getId();
-        name = entity.getName();
-        originCountry = entity.getOriginCountry().getName();
+    public UberSearchResult(Long id, String name, String originCountry) {
+        this.id = id;
+        this.name = name;
+        this.originCountry = originCountry;
     }
+    //    public UberSearchResult(UberEntity entity) {
+//        id = entity.getId();
+//        name = entity.getName();
+//        originCountry = entity.getOriginCountry().getName();
+//    }
 }

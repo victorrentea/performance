@@ -8,7 +8,7 @@
 
     <cache alias="victor.training.performance.jpa.Country" >
         <resources>
-            <heap unit="entries">1</heap>
+            <heap unit="entries">100</heap>
         </resources>
     </cache>
 

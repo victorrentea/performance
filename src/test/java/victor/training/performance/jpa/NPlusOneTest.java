@@ -16,7 +16,6 @@ import org.springframework.transaction.annotation.Transactional;
 import javax.persistence.EntityManager;
 import java.util.Collection;
 import java.util.Set;
-import java.util.stream.Stream;
 
 import static java.util.stream.Collectors.joining;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -85,23 +84,28 @@ public class NPlusOneTest {
 	@Test
 	@Sql("/create-view.sql")
 	public void searchOnView() {
+//		em.creatNat
 //		em.createNamedQuery("ce puii de nume").getResultList()
-		Stream<ParentSearchView> parentViews = repo.findAll()
-			.stream().map(p -> toDto(p));
-//		var parentViews = searchRepo.findAll();
+//		Stream<ParentSearchView> parentViews = repo.findAll()
+//			.stream().map(p -> toDto(p));
+
+		var parentViews = searchRepo.findAll();
 
 		// TODO 1 restrict to first page (of 1 element)
 		// TODO 2 search by parent age >= 40
 		assertThat(parentViews)
 			.extracting("name","childrenNames")
 			.containsExactlyInAnyOrder(
-				tuple("Victor","Emma,Vlad"),
-				tuple("Peter","Maria,Paul,Stephan"))
+				tuple("Victor", "Emma,Vlad"          ),
+				tuple("Peter" , "Maria,Paul,Stephan" ))
 		;
 	}
 
 	private ParentSearchView toDto(Parent p) {
-		String childrenNames = p.getChildren().stream().map(Child::getName).sorted().collect(joining(","));
+		String childrenNames = p.getChildren().stream()
+			.map(Child::getName)
+			.sorted()
+			.collect(joining(","));
 		return new ParentSearchView(p.getId(), p.getName(), childrenNames);
 	}
 }
