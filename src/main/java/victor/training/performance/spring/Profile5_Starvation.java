@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.client.RestTemplate;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -68,12 +69,11 @@ class ShepardService {
     private final ShepardClient client;
     @Timed("shepard")
     public String registerSheep(String name) {
-//        SheepRegistrationResponse response = new RestTemplate()
-//            .getForObject("http://localhost:9999/api/register-sheep", SheepRegistrationResponse.class);
+        SheepRegistrationResponse response = new RestTemplate()
+            .getForObject("http://localhost:9999/api/register-sheep", SheepRegistrationResponse.class);
 
         // or, using Feign client
-
-        SheepRegistrationResponse response = client.registerSheep();
+        // SheepRegistrationResponse response = client.registerSheep();
         return response.getSn();
     }
 }
