@@ -12,10 +12,11 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 import victor.training.performance.jpa.Parent;
 
 @Slf4j
-//@RestController // TODO uncomment and study
+@RestController // TODO uncomment and study
 @RequestMapping("profile/nplus1")
 @RequiredArgsConstructor
 public class Profile2_NPlusOne implements CommandLineRunner {
@@ -35,7 +36,7 @@ public class Profile2_NPlusOne implements CommandLineRunner {
 
    @GetMapping
    @Transactional
-   public Page<Parent> query() {
+   public Page<Parent> query() { // arunc Entitati JPA pe JSON
       Page<Parent> parentPage = repo.findByNameLike("%ar%", PageRequest.of(0, 20));
       log.info("Returning");
       return parentPage;

@@ -6,6 +6,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.annotation.Rollback;
 import org.springframework.test.context.jdbc.Sql;
@@ -14,7 +15,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityManager;
 import java.util.Collection;
-import java.util.List;
+import java.util.Set;
 import java.util.stream.Stream;
 
 import static java.util.stream.Collectors.joining;
@@ -58,7 +59,8 @@ public class NPlusOneTest {
 
 	@Test
 	void nPlusOne() {
-		List<Parent> parents = repo.findAll();
+//		List<Parent> parents = repo.findAll();
+		Set<Parent> parents = repo.loadAllParentsWithChildren();
 		log.info("Loaded {} parents", parents.size());
 
 		int totalChildren = countChildren(parents);
@@ -71,7 +73,7 @@ public class NPlusOneTest {
 		log.debug("Start counting children of {} parents: {}", parents.size(), parents);
 		int total = 0;
 		for (Parent parent : parents) {
-			total += parent.getChildren().size();
+			total += parent.getChildren().size(); // LAZY LOAD
 		}
 		log.debug("Done counting: {} children", total);
 		return total;
@@ -83,6 +85,7 @@ public class NPlusOneTest {
 	@Test
 	@Sql("/create-view.sql")
 	public void searchOnView() {
+//		em.createNamedQuery("ce puii de nume").getResultList()
 		Stream<ParentSearchView> parentViews = repo.findAll()
 			.stream().map(p -> toDto(p));
 //		var parentViews = searchRepo.findAll();
@@ -104,6 +107,8 @@ public class NPlusOneTest {
 }
 
 interface ParentRepo extends JpaRepository<Parent, Long> {
+	@Query("SELECT p FROM Parent p LEFT JOIN FETCH p.children c")
+	Set<Parent> loadAllParentsWithChildren();
 }
 
 

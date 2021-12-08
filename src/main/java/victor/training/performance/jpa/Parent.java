@@ -10,6 +10,10 @@ import java.util.Set;
 @Getter
 @Setter
 @Entity
+@NamedQueries( {
+    @NamedQuery(name = "ce puii meu de nume",
+    query = "SELECT p FROM Parent p")
+})
 public class Parent {
    @Id
    @GeneratedValue
@@ -18,7 +22,8 @@ public class Parent {
    private String name;
    private Integer age;
 
-   @OneToMany(mappedBy = "parent", cascade = CascadeType.PERSIST)
+//   @BatchSize(size = 20) // rapid, minim invaziv, dubios?
+   @OneToMany(mappedBy = "parent", cascade = CascadeType.PERSIST/*, fetch = FetchType.EAGER*/)
    // @BatchSize(size=10) // too much magic
    private Set<Child> children = new HashSet<>();
 

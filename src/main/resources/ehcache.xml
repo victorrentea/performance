@@ -18,7 +18,7 @@
         </expiry>
         <resources>
             <heap unit="MB">100</heap>
-            <disk unit="GB">1</disk>
+            <!--<disk unit="GB">1</disk>-->
         </resources>
     </cache>
 
