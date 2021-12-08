@@ -17,12 +17,18 @@ public class Leak3_Inner {
 	public static final ThreadLocal<UserRightsCalculator> threadLocal = new ThreadLocal<>();
 	
 	@GetMapping
-	public String test() {
+	public String home() {
+		return "Do you know Java? <br>If you think you do:<br>" +
+				 "<li>Start here: <a href='/leak3/puzzle'>puzzle</a> (pauses 20 sec to get a heap dump)" +
+				 "<li><a href='/leak3/anon'>anon</a>" +
+				 "<li><a href='/leak3/map'>map</a> ";
+	}
+	@GetMapping("puzzle")
+	public String puzzle() {
 		UserRightsCalculator calculator = new CachingMethodObject().createRightsCalculator();
 		threadLocal.set(calculator);
 		bizLogicUsingCalculator();
-		return "Do you know Java?<br>" +
-				 "Also try <a href='anon'>/anon</a> and <a href='map'>/map</a> ";
+		return "Done";
 	}
 	@GetMapping("anon")
 	public String anon() {
@@ -60,9 +66,9 @@ class CachingMethodObject {
 		return new UserRightsCalculator();
 	}
 
-
 	// then, some more .....
 
+	//<editor-fold desc="More">
 	public Supplier<String> anonymousVsLambdas() {
 		return new Supplier<String>() {
 			@Override
@@ -73,9 +79,10 @@ class CachingMethodObject {
 	}
 
 	public Map<String, Integer> mapInit() {
-		return new HashMap<>() {{
+		return new HashMap<>() {{ // obviously, pre-java 10
 			put("one", 1);
 			put("two", 2);
 		}};
 	}
+	//</editor-fold>
 }
