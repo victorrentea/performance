@@ -30,9 +30,23 @@ public class Leak12_EntityHashCode {
       this.service = service;
    }
 
+
+//   public int fib(int n) {
+//      String s=n+""; //
+//      return fib(n-1) + fib(n-2);
+//   }
+
    @GetMapping
    public void startBatch() {
       Set<SomeEntity> preexistingPlusThisPage = new HashSet<>();
+
+
+//      new ObjectMapper().writeValueAsString(obiectMareCuMultiCopii)
+//      serializezi din Java -> JSON
+//
+//      Daca clasa Java are getter cu biz logic, jackson in crede attribut.
+//      Jackson by default se uita la getteri nu la campuri private cum se uita Hibernate
+//       acea functie
 
       Iterable<List<String>> inputData = readLargeDataSetInPages(500, 1_000_000);
       int pageIndex = 0;
