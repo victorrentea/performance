@@ -1,7 +1,5 @@
 package victor.training.performance.spring;
 
-import com.fasterxml.jackson.core.JsonFactory;
-import com.fasterxml.jackson.core.JsonParser;
 import lombok.Data;
 import org.apache.commons.io.IOUtils;
 import org.hibernate.Hibernate;
@@ -22,10 +20,8 @@ import javax.persistence.Lob;
 import javax.servlet.http.HttpServletResponse;
 import java.io.*;
 import java.sql.Blob;
-import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.UUID;
-import java.util.zip.GZIPInputStream;
 
 @RestController
 public class UploadingFiles {
