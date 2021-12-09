@@ -51,7 +51,7 @@ public class BarService implements CommandLineRunner {
 
 
 
-//      CompletableFuture.
+//      CompletableFuture.`w
 
       CompletableFuture<Beer> futureBeer =  CompletableFuture
           .supplyAsync(() -> barman.pourBeer("blond")/*, beerPool*/)

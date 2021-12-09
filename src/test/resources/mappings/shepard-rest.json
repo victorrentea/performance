@@ -12,7 +12,7 @@
       "sn": "{{randomValue type='UUID'}}"
     },
 
-    "fixedDelayMilliseconds": 1000
+    "fixedDelayMilliseconds": 5000
 
   }
 }
