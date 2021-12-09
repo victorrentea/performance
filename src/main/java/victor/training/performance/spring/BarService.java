@@ -54,7 +54,7 @@ public class BarService implements CommandLineRunner {
 //      CompletableFuture.
 
       CompletableFuture<Beer> futureBeer =  CompletableFuture
-          .supplyAsync(() -> barman.pourBeer("blond"), beerPool)
+          .supplyAsync(() -> barman.pourBeer("blond")/*, beerPool*/)
           .exceptionally(ex -> {
              ex.printStackTrace(); // ex.cause instanceof IllegalStateException  else { throw ex }rrr
              return barman.pourBeer("dark");
