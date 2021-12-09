@@ -3,6 +3,7 @@ package victor.training.performance;
 import victor.training.performance.util.PerformanceUtil;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
@@ -53,22 +54,27 @@ public class RaceBugs {
 
       long t1 = System.currentTimeMillis();
       System.out.printf("Result: %,d\n", population.intValue());
-//        System.out.printf("Emails.size: %,d\n", emails.size());
-//        System.out.printf("  Emails.size expected: %,d total, %,d unique\n", N*2, N);
+        System.out.printf("Emails.size: %,d\n", allEmails.size());
+        System.out.printf("  Emails.size expected: %,d total, %,d unique\n", N, N/2);
 //        System.out.printf("Emails checks: %,d\n", EmailFetcher.emailChecksCounter.get());
       System.out.println("Time: " + (t1 - t0) + " ms");
       // Note: avoid doing new Thread() -> use thread pools in a real app
    }
 
+
+   private static final List<String> allEmails = Collections.synchronizedList(new ArrayList<>());
    // DONE Warmup: fix population++ race
-   // TODO Collect all emails with EmailFetcher.retrieveEmail(i)
+   // DONE Collect all emails with EmailFetcher.retrieveEmail(i)
    // TODO Avoid duplicated emails
    // TODO All email should be checked with EmailFetcher.checkEmail(email)
    // TODO Reduce the no of calls to checkEmail
    public static class Worker1 implements Runnable {
       public void run() {
          for (int i = 0; i < N / 2; i++) {
-            population.incrementAndGet();
+            String email = EmailFetcher.retrieveEmail(i);
+            if (!allEmails.contains(email)) {
+               allEmails.add(email);
+            }
          }
       }
    }
@@ -76,7 +82,10 @@ public class RaceBugs {
    public static class Worker2 implements Runnable {
       public void run() {
          for (int i = N / 2; i < N; i++) {
-            population.incrementAndGet();
+            String email = EmailFetcher.retrieveEmail(i);
+            if (!allEmails.contains(email)) {
+               allEmails.add(email);
+            }
          }
       }
    }
