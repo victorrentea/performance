@@ -32,7 +32,7 @@ public class EmailFetcher {
 
    public static boolean checkEmailExpen$ive(String email) {
       emailChecksCounter.incrementAndGet();
-      PerformanceUtil.sleepSomeTime(2, 2); // network call
+      PerformanceUtil.sleepSomeTime(0, 1); // network call
       return true;
    }
 }
