@@ -1,7 +1,7 @@
 package victor.training.performance.primitives.probes;
 
-import lombok.Value;
-import lombok.extern.slf4j.Slf4j;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import victor.training.performance.util.PerformanceUtil;
 
 import java.util.ArrayDeque;
@@ -16,8 +16,8 @@ import java.util.function.BiConsumer;
 import static java.lang.System.currentTimeMillis;
 import static java.util.concurrent.TimeUnit.MILLISECONDS;
 
-@Slf4j
 public class Probes {
+   private static final Logger log = LoggerFactory.getLogger(Probes.class);
    private static final ScheduledExecutorService replyPool = Executors.newScheduledThreadPool(100);
    private static final long startTime = currentTimeMillis();
    private BiConsumer<String, Integer> receiveFunction;
@@ -51,17 +51,31 @@ public class Probes {
 
    public void requestMetricFromProbe(String probe) {
       ValueAndDelay response = responses.poll();
-      replyPool.schedule(() -> {
-             log.debug("RECEIVE for {} sample #{}: {}", probe, sampleNo.incrementAndGet(), response.value);
-             receiveFunction.accept(probe, response.value);
-          },
-          response.delayMillis, MILLISECONDS);
+      replyPool.schedule(() -> replyFromProbe(probe, response), response.delayMillis, MILLISECONDS);
    }
 
-   @Value
+   private void replyFromProbe(String probe, ValueAndDelay response) {
+      log.debug("{} sends sample #{}: {}", probe, sampleNo.incrementAndGet(), response.value);
+      receiveFunction.accept(probe, response.value);
+   }
+
+
    public static class ValueAndDelay {
-      int value;
-      int delayMillis;
+      private final int value;
+      private final int delayMillis;
+
+      public ValueAndDelay(int value, int delayMillis) {
+         this.value = value;
+         this.delayMillis = delayMillis;
+      }
+
+      public int getDelayMillis() {
+         return delayMillis;
+      }
+
+      public int getValue() {
+         return value;
+      }
    }
 
 }

@@ -1,6 +1,7 @@
 
 
-- You have 1 probe: make sure you receive data and request a new sample immediately
+- Step1: You have 1 probe: make sure you receive data and request a new sample immediately
+  
 - Send every sample immediately to plotter (as a size-one list), from the same thread where the `request()` method runs
 - Rule: Plotter should receive the samples in their chronological order
 - You now have 3 probes

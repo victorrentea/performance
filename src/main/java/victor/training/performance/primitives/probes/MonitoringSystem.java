@@ -1,6 +1,7 @@
 package victor.training.performance.primitives.probes;
 
-import lombok.extern.slf4j.Slf4j;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.time.LocalTime;
 import java.util.ArrayDeque;
@@ -13,8 +14,8 @@ import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.ThreadPoolExecutor.DiscardOldestPolicy;
 import java.util.concurrent.TimeUnit;
 
-@Slf4j
 public class MonitoringSystem {
+   private static final Logger log = LoggerFactory.getLogger(MonitoringSystem.class);
    public static final boolean PLOTTER_ACCEPTS_ONLY_PAGES = true;
    private final Probes probes;
    private final Plotter plotter;
@@ -50,7 +51,7 @@ public class MonitoringSystem {
          Sample sample = new Sample(LocalTime.now(), device, value);
          pendingSamples.offer(sample);
          while (pendingSamples.size() > 40) {
-            pendingSamples.poll();
+            log.warn("EVICTING:" + pendingSamples.poll());
          }
          if (pendingSamples.size() >= 5 && !printing) {
             printing = true;
@@ -61,8 +62,6 @@ public class MonitoringSystem {
 
          probes.requestMetricFromProbe(device);
       }
-
-
    }
 
    private void submit(List<Sample> page) {

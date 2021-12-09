@@ -1,7 +1,8 @@
 package victor.training.performance.primitives.probes;
 
 import com.google.common.annotations.VisibleForTesting;
-import lombok.extern.slf4j.Slf4j;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import victor.training.performance.util.PerformanceUtil;
 
 import java.time.LocalTime;
@@ -11,12 +12,11 @@ import java.util.List;
 import static java.util.stream.Collectors.toList;
 import static victor.training.performance.primitives.probes.MonitoringSystem.PLOTTER_ACCEPTS_ONLY_PAGES;
 
-@Slf4j
 public class Plotter {
-
+   private static final Logger log = LoggerFactory.getLogger(Plotter.class);
    private final List<String> callingThreads = new ArrayList<>();
    private final List<Integer> receivedValues = new ArrayList<>();
-   private int blockingMillis;
+   private final int blockingMillis;
 
    public Plotter(int blockingMillis) {
       this.blockingMillis = blockingMillis;
