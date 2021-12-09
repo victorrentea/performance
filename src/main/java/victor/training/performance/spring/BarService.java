@@ -7,6 +7,7 @@ import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.task.TaskDecorator;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
@@ -130,7 +131,14 @@ class Barman {
       sleepq(1000);
       return new Vodka();
    }
+//   @Async("customPoolBeanName")
+//   public CompletableFuture<Vodka> pourVodkaAsyncViaSpring() {
+//      log.debug("Pouring Vodka...");
+//      sleepq(1000);
+//      return CompletableFuture.completedFuture(new Vodka());
+//   }
 
+   @Async
    public void curse(String curse) {
       if (curse != null) {
          throw new IllegalArgumentException("stash you");
