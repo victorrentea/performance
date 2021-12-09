@@ -28,10 +28,12 @@ public class BarService implements CommandLineRunner {
 
    @Override
    public void run(String... args) throws Exception { // runs at app startup
-      log.debug("Got " + orderDrinks());
+      orderDrinks();
    }
    private static final ExecutorService beerPool = Executors.newFixedThreadPool(1, namedFactory("beer"));
-   private static final ExecutorService vodkaPool = Executors.newFixedThreadPool(4, namedFactory("vodka"));
+   private static final ExecutorService vodkaPool = Executors.newFixedThreadPool(1, namedFactory("vodka"));
+   private static final ExecutorService uiThreadExecutor = Executors.newFixedThreadPool(1, namedFactory("ui"));
+
 
    private static ThreadFactory namedFactory(String name) {
       return r -> {
@@ -42,24 +44,31 @@ public class BarService implements CommandLineRunner {
    }
 
 
-   public DillyDilly orderDrinks() throws ExecutionException, InterruptedException {
+   // please imagine that this flow is a button click handler running in UIThread. at the end display to console the DillyDilly in ui thread
+   public void orderDrinks() throws ExecutionException, InterruptedException {
       log.debug("I had some race bugs and deadlocks today, so I want to have a drink to forget about it...");
       long t0 = currentTimeMillis();
 
 
-      Future<Beer> futureBeer = beerPool.submit(() -> barman.pourBeer());
-      Future<Vodka> futureVodka = vodkaPool.submit(() -> barman.pourVodka());
+
+//      CompletableFuture.
+
+      CompletableFuture<Beer> futureBeer =  CompletableFuture.supplyAsync(() -> barman.pourBeer(), beerPool);
+      CompletableFuture<Vodka> futureVodka = CompletableFuture.supplyAsync(Barman::pourVodka, vodkaPool);
 
       log.debug("The waiter left with my 2 order");
 
-      Beer beer = futureBeer.get(); // the main() waits for 1 seconds
-      Vodka vodka = futureVodka.get(); // waits here for 0 seconds
-      DillyDilly dilly = new DillyDilly(beer, vodka); // 1 more sec
+      // NEVER do completableFuture.get()
+
+      CompletableFuture<DillyDilly> futureDilly = futureBeer.thenCombine(futureVodka, (b, v) -> new DillyDilly(b, v));
+
+      futureDilly.thenAcceptAsync(dilly-> {
+         log.debug("Presenting in UI: " + dilly);
+      }, uiThreadExecutor);
+
       long t1 = currentTimeMillis();
 
-      log.debug("Got my order in {} ms : {}", t1 - t0, dilly);
-      // TODO #1: reduce the waiting time (latency)
-      return dilly;
+      log.debug("Got my order in {} ms ", t1 - t0);
    }
 }
 class DillyDilly {
@@ -86,7 +95,7 @@ class Barman {
 // 1 max in parallel - device that only takes 1 call at a time
    public static Beer pourBeer() {
       log.debug("Pouring Beer...");
-      sleepq(1000);
+      sleepq(1000); // CPU
       return new Beer();
    }
 
@@ -117,7 +126,7 @@ class BarController {
 
    @GetMapping
    public String getDrinks() throws Exception {
-      return "" + service.orderDrinks();
+      return "";
    }
    //</editor-fold>
 }
