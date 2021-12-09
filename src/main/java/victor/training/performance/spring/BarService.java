@@ -14,9 +14,11 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.List;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
 
-import static java.util.Arrays.asList;
 import static victor.training.performance.util.PerformanceUtil.sleepq;
 
 @Component
@@ -29,21 +31,52 @@ public class BarService implements CommandLineRunner {
    public void run(String... args) throws Exception { // runs at app startup
       log.debug("Got " + orderDrinks());
    }
+   private static final ExecutorService pool = Executors.newFixedThreadPool(2);
 
-   public List<Object> orderDrinks() {
-      log.debug("Requesting drinks...");
+   public DillyDilly orderDrinks() throws ExecutionException, InterruptedException {
+      log.debug("I had some race bugs and deadlocks today, so I want to have a drink to forget about it...");
       long t0 = System.currentTimeMillis();
 
-      Beer beer = barman.pourBeer();
-      Vodka vodka = barman.pourVodka();
+
+
+      // UIThread
+
+      Future<Beer> futureBeer = pool.submit(() -> barman.pourBeer());
+      Future<Vodka> futureVodka = pool.submit(() -> barman.pourVodka());
+
+      log.debug("The waiter left with my 2 order");
+
+      Beer beer = futureBeer.get(); // the main() waits for 1 seconds
+      Vodka vodka = futureVodka.get(); // waits here for 0 seconds
+
+      DillyDilly dilly = new DillyDilly(beer, vodka); // 1 more sec
 
       long t1 = System.currentTimeMillis();
-      List<Object> drinks = asList(beer, vodka);
-      log.debug("Got my order in {} ms : {}", t1 - t0, drinks);
+
+      log.debug("Got my order in {} ms : {}", t1 - t0, dilly);
       // TODO #1: reduce the waiting time (latency)
-      return drinks;
+      return dilly;
+   }
+}
+
+
+class DillyDilly {
+   private final Beer beer;
+   private final Vodka vodka;
+
+   DillyDilly(Beer beer, Vodka vodka) {
+      this.beer = beer;
+      this.vodka = vodka;
+      sleepq(1000);
    }
 
+   public Beer getBeer() {
+      return beer;
+   }
+
+   public Vodka getVodka() {
+      return vodka;
+   }
 }
 
 @Service
@@ -51,6 +84,9 @@ public class BarService implements CommandLineRunner {
 class Barman {
 
    public Beer pourBeer() {
+      if (true) {
+         throw new IllegalArgumentException("Out of beer");
+      }
       log.debug("Pouring Beer...");
       sleepq(1000);
       return new Beer();
