@@ -1,7 +1,10 @@
 package victor.training.performance.pools;
 
-import java.util.concurrent.*;
+import java.util.concurrent.ArrayBlockingQueue;
+import java.util.concurrent.Executor;
+import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.ThreadPoolExecutor.DiscardOldestPolicy;
+import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import static victor.training.performance.util.PerformanceUtil.*;
@@ -24,7 +27,7 @@ public class ThreadPools {
       // TODO Executor that have at least 3 thread but can grow up to 10 threads,
       // with a queue of max 5 elements. Inactive threads die in 1 second.
 
-      ExecutorService executor = new ThreadPoolExecutor(
+      Executor decoratedExecutor = decorateExecutor(new ThreadPoolExecutor(
           3, 10,
           1, TimeUnit.SECONDS,
           new ArrayBlockingQueue<Runnable>(5),
@@ -36,17 +39,18 @@ public class ThreadPools {
 
 //          new CallerRunsPolicy()
           new DiscardOldestPolicy()
-      );
+      ));
 
 //      executor = new DeExecutorService() {
 //      }
+//      Executor decoratedExecutor = r -> executor.execute(decorate(r));
 
       // TODO Vary the fixed-sized queue to see it grow the pool and then Rejecting tasks
 
       for (int i = 0; i < 40; i++) {
          MyTask task = new MyTask();
          log("Submitted new task #" + task.id);
-         Future<?> submit = executor.submit(new MyTask());
+         decoratedExecutor.execute(task);
          sleepq(10);
 //         sleepSomeTime(100, 200); // simulate random request rate
       }
@@ -55,12 +59,29 @@ public class ThreadPools {
 
    private static Runnable decorate(Runnable task) {
       return () -> {
-//         try {
-         task.run();
-//         } catch (Exception e) {
-//            e.printStackTrace();
-//         throw e;
-//         }
+         try {
+            task.run();
+         } catch (Exception e) {
+            e.printStackTrace();
+            throw e;
+         }
+      };
+   }
+
+   private static Executor decorateExecutor(Executor executor) {
+      return new Executor() {
+//         MDC propage...
+         @Override
+         public void execute(Runnable r) {
+            executor.execute(() -> {
+               try {
+                  r.run();
+               } catch (Exception e) {
+                  e.printStackTrace();
+                  throw e;
+               }
+            });
+         }
       };
    }
 }
@@ -95,5 +116,5 @@ abstract class LoggingRunnable implements Runnable {
       }
    }
 
-   abstract void doRun() throws  Exception;
+   abstract void doRun() throws Exception;
 }
