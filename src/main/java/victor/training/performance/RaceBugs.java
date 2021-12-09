@@ -2,9 +2,7 @@ package victor.training.performance;
 
 import victor.training.performance.util.PerformanceUtil;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
+import java.util.*;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -62,7 +60,7 @@ public class RaceBugs {
    }
 
 
-   private static final List<String> allEmails = Collections.synchronizedList(new ArrayList<>());
+   private static final Set<String> allEmails = Collections.synchronizedSet(new LinkedHashSet<>());
    // DONE Warmup: fix population++ race
    // DONE Collect all emails with EmailFetcher.retrieveEmail(i)
    // TODO Avoid duplicated emails
@@ -72,9 +70,7 @@ public class RaceBugs {
       public void run() {
          for (int i = 0; i < N / 2; i++) {
             String email = EmailFetcher.retrieveEmail(i);
-            if (!allEmails.contains(email)) {
-               allEmails.add(email);
-            }
+            allEmails.add(email);
          }
       }
    }
@@ -83,9 +79,7 @@ public class RaceBugs {
       public void run() {
          for (int i = N / 2; i < N; i++) {
             String email = EmailFetcher.retrieveEmail(i);
-            if (!allEmails.contains(email)) {
-               allEmails.add(email);
-            }
+            allEmails.add(email);
          }
       }
    }
