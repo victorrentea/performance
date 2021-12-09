@@ -35,7 +35,7 @@ public class RaceBugs {
     public static class Worker1 implements Runnable {
         public void run() {
             for (int i = 0; i < N/2; i++) {
-                synchronized (RaceBugs.class) {
+                synchronized (mutex) {
                     population++;
                 }
             }
@@ -44,7 +44,7 @@ public class RaceBugs {
     public static class Worker2 implements Runnable {
         public void run() {
             for (int i = N/2; i < N; i++) {
-                synchronized (RaceBugs.class) {
+                synchronized (mutex) {
                     population++;
                 }
             }
