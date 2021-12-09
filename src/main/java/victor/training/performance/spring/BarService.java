@@ -1,7 +1,6 @@
 package victor.training.performance.spring;
 
 
-import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
@@ -53,7 +52,13 @@ public class BarService implements CommandLineRunner {
 
 //      CompletableFuture.
 
-      CompletableFuture<Beer> futureBeer =  CompletableFuture.supplyAsync(() -> barman.pourBeer(), beerPool);
+      CompletableFuture<Beer> futureBeer =  CompletableFuture
+          .supplyAsync(() -> barman.pourBeer("blond"), beerPool)
+          .exceptionally(ex -> {
+             ex.printStackTrace(); // ex.cause instanceof IllegalStateException  else { throw ex }rrr
+             return barman.pourBeer("dark");
+          })
+          ;
       CompletableFuture<Vodka> futureVodka = CompletableFuture.supplyAsync(Barman::pourVodka, vodkaPool);
 
       log.debug("The waiter left with my 2 order");
@@ -64,8 +69,14 @@ public class BarService implements CommandLineRunner {
 
       futureDilly.thenAcceptAsync(dilly-> {
          log.debug("Presenting in UI: " + dilly);
-      }, uiThreadExecutor);
+      }, uiThreadExecutor)
+         .exceptionally(throwable -> {
+            throwable.printStackTrace();
+            return null;
+         });
 
+      CompletableFuture.runAsync(() -> barman.curse("&^$!&^&@!^&!^%!^")); // fire and forget
+      System.out.println("getting to bed");
       long t1 = currentTimeMillis();
 
       log.debug("Got my order in {} ms ", t1 - t0);
@@ -88,15 +99,29 @@ class DillyDilly {
    public Vodka getVodka() {
       return vodka;
    }
+
+   @Override
+   public String toString() {
+      return "DillyDilly{" +
+             "beer=" + beer +
+             ", vodka=" + vodka +
+             '}';
+   }
 }
 @Service
 @Slf4j
 class Barman {
 // 1 max in parallel - device that only takes 1 call at a time
-   public static Beer pourBeer() {
+   public static Beer pourBeer(String type) {
+      if (type.equals("blond")) {
+         throw new IllegalStateException("Out of blond beer");
+      }
+//      if (true) {
+//         throw new RuntimeException("Ugly!!");
+//      }
       log.debug("Pouring Beer...");
       sleepq(1000); // CPU
-      return new Beer();
+      return new Beer(type);
    }
 
    // 4 max req in parallel
@@ -105,11 +130,31 @@ class Barman {
       sleepq(1000);
       return new Vodka();
    }
+
+   public void curse(String curse) {
+      if (curse != null) {
+         throw new IllegalArgumentException("stash you");
+      }
+   }
 }
 
-@Data
 class Beer {
-   private final String type = "blond";
+   private final String type ;
+
+   Beer(String type) {
+      this.type = type;
+   }
+
+   public String getType() {
+      return type;
+   }
+
+   @Override
+   public String toString() {
+      return "Beer{" +
+             "type='" + type + '\'' +
+             '}';
+   }
 }
 class Vodka {
    private final String brand = "Absolut";
