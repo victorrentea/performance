@@ -39,7 +39,7 @@ public class RaceBugsSolvedByRedesign {
       // 2) 12 threads might be too few for the API Icall
       // 3) 12 threads might be too MUCH for the API Icall
 
-      ForkJoinPool checkPool = new ForkJoinPool(4);
+      ForkJoinPool checkPool = new ForkJoinPool(300);
 
       Set<String> checkedEmails =
           checkPool.submit( () ->
