@@ -13,18 +13,6 @@ import java.util.stream.IntStream;
 import static java.util.stream.Collectors.toList;
 
 
-class Some {
-   public void sycme() {
-      RaceBugs r = new RaceBugs();
-      synchronized (r) {
-
-      }
-      synchronized (RaceBugs.class) {
-
-      }
-   }
-}
-
 public class RaceBugs {
    public static final int N = 20_000;
    private static final AtomicInteger population = new AtomicInteger(0);
@@ -72,7 +60,6 @@ public class RaceBugs {
          for (int i = 0; i < N / 2; i++) {
             String email = EmailFetcher.retrieveEmail(i);
 
-            // I should not check email if that email is already in the set.
             if (!allEmails.contains(email))
                synchronized (mutex) {
                if (!allEmails.contains(email)) {
@@ -109,30 +96,3 @@ public class RaceBugs {
 }
 
 
-class EmailFetcher {
-
-   private static final List<String> ALL_EMAILS = new ArrayList<>();
-   public static AtomicInteger emailChecksCounter = new AtomicInteger(0);
-
-   static {
-      List<String> list = IntStream.range(0, RaceBugs.N / 2)
-          .mapToObj(i -> "email" + i + "@example.com") // = 50% overlap
-          .collect(toList());
-//        Collections.shuffle(ALL_EMAILS); // randomize, or
-      ALL_EMAILS.addAll(list); // this produces more dramatic results
-      ALL_EMAILS.addAll(list);
-   }
-
-   /**
-    * Pretend some external call
-    */
-   public static String retrieveEmail(int i) {
-      return ALL_EMAILS.get(i);
-   }
-
-   public static boolean checkEmailExpen$ive(String email) {
-      emailChecksCounter.incrementAndGet();
-      PerformanceUtil.sleepSomeTime(2, 2); // network call
-      return true;
-   }
-}
