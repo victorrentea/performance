@@ -52,15 +52,16 @@ public class RaceBugs {
 
       long t1 = System.currentTimeMillis();
       System.out.printf("Result: %,d\n", population.intValue());
-        System.out.printf("Emails.size: %,d\n", allEmails.size());
-        System.out.printf("  Emails.size expected: %,d total, %,d unique\n", N, N/2);
-        System.out.printf("Emails checks: %,d\n", EmailFetcher.emailChecksCounter.get());
+      System.out.printf("Emails.size: %,d\n", allEmails.size());
+      System.out.printf("  Emails.size expected: %,d total, %,d unique\n", N, N / 2);
+      System.out.printf("Emails checks: %,d\n", EmailFetcher.emailChecksCounter.get());
       System.out.println("Time: " + (t1 - t0) + " ms");
       // Note: avoid doing new Thread() -> use thread pools in a real app
    }
 
 
-   private static final Set<String> allEmails = /*Collections.synchronizedSet(*/new LinkedHashSet<>();
+   private static final Set<String> allEmails = Collections.synchronizedSet(new LinkedHashSet<>());
+
    // DONE Warmup: fix population++ race
    // DONE Collect all emails with EmailFetcher.retrieveEmail(i)
    // DONE Avoid duplicated emails
@@ -72,7 +73,8 @@ public class RaceBugs {
             String email = EmailFetcher.retrieveEmail(i);
 
             // I should not check email if that email is already in the set.
-            synchronized (mutex) {
+            if (!allEmails.contains(email))
+               synchronized (mutex) {
                if (!allEmails.contains(email)) {
                   boolean isValid = EmailFetcher.checkEmailExpen$ive(email);
                   if (isValid) {
@@ -83,12 +85,15 @@ public class RaceBugs {
          }
       }
    }
+   //26823 with double checked locking pattern
+   // 29538 without it
 
    public static class Worker2 implements Runnable {
       public void run() {
          for (int i = N / 2; i < N; i++) {
             String email = EmailFetcher.retrieveEmail(i); // has 50% chance to return a duplicated email
-            synchronized (mutex) {
+            if (!allEmails.contains(email))
+               synchronized (mutex) {
                if (!allEmails.contains(email)) {
                   boolean isValid = EmailFetcher.checkEmailExpen$ive(email);
                   if (isValid) {
@@ -127,7 +132,7 @@ class EmailFetcher {
 
    public static boolean checkEmailExpen$ive(String email) {
       emailChecksCounter.incrementAndGet();
-      PerformanceUtil.sleepSomeTime(0, 1); // network call
+      PerformanceUtil.sleepSomeTime(2, 2); // network call
       return true;
    }
 }
