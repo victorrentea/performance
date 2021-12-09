@@ -2,7 +2,8 @@ package victor.training.performance;
 
 import victor.training.performance.util.PerformanceUtil;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -12,28 +13,40 @@ import java.util.stream.IntStream;
 
 import static java.util.stream.Collectors.toList;
 
+
+class Some {
+    public void sycme() {
+        synchronized (RaceBugs.class) {
+
+        }
+    }
+}
 public class RaceBugs {
     private static Integer population = 0;
     public static final int N = 20_000;
+    private static final Object mutex = new Object();
+
 
     // TODO Warmup: fix population++ race
     // TODO Collect all emails with EmailFetcher.retrieveEmail(i)
     // TODO Avoid duplicated emails
     // TODO All email should be checked with EmailFetcher.checkEmail(email)
     // TODO Reduce the no of calls to checkEmail
-
     public static class Worker1 implements Runnable {
         public void run() {
             for (int i = 0; i < N/2; i++) {
-                population++;
+                synchronized (RaceBugs.class) {
+                    population++;
+                }
             }
         }
     }
-
     public static class Worker2 implements Runnable {
         public void run() {
             for (int i = N/2; i < N; i++) {
-                population++;
+                synchronized (RaceBugs.class) {
+                    population++;
+                }
             }
         }
     }

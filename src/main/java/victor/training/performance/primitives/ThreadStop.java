@@ -41,6 +41,7 @@ public class ThreadStop {
              .getForEntity("http://localhost:9999/api/register-sheep", String.class)
 				.completable();
 
+         //https://stackoverflow.com/questions/29159184/how-can-i-interrupt-resttemplate-call-as-soon-as-my-thread-is-interrupted
          while (!Thread.currentThread().isInterrupted()) {
             try {
                if (cf.isDone()) {
