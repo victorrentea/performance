@@ -1,28 +1,58 @@
-package victor.training.performance;
+package victor.training.performance.threadLocalWithSpring;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.CommandLineRunner;
+import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.context.annotation.Bean;
+import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
+import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 import victor.training.performance.util.PerformanceUtil;
 
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 @Slf4j
+@SpringBootApplication
 public class ThreadLocals {
    public static void main(String[] args) {
+      SpringApplication.run(ThreadLocals.class, args);
+   }
 
-//      ExecutorService pool = Executors.newCachedThreadPool();
+   @Bean
+   public ThreadPoolTaskExecutor springPool(@Value("${spring.pool.size}") int springPoolSize) {
+      ThreadPoolTaskExecutor executor = new ThreadPoolTaskExecutor();
+      executor.setCorePoolSize(springPoolSize);
+      executor.setMaxPoolSize(springPoolSize);
+      executor.setQueueCapacity(500);
+      executor.setThreadNamePrefix("spring-");
+      executor.initialize();
+      return executor;
+   }
+
+}
+
+@Slf4j
+@Component
+class Startup implements CommandLineRunner {
+   @Autowired
+   Layer1 layer1;
+
+   public void run(String... args) throws Exception {
       ExecutorService pool = Executors.newFixedThreadPool(10);
       for (int i = 0; i <10; i++) {
          int j = i;
          pool.submit(() -> {
-            Layer1 target = new Layer1(new Layer2(new Layer3()));
             String u = "u" + j;
             log.debug("I am user " + u);
-            target.method(u);
+            layer1.method(u);
          });
       }
-//      pool.shutdown();
+
    }
 }
 
@@ -32,6 +62,7 @@ class UserNameHolder {
    // Spring by default propagates SpringSecurityContext, @Transaction, HttpSession, CorrelationId, tenantId
 }
 
+@Service
 @RequiredArgsConstructor
 class Layer1 {// controller
    private final Layer2 layer2;
@@ -46,6 +77,7 @@ class Layer1 {// controller
       }
    }
 }
+@Service
 @RequiredArgsConstructor
 class Layer2 {
    private final Layer3 layer3;
@@ -56,6 +88,7 @@ class Layer2 {
    }
 }
 
+@Service
 @Slf4j
 class Layer3 {
    public void method() { // repository
