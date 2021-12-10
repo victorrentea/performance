@@ -72,8 +72,13 @@ public class PerformanceUtil {
       }
    }
 
-   public static void useCPU(long millis) {
-
+   public static int cpu(int millis) {
+      long t0 = System.currentTimeMillis();
+      int sum = 0;
+      while (System.currentTimeMillis() - t0 < millis) {
+         sum += Math.sqrt(System.currentTimeMillis());
+      }
+      return sum;
    }
 
    public static int measureCall(Runnable r) {
