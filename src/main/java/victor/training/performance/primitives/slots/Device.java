@@ -17,36 +17,40 @@ public class Device {
    private final List<Slot> slots = new ArrayList<>();
    private boolean open = true;
 
-   public synchronized void addSlot(Slot slot) {
+   public void addSlot(Slot slot) {
       slots.add(slot);
       slot.setParentDevice(this);
    }
 
-   public synchronized void close() {
-      open = false;
+   public void close() {
+      synchronized (this) {
+         if (open == false) {
+            throw new IllegalStateException("Already closed");
+         }
+         open = false;
+      }
       for (Slot slot : slots) {
          slot.close();
       }
    }
 
-   public synchronized boolean isOpen() {
+   public boolean isOpen() {
       return open;
    }
 }
 
 class Slot {
    private static final Logger log = LoggerFactory.getLogger(Slot.class);
-
    private Device parentDevice;
-   private boolean open = true;
+   private boolean slotIsOpen = true;
 
-   public synchronized void setParentDevice(Device parentDevice) {
+   public void setParentDevice(Device parentDevice) {
       this.parentDevice = parentDevice;
    }
 
    public synchronized void sendData(String data) {
       if (!parentDevice.isOpen()) throw new RuntimeException("Parent device closed");
-      if (!open) throw new IllegalStateException("Slot closed!");
+      if (!slotIsOpen) throw new IllegalStateException("Slot closed!");
 
       log.debug("Sending to {}" + this + " data: " + data);
       PerformanceUtil.sleepq(1000);
@@ -54,7 +58,10 @@ class Slot {
    }
 
    public synchronized void close() {
-      open = false;
+      if (slotIsOpen == false) {
+         throw new IllegalStateException("Already closed");
+      }
+      slotIsOpen = false;
    }
 }
 
