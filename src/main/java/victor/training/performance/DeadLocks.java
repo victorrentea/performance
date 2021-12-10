@@ -2,6 +2,8 @@ package victor.training.performance;
 
 import lombok.Value;
 
+import java.util.concurrent.locks.ReentrantLock;
+
 import static victor.training.performance.util.PerformanceUtil.log;
 import static victor.training.performance.util.PerformanceUtil.sleepq;
 
@@ -9,6 +11,7 @@ public class DeadLocks {
    @Value
    static class Fork {
       int id;
+      ReentrantLock lock = new ReentrantLock();
    }
 
    static class Philosopher extends Thread {
@@ -29,18 +32,29 @@ public class DeadLocks {
             log("I want to eat!");
 
             log("Waiting for first fork (id=" + firstFork.id + ")");
-            synchronized (firstFork) {
+//            synchronized (firstFork) {
+            firstFork.lock.lock();
+            try {
                log("Took the first");
                log("Taking second fork (id=" + secondFork.id + ")");
-               synchronized (secondFork) {
-                  log("Took the second");
-                  log("Took both forks. Eating...");
-                  eat();
-                  log("I had enough. I'm putting down the forks");
+               if (secondFork.lock.tryLock()) {
+                  try {
+//               synchronized (secondFork) {
+                     log("Took the second");
+                     log("Took both forks. Eating...");
+                     eat();
+                     log("I had enough. I'm putting down the forks");
+                  }finally {
+                     secondFork.lock.unlock();
+                  }
                }
+            } finally {
+               firstFork.lock.unlock();
             }
+//            }
             log("Put down forks. Thinking...");
          }
+         log("END");
       }
 
       private void eat() {
