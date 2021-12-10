@@ -2,9 +2,6 @@ package victor.training.performance;
 
 import lombok.Value;
 
-import java.util.concurrent.TimeUnit;
-import java.util.concurrent.locks.ReentrantLock;
-
 import static victor.training.performance.util.PerformanceUtil.log;
 import static victor.training.performance.util.PerformanceUtil.sleepq;
 
@@ -12,8 +9,12 @@ public class DeadLocks {
    @Value
    static class Fork {
       int id;
-      ReentrantLock lock = new ReentrantLock();
    }
+//   private static final  Object monitor; //1
+//   private static final  Object monitor; //2
+//   private static final  Object monitor; //3
+
+
 
    static class Philosopher extends Thread {
       private final Fork leftFork;
@@ -26,40 +27,25 @@ public class DeadLocks {
       }
 
       public void run() {
-         Fork firstFork = leftFork;
-         Fork secondFork = rightFork;
-      int failedToEat =0;
+         Fork firstFork = leftFork.id < rightFork.id? leftFork: rightFork;
+         Fork secondFork = leftFork.id > rightFork.id? leftFork:rightFork;
+
          for (int i = 0; i < 5000; i++) {
             log("I want to eat!");
 
             log("Waiting for first fork (id=" + firstFork.id + ")");
-//            synchronized (firstFork) {
-            firstFork.lock.lock();
-            try {
+            synchronized (firstFork) {
                log("Took the first");
                log("Taking second fork (id=" + secondFork.id + ")");
-               if (secondFork.lock.tryLock(1, TimeUnit.MILLISECONDS)) {
-                  try {
-//               synchronized (secondFork) {
-                     log("Took the second");
-                     log("Took both forks. Eating...");
-                     eat();
-                     log("I had enough. I'm putting down the forks");
-                  } finally {
-                     secondFork.lock.unlock();
-                  }
-               } else {
-                  failedToEat++;
+               synchronized (secondFork) {
+                  log("Took the second");
+                  log("Took both forks. Eating...");
+                  eat();
+                  log("I had enough. I'm putting down the forks");
                }
-            } catch (InterruptedException e) {
-               e.printStackTrace();
-            } finally {
-               firstFork.lock.unlock();
             }
-//            }
             log("Put down forks. Thinking...");
          }
-         log("END failed " +failedToEat);
       }
 
       private void eat() {
