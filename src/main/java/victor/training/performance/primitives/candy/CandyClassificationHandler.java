@@ -1,5 +1,7 @@
 package victor.training.performance.primitives.candy;
 
+import victor.training.performance.util.PerformanceUtil;
+
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
 import java.util.function.Consumer;
@@ -9,32 +11,25 @@ import java.util.function.Consumer;
  */
 public class CandyClassificationHandler implements ICandyClassificationHandler {
 
-
-
 	@Override
-	public void handleIdentification(
-			final Candy candyForClassification,
-			final Consumer<List<String>> updateCandylWithClassifications) {
+	public void handleIdentification(Candy candyForClassification,
+			Consumer<List<String>> updateCandyWithClassifications) {
 
 
-		final CompletableFuture<List<String>> classificationFuture = callServiceToClassifyTheCandy(candyForClassification);
+		CompletableFuture<List<String>> classificationFuture = CompletableFuture.supplyAsync(() ->
+			findMatchingCandies(candyForClassification));
 
-		classificationFuture.thenAccept(updateCandylWithClassifications);
+		classificationFuture.thenAccept(updateCandyWithClassifications);
 
 	}
 
-	private CompletableFuture<List<String>> callServiceToClassifyTheCandy(final Candy candyForClassification) {
 
-		final CompletableFuture<List<String>> completableFuture = CompletableFuture
-				.supplyAsync(() -> findMatchingCandies(candyForClassification));
-
-		return completableFuture;
-	}
+	private List<String> findMatchingCandies(Candy candyForClassification) {
 
 
-	private List<String> findMatchingCandies(final Candy candyForClassification) {
-		// do heavy stuff CPU
-		return null;
+
+		PerformanceUtil.cpu(10);
+		return List.of("sweet","fat");
 	}
 
 }

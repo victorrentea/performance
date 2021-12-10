@@ -3,14 +3,14 @@ package victor.training.performance.primitives.candy;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
-import java.util.Objects;
 import java.util.concurrent.ExecutorService;
 import java.util.function.Consumer;
 
+import static java.util.Objects.requireNonNull;
+
 
 public class TableModel {
-
-   private final ExecutorService candyClassificationUpdateExecuter;
+   private final ExecutorService updateExecutor;
    private final ICandyClassificationHandler candyClassificationHandler;
 
    private TableDataModel dataModel;
@@ -21,9 +21,8 @@ public class TableModel {
        ICandyClassificationHandler candyClassificationHandler,
        ExecutorService candyClassificationUpdateExecutor) {
 
-      this.candyClassificationHandler = Objects.requireNonNull(candyClassificationHandler);
-      this.candyClassificationUpdateExecuter = Objects.requireNonNull(candyClassificationUpdateExecutor);
-
+      this.candyClassificationHandler = requireNonNull(candyClassificationHandler);
+      this.updateExecutor = requireNonNull(candyClassificationUpdateExecutor);
       this.currentContainerListener = createContainerListener();
    }
 
@@ -55,25 +54,15 @@ public class TableModel {
       this.dataModel = dataModel;
    }
 
-
-   /**
-    * Handles the change event of a container
-    *
-    * @param oldContainer the old container
-    * @param newContainer the new container .. dah!
-    */
-   public void handleContainerSelectionChanged(
-       ICandyDataContainer oldContainer,
-       ICandyDataContainer newContainer) {
-
-      // Unregister old container
-
+   public void handleContainerSelectionChanged(ICandyDataContainer oldContainer, ICandyDataContainer newContainer) {
+      System.out.println("TODO Unregister old container " + oldContainer);
       dataModel.removeAllData();
+
       registerContainer(newContainer);
    }
 
    // user controls the change of container.
-   private void registerContainer(ICandyDataContainer container) { /// the container contains datasources
+   private void registerContainer(ICandyDataContainer container) { /// the container contains data sources
       container.activate();
       currentContainerListener = createContainerListener();
       container.addCandyDataContainerListener(currentContainerListener);
@@ -81,15 +70,12 @@ public class TableModel {
 
    // 10k / minute  for each new candy
    private void updateCandyRowModelWithClassifications(Candy candy) {
-
-      Consumer<List<String>> updateCandyWithClassifications = classifications -> {
+      Consumer<List<String>> callback = classifications -> {
          synchronized (TableModel.this) {
-
-            dataModel.updatedData(candy, classifications);
+            dataModel.updateData(candy, classifications);
          }
       };
 
-      candyClassificationUpdateExecuter
-          .execute(() -> candyClassificationHandler.handleIdentification(candy, updateCandyWithClassifications));
+      updateExecutor.execute(() -> candyClassificationHandler.handleIdentification(candy, callback));
    }
 }

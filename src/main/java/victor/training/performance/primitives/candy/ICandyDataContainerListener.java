@@ -2,19 +2,14 @@ package victor.training.performance.primitives.candy;
 
 import java.util.Collection;
 
-/**
- * TODO - Insert class documentation here
- */
 public interface ICandyDataContainerListener {
+   void newData(final Candy candy);
 
-	void newData(final Candy candy);
+   void updateData(final Candy updatedCandy, final Candy oldCandy);
 
-	public void updateData(final Candy updatedCandy, final Candy oldCandy);
+   void removeData(final Candy sandy);
 
-	public void removeData(final Candy sandy);
+   void removeData(final Collection<Candy> candys);
 
-	public void removeData(final Collection<Candy> candys);
-
-
-	public void removeAll();
+   void removeAll();
 }

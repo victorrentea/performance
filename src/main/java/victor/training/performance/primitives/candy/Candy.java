@@ -1,7 +1,7 @@
 package victor.training.performance.primitives.candy;
 
 /**
- * Dummy POJO Contained in teh Table Model
+ * Dummy POJO Contained in the Table Model
  */
 public class Candy {
 
