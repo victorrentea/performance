@@ -10,9 +10,9 @@ public class CandyStore {
 
 
    public static void main(String[] args) {
-      ExecutorService pool = Executors.newCachedThreadPool();
+      ExecutorService updatePool = Executors.newFixedThreadPool(1);
 
-      TableModel model = new TableModel(new CandyClassificationHandler(), pool);
+      TableModel model = new TableModel(new CandyClassificationHandler(), updatePool);
       model.setDataModel(new TableDataModel());
       Consumer<Candy> sendMethod = getSendMethod(model);
 

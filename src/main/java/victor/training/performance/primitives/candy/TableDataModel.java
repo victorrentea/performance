@@ -21,15 +21,15 @@ public class TableDataModel {
 
 	private static final AtomicInteger currentCalls = new AtomicInteger(0);
 
-	public void updateData(Candy candy, final List<String> classes) {
+	public void updateData(CandyWithClassification cwc) {
 
 		if (currentCalls.incrementAndGet() > 1) {
 			System.err.println("BANG!  UI CRASH");
 			System.exit(-99);
 		}
-		log.debug(candy + " was classified to " + classes);
+		log.debug(cwc.getCandy() + " was classified to " + cwc.getClassifications());
 		PerformanceUtil.sleepq(100);
-		log.debug(candy + "done printing");
+		log.debug(cwc.getCandy() + "done printing");
 		currentCalls.decrementAndGet();
 	}
 

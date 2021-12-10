@@ -4,9 +4,7 @@ import lombok.extern.slf4j.Slf4j;
 
 import java.util.Collection;
 import java.util.Collections;
-import java.util.List;
 import java.util.concurrent.ExecutorService;
-import java.util.function.Consumer;
 
 import static java.util.Objects.requireNonNull;
 
@@ -74,14 +72,8 @@ public class TableModel {
    // 10k / minute  for each new candy
    private void updateCandyRowModelWithClassifications(Candy candy) {
       log.debug("submit from candy store: " + candy);
-      Consumer<List<String>> callback = classifications -> {
-//         synchronized (TableModel.class) {
-            dataModel.updateData(candy, classifications);
-//         }
-      };
 
-      updateExecutor.execute(() -> candyClassificationHandler.
-          handleIdentification(candy, callback)
-      );
+      candyClassificationHandler.handleIdentification(candy)
+         .thenAcceptAsync(dataModel::updateData, updateExecutor);
    }
 }
