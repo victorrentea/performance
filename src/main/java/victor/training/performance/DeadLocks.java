@@ -2,6 +2,7 @@ package victor.training.performance;
 
 import lombok.Value;
 
+import java.util.concurrent.TimeUnit;
 import java.util.concurrent.locks.ReentrantLock;
 
 import static victor.training.performance.util.PerformanceUtil.log;
@@ -27,7 +28,7 @@ public class DeadLocks {
       public void run() {
          Fork firstFork = leftFork;
          Fork secondFork = rightFork;
-
+      int failedToEat =0;
          for (int i = 0; i < 5000; i++) {
             log("I want to eat!");
 
@@ -37,24 +38,28 @@ public class DeadLocks {
             try {
                log("Took the first");
                log("Taking second fork (id=" + secondFork.id + ")");
-               if (secondFork.lock.tryLock()) {
+               if (secondFork.lock.tryLock(1, TimeUnit.MILLISECONDS)) {
                   try {
 //               synchronized (secondFork) {
                      log("Took the second");
                      log("Took both forks. Eating...");
                      eat();
                      log("I had enough. I'm putting down the forks");
-                  }finally {
+                  } finally {
                      secondFork.lock.unlock();
                   }
+               } else {
+                  failedToEat++;
                }
+            } catch (InterruptedException e) {
+               e.printStackTrace();
             } finally {
                firstFork.lock.unlock();
             }
 //            }
             log("Put down forks. Thinking...");
          }
-         log("END");
+         log("END failed " +failedToEat);
       }
 
       private void eat() {
