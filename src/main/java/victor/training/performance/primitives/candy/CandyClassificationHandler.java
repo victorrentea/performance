@@ -15,19 +15,15 @@ public class CandyClassificationHandler implements ICandyClassificationHandler {
 	public void handleIdentification(Candy candyForClassification,
 			Consumer<List<String>> updateCandyWithClassifications) {
 
-
-		CompletableFuture<List<String>> classificationFuture = CompletableFuture.supplyAsync(() ->
-			findMatchingCandies(candyForClassification));
+		CompletableFuture<List<String>> classificationFuture = CompletableFuture
+			.supplyAsync(() -> findMatchingCandies(candyForClassification));
 
 		classificationFuture.thenAccept(updateCandyWithClassifications);
-
+		// this method finishes in 0 ms
 	}
 
 
 	private List<String> findMatchingCandies(Candy candyForClassification) {
-
-
-
 		PerformanceUtil.cpu(10);
 		return List.of("sweet","fat");
 	}
