@@ -56,6 +56,7 @@ class Startup implements CommandLineRunner {
       for (int i = 0; i <10; i++) {
          int j = i;
          springPool.submit(() -> {
+            // you can't use "request" scope in here since it's not coming from web.
             String u = "u" + j;
             log.debug("I am user " + u);
             layer1.method(u);
@@ -64,6 +65,10 @@ class Startup implements CommandLineRunner {
 
    }
 }
+
+//⚠⚠⚠⚠⚠⚠⚠⚠⚠⚠⚠⚠⚠⚠⚠⚠⚠⚠⚠⚠⚠⚠⚠⚠⚠⚠⚠⚠⚠⚠⚠⚠⚠⚠⚠⚠⚠⚠⚠⚠⚠⚠⚠⚠⚠⚠⚠⚠
+// DO NOT define "thread" scope like here if ALL YOUR THREADS ARE SERVING HTTP REQUESTS!! If only web =>
+// use "request"scope which is automatically cleared by spring frameowkr itsel
 
 @Component
 @Scope(value = "thread", proxyMode = ScopedProxyMode.TARGET_CLASS)
