@@ -11,7 +11,8 @@ import java.util.concurrent.Executors;
 public class ThreadLocals {
    public static void main(String[] args) {
 
-      ExecutorService pool = Executors.newCachedThreadPool();
+//      ExecutorService pool = Executors.newCachedThreadPool();
+      ExecutorService pool = Executors.newFixedThreadPool(10);
       for (int i = 0; i <10; i++) {
          int j = i;
          pool.submit(() -> {
@@ -21,6 +22,7 @@ public class ThreadLocals {
             target.method(u);
          });
       }
+//      pool.shutdown();
    }
 }
 
@@ -36,7 +38,12 @@ class Layer1 {// controller
 
    public void method(String u) {
       UserNameHolder.currentUsername.set(u);
-      layer2.method();
+      try {
+         layer2.method();
+      } finally {
+         UserNameHolder.currentUsername.remove();
+         // avoid a common mem leak = Thread Local + Thread Pools
+      }
    }
 }
 @RequiredArgsConstructor
