@@ -25,7 +25,7 @@ public class JFREventsPlay {
    private static void getStock(String symbol) throws IOException, InterruptedException {
 
       CheckStockJFREvent jfrEvent = new CheckStockJFREvent();
-      jfrEvent.begin();
+      jfrEvent.begin(); // long t0 = currentTimeMillis();
 
       log.debug("Calling service for {} ", symbol);
       HttpClient client = HttpClient.newHttpClient();
@@ -33,7 +33,7 @@ public class JFREventsPlay {
       HttpRequest request = HttpRequest.newBuilder().uri(URI.create(uri)).build();
 
 
-      PerformanceUtil.sleepq(100000);
+//      PerformanceUtil.sleepq(100000);
 
       HttpResponse<String> response = null;
       try {
@@ -42,13 +42,11 @@ public class JFREventsPlay {
       } finally {
          if (jfrEvent.isEnabled()) {
             // do some expensive CPU work to prepare more data to set on it, eg JSON serialization to a String
-         }
-         if (jfrEvent.isEnabled()) {
             jfrEvent.setSymbol(symbol);
             if (response != null) {
                jfrEvent.setStatusCode(response.statusCode());
             }
-            jfrEvent.commit();
+            jfrEvent.commit(); // long t1 = currentTimeMillis();
          }
 
       }

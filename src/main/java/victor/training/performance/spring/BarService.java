@@ -1,6 +1,7 @@
 package victor.training.performance.spring;
 
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
@@ -9,18 +10,20 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.core.task.TaskDecorator;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
-import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.servlet.AsyncContext;
+import javax.servlet.http.HttpServletRequest;
+import java.io.IOException;
 import java.util.concurrent.*;
 
 import static java.lang.System.currentTimeMillis;
 import static victor.training.performance.util.PerformanceUtil.sleepq;
 
-@Component
+@RestController
 @Slf4j
 public class BarService implements CommandLineRunner {
    @Autowired
@@ -44,8 +47,24 @@ public class BarService implements CommandLineRunner {
    }
 
 
+   @GetMapping
+   public void asyncServlet(HttpServletRequest request) throws ExecutionException, InterruptedException {
+      AsyncContext asyncContext = request.startAsync();
+
+      orderDrinks().thenAccept(dilly -> {
+         try {
+            new ObjectMapper().writeValue(asyncContext.getResponse().getWriter(), dilly);
+            asyncContext.complete(); // closes the TCP conncetion
+         } catch (IOException e) {
+            throw new RuntimeException(e);
+         }
+      });
+      // you exit the method ==> the conn to the client is not closed
+   }
+
+   @GetMapping("drink")
    // please imagine that this flow is a button click handler running in UIThread. at the end display to console the DillyDilly in ui thread
-   public void orderDrinks() throws ExecutionException, InterruptedException {
+   public CompletableFuture<DillyDilly> orderDrinks() throws ExecutionException, InterruptedException {
       log.debug("I had some race bugs and deadlocks today, so I want to have a drink to forget about it...");
       long t0 = currentTimeMillis();
 
@@ -68,19 +87,20 @@ public class BarService implements CommandLineRunner {
 
       CompletableFuture<DillyDilly> futureDilly = futureBeer.thenCombine(futureVodka, (b, v) -> new DillyDilly(b, v));
 
-      futureDilly.thenAcceptAsync(dilly-> {
-         log.debug("Presenting in UI: " + dilly);
-      }, uiThreadExecutor)
-         .exceptionally(throwable -> {
-            throwable.printStackTrace();
-            return null;
-         });
+//      futureDilly.thenAcceptAsync(dilly-> {
+//         log.debug("Presenting in UI: " + dilly);
+//      }, uiThreadExecutor)
+//         .exceptionally(throwable -> {
+//            throwable.printStackTrace();
+//            return null;
+//         });
 
       CompletableFuture.runAsync(() -> barman.curse("&^$!&^&@!^&!^%!^")); // fire and forget
       System.out.println("getting to bed");
       long t1 = currentTimeMillis();
 
       log.debug("Got my order in {} ms ", t1 - t0);
+      return futureDilly;
    }
 }
 class DillyDilly {
@@ -157,6 +177,7 @@ class Beer {
       return type;
    }
 
+
    @Override
    public String toString() {
       return "Beer{" +
@@ -166,6 +187,10 @@ class Beer {
 }
 class Vodka {
    private final String brand = "Absolut";
+
+   public String getBrand() {
+      return brand;
+   }
 }
 
 // TODO when called from web, protect the http thread

@@ -58,6 +58,7 @@ class Startup implements CommandLineRunner {
          springPool.submit(() -> {
             // you can't use "request" scope in here since it's not coming from web.
             String u = "u" + j;
+//            userhamaeholder.setUsernae("sys")
             log.debug("I am user " + u);
             layer1.method(u);
          });
