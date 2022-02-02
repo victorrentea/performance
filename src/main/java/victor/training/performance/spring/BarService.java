@@ -4,6 +4,7 @@ package victor.training.performance.spring;
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -15,6 +16,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.Future;
 
 import static java.util.Arrays.asList;
 import static victor.training.performance.util.PerformanceUtil.sleepq;
@@ -27,15 +30,23 @@ public class BarService implements CommandLineRunner {
 
    @Override
    public void run(String... args) throws Exception { // runs at app startup
-      log.debug("Got " + orderDrinks());
+//      log.debug("Got " + orderDrinks());
    }
 
-   public List<Object> orderDrinks() {
+   @Autowired
+   private ThreadPoolTaskExecutor poolBar;
+//@Value
+//   private  final ExecutorService threadPool = Executors.newFixedThreadPool(6); // JDK threadpool
+
+   public List<Object> orderDrinks() throws ExecutionException, InterruptedException {
       log.debug("Requesting drinks...");
       long t0 = System.currentTimeMillis();
 
-      Beer beer = barman.pourBeer();
-      Vodka vodka = barman.pourVodka();
+      Future<Beer> futureBeer = poolBar.submit(() -> barman.pourBeer());
+      Future<Vodka> futureVodka = poolBar.submit(() -> barman.pourVodka());
+
+      Beer beer = futureBeer.get(); // thread http din cele 10_000 de threaduri ale tomcat (default) thread cat e blocat aici ? 1s
+      Vodka vodka = futureVodka.get();
 
       long t1 = System.currentTimeMillis();
       List<Object> drinks = asList(beer, vodka);
@@ -52,13 +63,13 @@ class Barman {
 
    public Beer pourBeer() {
       log.debug("Pouring Beer...");
-      sleepq(1000);
+      sleepq(1000); // REST
       return new Beer();
    }
 
    public Vodka pourVodka() {
       log.debug("Pouring Vodka...");
-      sleepq(1000);
+      sleepq(1000); // DB
       return new Vodka();
    }
 }
@@ -96,10 +107,10 @@ class BarConfig {
 //   private PropagateThreadScope propagateThreadScope;
 
    @Bean
-   public ThreadPoolTaskExecutor pool() {
+   public ThreadPoolTaskExecutor poolBar(@Value("${barman.thread.size}") int poolSize) {
       ThreadPoolTaskExecutor executor = new ThreadPoolTaskExecutor();
-      executor.setCorePoolSize(1);
-      executor.setMaxPoolSize(1);
+      executor.setCorePoolSize(poolSize);
+      executor.setMaxPoolSize(poolSize);
       executor.setQueueCapacity(500);
       executor.setThreadNamePrefix("barman-");
       executor.initialize();
