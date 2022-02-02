@@ -1,6 +1,7 @@
 package victor.training.performance.spring;
 
 
+import io.micrometer.core.annotation.Timed;
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 import org.slf4j.Logger;
@@ -101,16 +102,28 @@ class Barman {
    @Async("beerPool")
    public CompletableFuture<Beer> pourBeer() {
       log.debug("Pouring Beer...");
-      sleepq(1000); // REST
+      alta.apelExtern();
 
       // QUERY FOARTE LUNG
       return CompletableFuture.completedFuture(new Beer());
    }
+
+   @Autowired
+   private Alta alta;
+
+
    @Async("vodkaPool")
    public CompletableFuture<Vodka> pourVodka() {
       log.debug("Pouring Vodka...");
       sleepq(1000); // DB
       return CompletableFuture.completedFuture(new Vodka());
+   }
+}
+@Component
+class Alta {
+   @Timed("apel.extern")
+   public void apelExtern() {
+      sleepq(1000); // REST
    }
 }
 
@@ -169,6 +182,7 @@ class BarConfig {
       executor.setMaxPoolSize(poolSize);
       executor.setQueueCapacity(500);
       executor.setThreadNamePrefix("vodka-");
+//      executor.setRejectedExecutionHandler(new CallerRunsPolicy());
       executor.initialize();
 //      executor.setTaskDecorator(propagateThreadScope);
       executor.setWaitForTasksToCompleteOnShutdown(true);
