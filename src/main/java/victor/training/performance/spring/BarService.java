@@ -40,7 +40,6 @@ public class BarService implements CommandLineRunner {
       long t1 = System.currentTimeMillis();
       List<Object> drinks = asList(beer, vodka);
       log.debug("Got my order in {} ms : {}", t1 - t0, drinks);
-      // TODO #1: reduce the waiting time (latency)
       return drinks;
    }
 
@@ -67,6 +66,7 @@ class Barman {
 class Beer {
    private final String type = "blond";
 }
+@Data
 class Vodka {
    private final String brand = "Absolut";
 }
