@@ -3,6 +3,8 @@ package victor.training.performance.spring;
 
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.CommandLineRunner;
@@ -15,11 +17,9 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.List;
+import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
-import java.util.concurrent.Future;
 
-import static java.util.Arrays.asList;
 import static victor.training.performance.util.PerformanceUtil.sleepq;
 
 @Component
@@ -38,23 +38,57 @@ public class BarService implements CommandLineRunner {
 //@Value
 //   private  final ExecutorService threadPool = Executors.newFixedThreadPool(6); // JDK threadpool
 
-   public List<Object> orderDrinks() throws ExecutionException, InterruptedException {
+   public CompletableFuture<DillyDilly> orderDrinks() throws ExecutionException, InterruptedException {
       log.debug("Requesting drinks...");
       long t0 = System.currentTimeMillis();
 
-      Future<Beer> futureBeer = poolBar.submit(() -> barman.pourBeer());
-      Future<Vodka> futureVodka = poolBar.submit(() -> barman.pourVodka());
+      // sa intelegi CompletableFuture : https://www.youtube.com/watch?v=0hQvWIdwnw4
+      // aka Promise (Deferred din js/ts),
+      CompletableFuture<Beer> futureBeer = CompletableFuture.supplyAsync(() -> barman.pourBeer());
+      CompletableFuture<Vodka> futureVodka = CompletableFuture.supplyAsync(() -> barman.pourVodka());
 
-      Beer beer = futureBeer.get(); // thread http din cele 10_000 de threaduri ale tomcat (default) thread cat e blocat aici ? 1s
-      Vodka vodka = futureVodka.get();
+      CompletableFuture<DillyDilly> futureDilly = futureBeer.thenCombineAsync(futureVodka, DillyDilly::new);
+
+      // NU:
+//      Beer beer = futureBeer.get(); // thread http din cele 10_000 de threaduri ale tomcat (default) thread cat e blocat aici ? 1s
+//      Vodka vodka = futureVodka.get();
+
 
       long t1 = System.currentTimeMillis();
-      List<Object> drinks = asList(beer, vodka);
-      log.debug("Got my order in {} ms : {}", t1 - t0, drinks);
-      // TODO #1: reduce the waiting time (latency)
-      return drinks;
+      log.debug("in {} ms  ACUM PLEC, eliberez threadul de http ", t1 - t0);
+      return futureDilly;
+   }
+}
+
+// ce obtii daca combini bere cu vodka ?
+class DillyDilly {
+   private static final Logger log = LoggerFactory.getLogger(DillyDilly.class);
+   private final Beer beer;
+   private final Vodka vodka;
+
+   DillyDilly(Beer beer, Vodka vodka) {
+      this.beer = beer;
+      this.vodka = vodka;
+      log.debug("Amestec");
+      sleepq(1000);
+//      new AsyncRestTemplate().getForObject()
    }
 
+   public Beer getBeer() {
+      return beer;
+   }
+
+   public Vodka getVodka() {
+      return vodka;
+   }
+
+   @Override
+   public String toString() {
+      return "DillyDilly{" +
+             "beer=" + beer +
+             ", vodka=" + vodka +
+             '}';
+   }
 }
 
 @Service
@@ -80,6 +114,10 @@ class Beer {
 }
 class Vodka {
    private final String brand = "Absolut";
+
+   public String getBrand() {
+      return brand;
+   }
 }
 
 // TODO when called from web, protect the http thread
@@ -92,8 +130,8 @@ class BarController {
    private BarService service;
 
    @GetMapping
-   public String getDrinks() throws Exception {
-      return "" + service.orderDrinks();
+   public CompletableFuture<DillyDilly> getDrinks() throws Exception {
+      return service.orderDrinks();
    }
    //</editor-fold>
 }
