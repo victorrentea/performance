@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
@@ -33,8 +34,8 @@ public class BarService implements CommandLineRunner {
 //      log.debug("Got " + orderDrinks());
    }
 
-   @Autowired
-   private ThreadPoolTaskExecutor poolBar;
+//   @Autowired
+//   private ThreadPoolTaskExecutor poolBar;
 //@Value
 //   private  final ExecutorService threadPool = Executors.newFixedThreadPool(6); // JDK threadpool
 
@@ -44,15 +45,12 @@ public class BarService implements CommandLineRunner {
 
       // sa intelegi CompletableFuture : https://www.youtube.com/watch?v=0hQvWIdwnw4
       // aka Promise (Deferred din js/ts),
-      CompletableFuture<Beer> futureBeer = CompletableFuture.supplyAsync(() -> barman.pourBeer());
-      CompletableFuture<Vodka> futureVodka = CompletableFuture.supplyAsync(() -> barman.pourVodka());
+      CompletableFuture<Beer> futureBeer = barman.pourBeer();
+      CompletableFuture<Vodka> futureVodka = barman.pourVodka();
 
       CompletableFuture<DillyDilly> futureDilly = futureBeer.thenCombineAsync(futureVodka, DillyDilly::new);
 
-      // NU:
-//      Beer beer = futureBeer.get(); // thread http din cele 10_000 de threaduri ale tomcat (default) thread cat e blocat aici ? 1s
-//      Vodka vodka = futureVodka.get();
-
+      barman.proceseazaFisier();
 
       long t1 = System.currentTimeMillis();
       log.debug("in {} ms  ACUM PLEC, eliberez threadul de http ", t1 - t0);
@@ -95,16 +93,24 @@ class DillyDilly {
 @Slf4j
 class Barman {
 
-   public Beer pourBeer() {
+   @Async // fire and forget
+   public void proceseazaFisier() {
+      log.debug("Process file");
+      sleepq(1000); // REST
+   }
+   @Async("beerPool")
+   public CompletableFuture<Beer> pourBeer() {
       log.debug("Pouring Beer...");
       sleepq(1000); // REST
-      return new Beer();
-   }
 
-   public Vodka pourVodka() {
+      // QUERY FOARTE LUNG
+      return CompletableFuture.completedFuture(new Beer());
+   }
+   @Async("vodkaPool")
+   public CompletableFuture<Vodka> pourVodka() {
       log.debug("Pouring Vodka...");
       sleepq(1000); // DB
-      return new Vodka();
+      return CompletableFuture.completedFuture(new Vodka());
    }
 }
 
@@ -145,12 +151,24 @@ class BarConfig {
 //   private PropagateThreadScope propagateThreadScope;
 
    @Bean
-   public ThreadPoolTaskExecutor poolBar(@Value("${barman.thread.size}") int poolSize) {
+   public ThreadPoolTaskExecutor beerPool(@Value("${beer.thread.size}") int poolSize) {
       ThreadPoolTaskExecutor executor = new ThreadPoolTaskExecutor();
       executor.setCorePoolSize(poolSize);
       executor.setMaxPoolSize(poolSize);
       executor.setQueueCapacity(500);
-      executor.setThreadNamePrefix("barman-");
+      executor.setThreadNamePrefix("beer-");
+      executor.initialize();
+//      executor.setTaskDecorator(propagateThreadScope);
+      executor.setWaitForTasksToCompleteOnShutdown(true);
+      return executor;
+   }
+   @Bean
+   public ThreadPoolTaskExecutor vodkaPool(@Value("${vodka.thread.size}") int poolSize) {
+      ThreadPoolTaskExecutor executor = new ThreadPoolTaskExecutor();
+      executor.setCorePoolSize(poolSize);
+      executor.setMaxPoolSize(poolSize);
+      executor.setQueueCapacity(500);
+      executor.setThreadNamePrefix("vodka-");
       executor.initialize();
 //      executor.setTaskDecorator(propagateThreadScope);
       executor.setWaitForTasksToCompleteOnShutdown(true);
