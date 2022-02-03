@@ -6,6 +6,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.annotation.Rollback;
 import org.springframework.test.context.jdbc.Sql;
@@ -58,14 +59,14 @@ public class NPlusOneTest {
 
 	@Test
 	void nPlusOne() {
-		List<Parent> parents = repo.findAll();
+//		List<Parent> parents = repo.findAll(); // cauzeaza N+1 query uri cand vrei copii lor -> +1 query x n parinti.
+		List<Parent> parents = repo.loadAllWithChildren();
 		log.info("Loaded {} parents", parents.size());
 
 		int totalChildren = countChildren(parents);
 
 		assertThat(totalChildren).isEqualTo(5);
 	}
-
 	// far away...
 	private int countChildren(Collection<Parent> parents) {
 		log.debug("Start counting children of {} parents: {}", parents.size(), parents);
@@ -76,10 +77,6 @@ public class NPlusOneTest {
 		log.debug("Done counting: {} children", total);
 		return total;
 	}
-
-
-
-
 	@Test
 	@Sql("/create-view.sql")
 	public void searchOnView() {
@@ -104,6 +101,8 @@ public class NPlusOneTest {
 }
 
 interface ParentRepo extends JpaRepository<Parent, Long> {
+	@Query("SELECT DISTINCT p FROM Parent p LEFT JOIN FETCH p.children") // 95% din cazuri asa.
+	List<Parent> loadAllWithChildren();
 }
 
 

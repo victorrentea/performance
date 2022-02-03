@@ -18,8 +18,8 @@ public class Parent {
    private String name;
    private Integer age;
 
-   @OneToMany(mappedBy = "parent", cascade = CascadeType.PERSIST)
-   // @BatchSize(size=10) // too much magic
+   @OneToMany(mappedBy = "parent", cascade = CascadeType.PERSIST) // asta nu merge, fetch = FetchType.EAGER)
+//   @BatchSize(size=10) // too much magic
    private Set<Child> children = new HashSet<>();
 
    @ManyToOne
