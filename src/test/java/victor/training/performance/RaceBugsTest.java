@@ -24,7 +24,7 @@ class RaceBugsTest {
 
    @Test
    void countAlivePopulation() throws Exception {
-      int actual = target.countAlive(ids);
+      int actual = target.countAliveInParallel(ids);
 
       assertThat(actual).isEqualTo(N / 2);
    }

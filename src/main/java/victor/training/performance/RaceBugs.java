@@ -10,8 +10,10 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Future;
 import java.util.concurrent.SynchronousQueue;
 import java.util.concurrent.ThreadPoolExecutor;
+import java.util.stream.IntStream;
 
 import static java.util.concurrent.TimeUnit.MILLISECONDS;
+import static java.util.stream.Collectors.toList;
 
 
 public class RaceBugs {
@@ -23,29 +25,38 @@ public class RaceBugs {
    }
 
    // this pools shutdowns automatically at test end
-   private final ExecutorService pool = new ThreadPoolExecutor(0, Integer.MAX_VALUE, 500, MILLISECONDS, new SynchronousQueue<>());
 
    // ===================================================================
 
-   public int countAlive(List<Integer> ids) throws Exception {
+   public static void main(String[] args) throws Exception {
+      List<Integer> ids = IntStream.range(0, 20_000).boxed().collect(toList());
+      new RaceBugs(null).countAliveInParallel(ids);
+   }
+
+   public int countAliveInParallel(List<Integer> ids) throws Exception {
       int len = ids.size();
-      Future<?> future1 = pool.submit(() -> doCountAlive(ids.subList(0, len / 2)));
-      Future<?> future2 = pool.submit(() -> doCountAlive(ids.subList(len / 2, len)));
-      log.debug("Bombs away...");
+      ExecutorService pool = new ThreadPoolExecutor(0, 2, 500, MILLISECONDS, new SynchronousQueue<>());
+      Future<?> future1 = pool.submit(() -> workHere(ids.subList(0, len / 2)));
+      Future<?> future2 = pool.submit(() -> workHere(ids.subList(len / 2, len)));
+      log.debug("Tasks started...");
       future1.get();
       future2.get();
+      log.debug("Counted {} ids", population);
       return population;
    }
 
+
    // TODO fix population++ race (warmup)
    private Integer population = 0;
-   private void doCountAlive(List<Integer> idsChunk) { // ran in 2 parallel threads
+
+   private void workHere(List<Integer> idsChunk) { // ran in 2 parallel threads
       for (Integer id : idsChunk) {
-         if (dependency.isAlive(id)) { // returns 50% true
+            // TODO if (dependency.isAlive(id)) { // returns 50% true  => call tests
             population++;
-         }
       }
    }
+
+
 
    // ================================================================
 
@@ -56,6 +67,7 @@ public class RaceBugs {
 
    public Collection<String> retrieveEmails(List<Integer> ids) throws Exception {
       int len = ids.size();
+      ExecutorService pool = new ThreadPoolExecutor(0, 2, 500, MILLISECONDS, new SynchronousQueue<>());
       Future<?> future1 = pool.submit(() -> doRetrieveEmails(ids.subList(0, len / 2)));
       Future<?> future2 = pool.submit(() -> doRetrieveEmails(ids.subList(len / 2, len)));
       log.debug("Bombs away...");
