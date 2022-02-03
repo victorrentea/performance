@@ -48,11 +48,14 @@ public class RaceBugs {
 
    // TODO fix population++ race (warmup)
    private Integer population = 0;
+   private static final Object LOCK = new Object();
 
-   private void workHere(List<Integer> idsChunk) { // ran in 2 parallel threads
+   private void workHere(List<Integer> idsChunk) { // ran in 2 parallel threads ATENTIE
       for (Integer id : idsChunk) {
             // TODO if (dependency.isAlive(id)) { // returns 50% true  => call tests
-            population++;
+            synchronized (LOCK) {
+               population++;
+            }
       }
    }
 
