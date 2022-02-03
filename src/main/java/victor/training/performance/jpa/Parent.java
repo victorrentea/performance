@@ -2,6 +2,7 @@ package victor.training.performance.jpa;
 
 import lombok.Getter;
 import lombok.Setter;
+import org.hibernate.annotations.BatchSize;
 
 import javax.persistence.*;
 import java.util.HashSet;
@@ -19,7 +20,7 @@ public class Parent {
    private Integer age;
 
    @OneToMany(mappedBy = "parent", cascade = CascadeType.PERSIST) // asta nu merge, fetch = FetchType.EAGER)
-//   @BatchSize(size=10) // too much magic
+   @BatchSize(size=2) // TELLS HIBERNATE TO LOAD MULTIPLE CHILDREN LISTS AT ONCE AT LAZY LOAD too much magic
    private Set<Child> children = new HashSet<>();
 
    @ManyToOne

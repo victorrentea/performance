@@ -59,8 +59,8 @@ public class NPlusOneTest {
 
 	@Test
 	void nPlusOne() {
-//		List<Parent> parents = repo.findAll(); // cauzeaza N+1 query uri cand vrei copii lor -> +1 query x n parinti.
-		List<Parent> parents = repo.loadAllWithChildren();
+		List<Parent> parents = repo.findAll(); // cauzeaza N+1 query uri cand vrei copii lor -> +1 query x n parinti.
+//		List<Parent> parents = repo.loadAllWithChildren();
 		log.info("Loaded {} parents", parents.size());
 
 		int totalChildren = countChildren(parents);

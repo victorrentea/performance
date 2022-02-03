@@ -38,6 +38,7 @@ public class Profile2_NPlusOne implements CommandLineRunner {
    @Transactional
    public Page<Parent> query() {
       Page<Parent> parentPage = repo.findByNameLike("%ar%", PageRequest.of(0, 20));
+
       log.info("Returning");
       return parentPage;
 
