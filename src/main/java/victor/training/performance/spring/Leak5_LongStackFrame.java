@@ -14,13 +14,19 @@ import static victor.training.performance.util.PerformanceUtil.sleepq;
 public class Leak5_LongStackFrame {
 	@GetMapping
 	public String longRunningFunction() {
-		BigObject80MB big = new BigObject80MB();
-		String useful = big.getInterestingPart();
+		String useful = getUsefulStuff();
 
-		sleepq(10_000); // wait for a loong network call
+		sleepq(10_000); // wait for a loong network call sau procesare complicata
 		if (useful != null) {
 			log.trace("Using useful part: " + useful);
 		}
 		return "end";
+	}
+
+	private String getUsefulStuff() {
+		//de undeva de pe vreun sistem extern vine vreun DTO BLOATED cu jde'fielduri
+		BigObject80MB big = new BigObject80MB();
+		String useful = big.getInterestingPart();
+		return useful;
 	}
 }

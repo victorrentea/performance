@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.RestController;
 import victor.training.performance.util.BigObject20MB;
 import victor.training.performance.util.PerformanceUtil;
 
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 
 @RestController
@@ -21,7 +21,7 @@ public class Leak7_Cache {
 
    @GetMapping
    public String test() {
-      BigObject20MB data = stuff.returnCachedDataForDay(LocalDateTime.now());
+      BigObject20MB data = stuff.returnCachedDataForDay(LocalDate.now());
       return "Tools won't always shield you from mistakes: data=" + data + ", " + PerformanceUtil.getUsedHeap();
    }
 }
@@ -30,7 +30,7 @@ public class Leak7_Cache {
 @Slf4j
 class Stuff {
    @Cacheable("missed-cache")
-   public BigObject20MB returnCachedDataForDay(LocalDateTime timestamp) {
+   public BigObject20MB returnCachedDataForDay(LocalDate timestamp) {
       log.debug("Fetch data for date: {}", timestamp.format(DateTimeFormatter.ISO_DATE));
       return new BigObject20MB();
    }

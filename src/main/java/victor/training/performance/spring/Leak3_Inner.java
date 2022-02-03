@@ -52,10 +52,12 @@ public class Leak3_Inner {
 
 
 class CachingMethodObject {
-	public class UserRightsCalculator { // an instance of this is kept on current thread
+//	public class UserRightsCalculator { //inner class instanta de din asta pointer ascuns la instanta clasei host
+	public static class UserRightsCalculator { // nested
 		public boolean hasRight(String task) {
 			System.out.println("Stupid Code");
 			// what's the connection with the 'bigMac' field ?
+//			System.out.println(CachingMethodObject.this.bigMac);
 			return true;
 		}
 	}
@@ -78,8 +80,9 @@ class CachingMethodObject {
 		};
 	}
 
+
 	public Map<String, Integer> mapInit() {
-		return new HashMap<>() {{ // obviously, pre-java 10
+		return new HashMap<>() {{ // obviously, pre-java 10 Map.of(...)
 			put("one", 1);
 			put("two", 2);
 		}};

@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class Leak8_UnknownSource {
    @GetMapping
    public String test() {
-      return "Nothing fishy here. Find the leak! Tip: Allocation Profile (record stack traces of constructor calls for target classes)";
+      return "Nothing fishy here. Find the leak! Tip: Allocation Profile " +
+             "(record stack traces of constructor calls for target classes)";
    }
 }

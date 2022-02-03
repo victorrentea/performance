@@ -7,13 +7,14 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 
 @Slf4j
-//@RestController // TODO uncomment and study
+@RestController // TODO uncomment and study
 @RequestMapping("profile/export")
 @RequiredArgsConstructor
 public class Profile1_Export implements CommandLineRunner {
@@ -22,9 +23,9 @@ public class Profile1_Export implements CommandLineRunner {
 
    @GetMapping
    public String memoryMe() {
-      String result = "";
+      StringBuilder result = new StringBuilder();
       for (Small small : smallRepo.findAll()) {
-         result += small.getName();
+         result.append(small.getName()); // asa DA
       }
 
       return "Exported characters: " + result.length();
@@ -33,7 +34,7 @@ public class Profile1_Export implements CommandLineRunner {
    @Override
    public void run(String... args) throws Exception {
       log.warn("INSERTING data...");
-      jdbc.update("INSERT INTO SMALL(ID, NAME) SELECT X, '123456' FROM SYSTEM_RANGE(1, 50*1000)");
+      jdbc.update("INSERT INTO SMALL(ID, NAME) SELECT X, '123456' FROM SYSTEM_RANGE(1, 500*1000)");
       log.info("DONE");
    }
 }

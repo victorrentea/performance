@@ -9,7 +9,6 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -29,6 +28,8 @@ import java.util.List;
 class SheepController {
     private final SheepService service;
 
+
+    //incercati cu jmeter sa dati cu 300 th simultane si fixati aici cu CompletableFuture.
     @GetMapping("create")
     public Long createSheep(@RequestParam(required = false) String name) {
         if (name == null) {
@@ -48,7 +49,6 @@ class SheepController {
 @Slf4j
 @Service
 @RequiredArgsConstructor
-@Transactional
 class SheepService {
     private final SheepRepo repo;
     private final ShepardService shepard;

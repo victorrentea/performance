@@ -12,9 +12,10 @@ import java.util.UUID;
 @RestController
 @RequestMapping("leak2")
 @Slf4j
-public class Leak2_Statics {
+public class Leak2_Statics { // clasa e singleton de spring. traieste forever.
 
    // hand-made cache: NEVER
+//   private String s;
    private /*static*/ final Map<String, Integer> smallEntriesCantHurt = new HashMap<>();
 
    @GetMapping

@@ -14,10 +14,19 @@ public class Leak1_ThreadLocal {
    public String test() {
       BigObject20MB bigObject = new BigObject20MB();
       threadLocal.set(bigObject);
-
-      businessMethod1();
+      try {
+         businessMethod1();
+      } finally {
+         threadLocal.remove(); // best practice mereu in finally imediat dupa set.
+      }
       return "Magic can do harm.";
    }
+
+   // nu te loveste leakul in sine (e mic de obiceiL un string)
+   // ci buguri, ca datele raman pe threadul pe care-l primeste alt request ulterior.
+   // SI ta-naaaa, ai IP-ul requestului precedent.
+
+   // !NotA: acest leak de thread localuri apare doar in combinatie cu threadpool.
 
    private void businessMethod1() {
       businessMethod2();
