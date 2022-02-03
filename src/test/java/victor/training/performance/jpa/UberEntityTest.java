@@ -82,6 +82,7 @@ public class UberEntityTest {
         if (uber.getStatus() == Status.DRAFT) {
             throw new IllegalArgumentException("Not submitted yet");
         }
+        repo.save(uber);
         // etc..
     }
 
@@ -93,7 +94,7 @@ public class UberEntityTest {
     }
 
     @Test
-    public void search() {
+    public void search() { // JPQL lansat in EntityManager / @Query
         log.info("Searching for 'very OOP' @Entity...");
         UberSearchCriteria criteria = new UberSearchCriteria();
         criteria.name = "::uberName::";
@@ -106,8 +107,20 @@ public class UberEntityTest {
             .containsExactly(tuple(uberId, "::uberName::", "Belgium"));
     }
 
+
+
+
+
+
+
+
+
+
+
+
+
     private List<UberSearchResult> search(UberSearchCriteria criteria) {
-        String jpql = "SELECT u FROM UberEntity u WHERE 1 = 1 ";
+        String jpql = "SELECT new victor.training.performance.jpa.UberSearchResult(u.id, u.name, u.originCountry.name) FROM UberEntity u WHERE 1 = 1 ";
         // alternative implementation: CriteriaAPI, Criteria+Metamodel, QueryDSL, Spring Specifications
 
         Map<String, Object> params = new HashMap<>();
@@ -117,12 +130,14 @@ public class UberEntityTest {
             params.put("name", criteria.name);
         }
 
-        var query = em.createQuery(jpql, UberEntity.class);
+        var query = em.createQuery(jpql, UberSearchResult.class);
         for (String key : params.keySet()) {
             query.setParameter(key, params.get(key));
         }
         var entities = query.getResultList();
-        return entities.stream().map(UberSearchResult::new).collect(toList());
+
+
+        return entities;
     }
 }
 class UberSearchCriteria {

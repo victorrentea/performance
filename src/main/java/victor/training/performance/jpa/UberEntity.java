@@ -13,9 +13,14 @@ public class UberEntity {
     @GeneratedValue
     private Long id;
     private String name;
-    private String firstName, lastName, ibanCode, cnp, ssn, passportNumber;
+    private String firstName;
+    private String lastName;
+    private String ibanCode;
+    private String cnp;
+    private String ssn;
+    private String passportNumber;
 
-    @ManyToOne
+    @ManyToOne()
     private Country originCountry;
     @ManyToOne
     private Country nationality;
