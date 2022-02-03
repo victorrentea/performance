@@ -22,9 +22,18 @@ public class DeadLocks {
       }
 
       public void run() {
-         Fork firstFork = leftFork;
-         Fork secondFork = rightFork;
 
+         Fork firstFork;
+         Fork secondFork;
+// evitam in general deadlockurile obtinand lockurile in aceeasi ordine globala.
+         if (leftFork.id < rightFork.id) {
+            firstFork = leftFork;
+            secondFork = rightFork;
+         } else {
+            firstFork = rightFork;
+            secondFork = leftFork;
+
+         }
          for (int i = 0; i < 5000; i++) {
             log("I want to eat!");
 
@@ -32,14 +41,18 @@ public class DeadLocks {
             synchronized (firstFork) {
                log("Took the first");
                log("Taking second fork (id=" + secondFork.id + ")");
-               synchronized (secondFork) {
-                  log("Took the second");
-                  log("Took both forks. Eating...");
-                  eat();
-                  log("I had enough. I'm putting down the forks");
-               }
+               functiaTa(secondFork);
             }
             log("Put down forks. Thinking...");
+         }
+      }
+
+      private void functiaTa(Fork secondFork) {
+         synchronized (secondFork) {
+            log("Took the second");
+            log("Took both forks. Eating...");
+            eat();
+            log("I had enough. I'm putting down the forks");
          }
       }
 
