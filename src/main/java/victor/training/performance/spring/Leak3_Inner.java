@@ -68,7 +68,7 @@ class CachingMethodObject {
 
 	// then, some more .....
 
-	//<editor-fold desc="More">
+	//<editor-fold desc="Lambdas vs Anonymous implementation">
 	public Supplier<String> anonymousVsLambdas() {
 		return new Supplier<String>() {
 			@Override
@@ -77,7 +77,9 @@ class CachingMethodObject {
 			}
 		};
 	}
+	//</editor-fold>
 
+	//<editor-fold desc="Map init in Java <= 8">
 	public Map<String, Integer> mapInit() {
 		return new HashMap<>() {{ // obviously, pre-java 10
 			put("one", 1);

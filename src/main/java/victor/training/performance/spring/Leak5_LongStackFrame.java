@@ -17,7 +17,7 @@ public class Leak5_LongStackFrame {
 		BigObject80MB big = new BigObject80MB();
 		String useful = big.getInterestingPart();
 
-		sleepq(10_000); // wait for a loong network call
+		sleepq(10_000); // start a long-running process (eg 20 minutes)
 		if (useful != null) {
 			log.trace("Using useful part: " + useful);
 		}

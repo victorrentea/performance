@@ -1,4 +1,4 @@
-package victor.training.performance;
+package victor.training.performance.concurrency;
 
 import lombok.Value;
 

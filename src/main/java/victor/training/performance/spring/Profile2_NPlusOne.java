@@ -42,6 +42,7 @@ public class Profile2_NPlusOne implements CommandLineRunner {
 
 //      Page<Long> idPage = repo.findByNameLike("%ar%", PageRequest.of(0, 10));
 //      List<Long> parentIds = idPage.getContent();
+
 //      Map<Long, Parent> parents = repo.findParentsWithChildren(parentIds).stream().collect(toMap(Parent::getId, identity()));
 //      return idPage.map(parents::get);
    }
@@ -57,38 +58,4 @@ interface ParentRepo extends JpaRepository<Parent, Long> {
 //   @Query("SELECT p FROM Parent p LEFT JOIN FETCH p.children WHERE p.id IN ?1")
 //   Set<Parent> findParentsWithChildren(List<Long> parentIds);
 }
-
-//@Entity
-//@Getter
-//@Setter
-//class Parent {
-//   @Id
-//   @GeneratedValue
-//   private Long id;
-//
-//   private String name;
-//
-//
-//   @OneToMany(cascade = CascadeType.ALL)
-//   @JoinColumn(name = "PARENT_ID")
-//   private Set<Child> children = new HashSet<>();
-//
-//   public Parent() {}
-//
-//   public Parent(String name, Set<Child> children) {
-//      this.name = name;
-//      this.children = children;
-//   }
-//}
-//
-//
-//@Data
-//@Entity
-//class Child {
-//   @Id
-//   @GeneratedValue
-//   @EqualsAndHashCode.Exclude
-//   private Long id;
-//   private String name;
-//}
 

@@ -8,10 +8,11 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import victor.training.performance.util.BigObject20MB;
-import victor.training.performance.util.PerformanceUtil;
 
 import java.util.Random;
 import java.util.function.Function;
+
+import static victor.training.performance.util.PerformanceUtil.sleepq;
 
 @RestController
 @RequestMapping("leak6")
@@ -32,8 +33,14 @@ public class Leak6_Async {
 class Worker {
 	@Async
 	public void workHard(int param, Function<Integer, Integer> lookup) {
-		PerformanceUtil.sleepq(10_000); // imagine other tasks doing this on the same pool
+		log.debug("Starting to work hard...");
+		sleepq(10_000);
 		int result = param + lookup.apply((int) Math.sqrt(param));
-		log.debug("Computed " + result);
+		log.debug("Done task. result=" + result);
 	}
 }
+
+/**
+ * - Don't pass large objects as params to async methods
+ * - Tune the queue size of the underlying thread pool considering the size of elements
+ */

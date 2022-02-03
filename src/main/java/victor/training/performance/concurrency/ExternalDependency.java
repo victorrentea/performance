@@ -1,11 +1,9 @@
-package victor.training.performance;
+package victor.training.performance.concurrency;
 
 public interface ExternalDependency {
-   boolean isAlive(int id);
-
    /** Imagine some some external call */
    String retrieveEmail(int id);
 
    /** Imagine some some external call */
-   boolean checkEmail(String email);
+   boolean isEmailValid(String email);
 }

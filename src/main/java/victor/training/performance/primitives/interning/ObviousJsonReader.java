@@ -1,4 +1,4 @@
-package victor.training.performance.interning;
+package victor.training.performance.primitives.interning;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;

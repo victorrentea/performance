@@ -1,4 +1,4 @@
-package victor.training.performance.interning;
+package victor.training.performance.primitives.interning;
 
 import java.io.IOException;
 import java.io.PrintWriter;

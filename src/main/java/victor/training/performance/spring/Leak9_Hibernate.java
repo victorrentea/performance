@@ -68,6 +68,8 @@ public class Leak9_Hibernate {
    }
 }
 
+//region Fast Inserter
+
 @Service
 @RequiredArgsConstructor
 @Slf4j
@@ -94,6 +96,7 @@ class FastInserter {
    }
 
 }
+//endregion
 
 @Entity
 @Data

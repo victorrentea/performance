@@ -8,26 +8,34 @@ import victor.training.performance.util.BigObject20MB;
 @RestController
 @RequestMapping("leak1")
 public class Leak1_ThreadLocal {
-   public static ThreadLocal<BigObject20MB> threadLocal = new ThreadLocal<>();
+   public static ThreadLocal<BigObject20MB> threadLocalMetadata = new ThreadLocal<>();
 
    @GetMapping
    public String test() {
       BigObject20MB bigObject = new BigObject20MB();
-      threadLocal.set(bigObject);
+      bigObject.someString = "john.doe"; // username
+      threadLocalMetadata.set(bigObject);
 
       businessMethod1();
       return "Magic can do harm.";
    }
 
-   private void businessMethod1() {
+   private void businessMethod1() { // no username in the signature
       businessMethod2();
    }
 
    private void businessMethod2() {
-      BigObject20MB bigObject = threadLocal.get();
-      System.out.println("Business logic using " + bigObject);
-      // TODO think of throw new RuntimeException();
+      BigObject20MB bigObject = threadLocalMetadata.get();
+      String currentUsernameOnThisThread = bigObject.someString;
+      System.out.println("Business logic using " + currentUsernameOnThisThread);
+      // TODO what if throw new RuntimeException(); ?
    }
 }
 
-
+/**
+ * Avoid creating ThreadLocal variables yourself - use the safe ones managed by framework:
+ * - SecurityContextHolder, @Scope("request" or "session")
+ * - @Transactional, Persistence Context, JDBC Connection
+ * - Logback MDC
+ * If you still do it, after the first .set(), always follow with a try { } finally { .remove(); }
+ */

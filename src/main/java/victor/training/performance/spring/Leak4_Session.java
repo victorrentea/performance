@@ -1,5 +1,6 @@
 package victor.training.performance.spring;
 
+import lombok.Data;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Scope;
@@ -13,7 +14,7 @@ import victor.training.performance.util.BigObject1KB;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import java.io.Serializable;
-import java.util.LinkedList;
+import java.util.ArrayList;
 import java.util.List;
 
 import static java.util.stream.Collectors.joining;
@@ -26,38 +27,60 @@ import static java.util.stream.Collectors.joining;
 public class Leak4_Session {
 	private final UserSession userSession;
 
-
 	@GetMapping
-	public String test(HttpServletRequest request) {
-		HttpSession session = request.getSession();
-
-		List<BigObject1KB> list;
-		if (session.isNew()) {
-			list = retrieveUserPreferences();
-			session.setAttribute("lastSearchResults", list);
-		} else {
-			list = (List<BigObject1KB>) session.getAttribute("lastSearchResults");
+	public String usingSessionScope() {
+		if (userSession.getUserPreferences() == null) {
+			userSession.setUserPreferences(loadUserPreferencesFromDb());
 		}
 
-		String listStr = list.stream().map(BigObject1KB::getLargeString).collect(joining("<br>"));
-		return "Subtle, hard to find before stress tests.<br>Try 4000 concurrent users with jMeter.<br> Last Search Results: <br>" + listStr;
+		String settingsAsString = userSession.getUserPreferences().getSettings().stream()
+			.map(BigObject1KB::getLargeString)
+			.collect(joining("<br>"));
+
+		return "Subtle, hard to find before stress tests.<br>Try 4000 concurrent users with jMeter.<br> " +
+				 "User Settings: <br>" + settingsAsString;
 	}
 
-	private List<BigObject1KB> retrieveUserPreferences() {
-		log.debug("Perform the search");
-		List<BigObject1KB> list = new LinkedList<>();
-		for (int i = 0; i < 100; i++) {
-			list.add(new BigObject1KB());
+	@GetMapping("old")
+	public String usingHttpSession(HttpServletRequest request) {
+		HttpSession session = request.getSession();
+
+		UserPreferences userPreferences;
+		if (session.isNew()) {
+			userPreferences = loadUserPreferencesFromDb();
+			session.setAttribute("lastSearchResults", userPreferences);
+		} else {
+			userPreferences = (UserPreferences )session.getAttribute("lastSearchResults");
 		}
-		return list;
+		return userPreferences.getSettings().stream()
+			.map(BigObject1KB::getLargeString)
+			.collect(joining("<br>"));
+	}
+
+	private UserPreferences loadUserPreferencesFromDb() {
+		log.debug("Loading preferences from database");
+		return new UserPreferences();
 	}
 }
 
+class UserPreferences {
+	private List<BigObject1KB> settings = new ArrayList<>();
+	public UserPreferences() {
+		for (int i = 0; i < 100; i++) settings.add(new BigObject1KB());
+	}
+	public List<BigObject1KB> getSettings() {
+		return settings;
+	}
+}
 
+@Data
 @Component
 @Scope(scopeName = "session", proxyMode = ScopedProxyMode.TARGET_CLASS)
 class UserSession implements Serializable {
-
-
-
+	private UserPreferences userPreferences;
 }
+
+/**
+ * - REST services should be stateless (no user session). Consider pushing session data in A) browser B) shared redis C) DB
+ * - If request authentication is based on JWT tokens, you should disable completely the session from web config
+ */

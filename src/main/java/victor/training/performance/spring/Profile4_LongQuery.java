@@ -16,6 +16,8 @@ import java.util.Random;
 @RequiredArgsConstructor
 public class Profile4_LongQuery implements CommandLineRunner {
    private final JdbcTemplate jdbc;
+
+
    @Override
    public void run(String... args) throws Exception {
       log.warn("INSERTING huge data...");

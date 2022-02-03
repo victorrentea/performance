@@ -1,4 +1,4 @@
-package victor.training.performance;
+package victor.training.performance.concurrency;
 
 import victor.training.performance.util.PerformanceUtil;
 
@@ -13,20 +13,15 @@ public class ExternalDependencyFake implements ExternalDependency {
       this.total = total;
    }
 
-   @Override
-   public boolean isAlive(int id) {
-      return id % 2 == 0;
-   }
-
    private boolean overlappingEmails = false;
    private boolean checkingEmails = false;
 
-   public ExternalDependencyFake withOverlappingEmails() {
+   public ExternalDependencyFake setHalfOverlappingEmails() {
       this.overlappingEmails = true;
       return this;
    }
 
-   public ExternalDependencyFake withCheckingEmails() {
+   public ExternalDependencyFake setCheckingEmails() {
       this.checkingEmails = true;
       return this;
    }
@@ -44,7 +39,7 @@ public class ExternalDependencyFake implements ExternalDependency {
    private static final Pattern emailPattern = Pattern.compile("email(\\d+)@example.com");
 
    @Override
-   public boolean checkEmail(String email) {
+   public boolean isEmailValid(String email) {
       Matcher matcher = emailPattern.matcher(email);
       if (!matcher.matches()) throw new IllegalArgumentException();
       int number = Integer.parseInt(matcher.group(1));

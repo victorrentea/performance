@@ -14,16 +14,19 @@ import java.util.UUID;
 @Slf4j
 public class Leak2_Statics {
 
-   // hand-made cache: NEVER
-   private /*static*/ final Map<String, Integer> smallEntriesCantHurt = new HashMap<>();
+   private /*static*/ final Map<String, Integer> anInnocentMap = new HashMap<>();
 
    @GetMapping
    public String test() {
-      log.info("Catch me if you can");
-      for (int i = 0; i < 1_000; i++) {
-         // simulate a lot more load with jmeter
-         smallEntriesCantHurt.put(UUID.randomUUID().toString(), 1);
-      }
-      return "real-life case: no more obvious suspect 20MB int[] + only happens under stress test";
+      // fire load with jmeter
+      anInnocentMap.put(UUID.randomUUID().toString(), 1);
+      return "real-life case: no more obvious 20MB int[] + only happens under stress test";
    }
 }
+
+/**
+ * - Never accumulate in a collection arbitrary elements without considering eviction.
+ * - If you need a cache, don't create your own => use a library with max-heap protection
+ * - Your are in a Spring singleton, so static or not, it makes no diferrence
+ * - Retained heap = the amount of memory that will be freed if an object is evicted
+ */
