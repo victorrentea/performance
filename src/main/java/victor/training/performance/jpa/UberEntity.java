@@ -20,8 +20,15 @@ public class UberEntity {
     private String ssn;
     private String passportNumber;
 
-    @ManyToOne()
-    private Country originCountry;
+    // am inlocuit relatii JPA catre date 'statice' (nomenclatoare, dictionare, referentiale)
+    // cu Long + FK in DB
+    // PRET: un pic mai complicat cand vrei numele tarii (eg) ainevoie de JOIN
+    // Mai putin OOP (mai putin navigabil?)
+
+//    @ManyToOne()
+//    private Country originCountry;
+//    @Mapped
+    private Long originCountryId;
     @ManyToOne
     private Country nationality;
     @ManyToOne

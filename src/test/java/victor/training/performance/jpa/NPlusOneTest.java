@@ -107,4 +107,6 @@ interface ParentRepo extends JpaRepository<Parent, Long> {
 
 
 interface ParentSearchViewRepo extends JpaRepository<ParentSearchView, Long> {
+//	@Query("SELECT pv FROM ParentSearchView pv LEFT JOIN Parent p ON p.id = pv.id WHERE p.") // 95% din cazuri asa.
+//	List<ParentSearchViewRepo> loadAllWithChildren();
 }

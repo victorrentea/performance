@@ -20,7 +20,6 @@ import java.util.List;
 import java.util.Map;
 
 import static java.util.stream.Collectors.joining;
-import static java.util.stream.Collectors.toList;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.tuple;
 import static org.springframework.test.annotation.DirtiesContext.ClassMode.BEFORE_EACH_TEST_METHOD;
@@ -57,7 +56,7 @@ public class UberEntityTest {
         UberEntity uber = new UberEntity()
                 .setName("::uberName::")
                 .setStatus(Status.SUBMITTED)
-                .setOriginCountry(belgium)
+                .setOriginCountryId(belgium.getId())
                 .setFiscalCountry(romania)
                 .setInvoicingCountry(france)
                 .setNationality(serbia)
@@ -75,8 +74,12 @@ public class UberEntityTest {
     @Test
     public void findById() {
         log.info("Loading a 'very OOP' @Entity by id...");
+        // by dfault JPA face LEFT JOIN cu toate @...ToOne
         UberEntity uber = repo.findById(uberId).get(); // em.find(UberEntity.class, id); // plain JPA
         log.info("Loaded using find (inspect the above query):\n" + uber);
+
+
+//        uber.getOriginCountry().getName() // nici o aparitie in cod
 
         // Use-case: I only loaded UberEntity to get its status
         if (uber.getStatus() == Status.DRAFT) {
@@ -99,6 +102,7 @@ public class UberEntityTest {
         UberSearchCriteria criteria = new UberSearchCriteria();
         criteria.name = "::uberName::";
 
+        // DACA lansezi entityManager.createQuery(JPQL) >>>> face by default SELECT succesive pentru toate @...ToOne si cascadand mai departe rel lot @..ToOne.....
         List<UberSearchResult> dtos = search(criteria);
 
         System.out.println("Results: \n" + dtos.stream().map(UberSearchResult::toString).collect(joining("\n")));
@@ -120,7 +124,9 @@ public class UberEntityTest {
 
 
     private List<UberSearchResult> search(UberSearchCriteria criteria) {
-        String jpql = "SELECT new victor.training.performance.jpa.UberSearchResult(u.id, u.name, u.originCountry.name) FROM UberEntity u WHERE 1 = 1 ";
+        String jpql = "SELECT new victor.training.performance.jpa.UberSearchResult(u.id, u.name, oc.name) " +
+                      " FROM UberEntity u LEFT JOIN Country oc ON oc.id = u.originCountryId " +
+                      "  WHERE 1 = 1 ";
         // alternative implementation: CriteriaAPI, Criteria+Metamodel, QueryDSL, Spring Specifications
 
         Map<String, Object> params = new HashMap<>();
@@ -152,9 +158,9 @@ class UberSearchResult {
     private final String name;
     private final String originCountry;
 
-    public UberSearchResult(UberEntity entity) {
-        id = entity.getId();
-        name = entity.getName();
-        originCountry = entity.getOriginCountry().getName();
-    }
+//    public UberSearchResult(UberEntity entity) {
+//        id = entity.getId();
+//        name = entity.getName();
+//        originCountry =  null ;; // NULL entity.getOriginCountry().getName();
+//    }
 }
