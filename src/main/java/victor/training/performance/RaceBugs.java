@@ -76,9 +76,9 @@ public class RaceBugs {
       future1.get();
       future2.get();
 
-      CompletableFuture.supplyAsync(() -> retrieveEmails(firstHalf))
-      CompletableFuture.supplyAsync(() -> retrieveEmails(secodnHalf))
-          thenCombine(celalat -> (list1, list) -> merge si elimini duppl in 1 thread ca e in mem super fast)
+//      CompletableFuture.supplyAsync(() -> retrieveEmails(firstHalf))
+//      CompletableFuture.supplyAsync(() -> retrieveEmails(secodnHalf))
+//          thenCombine(celalat -> (list1, list) -> merge si elimini duppl in 1 thread ca e in mem super fast)
 
 
       // LIsta de allEmail aici nu contine duplicate DAR nu au fost inca verificate.
