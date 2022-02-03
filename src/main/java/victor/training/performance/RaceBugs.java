@@ -10,6 +10,7 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Future;
 import java.util.concurrent.SynchronousQueue;
 import java.util.concurrent.ThreadPoolExecutor;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.IntStream;
 
 import static java.util.concurrent.TimeUnit.MILLISECONDS;
@@ -30,7 +31,10 @@ public class RaceBugs {
 
    public static void main(String[] args) throws Exception {
       List<Integer> ids = IntStream.range(0, 20_000).boxed().collect(toList());
-      new RaceBugs(null).countAliveInParallel(ids);
+//      new RaceBugs(null).countAliveInParallel(ids);
+      new RaceBugs(new ExternalDependencyFake(20_000)
+          .withOverlappingEmails()
+      ).retrieveEmails(ids);
    }
 
    public int countAliveInParallel(List<Integer> ids) throws Exception {
@@ -42,20 +46,20 @@ public class RaceBugs {
       future1.get();
       future2.get();
       log.debug("Counted {} ids", population);
-      return population;
+      return population.get();
    }
 
 
    // TODO fix population++ race (warmup)
-   private Integer population = 0;
+//   private Integer population = 0;
+   private AtomicInteger population = new AtomicInteger(0);
    private static final Object LOCK = new Object();
 
    private void workHere(List<Integer> idsChunk) { // ran in 2 parallel threads ATENTIE
       for (Integer id : idsChunk) {
             // TODO if (dependency.isAlive(id)) { // returns 50% true  => call tests
-            synchronized (LOCK) {
-               population++;
-            }
+//            population++;
+         population.incrementAndGet();
       }
    }
 
@@ -76,17 +80,34 @@ public class RaceBugs {
       log.debug("Bombs away...");
       future1.get();
       future2.get();
+      log.debug("Cate mailuri am strans ?" + allEmails.size());
       return allEmails;
    }
+
    private final List<String> allEmails = new ArrayList<>();
+
    private void doRetrieveEmails(List<Integer> idsChunk) {
       for (Integer id : idsChunk) {
-         String email = dependency.retrieveEmail(id);
-         if (allEmails.contains(email)) {
-            continue;
+         String email = dependency.retrieveEmail(id); // 50% overlap
+         synchronized (allEmails) {
+            if (!allEmails.contains(email)) {
+               allEmails.add(email);
+            }
          }
-         if (dependency.checkEmail(email))
-            allEmails.add(email);
+
+//         synchronized (allEmails) {
+//         }
+
+
+
+
+
+
+
+//         if (allEmails.contains(email)) {
+//            continue;
+//         }
+//         if (dependency.checkEmail(email))
       }
    }
 }
