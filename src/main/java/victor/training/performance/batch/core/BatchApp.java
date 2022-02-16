@@ -16,6 +16,7 @@ import org.springframework.batch.item.xml.StaxEventItemReader;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.context.annotation.Bean;
 import org.springframework.core.io.FileSystemResource;
 import org.springframework.core.task.SimpleAsyncTaskExecutor;
@@ -29,6 +30,7 @@ import java.io.IOException;
 
 import static victor.training.performance.util.PerformanceUtil.measureCall;
 
+@EnableCaching
 @Slf4j
 @SpringBootApplication
 @EnableBatchProcessing
@@ -50,15 +52,24 @@ public class BatchApp {
 
 
    @Bean
+   public Job basicJob() {
+      return jobBuilder.get("basicJob")
+          .incrementer(new RunIdIncrementer())
+          .start(basicChunkStep())
+          .listener(new MyJobListener())
+          .build();
+   }
+
+   @Bean
    public Step basicChunkStep() {
       return stepBuilder.get("basicChunkStep")
-          .<PersonXml, Person>chunk(5)
+          .<PersonXml, Person>chunk(50)
           .reader(xmlReader(null))
           .processor(personProcessor())
           .writer(jpaWriter(null))
-          .listener(logFirstChunkListener())
-          .listener(progressTrackingChunkListener())
-          .listener(stepListener())
+//          .listener(progressTrackingChunkListener())
+//          .listener(logFirstChunkListener())
+//          .listener(stepListener())
           .build();
       // TODO optimize: run insert in multithread. > SynchronizedItemStreamReader
    }
@@ -67,17 +78,17 @@ public class BatchApp {
       return new LogFirstChunkListener();
    }
 
-   @Bean
-   @StepScope
-   public ProgressTrackingChunkListener progressTrackingChunkListener() {
-      return new ProgressTrackingChunkListener();
-   }
+//   @Bean
+//   @StepScope
+//   public ProgressTrackingChunkListener progressTrackingChunkListener() {
+//      return new ProgressTrackingChunkListener();
+//   }
 
-   @Bean
-   @StepScope
-   public CountingTotalItemsStepListener stepListener() {
-      return new CountingTotalItemsStepListener();
-   }
+//   @Bean
+//   @StepScope
+//   public CountingTotalItemsStepListener stepListener() {
+//      return new CountingTotalItemsStepListener();
+//   }
 
    @Bean
    public PersonProcessor personProcessor() {
@@ -96,6 +107,7 @@ public class BatchApp {
    public ItemStreamReader<PersonXml> xmlReader(
          @Value("#{jobParameters['FILE_PATH']}") File inputFile
    ) {
+      inputFile = new File("data.xml");
       log.info("Reading file from: {}", inputFile);
       if (!inputFile.exists()) throw new IllegalArgumentException("Not Found: " + inputFile);
       StaxEventItemReader<PersonXml> reader = new StaxEventItemReader<>();
@@ -112,13 +124,6 @@ public class BatchApp {
 //      return syncReader;
    }
 
-   @Bean
-   public Job basicJob() {
-      return jobBuilder.get("basicJob")
-          .incrementer(new RunIdIncrementer())
-          .start(basicChunkStep())
-          .listener(new MyJobListener())
-          .build();
-   }
+
 }
 

@@ -16,10 +16,10 @@ public class LogFirstChunkListener implements ChunkListener {
    public void beforeChunk(ChunkContext context) {
       if (chunksLeft > 0) {
          chunksLeft--;
-         log.info(" ---------------- CHUNK -----------------");
+//         log.info(" ---------------- CHUNK -----------------");
          setLoggingLevel(Level.DEBUG);
       } else {
-         log.info(" ---------------- CHUNK -----------------");
+//         log.info(" ---------------- CHUNK -----------------");
          setLoggingLevel(Level.OFF);
       }
    }

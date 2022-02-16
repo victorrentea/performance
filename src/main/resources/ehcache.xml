@@ -22,4 +22,13 @@
         </resources>
     </cache>
 
+    <cache alias="cities" >
+        <expiry>
+            <ttl unit="hours">2</ttl>
+        </expiry>
+        <resources>
+            <heap unit="MB">100</heap>
+        </resources>
+    </cache>
+
 </config>

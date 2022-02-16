@@ -6,9 +6,10 @@ import javax.persistence.*;
 
 @Data
 @Entity
+@SequenceGenerator(name="PERSON_SEQ", allocationSize = 100)
 public class Person {
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "PERSON_SEQ")
     private Long id;
     private String name;
     @ManyToOne

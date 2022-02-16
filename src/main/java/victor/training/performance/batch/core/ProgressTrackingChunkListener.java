@@ -4,7 +4,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.batch.core.ChunkListener;
 import org.springframework.batch.core.StepExecution;
 import org.springframework.batch.core.scope.context.ChunkContext;
-import org.springframework.beans.factory.annotation.Value;
 
 import java.time.LocalDateTime;
 
@@ -13,7 +12,7 @@ import static java.time.temporal.ChronoUnit.SECONDS;
 
 @Slf4j
 public class ProgressTrackingChunkListener implements ChunkListener {
-    @Value("#{stepExecutionContext['TOTAL_ITEM_COUNT']}")
+//    @Value("#{stepExecutionContext['TOTAL_ITEM_COUNT']}")
     private int totalItems;
     private int lastPercent = -1;
     private LocalDateTime startTime = now().minusSeconds(1); // at step creation time (StepScoped)
