@@ -3,6 +3,7 @@ package victor.training.performance.spring;
 
 import lombok.Data;
 import lombok.Getter;
+import lombok.SneakyThrows;
 import lombok.ToString;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,9 +17,13 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.servlet.AsyncContext;
+import javax.servlet.http.HttpServletRequest;
+import java.io.IOException;
+import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
-import java.util.concurrent.Future;
 
+import static java.lang.System.currentTimeMillis;
 import static victor.training.performance.util.PerformanceUtil.sleepq;
 
 @RestController
@@ -32,26 +37,55 @@ public class BarService implements CommandLineRunner {
       log.debug("Got " + orderDrinks());
    }
 
+   // fix asta face spring pe sub
+   @SneakyThrows
+   @GetMapping("doamen fereeste")
+   public void method(HttpServletRequest request) {
+      AsyncContext asyncContext = request.startAsync();
+      orderDrinks().thenAccept(dilly -> { // callback based
+         try {
+            asyncContext.getResponse().getWriter().write("ss " + dilly);
+            asyncContext.complete(); // se inchide TCP tunnel cu clientul
+         } catch (IOException e) {
+            throw new RuntimeException(e);
+         }
+      });
+   }
+
+//   async function f() {  async/await
+//      let user = await repo.loadById(1);
+//      console.log(user);
+//   }
+
+
    @Autowired
    private ThreadPoolTaskExecutor threadPool; // recent, daca exista 2 beanuri posibil de injectat, se ia Springul dupa numele campului
-   @GetMapping
-   public DillyDilly orderDrinks() throws ExecutionException, InterruptedException {
+   @GetMapping("drink")
+   public CompletableFuture<DillyDilly> orderDrinks() throws ExecutionException, InterruptedException {
       log.debug("Requesting drinks...");
-      long t0 = System.currentTimeMillis();
+      long t0 = currentTimeMillis();
 
+      // 2 mari directii pt procesare non blocanta super-scalabila;
+      // 1) WebFlux (reactor) Spring 5 : Mono/Flux < cea mai grea paradigma de programare din lume "reactive programming"
+      // 2) CompletableFuture Java8
+      // 3) NU in java: async/await in JS/TS/C#, coroutine in Kotlin/Swift/C++, Akka Actors in Scala.
+      // 4) vis de vara: Green Thread in Java (project Loom)
+      CompletableFuture<Beer> futureBeer = CompletableFuture.supplyAsync(() -> barman.pourBeer()); // pe numele lui adevarat cunoscut ca "promise" (din FE)
+      CompletableFuture<Vodka> futureVodka = CompletableFuture.supplyAsync(() -> barman.pourVodka());
 
-      Future<Beer> futureBeer = threadPool.submit(() -> barman.pourBeer());
-      Future<Vodka> futureVodka = threadPool.submit(() -> barman.pourVodka());
+      CompletableFuture<DillyDilly> futureDilly = futureBeer.thenCombine(futureVodka, (beer, vodka) -> new DillyDilly(beer, vodka));
 
-      log.debug("A plecat chelnerul cu comenzile");
-      Beer beer = futureBeer.get(); // cat timp sta blocat aici threadul pe care s-a chemat orderDrinks() ? T=1sec
-      Vodka vodka = futureVodka.get(); // T blocat = ~0
+      //  ce mai putem face cu comple future
+      // - exceptii
+      // - mai complicam putin fluxul
+      // - @Async
+      // ================
+      // Thread Pool
 
-      DillyDilly dilly = new DillyDilly(beer, vodka);
-
-      long t1 = System.currentTimeMillis();
-      log.debug("Got my order in {} ms : {}", t1 - t0, dilly);
-      return dilly;
+      long t1 = currentTimeMillis();
+      log.debug("Got my order in {} ms", t1 - t0);
+      log.debug("ACum ies din functie");
+      return futureDilly;
    }
 }
 @Slf4j
