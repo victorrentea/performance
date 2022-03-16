@@ -62,6 +62,8 @@ class Barman {
 
    public Beer pourBeer() {
       log.debug("Pouring Beer GET HTTP...");
+      boolean grav = true;
+      if (grav) throw new IllegalArgumentException("Nu mai e bere");
       sleepq(1000);
       return new Beer();
    }
