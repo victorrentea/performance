@@ -11,6 +11,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -103,6 +104,17 @@ public class BarService implements CommandLineRunner {
       return futureDilly;
    }
 
+   @GetMapping("close-day")
+   public String inchideZiua() throws ExecutionException, InterruptedException {
+      log.info("Start: acel moment cand vorbesti cu " + barman.getClass());
+      Barman proxyLaBarman = this.barman;
+      CompletableFuture<String> future = proxyLaBarman.inchideZiua(); // chemi de fapt functia din proxy-ul injectat tie de Spring
+      // care functie .submite() intern executia functiei intr-un pool intern (poolDeXsiZ)
+      log.info("Am apelat (CICA) inchideZiua()");
+      String aparBazaDeDate = future.get();
+      return aparBazaDeDate;
+   }
+
    private void acceptPayment() {
       sleepq(1000); // payU payment gateway
       log.debug("Payment done");
@@ -125,6 +137,11 @@ class DillyDilly {
 @Service
 @Slf4j
 class Barman {
+   @Async("poolDeXsiZ")
+   public CompletableFuture<String> inchideZiua() {
+      sleepq(3000);
+      return CompletableFuture.completedFuture("SQL baban in baza Scoate Xul si Zul 30min");
+   }
 
    public Beer pourBeer() {
       log.debug("BEER START: Pouring Beer GET HTTP.... Daca-l chemi in paralel pe 2 threaduri > crapa");
@@ -228,6 +245,16 @@ class BarConfig {
       ThreadPoolTaskExecutor executor = new ThreadPoolTaskExecutor();
       executor.setCorePoolSize(barmanThreadCount);
       executor.setMaxPoolSize(barmanThreadCount);
+      executor.setQueueCapacity(500);
+      executor.setThreadNamePrefix("vodka-");
+      executor.initialize();
+      return executor;
+   }
+   @Bean
+   public ThreadPoolTaskExecutor poolDeXsiZ() { // pune in spring un bean numit "threadPool"
+      ThreadPoolTaskExecutor executor = new ThreadPoolTaskExecutor();
+      executor.setCorePoolSize(3);
+      executor.setMaxPoolSize(3);
       executor.setQueueCapacity(500);
       executor.setThreadNamePrefix("vodka-");
       executor.initialize();
