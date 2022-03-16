@@ -74,18 +74,14 @@ public class BarService implements CommandLineRunner {
 
       // pe numele lui adevarat cunoscut ca "promise" (din FE)
 
-//      CompletableFuture<Void> futurePayment = CompletableFuture.runAsync(() -> acceptPayment());
+      CompletableFuture<Void> futurePayment = CompletableFuture.runAsync(() -> acceptPayment());
 
-
-      CompletableFuture<Beer> futureBeer = CompletableFuture.supplyAsync(() -> barman.pourBeer());
-      CompletableFuture<Vodka> futureVodka = CompletableFuture.supplyAsync(() -> barman.pourVodka())
+      CompletableFuture<Beer> futureBeer = futurePayment.thenApplyAsync(v -> barman.pourBeer());
+      CompletableFuture<Vodka> futureVodka = futurePayment.thenApplyAsync(v -> barman.pourVodka())
           .thenApply(Vodka::puneGheata);
 
       CompletableFuture<DillyDilly> futureDilly = futureBeer
           .thenCombine(futureVodka, (beer, vodka) -> new DillyDilly(beer, vodka));
-      //  ce mai putem face cu comple future
-      // - exceptii > se propaga intocmai ca si datele, "in jos" catre operatorii urmatori.
-      // - mai complicam putin fluxul
       // - @Async
       // ================
       // Thread Pool
@@ -93,11 +89,12 @@ public class BarService implements CommandLineRunner {
       long t1 = currentTimeMillis();
       log.debug("Got my order in {} ms", t1 - t0);
       log.debug("ACum ies din functie");
-      return futureDilly;
+      return null;
    }
 
    private void acceptPayment() {
       sleepq(1000); // payU payment gateway
+      log.debug("Payment done");
    }
 }
 @Slf4j
