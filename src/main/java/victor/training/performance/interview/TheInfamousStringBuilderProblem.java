@@ -1,42 +1,32 @@
 package victor.training.performance.interview;
 
-import org.jooq.lambda.Unchecked;
+import org.apache.commons.io.FileUtils;
 import victor.training.performance.util.PerformanceUtil;
 
-import java.io.*;
+import java.io.File;
+import java.io.IOException;
+import java.util.List;
 import java.util.stream.IntStream;
-import java.util.stream.Stream;
+
+import static java.util.stream.Collectors.toList;
 
 public class TheInfamousStringBuilderProblem {
    public static void main(String[] args) throws IOException {
-      Stream<String> elements = queryDinDBCareImiDaStream();
+      List<String> elements = IntStream.range(1, 50_000) // try 50K x 6 chars : see TLAB
+          .mapToObj(n -> "hahaha")
+          .collect(toList());
 
-      File file = new File("out.txt");
       PerformanceUtil.waitForEnter();
+      System.out.println("Start writing contents!");
       long t0 = System.currentTimeMillis();
 
-      try (Writer writer = new BufferedWriter(new FileWriter(file))){
-         elements.forEach(Unchecked.consumer(writer::write));
-
-//         for (String element : elements) {
-//            writer.write(element);
-//         }
+      String s = "";
+      for (String element : elements) {
+         s += element;
       }
-//      StringBuilder sb = new StringBuilder();
-//         for (String element : elements) {
-//            sb.append(element);
-//         }
-//      FileUtils.writeStringToFile(file, sb.toString());
+      FileUtils.writeStringToFile(new File("out.txt"), s);
 
       System.out.println("Done. Took " + (System.currentTimeMillis() - t0));
       PerformanceUtil.waitForEnter();
-   }
-
-   private static Stream<String> queryDinDBCareImiDaStream() {
-      Stream<String> elements = IntStream.range(1, 9_000_000_00) // try 50K x 6 chars : see TLAB 5M * 12 = 60MB
-          .mapToObj(n -> "hahaha")
-//          .collect(toList())
-          ;
-      return elements;
    }
 }
