@@ -2,6 +2,8 @@ package victor.training.performance.spring;
 
 
 import lombok.Data;
+import lombok.Getter;
+import lombok.ToString;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -14,11 +16,9 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.List;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 
-import static java.util.Arrays.asList;
 import static victor.training.performance.util.PerformanceUtil.sleepq;
 
 @RestController
@@ -35,7 +35,7 @@ public class BarService implements CommandLineRunner {
    @Autowired
    private ThreadPoolTaskExecutor threadPool; // recent, daca exista 2 beanuri posibil de injectat, se ia Springul dupa numele campului
    @GetMapping
-   public List<Object> orderDrinks() throws ExecutionException, InterruptedException {
+   public DillyDilly orderDrinks() throws ExecutionException, InterruptedException {
       log.debug("Requesting drinks...");
       long t0 = System.currentTimeMillis();
 
@@ -47,13 +47,25 @@ public class BarService implements CommandLineRunner {
       Beer beer = futureBeer.get(); // cat timp sta blocat aici threadul pe care s-a chemat orderDrinks() ? T=1sec
       Vodka vodka = futureVodka.get(); // T blocat = ~0
 
+      DillyDilly dilly = new DillyDilly(beer, vodka);
 
       long t1 = System.currentTimeMillis();
-      List<Object> drinks = asList(beer, vodka);
-      log.debug("Got my order in {} ms : {}", t1 - t0, drinks);
-      return drinks;
+      log.debug("Got my order in {} ms : {}", t1 - t0, dilly);
+      return dilly;
    }
+}
+@Slf4j
+@ToString
+@Getter
+class DillyDilly {
+   private final Beer beer;
+   private final Vodka vodka;
 
+   DillyDilly(Beer beer, Vodka vodka) {
+      this.beer = beer;
+      this.vodka = vodka;
+      log.debug("Amestec licorile");
+   }
 }
 
 @Service
@@ -63,7 +75,7 @@ class Barman {
    public Beer pourBeer() {
       log.debug("Pouring Beer GET HTTP...");
       boolean grav = true;
-      if (grav) throw new IllegalArgumentException("Nu mai e bere");
+//      if (grav) throw new IllegalArgumentException("Nu mai e bere");
       sleepq(1000);
       return new Beer();
    }
