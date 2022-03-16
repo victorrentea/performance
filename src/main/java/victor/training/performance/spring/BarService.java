@@ -8,18 +8,18 @@ import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
-import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
+import java.util.concurrent.*;
 
 import static java.util.Arrays.asList;
 import static victor.training.performance.util.PerformanceUtil.sleepq;
 
-@Component
+@RestController
 @Slf4j
 public class BarService implements CommandLineRunner {
    @Autowired
@@ -30,12 +30,20 @@ public class BarService implements CommandLineRunner {
       log.debug("Got " + orderDrinks());
    }
 
-   public List<Object> orderDrinks() {
+      private static final ExecutorService threadPool = Executors.newFixedThreadPool(2); // JDK curat
+   @GetMapping
+   public List<Object> orderDrinks() throws ExecutionException, InterruptedException {
       log.debug("Requesting drinks...");
       long t0 = System.currentTimeMillis();
 
-      Beer beer = barman.pourBeer();
-      Vodka vodka = barman.pourVodka();
+
+      Future<Beer> futureBeer = threadPool.submit(() -> barman.pourBeer());
+      Future<Vodka> futureVodka = threadPool.submit(() -> barman.pourVodka());
+
+      log.debug("A plecat chelnerul cu comenzile");
+      Beer beer = futureBeer.get(); // cat timp sta blocat aici threadul pe care s-a chemat orderDrinks() ? T=1sec
+      Vodka vodka = futureVodka.get(); // T blocat = ~0
+
 
       long t1 = System.currentTimeMillis();
       List<Object> drinks = asList(beer, vodka);
@@ -50,13 +58,13 @@ public class BarService implements CommandLineRunner {
 class Barman {
 
    public Beer pourBeer() {
-      log.debug("Pouring Beer...");
+      log.debug("Pouring Beer GET HTTP...");
       sleepq(1000);
       return new Beer();
    }
 
    public Vodka pourVodka() {
-      log.debug("Pouring Vodka...");
+      log.debug("Pouring Vodka SELECT din DB...");
       sleepq(1000);
       return new Vodka();
    }
