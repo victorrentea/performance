@@ -34,7 +34,7 @@ public class BarService implements CommandLineRunner {
 
    @Override
    public void run(String... args) throws Exception { // runs at app startup
-      log.debug("Got " + orderDrinks());
+//      log.debug("Got " + orderDrinks());
    }
 
    // fix asta face spring pe sub
@@ -53,8 +53,9 @@ public class BarService implements CommandLineRunner {
    }
 
 //   async function f() {  async/await
-//      let user = await repo.loadById(1);
+//      let user:User =await repo.loadById(1);
 //      console.log(user);
+   //   user.name
 //   }
 
 
@@ -70,13 +71,20 @@ public class BarService implements CommandLineRunner {
       // 2) CompletableFuture Java8
       // 3) NU in java: async/await in JS/TS/C#, coroutine in Kotlin/Swift/C++, Akka Actors in Scala.
       // 4) vis de vara: Green Thread in Java (project Loom)
-      CompletableFuture<Beer> futureBeer = CompletableFuture.supplyAsync(() -> barman.pourBeer()); // pe numele lui adevarat cunoscut ca "promise" (din FE)
-      CompletableFuture<Vodka> futureVodka = CompletableFuture.supplyAsync(() -> barman.pourVodka());
 
-      CompletableFuture<DillyDilly> futureDilly = futureBeer.thenCombine(futureVodka, (beer, vodka) -> new DillyDilly(beer, vodka));
+      // pe numele lui adevarat cunoscut ca "promise" (din FE)
 
+//      CompletableFuture<Void> futurePayment = CompletableFuture.runAsync(() -> acceptPayment());
+
+
+      CompletableFuture<Beer> futureBeer = CompletableFuture.supplyAsync(() -> barman.pourBeer());
+      CompletableFuture<Vodka> futureVodka = CompletableFuture.supplyAsync(() -> barman.pourVodka())
+          .thenApply(Vodka::puneGheata);
+
+      CompletableFuture<DillyDilly> futureDilly = futureBeer
+          .thenCombine(futureVodka, (beer, vodka) -> new DillyDilly(beer, vodka));
       //  ce mai putem face cu comple future
-      // - exceptii
+      // - exceptii > se propaga intocmai ca si datele, "in jos" catre operatorii urmatori.
       // - mai complicam putin fluxul
       // - @Async
       // ================
@@ -86,6 +94,10 @@ public class BarService implements CommandLineRunner {
       log.debug("Got my order in {} ms", t1 - t0);
       log.debug("ACum ies din functie");
       return futureDilly;
+   }
+
+   private void acceptPayment() {
+      sleepq(1000); // payU payment gateway
    }
 }
 @Slf4j
@@ -109,7 +121,7 @@ class Barman {
    public Beer pourBeer() {
       log.debug("Pouring Beer GET HTTP...");
       boolean grav = true;
-//      if (grav) throw new IllegalArgumentException("Nu mai e bere");
+      if (grav) throw new IllegalArgumentException("Nu mai e bere");
       sleepq(1000);
       return new Beer();
    }
@@ -125,9 +137,34 @@ class Barman {
 class Beer {
    private final String type = "blond";
 }
-@Data
 class Vodka {
    private final String brand = "Absolut";
+   private final boolean gheata;
+
+   public Vodka(boolean gheata) {
+      this.gheata = gheata;
+   }
+   public Vodka() {
+      this(false);
+   }
+
+   public Vodka puneGheata() {
+      sleepq(1000);
+//      this.gheata = true; // NICIODATA in multithreaded code sa nu MUTEZI STARE!
+      return new Vodka(true);
+   }
+
+   public String getBrand() {
+      return this.brand;
+   }
+
+   public boolean isGheata() {
+      return this.gheata;
+   }
+
+   public String toString() {
+      return "Vodka(brand=" + this.getBrand() + ", gheata=" + this.isGheata() + ")";
+   }
 }
 
 // TODO when called from web, protect the http thread
