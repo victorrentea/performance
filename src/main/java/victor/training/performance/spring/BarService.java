@@ -58,6 +58,10 @@ public class BarService implements CommandLineRunner {
    //   user.name
 //   }
 
+   @Autowired
+   ThreadPoolTaskExecutor beerPool;
+   @Autowired
+   ThreadPoolTaskExecutor vodkaPool;
 
    @Autowired
    private ThreadPoolTaskExecutor threadPool; // recent, daca exista 2 beanuri posibil de injectat, se ia Springul dupa numele campului
@@ -76,8 +80,15 @@ public class BarService implements CommandLineRunner {
 
       CompletableFuture<Void> futurePayment = CompletableFuture.runAsync(() -> acceptPayment());
 
-      CompletableFuture<Beer> futureBeer = futurePayment.thenApplyAsync(v -> barman.pourBeer());
-      CompletableFuture<Vodka> futureVodka = futurePayment.thenApplyAsync(v -> barman.pourVodka())
+      CompletableFuture<Beer> futureBeer = futurePayment.thenApplyAsync(v -> barman.pourBeer(), beerPool)
+          .exceptionally(e -> {
+             if (e.getCause() instanceof BlondaMissingEx) {
+               return new Beer("bruna");
+             } else {
+                throw new RuntimeException(e);
+             }
+          }); // un fel de try {} catch (BlondaMissingEx){return new Beer("bruna");}
+      CompletableFuture<Vodka> futureVodka = futurePayment.thenApplyAsync(v -> barman.pourVodka(), vodkaPool)
           .thenApply(Vodka::puneGheata);
 
       CompletableFuture<DillyDilly> futureDilly = futureBeer
@@ -89,7 +100,7 @@ public class BarService implements CommandLineRunner {
       long t1 = currentTimeMillis();
       log.debug("Got my order in {} ms", t1 - t0);
       log.debug("ACum ies din functie");
-      return null;
+      return futureDilly;
    }
 
    private void acceptPayment() {
@@ -116,11 +127,13 @@ class DillyDilly {
 class Barman {
 
    public Beer pourBeer() {
-      log.debug("Pouring Beer GET HTTP...");
+      log.debug("BEER START: Pouring Beer GET HTTP.... Daca-l chemi in paralel pe 2 threaduri > crapa");
       boolean grav = true;
-      if (grav) throw new IllegalArgumentException("Nu mai e bere");
       sleepq(1000);
-      return new Beer();
+      log.debug("BEER DONE");
+      if (grav) throw new BlondaMissingEx();
+//      if (grav) throw new IllegalArgumentException("Nu mai e bere BLONDA");
+      return new Beer("blonda");
    }
 
    public Vodka pourVodka() {
@@ -132,7 +145,7 @@ class Barman {
 
 @Data
 class Beer {
-   private final String type = "blond";
+   private final String type;
 }
 class Vodka {
    private final String brand = "Absolut";
@@ -198,6 +211,26 @@ class BarConfig {
       executor.initialize();
 //      executor.setTaskDecorator(propagateThreadScope);
       executor.setWaitForTasksToCompleteOnShutdown(true);
+      return executor;
+   }
+   @Bean
+   public ThreadPoolTaskExecutor beerPool(@Value("${beer.thread.count:1}") int barmanThreadCount) { // pune in spring un bean numit "threadPool"
+      ThreadPoolTaskExecutor executor = new ThreadPoolTaskExecutor();
+      executor.setCorePoolSize(barmanThreadCount);
+      executor.setMaxPoolSize(barmanThreadCount);
+      executor.setQueueCapacity(500);
+      executor.setThreadNamePrefix("beer-");
+      executor.initialize();
+      return executor;
+   }
+   @Bean
+   public ThreadPoolTaskExecutor vodkaPool(@Value("${vodka.thread.count:8}") int barmanThreadCount) { // pune in spring un bean numit "threadPool"
+      ThreadPoolTaskExecutor executor = new ThreadPoolTaskExecutor();
+      executor.setCorePoolSize(barmanThreadCount);
+      executor.setMaxPoolSize(barmanThreadCount);
+      executor.setQueueCapacity(500);
+      executor.setThreadNamePrefix("vodka-");
+      executor.initialize();
       return executor;
    }
    //</editor-fold>
