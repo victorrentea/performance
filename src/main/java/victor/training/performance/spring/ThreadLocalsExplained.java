@@ -1,6 +1,7 @@
 package victor.training.performance.spring;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
 import static victor.training.performance.util.PerformanceUtil.sleepq;
 
@@ -13,24 +14,25 @@ public class ThreadLocalsExplained {
 }
 
 class UsernameHolder {
-
-   private static String currentUsername;
+   private static ThreadLocal<String> currentUsername  = ThreadLocal.withInitial(() -> "anonymous");
 
    public static String getCurrentUsername() {
-      return currentUsername;
+      return currentUsername.get();
    }
 
    public static void setCurrentUsername(String currentUsername) {
-      UsernameHolder.currentUsername = currentUsername;
+      UsernameHolder.currentUsername.set(currentUsername);
    }
 }
 
+@Slf4j
 @RequiredArgsConstructor
 class UnController {
    private final UnService unService;
 
    public void laIntrare(String username) { // sau in vreun filtru magic de security
       UsernameHolder.setCurrentUsername(username);
+      log.info("Sunt userul: " + username);
       unService.met();
    }
 }
@@ -45,8 +47,9 @@ class UnService {
    }
 }
 
+@Slf4j
 class UnRepo {
    public void update() {
-      System.out.println("UPDATE ... SET LAST_MODIFIED_BY=?   (de catre " + UsernameHolder.getCurrentUsername());
+      log.info("UPDATE ... SET LAST_MODIFIED_BY=?   (de catre " + UsernameHolder.getCurrentUsername());
    }
 }
