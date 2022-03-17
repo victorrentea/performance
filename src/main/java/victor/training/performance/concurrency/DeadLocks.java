@@ -35,12 +35,11 @@ public class DeadLocks {
                log.debug("Waiting for the second fork (id=" + secondFork.id + ")...");
                synchronized (secondFork) {
                   log.debug("Took both forks. Eating 🌟🌟🌟 ...");
-                  sleepNanos(10);
+                  // sleepNanos(10);
                   log.debug("Done eating. Releasing forks");
                }
             }
             log.debug("Thinking...");
-            sleepNanos(10);
          }
          log.debug("NORMAL FINISH (no deadlock happened)");
       }
