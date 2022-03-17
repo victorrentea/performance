@@ -5,21 +5,20 @@ import lombok.extern.slf4j.Slf4j;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.LinkedHashMap;
 import java.util.List;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Future;
-import java.util.concurrent.SynchronousQueue;
-import java.util.concurrent.ThreadPoolExecutor;
+import java.util.concurrent.CompletableFuture;
 import java.util.stream.IntStream;
+import java.util.stream.Stream;
 
-import static java.util.concurrent.TimeUnit.MILLISECONDS;
+import static java.util.concurrent.CompletableFuture.supplyAsync;
 import static java.util.stream.Collectors.toList;
 
 
 @Slf4j
 @RequiredArgsConstructor
 public class RaceBugs {
-   private final ExternalDependency dependency;
+   private final ExternalDependency externalSystem;
 
    // TODO Collect all emails with dependency#retrieveEmail(id) - takes time (networking)
    // TODO Eliminate duplicated emails (case insensitive)
@@ -28,16 +27,6 @@ public class RaceBugs {
 
    private final List<String> allEmails = new ArrayList<>();
 
-   private void doRetrieveEmails(List<Integer> idsChunk) { // in 2 threaduri
-      for (Integer id : idsChunk) {
-         String email = dependency.retrieveEmail(id);
-         synchronized (allEmails) {
-            if (allEmails.stream().noneMatch(old -> old.equalsIgnoreCase(email))) {
-               allEmails.add(email);
-            }
-         }
-      }
-   }
 
    public static void main(String[] args) throws Exception {
       ExternalDependencyFake dependency = new ExternalDependencyFake(20_000);
@@ -54,16 +43,35 @@ public class RaceBugs {
       List<Integer> firstHalf = ids.subList(0, ids.size() / 2);
       List<Integer> secondHalf = ids.subList(ids.size() / 2, ids.size());
 
-      // submit the 2 tasks
-      ExecutorService pool = new ThreadPoolExecutor(0, Integer.MAX_VALUE, 500, MILLISECONDS, new SynchronousQueue<>());
-      Future<?> future1 = pool.submit(() -> doRetrieveEmails(firstHalf));
-      Future<?> future2 = pool.submit(() -> doRetrieveEmails(secondHalf));
-      log.debug("Tasks launched...");
+      CompletableFuture<List<String>> firstHalfFuture = supplyAsync(() -> resolve(firstHalf));
+      CompletableFuture<List<String>> secondHalfFuture = supplyAsync(() -> resolve(secondHalf));
 
-      // wait for the tasks to complete
-      future1.get();
-      future2.get();
-      return allEmails;
+      List<String> toate = firstHalfFuture.thenCombine(secondHalfFuture, this::concat).get();
+      List<String> distinctEmails = removeDuplicatesInsensitive(toate);
+
+
+      return distinctEmails;
+   }
+
+   private List<String> resolve(List<Integer> firstHalf) {
+      return firstHalf.stream().map(externalSystem::retrieveEmail)
+          .filter(email -> externalSystem.isEmailValid(email))
+          .collect(toList());
+   }
+
+   private List<String> removeDuplicatesInsensitive(List<String> list) {
+      LinkedHashMap<String, String> map = new LinkedHashMap<>();
+      for (String email : list) {
+         map.put(email.toLowerCase(), email);
+      }
+      return new ArrayList<>(map.values());
+   }
+
+   private List<String> concat(List<String> emails1, List<String> emails2) {
+//      List<String> result = new ArrayList<String>();
+//      result.addAll(emails1);
+//      result.addAll(emails1);
+      return Stream.concat(emails1.stream(), emails2.stream()).collect(toList());
    }
    //endregion
 
