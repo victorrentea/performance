@@ -14,7 +14,7 @@ import java.util.UUID;
 @Slf4j
 public class Leak2_Statics {
 
-   private /*static*/ final Map<String, Integer> anInnocentMap = new HashMap<>();
+   private static final Map<String, Integer> anInnocentMap = new HashMap<>();
 
    @GetMapping
    public String test() {

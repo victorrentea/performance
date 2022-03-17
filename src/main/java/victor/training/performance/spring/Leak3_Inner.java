@@ -7,7 +7,6 @@ import victor.training.performance.spring.CachingMethodObject.UserRightsCalculat
 import victor.training.performance.util.BigObject20MB;
 import victor.training.performance.util.PerformanceUtil;
 
-import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Supplier;
 
@@ -52,9 +51,9 @@ public class Leak3_Inner {
 
 
 class CachingMethodObject {
-	public class UserRightsCalculator { // an instance of this is kept on current thread
+	public static class UserRightsCalculator { // an instance of this is kept on current thread
 		public boolean hasRight(String task) {
-			System.out.println("Stupid Code");
+			System.out.println("Stupid Code ");
 			// what's the connection with the 'bigMac' field ?
 			return true;
 		}
@@ -62,29 +61,24 @@ class CachingMethodObject {
 
 	private BigObject20MB bigMac = new BigObject20MB();
 
-	public UserRightsCalculator createRightsCalculator() {
+	public UserRightsCalculator createRightsCalculator() { // rezultatul acestei metode este pastrat in memorie ulterior 10 min
 		return new UserRightsCalculator();
 	}
 
 	// then, some more .....
 
 	//<editor-fold desc="Lambdas vs Anonymous implementation">
-	public Supplier<String> anonymousVsLambdas() {
-		return new Supplier<String>() {
-			@Override
-			public String get() {
-				return "Happy";
-			}
-		};
+	public Supplier<String> anonymousVsLambdas() {  // rezultatul acestei metode este pastrat in memorie ulterior 10 min
+		return () -> "Happy da prost ca iti iei bigMac 20 MB cu tine ";
 	}
 	//</editor-fold>
 
-	//<editor-fold desc="Map init in Java <= 8">
+	//<editor-fold desc="Map init in Java <= 11">
 	public Map<String, Integer> mapInit() {
-		return new HashMap<>() {{ // obviously, pre-java 10
-			put("one", 1);
-			put("two", 2);
-		}};
+		return Map.of(
+			"one", 1,
+			"two", 2
+		);
 	}
 	//</editor-fold>
 }

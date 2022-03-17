@@ -7,7 +7,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import victor.training.performance.util.BigObject20MB;
 import victor.training.performance.util.PerformanceUtil;
 
 import java.time.LocalDateTime;
@@ -21,7 +20,7 @@ public class Leak7_Cache {
 
    @GetMapping
    public String test() {
-      BigObject20MB data = stuff.returnCachedDataForDay(LocalDateTime.now());
+      String data = stuff.returnCachedDataForDay(LocalDateTime.now());
       return "Tools won't always shield you from mistakes: data=" + data + ", " + PerformanceUtil.getUsedHeap();
    }
 }
@@ -29,9 +28,10 @@ public class Leak7_Cache {
 @Service
 @Slf4j
 class Stuff {
-   @Cacheable("missed-cache")
-   public BigObject20MB returnCachedDataForDay(LocalDateTime date) {
+   @Cacheable("missed-cache") // pune un proxy in fata acestei metode care, daca vede ca invoci metoda
+   // cu aceiasi param ca adineauri, iti da din cache
+   public String returnCachedDataForDay(LocalDateTime date) { // trebuia sa fi dat LocalDate nu LocalDateTime
       log.debug("Fetch data for date: {}", date.format(DateTimeFormatter.ISO_DATE));
-      return new BigObject20MB();
+      return date.toString();
    }
 }

@@ -15,8 +15,13 @@ public class Leak1_ThreadLocal {
       BigObject20MB bigObject = new BigObject20MB();
       bigObject.someString = "john.doe"; // username
       threadLocalMetadata.set(bigObject);
-
-      businessMethod1();
+      try {
+         businessMethod1();
+      } finally {
+         threadLocalMetadata.remove(); // regula: daca te joci cu ThreadLocals: dupa ce ai facut .set() vine un try {}finally {.remove()};
+         // PENTRU CA UITAM sa facem asta, e CLAR recomandat sa folosesti
+         // @Sccope("request") pt ca Springul face cleanup dupa tine
+      }
       return "Magic can do harm.";
    }
 
@@ -29,6 +34,7 @@ public class Leak1_ThreadLocal {
       String currentUsernameOnThisThread = bigObject.someString;
       System.out.println("Business logic using " + currentUsernameOnThisThread);
       // TODO what if throw new RuntimeException(); ?
+      throw new RuntimeException("Oups");
    }
 }
 

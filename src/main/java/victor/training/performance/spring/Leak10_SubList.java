@@ -19,7 +19,7 @@ public class Leak10_SubList {
    private List<BigObject20MB> lastTenObjects = new ArrayList<>();
 
    @GetMapping
-   public synchronized int test() {
+   public synchronized int test() { // TODO arde-l de 20 de ori si ai vrea sa vezi doar 10 * 20 = 200 dar vei gasii 400 de MB
       lastTenObjects.add(new BigObject20MB());
       if (lastTenObjects.size() > 10) {
          lastTenObjects = lastTenObjects.subList(1, lastTenObjects.size());

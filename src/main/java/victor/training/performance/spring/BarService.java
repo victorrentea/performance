@@ -245,7 +245,7 @@ class BarConfig {
       ThreadPoolTaskExecutor executor = new ThreadPoolTaskExecutor();
       executor.setCorePoolSize(barmanThreadCount);
       executor.setMaxPoolSize(barmanThreadCount);
-      executor.setQueueCapacity(500);
+      executor.setQueueCapacity(20);
       executor.setThreadNamePrefix("vodka-");
       executor.initialize();
       return executor;

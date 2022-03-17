@@ -14,13 +14,18 @@ import static victor.training.performance.util.PerformanceUtil.sleepq;
 public class Leak5_LongStackFrame {
 	@GetMapping
 	public String longRunningFunction() {
-		BigObject80MB big = new BigObject80MB();
-		String useful = big.getInterestingPart();
+		String useful = getUseful();
 
 		sleepq(10_000); // start a long-running process (eg 20 minutes)
 		if (useful != null) {
 			log.trace("Using useful part: " + useful);
 		}
 		return "end";
+	}
+
+	private String getUseful() {
+		BigObject80MB big = new BigObject80MB(); // de obicei de pe un API call extern
+		String useful = big.getInterestingPart();
+		return useful;
 	}
 }
