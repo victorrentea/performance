@@ -24,3 +24,8 @@ public class Leak5_LongStackFrame {
 		return "end";
 	}
 }
+
+/**
+ * KEY POINTS
+ * - Don't keep large objects in local variables of long-running functions
+ */

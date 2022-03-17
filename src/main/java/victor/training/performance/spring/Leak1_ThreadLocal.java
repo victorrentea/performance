@@ -33,9 +33,10 @@ public class Leak1_ThreadLocal {
 }
 
 /**
- * Avoid creating ThreadLocal variables yourself - use the safe ones managed by framework:
+ * KEY POINTS:
+ * !! Avoid creating ThreadLocal variables yourself - use the safe ones managed by framework:
  * - SecurityContextHolder, @Scope("request" or "session")
  * - @Transactional, Persistence Context, JDBC Connection
  * - Logback MDC
- * If you still do it, after the first .set(), always follow with a try { } finally { .remove(); }
+ * If you insist to use ThreadLocal, after the first .set(), always do try { } finally { .remove(); }
  */

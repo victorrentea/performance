@@ -26,6 +26,12 @@ public class Leak10_SubList {
       }
       return lastTenObjects.size();
    }
-
 }
+
+/**
+ * KEY POINTS
+ * - .subList() returns a projection over the original array => the original list is kept referenced
+ * - RTFM: https://www.google.com/search?q=RTFM
+ * - A LinkedList is better here
+ */
 

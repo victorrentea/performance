@@ -29,9 +29,14 @@ public class Leak7_Cache {
 @Service
 @Slf4j
 class Stuff {
-   @Cacheable("missed-cache")
+   @Cacheable("missed-cache") // = a proxy intercepts the method call and returns the cached value for that parameter
    public BigObject20MB returnCachedDataForDay(LocalDateTime date) {
       log.debug("Fetch data for date: {}", date.format(DateTimeFormatter.ISO_DATE));
       return new BigObject20MB();
    }
 }
+
+/**
+ * KEY POINTS
+ * - [ideally] test that your caches work via automated tests (eg @SpringBootTest)
+ */

@@ -41,6 +41,7 @@ class Worker {
 }
 
 /**
+ * KEY POINTS
  * - Don't pass large objects as params to async methods
  * - Tune the queue size of the underlying thread pool considering the size of elements
  */

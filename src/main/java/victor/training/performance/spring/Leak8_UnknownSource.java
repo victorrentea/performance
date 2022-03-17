@@ -13,7 +13,8 @@ public class Leak8_UnknownSource {
              "Tip: Record Allocation Profile via jvisualVM or JFR (record stack traces of constructor calls for target classes)";
    }
 }
-
 /**
- * Most leaks and tough performance issues occur in libraries.
+ * KEY POINTS
+ * - Most leaks and tough performance issues occur in libraries or unknown code.
+ * - Profilers (visualVM and JFR) can record stack traces of allocation places (new)
  */

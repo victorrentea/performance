@@ -63,3 +63,10 @@ class KillTwo {
 		log("end Two.b2()");
 	}
 }
+
+/**
+ * KEY POINTS
+ * - avoid playing with synchronized
+ * - synchronized methods calling other synchronized methods - yuck
+ * - Bad Design: bidirectional coupling: A->B->A !
+ */

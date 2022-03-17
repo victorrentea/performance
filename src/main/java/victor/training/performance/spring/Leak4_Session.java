@@ -81,6 +81,7 @@ class UserSession implements Serializable {
 }
 
 /**
+ * KEY POINTS
  * - REST services should be stateless (no user session). Consider pushing session data in A) browser B) shared redis C) DB
  * - If request authentication is based on JWT tokens, you should disable completely the session from web config
  */

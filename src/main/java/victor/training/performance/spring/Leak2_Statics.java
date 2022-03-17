@@ -25,6 +25,7 @@ public class Leak2_Statics {
 }
 
 /**
+ * KEY POINTS
  * - Never accumulate in a collection arbitrary elements without considering eviction.
  * - If you need a cache, don't create your own => use a library with max-heap protection
  * - Your are in a Spring singleton, so static or not, it makes no diferrence

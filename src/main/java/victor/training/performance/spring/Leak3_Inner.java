@@ -30,6 +30,8 @@ public class Leak3_Inner {
 		bizLogicUsingCalculator();
 		return "Done";
 	}
+
+	//<editor-fold desc="Entry points of more similar leaks">
 	@GetMapping("anon")
 	public String anon() {
 		Supplier<String> supplier = new CachingMethodObject().anonymousVsLambdas();
@@ -42,6 +44,7 @@ public class Leak3_Inner {
 		PerformanceUtil.sleepq(20_000); // some long workflow
 		return map;
 	}
+	//</editor-fold>
 
 	private void bizLogicUsingCalculator() {
 		if (threadLocal.get().hasRight("launch")) {
@@ -55,7 +58,7 @@ class CachingMethodObject {
 	public class UserRightsCalculator { // an instance of this is kept on current thread
 		public boolean hasRight(String task) {
 			System.out.println("Stupid Code");
-			// what's the connection with the 'bigMac' field ?
+			// what's the connection between this instance and the 'bigMac' field ?
 			return true;
 		}
 	}
@@ -66,7 +69,7 @@ class CachingMethodObject {
 		return new UserRightsCalculator();
 	}
 
-	// then, some more .....
+	// then, some more (amazing) leaks .....
 
 	//<editor-fold desc="Lambdas vs Anonymous implementation">
 	public Supplier<String> anonymousVsLambdas() {
@@ -88,3 +91,10 @@ class CachingMethodObject {
 	}
 	//</editor-fold>
 }
+
+/**
+ * KEY POINTS
+ * - Anonymous subclasses or implementations keep a reference to the parent instance: use `->` and `Map.of`
+ * - Avoid nested classes, or make them 'static'
+ * - Avoid keeping heavy state
+ */
