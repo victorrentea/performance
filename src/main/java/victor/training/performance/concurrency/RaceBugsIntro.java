@@ -4,7 +4,6 @@ import lombok.extern.slf4j.Slf4j;
 
 import java.util.List;
 import java.util.concurrent.*;
-import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.IntStream;
 
 import static java.util.concurrent.TimeUnit.MILLISECONDS;
@@ -14,13 +13,29 @@ import static java.util.stream.Collectors.toList;
 @Slf4j
 public class RaceBugsIntro {
 
-   //   private static Integer population = 0;
-   private static AtomicInteger population = new AtomicInteger(0);
+   private static final Object LOCK = new Object();
+
+      private static Integer population = 0;
+//   private static AtomicInteger population = new AtomicInteger(0);
+
+//   public synchronized void metDeInstanta() {
+//      //      synchronized (this) { << echivalent
+//      //   chestii
+//   }
+//   public synchronized static void oAltaMetoda() {
+//      //      synchronized (RaceBugsIntro.class) { // << echivalent
+//      //         // chestii
+//   }
 
    private static void doCountAlive(List<Integer> idsChunk) { // ran in 2 parallel threads
       for (Integer id : idsChunk) {
-//         population++;
-         population.incrementAndGet();
+
+         synchronized (LOCK) {
+            // zona critica
+            population++;
+         }
+
+//         population.incrementAndGet();
       }
    }
 
@@ -41,8 +56,8 @@ public class RaceBugsIntro {
       future1.get();
       future2.get();
 
-//      log.debug("Counted: " + population);
-      log.debug("Counted: " + population.get());
+      log.debug("Counted: " + population);
+//      log.debug("Counted: " + population.get());
    }
 
 
