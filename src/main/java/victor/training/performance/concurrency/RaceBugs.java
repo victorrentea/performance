@@ -5,7 +5,6 @@ import lombok.extern.slf4j.Slf4j;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Future;
@@ -27,12 +26,16 @@ public class RaceBugs {
    // TODO Only allow emails for which true == dependency#isEmailValid(email) - takes time (networking)
    // TODO Avoid calling checkEmail twice for the same email
 
-   private final List<String> allEmails = Collections.synchronizedList(new ArrayList<>());
+   private final List<String> allEmails = new ArrayList<>();
 
    private void doRetrieveEmails(List<Integer> idsChunk) { // in 2 threaduri
       for (Integer id : idsChunk) {
          String email = dependency.retrieveEmail(id);
-         allEmails.add(email);
+         synchronized (allEmails) {
+            if (allEmails.stream().noneMatch(old -> old.equalsIgnoreCase(email))) {
+               allEmails.add(email);
+            }
+         }
       }
    }
 
