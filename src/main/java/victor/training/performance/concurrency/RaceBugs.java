@@ -2,12 +2,14 @@ package victor.training.performance.concurrency;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import victor.training.performance.util.PerformanceUtil;
 
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ForkJoinPool;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
@@ -49,14 +51,22 @@ public class RaceBugs {
       List<String> toate = firstHalfFuture.thenCombine(secondHalfFuture, this::concat).get();
       List<String> distinctEmails = removeDuplicatesInsensitive(toate);
 
-      List<String> result = distinctEmails.parallelStream()
+
+      Stream<String> stream = distinctEmails.parallelStream()
           // elementele din stream vor fi procesate in paralel pe mai multe threaduri
           // -- PE CATE? = N(CPU) - 1 < main pune si el mana
           // -- DIN CE THREAD POOL: ForkJoinPool.commonPool < care este un thread pool GLOBAL per JVM
           .filter(externalSystem::isEmailValid)  // PERICULOS intr-o app mare: nu stii cine mai ruleaza cu tine pe thread pool > Thread stravation
           // IN GENERAL, parallelStream trebuie folosit exclusiv pentru CHESTII care FAC DOAR CPU (NU asteapta dupa exterior)
-          .peek(e-> log.info("Am validat emailul " + e))
-          .collect(toList()); // colectorul le "reordoneaza" asa cum au fost la inceput
+          .peek(e -> {
+             PerformanceUtil.sleepq(100);
+             log.info("Am validat emailul " + e);
+          });
+
+      ForkJoinPool pool = new ForkJoinPool(3);
+
+      // asa poti lansa prallel Streamuri pe thread pooluri private: terminand streamul (.collect) intr-un task submis intr-un ForkJoinPool de-al tau
+      List<String> result = pool.submit( ()-> stream.collect(toList())  ).get();
 
 
       // la fiecare 30 min un scheduler vrea sa trimita mailuri in parallel.
