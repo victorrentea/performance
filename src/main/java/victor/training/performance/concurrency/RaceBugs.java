@@ -28,10 +28,12 @@ public class RaceBugs {
 
    private final List<String> allEmails = new ArrayList<>();
 
-   private void doRetrieveEmails(List<Integer> idsChunk) {
+   private void doRetrieveEmails(List<Integer> idsChunk) { // in 2 threaduri
       for (Integer id : idsChunk) {
          String email = dependency.retrieveEmail(id);
-         allEmails.add(email);
+         synchronized (allEmails) {
+            allEmails.add(email);
+         }
       }
    }
 
