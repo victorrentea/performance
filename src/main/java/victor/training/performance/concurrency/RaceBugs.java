@@ -59,13 +59,15 @@ public class RaceBugs {
           .filter(externalSystem::isEmailValid)  // PERICULOS intr-o app mare: nu stii cine mai ruleaza cu tine pe thread pool > Thread stravation
           // IN GENERAL, parallelStream trebuie folosit exclusiv pentru CHESTII care FAC DOAR CPU (NU asteapta dupa exterior)
           .peek(e -> {
-             PerformanceUtil.sleepq(100);
+//             PerformanceUtil.sleepq(100);
              log.info("Am validat emailul " + e);
           });
 
-      ForkJoinPool pool = new ForkJoinPool(3);
+      ForkJoinPool pool = new ForkJoinPool(200); // aici ruleaza parallelStreamul de fapt
 
-      // asa poti lansa prallel Streamuri pe thread pooluri private: terminand streamul (.collect) intr-un task submis intr-un ForkJoinPool de-al tau
+      // asa poti lansa prallel Streamuri pe thread pooluri private:
+      // terminand streamul (.collect) intr-un task submis intr-un ForkJoinPool de-al tau
+      // FACI ASTA DOAR DACA VREI SA FACI I/O (REST,DB)
       List<String> result = pool.submit( ()-> stream.collect(toList())  ).get();
 
 
