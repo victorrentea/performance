@@ -12,13 +12,26 @@ public class ThreadLocalsExplained {
    }
 }
 
+class UsernameHolder {
+
+   private static String currentUsername;
+
+   public static String getCurrentUsername() {
+      return currentUsername;
+   }
+
+   public static void setCurrentUsername(String currentUsername) {
+      UsernameHolder.currentUsername = currentUsername;
+   }
+}
 
 @RequiredArgsConstructor
 class UnController {
    private final UnService unService;
 
    public void laIntrare(String username) { // sau in vreun filtru magic de security
-      unService.met(username);
+      UsernameHolder.setCurrentUsername(username);
+      unService.met();
    }
 }
 
@@ -26,14 +39,14 @@ class UnController {
 class UnService {
    private final UnRepo unRepo;
 
-   public void met(String username) {
+   public void met() {
       sleepq(10);
-      unRepo.update(username);
+      unRepo.update();
    }
 }
 
 class UnRepo {
-   public void update(String username) {
-      System.out.println("UPDATE ... SET LAST_MODIFIED_BY=?   (de catre " + username);
+   public void update() {
+      System.out.println("UPDATE ... SET LAST_MODIFIED_BY=?   (de catre " + UsernameHolder.getCurrentUsername());
    }
 }
