@@ -49,15 +49,32 @@ public class RaceBugs {
       List<String> toate = firstHalfFuture.thenCombine(secondHalfFuture, this::concat).get();
       List<String> distinctEmails = removeDuplicatesInsensitive(toate);
 
+      List<String> result = distinctEmails.parallelStream()
+          // elementele din stream vor fi procesate in paralel pe mai multe threaduri
+          // -- PE CATE? = N(CPU) - 1 < main pune si el mana
+          // -- DIN CE THREAD POOL: ForkJoinPool.commonPool < care este un thread pool GLOBAL per JVM
+          .filter(externalSystem::isEmailValid)  // PERICULOS intr-o app mare: nu stii cine mai ruleaza cu tine pe thread pool > Thread stravation
+          // IN GENERAL, parallelStream trebuie folosit exclusiv pentru CHESTII care FAC DOAR CPU (NU asteapta dupa exterior)
+          .peek(e-> log.info("Am validat emailul " + e))
+          .collect(toList()); // colectorul le "reordoneaza" asa cum au fost la inceput
 
-      return distinctEmails;
+
+      // la fiecare 30 min un scheduler vrea sa trimita mailuri in parallel.
+      // taskuri paralel pornite care fac ambele uz de parallelStream se vor INFLUENTA reciproc. < vrei asta ?
+      return result;
    }
 
    private List<String> resolve(List<Integer> firstHalf) {
       return firstHalf.stream().map(externalSystem::retrieveEmail)
-          .filter(email -> externalSystem.isEmailValid(email))
+//          .filter(email -> externalSystem.isEmailValid(email))
           .collect(toList());
    }
+
+//   private List<String> validateEmails(List<String> emails) {
+//      return emails.stream()
+//          .filter(externalSystem::isEmailValid)
+//          .collect(toList());
+//   }
 
    private List<String> removeDuplicatesInsensitive(List<String> list) {
       LinkedHashMap<String, String> map = new LinkedHashMap<>();
