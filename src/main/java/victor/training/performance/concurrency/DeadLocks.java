@@ -22,9 +22,15 @@ public class DeadLocks {
       }
 
       public void run() {
-         Fork firstFork = leftFork;
-         Fork secondFork = rightFork;
-
+         Fork firstFork;
+         Fork secondFork;
+         if (leftFork.id < rightFork.id) {
+            firstFork = leftFork;
+            secondFork = rightFork;
+          } else {
+            firstFork = rightFork;
+            secondFork = leftFork;
+         }
          for (int i = 0; i < 5000; i++) {
             log("I want to eat!");
 
