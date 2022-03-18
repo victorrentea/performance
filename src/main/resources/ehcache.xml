@@ -7,6 +7,25 @@
 >
 
     <cache alias="victor.training.performance.jpa.Country" >
+
+        <resources>
+            <heap unit="entries">1</heap>
+        </resources>
+    </cache>
+    <cache alias="countries" >
+        <expiry>
+            <ttl unit="seconds">2</ttl>
+        </expiry>
+        <resources>
+            <heap unit="entries">1</heap>
+        </resources>
+    </cache>
+    <cache alias="user" >
+        <resources>
+            <heap unit="MB">100</heap>
+        </resources>
+    </cache>
+    <cache alias="all-users" >
         <resources>
             <heap unit="entries">1</heap>
         </resources>

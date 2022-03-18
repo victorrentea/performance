@@ -18,7 +18,7 @@ public class PropagateThreadScope implements TaskDecorator {
 
 	public Runnable decorate(Runnable runnable) {
 		log.debug("Decorating from thread with user id = " + requestContext.getCurrentUser());
-		String callerUser = requestContext.getCurrentUser();
+		String callerUser = requestContext.getCurrentUser(); // ThreadLocal, @Scope("request"), @Scope("thread")
 		String requestId = requestContext.getRequestId();
 		return () -> {
 			requestContext.setRequestId(requestId);

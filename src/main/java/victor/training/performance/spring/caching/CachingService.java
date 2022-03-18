@@ -3,6 +3,9 @@ package victor.training.performance.spring.caching;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.CommandLineRunner;
+import org.springframework.cache.CacheManager;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import victor.training.performance.jpa.User;
@@ -26,36 +29,43 @@ public class CachingService implements CommandLineRunner {
     }
 
     // TODO cache me
-    public List<Site> getAllSites() {
+    @Cacheable("countries")
+    public List<Site> getAllCountries() {
         return siteRepo.findAll();
     }
     // TODO imagine direct DB access (manual or script)
 
     // =========== editable data ===========
 
-    // TODO cache me
+    @Cacheable("all-users")
+    // tre sa-ti inchipui o Map<Void, List<User>> users;
     public List<User> getAllUsers() {
         return userRepo.findAll();
     }
 
-    // TODO Evict
+    @CacheEvict("all-users")
     public String createUser() {
         Long id = userRepo.save(new User("John-" + System.currentTimeMillis())).getId();
         return "Created id: " + id;
     }
 
 
-    // TODO key-based cache entries
+    @Cacheable("user")
     public UserDto getUser(long id) {
         return new UserDto(userRepo.findById(id).get());
     }
 
-    // TODO Evict
+    @CacheEvict(value = "user",key = "#id")
+//    @CacheEvict(value = "all-users", allEntries = true)
     public void updateUser(long id, String newName) {
+//        Object user = cacheManager.getCache("user").get(id).get();
+//        if ()
         // TODO 6 update profile too -> pass Dto
         User user = userRepo.findById(id).get();
         user.setUsername(newName);
     }
+
+    private final CacheManager cacheManager; // daca nu-ti place @Cacheable ca e prea multa magie
 
 
 }

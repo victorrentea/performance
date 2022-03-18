@@ -5,6 +5,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 
 @Entity
+//@Cacheable
 public class Site {
    @Id
    @GeneratedValue

@@ -2,7 +2,6 @@ package victor.training.performance.concurrency;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import victor.training.performance.util.PerformanceUtil;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -30,7 +29,15 @@ public class RaceBugs {
    private final List<String> allEmails = new ArrayList<>();
 
 
+//   private static int j = 0;
    public static void main(String[] args) throws Exception {
+
+//      for (int i = 0; i < 10_000; i++) {
+//         j++;
+//      }
+
+
+
       ExternalDependencyFake dependency = new ExternalDependencyFake(20_000);
       List<Integer> ids = IntStream.range(0, 20_000).boxed().collect(toList());
       Collection<String> results = new RaceBugs(dependency).retrieveEmailsInParallel(ids);

@@ -17,12 +17,14 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import victor.training.performance.spring.threadscope.PropagateThreadScope;
 
 import javax.servlet.AsyncContext;
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
+import java.util.concurrent.ThreadPoolExecutor.CallerRunsPolicy;
 
 import static java.lang.System.currentTimeMillis;
 import static victor.training.performance.util.PerformanceUtil.sleepq;
@@ -76,7 +78,13 @@ public class BarService implements CommandLineRunner {
       // 2) CompletableFuture Java8
       // 3) NU in java: async/await in JS/TS/C#, coroutine in Kotlin/Swift/C++, Akka Actors in Scala.
       // 4) vis de vara: Green Thread in Java (project Loom)
-
+//      ThreadPoolExecutor pool = new ThreadPoolExecutor(
+//          10, 200,
+//          1, TimeUnit.MINUTES,
+//          new ArrayBlockingQueue<>(500),
+//          new CallerRunsPolicy()
+//      );
+//      pool.submit(()-> {chestii});
       // pe numele lui adevarat cunoscut ca "promise" (din FE)
 
       CompletableFuture<Void> futurePayment = CompletableFuture.runAsync(() -> acceptPayment());
@@ -215,8 +223,8 @@ class BarController {
 @Configuration
 class BarConfig {
    //<editor-fold desc="Spring Config">
-   //   @Autowired
-//   private PropagateThreadScope propagateThreadScope;
+      @Autowired
+   private PropagateThreadScope propagateThreadScope;
 
    @Bean
    public ThreadPoolTaskExecutor threadPool(@Value("${barman.thread.count}") int barmanThreadCount) { // pune in spring un bean numit "threadPool"
@@ -224,6 +232,7 @@ class BarConfig {
       executor.setCorePoolSize(barmanThreadCount);
       executor.setMaxPoolSize(barmanThreadCount);
       executor.setQueueCapacity(500);
+      executor.setRejectedExecutionHandler(new CallerRunsPolicy());
       executor.setThreadNamePrefix("barman-");
       executor.initialize();
 //      executor.setTaskDecorator(propagateThreadScope);
