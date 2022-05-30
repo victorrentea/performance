@@ -9,7 +9,7 @@ import javax.persistence.Id;
 
 @Data
 @Entity
-@Cache(usage = CacheConcurrencyStrategy.READ_ONLY)
+@Cache(usage = CacheConcurrencyStrategy.READ_ONLY) // 2nd level cache de Hibernate tine datele in memorie pe serverul de java.
 public class Country {
    @Id
    private Long id;

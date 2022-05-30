@@ -44,7 +44,7 @@
             <version>2.6</version>
         </dependency>
 
-        <dependency>
+       <!-- <dependency>
             <groupId>org.hibernate</groupId>
             <artifactId>hibernate-jcache</artifactId>
         </dependency>
@@ -52,7 +52,7 @@
             <groupId>org.ehcache</groupId>
             <artifactId>ehcache</artifactId>
             <version>3.9.7</version>
-        </dependency>
+        </dependency>-->
         <dependency>
             <groupId>org.awaitility</groupId>
             <artifactId>awaitility</artifactId>

@@ -2,6 +2,7 @@ package victor.training.performance.spring.caching;
 
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang3.RandomStringUtils;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RestController;
@@ -18,6 +19,7 @@ public class CachingController {
 
     // ---- static data ----
     @GetMapping("countries")
+    @Cacheable("all-countries")
     public List<CountryDto> getAllCountries() {
         return service.getAllSites().stream().map(CountryDto::new).collect(toList());
     }
