@@ -3,6 +3,8 @@ package victor.training.performance.spring.caching;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.CommandLineRunner;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import victor.training.performance.jpa.User;
@@ -46,11 +48,13 @@ public class CachingService implements CommandLineRunner {
 
 
     // TODO key-based cache entries
+    @Cacheable("user") // de fapt conceptual exista un Map<Long, UserDto> user
     public UserDto getUser(long id) {
         return new UserDto(userRepo.findById(id).get());
     }
 
     // TODO Evict
+    @CacheEvict("user") // users.remove({id, newName}); > NU MERGE EVICT!
     public void updateUser(long id, String newName) {
         // TODO 6 update profile too -> pass Dto
         User user = userRepo.findById(id).get();

@@ -6,19 +6,33 @@
             http://www.ehcache.org/v3/jsr107 http://www.ehcache.org/schema/ehcache-107-ext-3.0.xsd"
 >
 
-    <cache alias="victor.training.performance.jpa.Country" >
+ <!--   <cache alias="victor.training.performance.jpa.Country" >
         <resources>
             <heap unit="entries">1</heap>
         </resources>
-    </cache>
+    </cache>-->
 
 
-    <cache alias="missed-cache" >
+    <!--<cache alias="missed-cache" >
         <expiry>
             <ttl unit="minutes">30</ttl>
         </expiry>
         <resources>
             <heap unit="MB">100</heap>
+        </resources>
+    </cache>-->
+
+    <cache alias="ref-countries" >
+        <expiry>
+            <ttl unit="seconds">5</ttl>
+        </expiry>
+        <resources>
+            <heap unit="MB">100</heap>
+        </resources>
+    </cache>
+    <cache alias="user" >
+        <resources>
+            <heap unit="entries">100</heap>
         </resources>
     </cache>
 

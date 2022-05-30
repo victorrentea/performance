@@ -26,6 +26,12 @@ public class CachingController {
         return service.getAllSites().stream().map(CountryDto::new).collect(toList());
     }
 
+
+//    @Cacheable
+//    public Map<RefType, List<ReferenceDto>> getAllReferenceData() {
+//
+//    }
+
     @GetMapping("countries-evict")
     @CacheEvict("ref-countries")
     public void evictCountriesCache() {
@@ -46,6 +52,7 @@ public class CachingController {
     public String createUser() {
         return service.createUser();
     }
+
 
     @GetMapping("users/{id}") // (mis)using GET for testing from browser
     public UserDto getUser(@PathVariable long id) {
