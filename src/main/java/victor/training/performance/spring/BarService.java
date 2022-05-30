@@ -3,29 +3,31 @@ package victor.training.performance.spring;
 
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.io.IOUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.http.ResponseEntity;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
-import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.client.AsyncRestTemplate;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.*;
 import javax.servlet.http.HttpServletRequest;
+import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.nio.file.Files;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
-import java.util.concurrent.Future;
 
-import static java.util.Arrays.asList;
 import static victor.training.performance.util.PerformanceUtil.sleepq;
 
 @RestController
@@ -40,8 +42,8 @@ public class BarService implements CommandLineRunner {
 //      log.debug("Got " + orderDrinks());
    }
 
-   @Autowired
-   ThreadPoolTaskExecutor pool;
+//   @Autowired
+//   ThreadPoolTaskExecutor pool;
 
    @GetMapping
    public CompletableFuture<List<Object>> orderDrinks() throws ExecutionException, InterruptedException {
@@ -53,8 +55,9 @@ public class BarService implements CommandLineRunner {
 
       // daca nu mentionezi un executor ca ultim param, metodele CompletableFuture executa by default pe ForkJoinPool.commonPool
       // asta e nativ in orice JVM 8+, si are exact size=N_CPU-1
-      CompletableFuture<Beer> futureBeer = CompletableFuture.supplyAsync(() ->barman.pourBeer() ,pool);
-      CompletableFuture<Vodka> futureVodka = CompletableFuture.supplyAsync(() ->barman.pourVodka() ,pool);
+      CompletableFuture<Beer> futureBeer = barman.pourBeer();
+
+      CompletableFuture<Vodka> futureVodka = barman.pourVodka();
       // in java CompletableFuture = = = promise.
 
       log.debug("Mi-a luat comanda");
@@ -63,6 +66,7 @@ public class BarService implements CommandLineRunner {
 //      Vodka vodka = futureVodka.get(); // cat sta main aici blocat ? ~0
 
       CompletableFuture<List<Object>> futureDrinks = futureBeer.thenCombine(futureVodka, (beer, vodka) -> List.of(beer, vodka));
+//      CompletableFuture<List<Object>> futureDrinks = futureBeer.thenApply(beer -> List.of(beer, vodka));
 
       long t1 = System.currentTimeMillis();
 //      List<Object> drinks = asList(beer, vodka);
@@ -70,6 +74,17 @@ public class BarService implements CommandLineRunner {
       return futureDrinks;//.thenAccept(list-> asyncOntext...);
    }
 
+   @PostMapping
+   public String uploadANdProcessFile(MultipartFile file2G) throws IOException {
+      File temp = Files.createTempFile("temmp", ".dat").toFile();
+      try (FileOutputStream fos = new FileOutputStream(temp)) {
+         IOUtils.copy(file2G.getInputStream(), fos);
+      }
+      barman.processFile(temp);
+      return "AM primit; id= ceva";
+       // + un endpoint de tracking de comenzi.
+      // ori clientul imi da un HTTP/MQ endpoint la care sa trimit cand e gata.
+   }
 
 
 }
@@ -113,19 +128,30 @@ class Anii2000 implements Servlet {
 @Service
 @Slf4j
 class Barman {
+   @Async
+   public void processFile(File file) {
+   //30 min
+   }
 
-   public Beer pourBeer() {
+   @Async("beerPool") // numele beanului de thread pool
+   public CompletableFuture<Beer> pourBeer() {
       log.debug("Pouring Beer...");
+      if (true) throw new IllegalArgumentException("NU MAI EBERE !");
 //      WebClient (webflux) - Flux/Mono
 //      CompletableFuture<ResponseEntity<Object>> completable = new AsyncRestTemplate().exchange().completable();
       sleepq(10000); // GET
-      return new Beer();
+      return CompletableFuture.completedFuture(new Beer());
    }
 
-   public Vodka pourVodka() {
+   public void method() {
+      pourVodka(); // NU RULEAZA ASYNC ca nu trece prin proxyuri
+   }
+
+   @Async("vodkaPool")
+   public CompletableFuture<Vodka> pourVodka() {
       log.debug("Pouring Vodka...");
       sleepq(1000); // POST., select
-      return new Vodka();
+      return CompletableFuture.completedFuture(new Vodka());
    }
 }
 
@@ -163,12 +189,24 @@ class BarConfig {
 //   private PropagateThreadScope propagateThreadScope;
 
    @Bean
-   public ThreadPoolTaskExecutor pool(@Value("${barman.thread.count}")int barmanCount) {
+   public ThreadPoolTaskExecutor beerPool(@Value("${beer.thread.count}")int barmanCount) {
       ThreadPoolTaskExecutor executor = new ThreadPoolTaskExecutor();
       executor.setCorePoolSize(barmanCount);
       executor.setMaxPoolSize(barmanCount);
       executor.setQueueCapacity(500);
-      executor.setThreadNamePrefix("barman-");
+      executor.setThreadNamePrefix("beer-");
+      executor.initialize();
+//      executor.setTaskDecorator(propagateThreadScope);
+      executor.setWaitForTasksToCompleteOnShutdown(true);
+      return executor;
+   }
+   @Bean
+   public ThreadPoolTaskExecutor vodkaPool(@Value("${vodka.thread.count}")int barmanCount) {
+      ThreadPoolTaskExecutor executor = new ThreadPoolTaskExecutor();
+      executor.setCorePoolSize(barmanCount);
+      executor.setMaxPoolSize(barmanCount);
+      executor.setQueueCapacity(500);
+      executor.setThreadNamePrefix("vodka-");
       executor.initialize();
 //      executor.setTaskDecorator(propagateThreadScope);
       executor.setWaitForTasksToCompleteOnShutdown(true);
