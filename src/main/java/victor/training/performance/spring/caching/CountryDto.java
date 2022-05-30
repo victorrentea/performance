@@ -1,6 +1,8 @@
 package victor.training.performance.spring.caching;
 
-public class CountryDto {
+import java.io.Serializable;
+
+public class CountryDto implements Serializable {
    public Long id;
    public String name;
 

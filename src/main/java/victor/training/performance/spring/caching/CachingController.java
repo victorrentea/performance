@@ -2,6 +2,7 @@ package victor.training.performance.spring.caching;
 
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang3.RandomStringUtils;
+import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -16,12 +17,20 @@ import static java.util.stream.Collectors.toList;
 @RequiredArgsConstructor
 public class CachingController {
     private final CachingService service;
+    private final SiteRepo siteRepo;
 
     // ---- static data ----
     @GetMapping("countries")
-    @Cacheable("all-countries")
+    @Cacheable("ref-countries") //safe pentru ca NU se mai modifica datele din baza dupa pornirea aplicatiei.
     public List<CountryDto> getAllCountries() {
         return service.getAllSites().stream().map(CountryDto::new).collect(toList());
+    }
+
+    @GetMapping("countries-evict")
+    @CacheEvict("ref-countries")
+    public void evictCountriesCache() {
+        siteRepo.save(new Site("NOU" + System.currentTimeMillis()));
+        // DOAMNE METODA GOALA; ATENTIE: NU MA STERGE. LET THE MAGIC HAPPEN (BEWARE: proxies at work)
     }
 
     // ---- editable data ----
