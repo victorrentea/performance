@@ -17,9 +17,9 @@ public class CachingController {
     private final CachingService service;
 
     // ---- static data ----
-    @GetMapping("countries")
-    public List<CountryDto> getAllCountries() {
-        return service.getAllSites().stream().map(CountryDto::new).collect(toList());
+    @GetMapping("sites")
+    public List<SiteDto> getAllSites() {
+        return service.getAllSites().stream().map(SiteDto::new).collect(toList());
     }
 
     // ---- editable data ----

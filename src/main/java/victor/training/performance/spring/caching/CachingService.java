@@ -22,7 +22,9 @@ public class CachingService implements CommandLineRunner {
     @Override
     public void run(String... args) throws Exception {
         log.info("Persisting site static data");
-        Stream.of("Romania", "Serbia", "Belgium").map(Site::new).forEach(siteRepo::save);
+        if (siteRepo.count() == 0) { // canb you spot the race bug here? :)
+            Stream.of("Romania", "Serbia", "Belgium").map(Site::new).forEach(siteRepo::save);
+        }
     }
 
     // TODO cache me
