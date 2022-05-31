@@ -31,6 +31,7 @@
         </resources>
     </cache>
     <cache alias="user" >
+        <key-type>java.lang.Long</key-type>
         <resources>
             <heap unit="entries">100</heap>
         </resources>

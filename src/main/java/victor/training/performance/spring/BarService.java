@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
+import victor.training.performance.spring.threadscope.PropagateThreadScope;
 
 import javax.servlet.*;
 import javax.servlet.http.HttpServletRequest;
@@ -55,9 +56,17 @@ public class BarService implements CommandLineRunner {
 
       // daca nu mentionezi un executor ca ultim param, metodele CompletableFuture executa by default pe ForkJoinPool.commonPool
       // asta e nativ in orice JVM 8+, si are exact size=N_CPU-1
-      CompletableFuture<Beer> futureBeer = barman.pourBeer();
 
-      CompletableFuture<Vodka> futureVodka = barman.pourVodka();
+      CompletableFuture<Void> payment = CompletableFuture.runAsync(() -> {
+         log.debug("Payment");
+         sleepq(1000);
+      });
+
+      CompletableFuture<Beer> futureBeer = payment.thenCompose(v -> barman.pourBeer()
+//              .exceptionally(e -> new Beer("blonda"))
+              );
+
+      CompletableFuture<Vodka> futureVodka = payment.thenCompose(v -> barman.pourVodka());
       // in java CompletableFuture = = = promise.
 
       log.debug("Mi-a luat comanda");
@@ -71,7 +80,7 @@ public class BarService implements CommandLineRunner {
       long t1 = System.currentTimeMillis();
 //      List<Object> drinks = asList(beer, vodka);
       log.debug("Got my order in {} ms : ", t1 - t0);
-      return futureDrinks;//.thenAccept(list-> asyncOntext...);
+      return futureDrinks;//.thenAccept(list-> asyncOntext... scrie pe HTTP response);
    }
 
    @PostMapping
@@ -133,13 +142,16 @@ class Barman {
    //30 min
    }
 
+   public void init() {
+   }
+
    @Async("beerPool") // numele beanului de thread pool
    public CompletableFuture<Beer> pourBeer() {
       log.debug("Pouring Beer...");
-      if (true) throw new IllegalArgumentException("NU MAI EBERE !");
+//      if (true) throw new IllegalArgumentException("NU MAI EBERE !");
 //      WebClient (webflux) - Flux/Mono
 //      CompletableFuture<ResponseEntity<Object>> completable = new AsyncRestTemplate().exchange().completable();
-      sleepq(10000); // GET
+      sleepq(1000); // GET
       return CompletableFuture.completedFuture(new Beer());
    }
 
@@ -185,7 +197,7 @@ class Vodka {
 @Configuration
 class BarConfig {
    //<editor-fold desc="Spring Config">
-   //   @Autowired
+//      @Autowired
 //   private PropagateThreadScope propagateThreadScope;
 
    @Bean
