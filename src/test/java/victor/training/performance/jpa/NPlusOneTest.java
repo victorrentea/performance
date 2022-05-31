@@ -24,9 +24,9 @@ import static org.springframework.test.annotation.DirtiesContext.ClassMode.BEFOR
 
 @Slf4j
 @SpringBootTest
-@Transactional
-@Rollback(false) // don't wipe the data
-@DirtiesContext(classMode = BEFORE_EACH_TEST_METHOD)
+@Transactional //  deschide tranzactie pentru fiecare @Test, ruleaza si @before in acea tx, si dupa face ROLLBACK la acea tx
+@Rollback(false) // don't wipe the data; lasa datele in db, ca sa mai vad ceva.
+//@DirtiesContext(classMode = BEFORE_EACH_TEST_METHOD) // anti pattern!
 public class NPlusOneTest {
 
 	@Autowired
@@ -71,7 +71,7 @@ public class NPlusOneTest {
 		log.debug("Start counting children of {} parents: {}", parents.size(), parents);
 		int total = 0;
 		for (Parent parent : parents) {
-			total += parent.getChildren().size();
+			total += parent.getChildren().size(); // N+1 queries problem: 1 query pt parinte, N pentru copii
 		}
 		log.debug("Done counting: {} children", total);
 		return total;
