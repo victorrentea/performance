@@ -107,8 +107,11 @@ public class UberEntityTest {
             .containsExactly(tuple(uberId, "::uberName::", "Belgium"));
     }
 
+    // cod prod
     private List<UberSearchResult> search(UberSearchCriteria criteria) {
-        String jpql = "SELECT u FROM UberEntity u WHERE 1 = 1 ";
+//        String jpql = "SELECT u FROM UberEntity u WHERE 1 = 1 "; // Sa scoti entitati din baza la searc = cea mai comuna prostie din hiber
+//        String jpql = "SELECT u.id,u.name,.... FROM UberEntity u WHERE 1 = 1 ";
+        String jpql = "SELECT new victor.training.performance.jpa.UberSearchResult(u.id,u.name,'dummy') FROM UberEntity u WHERE 1 = 1 ";
         // alternative implementation: CriteriaAPI, Criteria+Metamodel, QueryDSL, Spring Specifications
 
         Map<String, Object> params = new HashMap<>();
@@ -118,12 +121,12 @@ public class UberEntityTest {
             params.put("name", criteria.name);
         }
 
-        var query = em.createQuery(jpql, UberEntity.class);
+        var query = em.createQuery(jpql, UberSearchResult.class);
         for (String key : params.keySet()) {
             query.setParameter(key, params.get(key));
         }
-        var entities = query.getResultList();
-        return entities.stream().map(UberSearchResult::new).collect(toList());
+        var dtosDeTrimisPeJSON = query.getResultList();
+        return dtosDeTrimisPeJSON;
     }
 }
 class UberSearchCriteria {
