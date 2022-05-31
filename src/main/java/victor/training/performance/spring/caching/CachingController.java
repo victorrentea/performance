@@ -21,7 +21,7 @@ public class CachingController {
 
     // ---- static data ----
     @GetMapping("countries")
-    @Cacheable("ref-countries") //safe pentru ca NU se mai modifica datele din baza dupa pornirea aplicatiei.
+//    @Cacheable("ref-countries") //safe pentru ca NU se mai modifica datele din baza dupa pornirea aplicatiei.
     public List<CountryDto> getAllCountries() {
         return service.getAllSites().stream().map(CountryDto::new).collect(toList());
     }

@@ -137,8 +137,8 @@ interface ParentRepo extends JpaRepository<Parent, Long> {
 	@Query("SELECT distinct p FROM Parent p LEFT join fetch p.children order by p.age")
 	List<Parent> findAllFetchingChildren();
 
-
-	Page<Parent> search(Specification<Parent> criteria, PageRequest pageable);
+//
+//	Page<Parent> search(Specification<Parent> criteria, PageRequest pageable);
 
 //	@Query(value = "select p.ID, P.NAME, STRING_AGG(c.NAME, ',') within group (order by c.name asc) children_names\n" +
 //		   "from PARENT P\n" +

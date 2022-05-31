@@ -68,7 +68,7 @@ public class UberEntityTest {
         uberId = uber.getId();
 
         TestTransaction.end();
-        TestTransaction.start();
+//        TestTransaction.start(); //alt requ http
     }
 
 //    enum RecordStatus{ DRAFT("D"), SUMITTED("S")}  + / hibernate custom type  == > pe CHAR in DB
@@ -90,7 +90,7 @@ public class UberEntityTest {
     public void findAll() {
         log.info("Loading a 'very OOP' @Entity with JPQL ...");
         List<UberEntity> list = repo.findAll();
-        log.info("Loaded using JPQL (see how many queries are above):\n" + list);
+        log.info("Loaded using JPQL (see how many queries are above):\n" + list.size());
     }
 
     @Test

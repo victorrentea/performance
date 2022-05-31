@@ -5,13 +5,16 @@ import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 
 import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 
 @Data
 @Entity
-//@Cache(usage = CacheConcurrencyStrategy.READ_ONLY) // 2nd level cache de Hibernate tine datele in memorie pe serverul de java.
+// bun pe referentiale. leaga id de obiect cu date.
+@Cache(usage = CacheConcurrencyStrategy.READ_ONLY) // 2nd level cache de Hibernate tine datele in memorie pe serverul de java.
 public class Country {
    @Id
+   @GeneratedValue
    private Long id;
    private String name;
    private String region;
