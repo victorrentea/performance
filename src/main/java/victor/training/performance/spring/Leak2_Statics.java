@@ -14,7 +14,7 @@ import java.util.UUID;
 @Slf4j
 public class Leak2_Statics {
 
-   private /*static*/ final Map<String, Integer> anInnocentMap = new HashMap<>();
+   private static final Map<String, Integer> anInnocentMap = new HashMap<>();
 
    @GetMapping
    public String test() {
@@ -31,3 +31,11 @@ public class Leak2_Statics {
  * - Your are in a Spring singleton, so static or not, it makes no diferrence
  * - Retained heap = the amount of memory that will be freed if an object is evicted
  */
+
+
+//class Uitata {
+//   private static final Map<> huge;
+//   static {
+//      pui ca nebunu
+//   }
+//}

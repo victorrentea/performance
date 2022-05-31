@@ -55,9 +55,15 @@ public class Leak3_Inner {
 
 
 class CachingMethodObject {
-	public class UserRightsCalculator { // an instance of this is kept on current thread
+
+	// inner (de instanta):
+//	public class UserRightsCalculator { // an instance of this is kept on current thread
+
+	// nested (static):
+	public static class UserRightsCalculator { // an instance of this is kept on current thread
 		public boolean hasRight(String task) {
 			System.out.println("Stupid Code");
+//			System.out.println("am acces!!" + CachingMethodObject.this.bigMac);
 			// what's the connection between this instance and the 'bigMac' field ?
 			return true;
 		}
@@ -65,7 +71,7 @@ class CachingMethodObject {
 
 	private BigObject20MB bigMac = new BigObject20MB();
 
-	public UserRightsCalculator createRightsCalculator() {
+	public UserRightsCalculator createRightsCalculator() { // cineva tine o ref la rezultatul acestei metode
 		return new UserRightsCalculator();
 	}
 
@@ -73,20 +79,21 @@ class CachingMethodObject {
 
 	//<editor-fold desc="Lambdas vs Anonymous implementation">
 	public Supplier<String> anonymousVsLambdas() {
-		return new Supplier<String>() {
-			@Override
-			public String get() {
-				return "Happy";
-			}
-		};
+		return () -> "Happy";
 	}
 	//</editor-fold>
 
+
 	//<editor-fold desc="Map init in Java <= 8">
 	public Map<String, Integer> mapInit() {
+//		Map<String, Integer> map = new HashMap<>();
+//		map.put()
+
+//		return Map.of("one", 1, "two", 2);
 		return new HashMap<>() {{ // obviously, pre-java 10
 			put("one", 1);
 			put("two", 2);
+//			put("tot", bigMac);
 		}};
 	}
 	//</editor-fold>
