@@ -26,7 +26,7 @@ public class Parent {
    //		daca parent are 10000 de copii maxim. nu e o idee grozava sa zici parent.children
    // daca ai multi copii, lasa doar unidirectionala de la COPIL -> PARINTE (many to one)
    @OneToMany(mappedBy = "parent", cascade = CascadeType.PERSIST/*, fetch = FetchType.EAGER*/)
-//    @BatchSize//    @BatchSize(size=10) // too much magic(size=10) // too much magic
+//  @BatchSize(size=20) // too much magic(size=10) // too much magic
    private Set<Child> children = new HashSet<>();
 
    @ManyToOne

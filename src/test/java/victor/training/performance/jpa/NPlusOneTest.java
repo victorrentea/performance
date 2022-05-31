@@ -5,6 +5,12 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.jpa.domain.Specification;
+import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Lock;
 import org.springframework.data.jpa.repository.Query;
@@ -17,6 +23,7 @@ import javax.persistence.EntityManager;
 import javax.persistence.LockModeType;
 import java.util.Collection;
 import java.util.List;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import static java.util.stream.Collectors.joining;
@@ -106,15 +113,19 @@ public class NPlusOneTest {
 
 		// TODO 1 restrict to first page (of 1 element)
 		// TODO 2 search by parent age >= 40
+//		Page<Parent> parentPage = repo.search(null, PageRequest.of(0, 50, Sort.Direction.ASC, "age"));
+//		parentPage.get().collect(Collectors.toList())
 		assertThat(parentViews)
 			.extracting("name","childrenNames")
 			.containsExactlyInAnyOrder(
-				tuple("Victor","Emma,Vlad"),
-				tuple("Peter","Maria,Paul,Stephan"))
+				tuple("Victor",  "Emma,Vlad"),
+				tuple("Trofim",  ""),
+				tuple("Peter",  "Maria,Paul,Stephan"))
 		;
 	}
 
 	private ParentSearchView toDto(Parent p) {
+
 		String childrenNames = p.getChildren().stream().map(Child::getName).sorted().collect(joining(","));
 		return new ParentSearchView(p.getId(), p.getName(), childrenNames);
 	}
@@ -122,13 +133,29 @@ public class NPlusOneTest {
 
 interface ParentRepo extends JpaRepository<Parent, Long> {
 //	@Lock()
+//	@EntityGraph
 	@Query("SELECT distinct p FROM Parent p LEFT join fetch p.children order by p.age")
 	List<Parent> findAllFetchingChildren();
+
+
+	Page<Parent> search(Specification<Parent> criteria, PageRequest pageable);
+
+//	@Query(value = "select p.ID, P.NAME, STRING_AGG(c.NAME, ',') within group (order by c.name asc) children_names\n" +
+//		   "from PARENT P\n" +
+//		   "    left join CHILD C on P.ID = C.PARENT_ID\n" +
+//		   "group by p.ID, P.NAME", nativeQuery = true)
+//	List<Object[]> findNativ();
 }
 
 interface ChildRepo extends JpaRepository<Child,Long> {
+	@Query("FROM Child  WHERE id IN (?1)")
+	List<Child> loadForParent(List<Long> parentIds);
+
 	Stream<Child> findAllByParentId(long parentId);
 }
 
 interface ParentSearchViewRepo extends JpaRepository<ParentSearchView, Long> {
+	// filtrezi si sortezi pe modelul principal. dar daca vrei vreo fct aggregate (nativa), faci join cu Entitatea mapata pe View
+//	@Query("SELECT psv FROM Parent p JOIN ParentSearchView psv ON psv.id=p.id WHERE p.name = 'a' AND p.country.iso2Code='RO'")
+//	Page<ParentSearchView> search()
 }
