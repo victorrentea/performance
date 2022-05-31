@@ -10,7 +10,7 @@ public class Scope {
    private Long id;
    private String name;
 
-   private Scope() {
+   protected Scope() {
    }
 
    public Scope(Long id, String name) {

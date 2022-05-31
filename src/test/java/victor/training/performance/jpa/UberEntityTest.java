@@ -57,7 +57,7 @@ public class UberEntityTest {
         UberEntity uber = new UberEntity()
                 .setName("::uberName::")
                 .setStatus(Status.SUBMITTED)
-                .setOriginCountry(belgium)
+                .setOriginCountryId(belgium.getId())
                 .setFiscalCountry(romania)
                 .setInvoicingCountry(france)
                 .setNationality(serbia)
@@ -76,7 +76,8 @@ public class UberEntityTest {
     public void findById() {
         log.info("Loading a 'very OOP' @Entity by id...");
         UberEntity uber = repo.findById(uberId).get(); // em.find(UberEntity.class, id); // plain JPA
-        log.info("Loaded using find (inspect the above query):\n" + uber);
+        log.info("tostringul generat cu lombok te baga la belele");
+        log.info("Loaded using find (inspect the above query):\n" );
 
         // Use-case: I only loaded UberEntity to get its status
         if (uber.getStatus() == Status.DRAFT) {
@@ -140,6 +141,8 @@ class UberSearchResult {
     public UberSearchResult(UberEntity entity) {
         id = entity.getId();
         name = entity.getName();
-        originCountry = entity.getOriginCountry().getName();
+        // TODO
+        originCountry = "TODO";
+//        originCountry = entity.getOriginCountry().getName();
     }
 }

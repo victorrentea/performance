@@ -1,8 +1,11 @@
 package victor.training.performance.jpa;
 
 import lombok.Data;
+import lombok.ToString;
 
 import javax.persistence.*;
+
+import java.util.List;
 
 import static javax.persistence.EnumType.STRING;
 
@@ -15,15 +18,16 @@ public class UberEntity {
     private String name;
     private String firstName, lastName, ibanCode, cnp, ssn, passportNumber;
 
-    @ManyToOne
-    private Country originCountry;
+//    @ManyToOne// naivitate OOP (ani de liceu)
+//    private Country originCountry;
+    private Long originCountryId; // Lasi FK in DB
     @ManyToOne
     private Country nationality;
     @ManyToOne
     private Country fiscalCountry;
     @ManyToOne
     private Country invoicingCountry;
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     private Scope scope;
 //    @Convert(converter = ScopeEnumConverter.class)
 //    private ScopeEnum scopeEnum;
