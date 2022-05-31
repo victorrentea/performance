@@ -12,6 +12,8 @@ public class Leak1_ThreadLocal {
 
    @GetMapping
    public String test() {
+
+//      SecurityContextHolder.getContext().getAuthentication().getName();
       BigObject20MB bigObject = new BigObject20MB();
       bigObject.someString = "john.doe"; // username
       threadLocalMetadata.set(bigObject);

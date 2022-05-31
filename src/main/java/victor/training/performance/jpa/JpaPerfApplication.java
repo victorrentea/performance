@@ -22,7 +22,7 @@ public class JpaPerfApplication implements CommandLineRunner {
 
     @Autowired
     private CountryRepo countryRepo;
-    @GetMapping("countries")
+    @GetMapping("countries/all")
     public List<Country> method() {
         return countryRepo.findAll();
     }
