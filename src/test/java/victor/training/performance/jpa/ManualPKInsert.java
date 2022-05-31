@@ -29,9 +29,14 @@ public class ManualPKInsert {
 
    @Test
    void insertManualPK() {
+      contactRepo.save(new Contact()); // fires an extra SELECT in DB
+      contactRepo.save(new Contact()); // fires an extra SELECT in DB
+      contactRepo.save(new Contact()); // fires an extra SELECT in DB
+      contactRepo.save(new Contact()); // fires an extra SELECT in DB
+      contactRepo.save(new Contact()); // fires an extra SELECT in DB
       Contact contact = new Contact();
-      contact.setId(15L);
       contactRepo.save(contact); // fires an extra SELECT in DB
+
 //      entityManager.persist(contact); // raw JPA doesn't
 
       // Composite PK
@@ -51,8 +56,10 @@ public class ManualPKInsert {
 @Setter
 @NoArgsConstructor
 @Entity
+@SequenceGenerator(name = "MySeqGen")
 class Contact {
    @Id
+   @GeneratedValue(generator = "MySeqGen")
    private Long id;
    private String name;
 }
