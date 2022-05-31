@@ -6,6 +6,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Lock;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.test.annotation.Rollback;
 import org.springframework.test.context.jdbc.Sql;
@@ -13,6 +14,7 @@ import org.springframework.test.context.transaction.TestTransaction;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityManager;
+import javax.persistence.LockModeType;
 import java.util.Collection;
 import java.util.List;
 import java.util.stream.Stream;
@@ -61,12 +63,21 @@ public class NPlusOneTest {
 		List<Parent> parents = repo.findAllFetchingChildren();
 		System.out.println(parents);
 		System.out.println(parents.stream().map(Parent::getName).collect(joining()));
+		em.lock(parents.get(0), LockModeType.PESSIMISTIC_WRITE);
 
 		log.info("Loaded {} parents", parents.size());
 
 		int totalChildren = countChildren(parents);
 
 		assertThat(totalChildren).isEqualTo(5);
+
+
+		System.out.println("trebuie sa intrebe baza ca nu stie daca altu a facut vreun commit:");
+		System.out.println(repo.findAllFetchingChildren());
+
+		System.out.println("Asta insa o ia din 1st level cache:");
+//		em.refresh(parents.get(0));
+		System.out.println(repo.findById(parents.get(0).getId()));
 	}
 
 	// far away...
@@ -110,6 +121,7 @@ public class NPlusOneTest {
 }
 
 interface ParentRepo extends JpaRepository<Parent, Long> {
+//	@Lock()
 	@Query("SELECT distinct p FROM Parent p LEFT join fetch p.children order by p.age")
 	List<Parent> findAllFetchingChildren();
 }
