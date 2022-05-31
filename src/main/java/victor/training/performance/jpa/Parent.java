@@ -8,6 +8,10 @@ import javax.persistence.*;
 import java.util.HashSet;
 import java.util.Set;
 
+// NU TREBUIE IMPLEMENTAT HASHCODE EQUALS PE PARINTI.
+// dar atunci, cum merge Set<Parent>?
+// obiecte care nu implem hash/equals sunt eliminate din Set
+// daca sunt == intre ele (aceeasi referinta)
 @Getter
 @Setter
 @Entity
@@ -19,8 +23,10 @@ public class Parent {
    private String name;
    private Integer age;
 
+   //		daca parent are 10000 de copii maxim. nu e o idee grozava sa zici parent.children
+   // daca ai multi copii, lasa doar unidirectionala de la COPIL -> PARINTE (many to one)
    @OneToMany(mappedBy = "parent", cascade = CascadeType.PERSIST/*, fetch = FetchType.EAGER*/)
-    @BatchSize(size=10) // too much magic
+//    @BatchSize(size=10) // too much magic
    private Set<Child> children = new HashSet<>();
 
    @ManyToOne

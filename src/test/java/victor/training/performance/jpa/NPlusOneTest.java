@@ -6,7 +6,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.test.annotation.DirtiesContext;
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.test.annotation.Rollback;
 import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.context.transaction.TestTransaction;
@@ -20,7 +20,6 @@ import java.util.stream.Stream;
 import static java.util.stream.Collectors.joining;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.tuple;
-import static org.springframework.test.annotation.DirtiesContext.ClassMode.BEFORE_EACH_TEST_METHOD;
 
 @Slf4j
 @SpringBootTest
@@ -46,7 +45,7 @@ public class NPlusOneTest {
 		repo.save(new Parent("Trofim") // burlac :P
 			.setAge(42));
 		repo.save(new Parent("Peter")
-				.setAge(41)
+				.setAge(27)
 				.addChild(new Child("Maria"))
 				.addChild(new Child("Paul"))
 				.addChild(new Child("Stephan"))
@@ -58,7 +57,11 @@ public class NPlusOneTest {
 
 	@Test
 	void nPlusOne() {
-		List<Parent> parents = repo.findAll();
+//		List<Parent> parents = repo.findAll();
+		List<Parent> parents = repo.findAllFetchingChildren();
+		System.out.println(parents);
+		System.out.println(parents.stream().map(Parent::getName).collect(joining()));
+
 		log.info("Loaded {} parents", parents.size());
 
 		int totalChildren = countChildren(parents);
@@ -71,6 +74,7 @@ public class NPlusOneTest {
 		log.debug("Start counting children of {} parents: {}", parents.size(), parents);
 		int total = 0;
 		for (Parent parent : parents) {
+//			total += childRepo.findAllByParentId(parent.getId()).count();
 			total += parent.getChildren().size(); // N+1 queries problem: 1 query pt parinte, N pentru copii
 		}
 		log.debug("Done counting: {} children", total);
@@ -78,6 +82,8 @@ public class NPlusOneTest {
 	}
 
 
+	@Autowired
+	private ChildRepo childRepo;
 
 
 	@Test
@@ -104,8 +110,13 @@ public class NPlusOneTest {
 }
 
 interface ParentRepo extends JpaRepository<Parent, Long> {
+	@Query("SELECT distinct p FROM Parent p LEFT join fetch p.children order by p.age")
+	List<Parent> findAllFetchingChildren();
 }
 
+interface ChildRepo extends JpaRepository<Child,Long> {
+	Stream<Child> findAllByParentId(long parentId);
+}
 
 interface ParentSearchViewRepo extends JpaRepository<ParentSearchView, Long> {
 }
