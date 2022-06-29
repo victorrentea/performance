@@ -4,7 +4,7 @@ import javax.xml.stream.XMLOutputFactory;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamWriter;
 
-public class StAXWriting {
+public class StaxWriting {
     public static void main(String[] args) throws XMLStreamException {
 
         XMLOutputFactory factory = XMLOutputFactory.newInstance();

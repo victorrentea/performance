@@ -9,7 +9,7 @@ import javax.xml.stream.events.XMLEvent;
 import java.io.Reader;
 import java.io.StringReader;
 
-public class StAXParsing {
+public class StaxParsing {
     public static void main(String[] args) throws XMLStreamException {
         XMLInputFactory factory = XMLInputFactory.newInstance();
         Reader reader = new StringReader("<root><record id=\"1\"><a>A</a><b>B</b></record><record id=\"2\"><a>A2</a><b>B2</b></record></root>");
