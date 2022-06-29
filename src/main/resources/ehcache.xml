@@ -12,7 +12,6 @@
         </resources>
     </cache>
 
-
     <cache alias="missed-cache" >
         <expiry>
             <ttl unit="minutes">30</ttl>

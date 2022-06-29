@@ -14,8 +14,7 @@ import java.util.function.Supplier;
 @RestController
 @RequestMapping("leak3")
 public class Leak3_Inner {
-	public static final ThreadLocal<UserRightsCalculator> threadLocal = new ThreadLocal<>();
-	
+
 	@GetMapping
 	public String home() {
 		return "Do you know Java? <br>If you think you do:<br>" +
@@ -26,8 +25,7 @@ public class Leak3_Inner {
 	@GetMapping("puzzle")
 	public String puzzle() {
 		UserRightsCalculator calculator = new CachingMethodObject().createRightsCalculator();
-		threadLocal.set(calculator);
-		bizLogicUsingCalculator();
+		bizLogicUsingCalculator(calculator);
 		return "Done";
 	}
 
@@ -46,10 +44,11 @@ public class Leak3_Inner {
 	}
 	//</editor-fold>
 
-	private void bizLogicUsingCalculator() {
-		if (threadLocal.get().hasRight("launch")) {
-			PerformanceUtil.sleepq(20_000); // long flow and/or heavy parallel load
+	private void bizLogicUsingCalculator(UserRightsCalculator calculator) {
+		if (!calculator.hasRight("launch")) {
+			return;
 		}
+		PerformanceUtil.sleepq(20_000); // long flow and/or heavy parallel load
 	}
 }
 

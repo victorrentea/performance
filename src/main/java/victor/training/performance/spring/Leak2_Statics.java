@@ -20,7 +20,7 @@ public class Leak2_Statics {
    public String test() {
       // fire load with jmeter
       anInnocentMap.put(UUID.randomUUID().toString(), 1);
-      return "real-life case: no more obvious 20MB int[] + only happens under stress test";
+      return "More realistic: no more obvious 20MB int[] + only happens under stress test";
    }
 }
 
