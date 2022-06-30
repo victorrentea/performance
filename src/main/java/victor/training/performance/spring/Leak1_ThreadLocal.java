@@ -14,9 +14,14 @@ public class Leak1_ThreadLocal {
    public String test() {
       BigObject20MB bigObject = new BigObject20MB();
       bigObject.someString = "john.doe"; // username
-      threadLocalMetadata.set(bigObject);
 
-      businessMethod1();
+      threadLocalMetadata.set(bigObject); // every usage of TL.set needs to be immediately followed by a try {} finally {tl.remove}
+      try {
+         businessMethod1();
+      } finally {
+         threadLocalMetadata.remove();
+      }
+
       return "Magic can do harm.";
    }
 

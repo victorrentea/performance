@@ -14,6 +14,8 @@ public class ObviousJsonReader {
    public static void main(String[] args) throws Exception {
       List<Map<String, Object>> compacted = readJson();
 
+
+
       System.out.println("Entries in file: " + compacted.size());
       System.out.println("Memory loaded. ENTER to continue... ");
       new Scanner(System.in).nextLine();
@@ -32,12 +34,19 @@ public class ObviousJsonReader {
 
    private static List<Map<String, Object>> compactMap(List<Map<String, Object>> list) {
       System.out.println("Compacting...");
+      Map<String, String> identityMap = new HashMap<>();
       List<Map<String, Object>> compacted = new ArrayList<>();
       for (Map<String, Object> map : list) {
          Map<String, Object> compactMap = new HashMap<>(map.size());
          for (Entry<String, Object> entry : map.entrySet()) {
-            String newKey = entry.getKey(); // TODO hack here
-            compactMap.put(newKey, entry.getValue());
+            String newValue = (String) entry.getValue(); // TODO hack here
+
+            if (identityMap.containsValue(newValue)) {
+               newValue = identityMap.get(newValue);
+            } else {
+               identityMap.put(newValue, newValue);
+            }
+            compactMap.put(entry.getKey(), newValue);
          }
          compacted.add(compactMap);
       }

@@ -5,7 +5,7 @@ import java.io.PrintWriter;
 
 public class JsonGenerator {
 
-	public static final int N_RECORDS = 1000000;
+	public static final int N_RECORDS = 10_000_000;
 	
 	public static void main(String[] args) throws IOException {
 		
