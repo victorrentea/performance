@@ -13,11 +13,14 @@
     </cache>
 
     <cache alias="missed-cache" >
+        <key-type>java.time.LocalDate</key-type>
+        <!--shield you from stupid refactoring-->
         <expiry>
             <ttl unit="minutes">30</ttl>
         </expiry>
         <resources>
             <heap unit="MB">100</heap>
+           <!-- <disk unit="GB">1</disk>-->
         </resources>
     </cache>
 

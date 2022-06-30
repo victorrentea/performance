@@ -1,99 +1,68 @@
-package victor.training.performance.spring;
+package victor.training.performance.spring
 
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
-import victor.training.performance.spring.CachingMethodObject.UserRightsCalculator;
-import victor.training.performance.util.BigObject20MB;
-import victor.training.performance.util.PerformanceUtil;
-
-import java.util.HashMap;
-import java.util.Map;
-import java.util.function.Supplier;
+import org.springframework.web.bind.annotation.GetMapping
+import org.springframework.web.bind.annotation.RequestMapping
+import org.springframework.web.bind.annotation.RestController
+import victor.training.performance.spring.CachingMethodObject.UserRightsCalculator
+import victor.training.performance.util.BigObject20MB
+import victor.training.performance.util.PerformanceUtil
+import java.util.function.Supplier
 
 @RestController
 @RequestMapping("leak3")
-public class Leak3_Inner {
+class Leak3_Inner {
+    @GetMapping
+    fun home(): String {
+        return "Do you know Java? <br>If you think you do:<br>" +
+                "<li>Start here: <a href='/leak3/puzzle'>puzzle</a> (pauses 20 sec to get a heap dump)" +
+                "<li><a href='/leak3/anon'>anon</a>" +
+                "<li><a href='/leak3/map'>map</a> "
+    }
 
-	@GetMapping
-	public String home() {
-		return "Do you know Java? <br>If you think you do:<br>" +
-				 "<li>Start here: <a href='/leak3/puzzle'>puzzle</a> (pauses 20 sec to get a heap dump)" +
-				 "<li><a href='/leak3/anon'>anon</a>" +
-				 "<li><a href='/leak3/map'>map</a> ";
-	}
-	@GetMapping("puzzle")
-	public String puzzle() {
-		UserRightsCalculator calculator = new CachingMethodObject().createRightsCalculator();
-		bizLogicUsingCalculator(calculator);
-		return "Done";
-	}
+    @GetMapping("puzzle")
+    fun puzzle(): String {
+        val calculator = CachingMethodObject().createRightsCalculator()
+        bizLogicUsingCalculator(calculator)
+        return "Done"
+    }
 
-	//<editor-fold desc="Entry points of more similar leaks">
-	@GetMapping("anon")
-	public String anon() {
-		Supplier<String> supplier = new CachingMethodObject().anonymousVsLambdas();
-		PerformanceUtil.sleepq(20_000); // some long workflow
-		return supplier.get();
-	}
-	@GetMapping("map")
-	public Map<String, Integer> map() {
-		Map<String, Integer> map = new CachingMethodObject().mapInit();
-		PerformanceUtil.sleepq(20_000); // some long workflow
-		return map;
-	}
-	//</editor-fold>
+    //<editor-fold desc="Entry points of more similar leaks">
+    @GetMapping("anon")
+    fun anon(): String {
+        val supplier = CachingMethodObject().anonymousVsLambdas()
+        PerformanceUtil.sleepq(20000) // some long workflow
+        return supplier()
+    }
 
-	private void bizLogicUsingCalculator(UserRightsCalculator calculator) {
-		if (!calculator.hasRight("launch")) {
-			return;
-		}
-		PerformanceUtil.sleepq(20_000); // long flow and/or heavy parallel load
-	}
+    //</editor-fold>
+    private fun bizLogicUsingCalculator(calculator: UserRightsCalculator) {
+        if (!calculator.hasRight("launch")) {
+            return
+        }
+        PerformanceUtil.sleepq(20000) // long flow and/or heavy parallel load
+    }
 }
 
+internal class CachingMethodObject {
+    class UserRightsCalculator {
+        // an instance of this is kept on current thread
+        fun hasRight(task: String?): Boolean {
+            println("Stupid Code")
+            //			System.out.println(bigMac);
+            // what's the connection between this instance and the 'bigMac' field ?
+            return true
+        }
+    }
 
-class CachingMethodObject {
-	public class UserRightsCalculator { // an instance of this is kept on current thread
-		public boolean hasRight(String task) {
-			System.out.println("Stupid Code");
-			// what's the connection between this instance and the 'bigMac' field ?
-			return true;
-		}
-	}
+    private val bigMac = BigObject20MB()
+    fun createRightsCalculator(): UserRightsCalculator {
+        return UserRightsCalculator()
+    }
 
-	private BigObject20MB bigMac = new BigObject20MB();
-
-	public UserRightsCalculator createRightsCalculator() {
-		return new UserRightsCalculator();
-	}
-
-	// then, some more (amazing) leaks .....
-
-	//<editor-fold desc="Lambdas vs Anonymous implementation">
-	public Supplier<String> anonymousVsLambdas() {
-		return new Supplier<String>() {
-			@Override
-			public String get() {
-				return "Happy";
-			}
-		};
-	}
-	//</editor-fold>
-
-	//<editor-fold desc="Map init in Java <= 8">
-	public Map<String, Integer> mapInit() {
-		return new HashMap<>() {{ // obviously, pre-java 10
-			put("one", 1);
-			put("two", 2);
-		}};
-	}
-	//</editor-fold>
+    // then, some more (amazing) leaks .....
+    //<editor-fold desc="Lambdas vs Anonymous implementation">
+    fun anonymousVsLambdas(): () -> String{
+//		return () -> "Happy";
+        return { "Happy $bigMac" }
+    } //</editor-fold>
 }
-
-/**
- * KEY POINTS
- * - Anonymous subclasses or implementations keep a reference to the parent instance: use `->` and `Map.of`
- * - Avoid nested classes, or make them 'static'
- * - Avoid keeping heavy state
- */
