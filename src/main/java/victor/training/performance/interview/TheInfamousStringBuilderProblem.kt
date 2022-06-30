@@ -1,32 +1,38 @@
-package victor.training.performance.interview;
+package victor.training.performance.interview
 
-import org.apache.commons.io.FileUtils;
-import victor.training.performance.util.PerformanceUtil;
+import victor.training.performance.util.PerformanceUtil
+import java.io.FileWriter
+import java.io.IOException
+import java.sql.PreparedStatement
+import java.sql.Statement
+import java.util.stream.Collectors
+import java.util.stream.IntStream
 
-import java.io.File;
-import java.io.IOException;
-import java.util.List;
-import java.util.stream.IntStream;
+object TheInfamousStringBuilderProblem {
+    @Throws(IOException::class)
+    @JvmStatic
+    fun main(args: Array<String>) {
+        val elements = IntStream.range(1, 50_000_00) // try 50K x 6 chars : see TLAB
+            .mapToObj { n: Int -> "hahaha" }
+            .collect(Collectors.toList())
+        PerformanceUtil.waitForEnter()
+        println("Start writing contents!")
+        val t0 = System.currentTimeMillis()
 
-import static java.util.stream.Collectors.toList;
+        FileWriter("out.txt").use {
+            toStudy(elements, it)
+        }
+//val s: PreparedStatement
+//s.set
+        println("Done. Took " + (System.currentTimeMillis() - t0))
+        PerformanceUtil.waitForEnter()
+    }
 
-public class TheInfamousStringBuilderProblem {
-   public static void main(String[] args) throws IOException {
-      List<String> elements = IntStream.range(1, 50_000) // try 50K x 6 chars : see TLAB
-          .mapToObj(n -> "hahaha")
-          .collect(toList());
-
-      PerformanceUtil.waitForEnter();
-      System.out.println("Start writing contents!");
-      long t0 = System.currentTimeMillis();
-
-      String s = "";
-      for (String element : elements) {
-         s += element;
-      }
-      FileUtils.writeStringToFile(new File("out.txt"), s);
-
-      System.out.println("Done. Took " + (System.currentTimeMillis() - t0));
-      PerformanceUtil.waitForEnter();
-   }
+    private fun toStudy(elements: MutableList<String>, fileWriter: FileWriter) {
+//        var s: String? = ""
+//        for (element in elements) {
+//            s += element
+//        }
+        elements.forEach{ fileWriter.write(it) }
+    }
 }

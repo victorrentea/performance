@@ -1,5 +1,6 @@
 package victor.training.performance.spring.kt
 
+
 fun main() {
     val c = Calculator()
     // TODO fix: explicitly type the Lambda (Calculator.Listener)

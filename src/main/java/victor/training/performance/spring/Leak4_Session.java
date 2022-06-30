@@ -9,6 +9,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import org.w3c.dom.Document;
 import victor.training.performance.util.BigObject1KB;
 
 import javax.servlet.http.HttpServletRequest;
@@ -66,6 +67,8 @@ public class Leak4_Session {
 class UserPreferences {
 	private List<BigObject1KB> settings = new ArrayList<>();
 	public UserPreferences() {
+//		Document d;
+//		d.getDocumentElement().getch
 		for (int i = 0; i < 100; i++) settings.add(new BigObject1KB());
 	}
 	public List<BigObject1KB> getSettings() {

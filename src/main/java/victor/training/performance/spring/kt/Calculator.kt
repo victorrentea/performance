@@ -1,26 +1,22 @@
-package victor.training.performance.spring.kt;
+package victor.training.performance.spring.kt
 
-import java.util.HashSet;
-import java.util.Set;
+typealias Listener = (Int) -> Unit
+class Calculator {
+    var listeners: MutableSet<Listener> = HashSet()
 
-public class Calculator {
-    interface Listener {
-        void onResult(int result);
-    }
-    Set<Listener> listeners = new HashSet<>();
-    void addListener(Listener listener) {
-        listeners.add(listener);
-    }
-    void removeListener(Listener listener) {
-        listeners.remove(listener);
+    fun addListener(listener: Listener) {
+        listeners.add(listener)
     }
 
-    public int sum(int a, int b) {
+    fun removeListener(listener: Listener) {
+        listeners.remove(listener)
+    }
 
-        int s = a + b;
-        for (Listener listener : listeners) {
-            listener.onResult(s);
+    fun sum(a: Int, b: Int): Int {
+        val s = a + b
+        for (listener in listeners) {
+            listener(s)
         }
-        return s;
+        return s
     }
 }

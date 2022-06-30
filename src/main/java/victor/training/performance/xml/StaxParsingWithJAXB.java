@@ -30,23 +30,27 @@ public class StaxParsingWithJAXB {
     }
     public static void main(String[] args) throws XMLStreamException, JAXBException {
         XMLInputFactory factory = XMLInputFactory.newInstance();
-        Reader reader = new StringReader("<root><record id=\"1\"><a>A</a><b>B</b></record><record id=\"2\"><a>A2</a><b>B2</b></record></root>");
-        XMLEventReader xmlReader = factory.createXMLEventReader(reader);
+        Reader reader = new StringReader(
+                "<root>" +
+                "<record id=\"1\"><a>A</a><b>B</b></record>" + // x 100.000
+                "<record id=\"2\"><a>A2</a><b>B2</b></record>" +
+                "</root>");
+        XMLEventReader stax = factory.createXMLEventReader(reader);
 
         JAXBContext jc = JAXBContext.newInstance(RecordXml.class);
         Unmarshaller unmarshaller = jc.createUnmarshaller();
 
-        xmlReader.nextEvent(); // document start event <root>
-        System.out.println("START " + xmlReader.nextEvent().asStartElement().getName());
-        while (xmlReader.hasNext()) {
-            if(xmlReader.peek().isStartElement() &&
-               xmlReader.peek().asStartElement().getName().getLocalPart().equals("record")) {
+        stax.nextEvent(); // document start event <root>
+        System.out.println("START " + stax.nextEvent().asStartElement().getName());
+        while (stax.hasNext()) {
+            if(stax.peek().isStartElement() &&
+               stax.peek().asStartElement().getName().getLocalPart().equals("record")) {
 
-                RecordXml record = (RecordXml) unmarshaller.unmarshal(xmlReader);
+                RecordXml record = (RecordXml) unmarshaller.unmarshal(stax);
 
                 System.out.println("Read: " + record);
             } else {
-                XMLEvent e = xmlReader.nextEvent();
+                XMLEvent e = stax.nextEvent();
                 System.out.println("Found unexpected element: " + e);
             }
         }

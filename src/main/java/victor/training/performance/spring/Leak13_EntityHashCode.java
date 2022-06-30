@@ -2,10 +2,12 @@ package victor.training.performance.spring;
 
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.io.IOUtils;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Component;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.annotation.PostConstruct;
 import javax.persistence.ElementCollection;
@@ -31,6 +33,11 @@ public class Leak13_EntityHashCode {
       this.service = service;
    }
 
+   public void uplaod(MultipartFile file)
+   {
+
+//      IOUtils.copy(     file.getInputStream(), tempFile);
+   }
    @GetMapping
    public void startBatch() {
       Set<SomeEntity> preexistingPlusThisPage = new HashSet<>();
