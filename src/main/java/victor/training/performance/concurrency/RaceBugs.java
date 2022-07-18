@@ -3,10 +3,7 @@ package victor.training.performance.concurrency;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.List;
+import java.util.*;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Future;
 import java.util.concurrent.SynchronousQueue;
@@ -20,22 +17,30 @@ import static java.util.stream.Collectors.toList;
 @Slf4j
 @RequiredArgsConstructor
 public class RaceBugs {
-   private final ExternalDependency external;
+   private final ExternalDependency dependency;
 
    // DONE Collect all emails with dependency#retrieveEmail(id) - takes time (networking) DONE
    // DONE Eliminate duplicated emails (case insensitive)
    // TODO Only allow emails for which true == dependency#isEmailValid(email) - takes time (networking)
-   // TODO Avoid calling checkEmail twice for the same email
+   // TODO Avoid calling checkEmail twice for the same email pentru ca ne costa bani 0.001$/call
 
    private final List<String> allEmails = new ArrayList<>();
+   private final Map<String, Boolean> emailValidity = new HashMap<>();
 
    // chemata pe 2 threaduri, fiecare cu cate 10k de id-uri
    private void doRetrieveEmails(List<Integer> idsChunk) {
       for (Integer id : idsChunk) {
-         String email = external.retrieveEmail(id);
+         String email = dependency.retrieveEmail(id);
          synchronized (allEmails) {
             if (allEmails.stream().noneMatch(e -> e.equalsIgnoreCase(email))) {
-              allEmails.add(email);
+               Boolean isValid = emailValidity.get(email.toUpperCase());
+               if (isValid == null) {
+                  isValid = dependency.isEmailValid(email);
+                  emailValidity.put(email.toUpperCase(), isValid);
+               }
+               if (isValid) {
+                  allEmails.add(email);
+               }
             }
          }
       }
