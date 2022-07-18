@@ -36,7 +36,7 @@ public class BarService implements CommandLineRunner {
       log.debug("Requesting drinks...");
       long t0 = System.currentTimeMillis();
 
-      ExecutorService threadPool = Executors.newFixedThreadPool(2);
+      ExecutorService threadPool = Executors.newFixedThreadPool(1);
 
       Future<Beer> futureBeer = threadPool.submit(() -> barman.pourBeer()); // cat sta aici = 0
       Future<Vodka> futureVodka = threadPool.submit(() -> barman.pourVodka());// cat sta aici = 0
