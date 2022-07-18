@@ -32,18 +32,30 @@ public class BarService implements CommandLineRunner {
       log.debug("Got " + orderDrinks());
    }
 
-   public List<Object> orderDrinks() throws ExecutionException, InterruptedException {
+   public List<Object> orderDrinks() throws ExecutionException, InterruptedException, TimeoutException {
       log.debug("Requesting drinks...");
       long t0 = System.currentTimeMillis();
 
-      ExecutorService threadPool = Executors.newFixedThreadPool(1);
+      ExecutorService threadPool = Executors.newFixedThreadPool(2);
 
       Future<Beer> futureBeer = threadPool.submit(() -> barman.pourBeer()); // cat sta aici = 0
       Future<Vodka> futureVodka = threadPool.submit(() -> barman.pourVodka());// cat sta aici = 0
 
+//      Beer beer = futureBeer.get(); // cat timp sta main aici in asteptare = 1 sec
 
-      Beer beer = futureBeer.get(); // cat timp sta main aici in asteptare = 1 sec
+//      while (!futureBeer.isDone()) { // busy waiting
+//         System.out.println("Bat darabana");
+//         sleepq(1);
+//      }
+//      futureVodka.cancel(false);
+      Beer beer = futureBeer.get();
       Vodka vodka = futureVodka.get(); // cat timp sta main aici in asteptare = 0 sec, ca deja a trecut acea secunda
+      threadPool.submit(() -> {
+         // FIre and forget: (log in DB, send email...):
+         // nu astepti dupa procesare
+         // dar nici nu poti sa afli daca a reusit sau nu ==> problema: sa nu scapi exceptii => Logging de errori
+         barman.injura("861&$!#&$^!&^&!@%$");
+      });
 
       long t1 = System.currentTimeMillis();
       List<Object> drinks = asList(beer, vodka);
@@ -59,6 +71,9 @@ class Barman {
 
    public Beer pourBeer() {
       log.debug("Pouring Beer...");
+//      if (true) {
+//         throw new IllegalArgumentException("NU mai e bere!");
+//      }
       sleepq(1000); // REST/SOAP/RMI call
       return new Beer();
    }
@@ -67,6 +82,13 @@ class Barman {
       log.debug("Pouring Vodka...");
       sleepq(1000); // SQL
       return new Vodka();
+   }
+
+   public void injura(String s) {
+      if (s != null) {
+         System.err.println("CHIAR SE ARUNCA");
+         throw new IllegalArgumentException("Iti fac buzunar!");
+      }
    }
 }
 
