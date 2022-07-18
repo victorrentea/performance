@@ -24,27 +24,27 @@ public class RaceBugs {
    // TODO Only allow emails for which true == dependency#isEmailValid(email) - takes time (networking)
    // TODO Avoid calling checkEmail twice for the same email pentru ca ne costa bani 0.001$/call
 
-   private final List<String> allEmails = new ArrayList<>();
-   private final Map<String, Boolean> emailValidity = new HashMap<>();
-
-   // chemata pe 2 threaduri, fiecare cu cate 10k de id-uri
-   private void doRetrieveEmailsCuDeToate(List<Integer> idsChunk) {
-      for (Integer id : idsChunk) {
-         String email = dependency.retrieveEmail(id);
-         synchronized (allEmails) {
-            if (allEmails.stream().noneMatch(e -> e.equalsIgnoreCase(email))) {
-               Boolean isValid = emailValidity.get(email.toUpperCase());
-               if (isValid == null) {
-                  isValid = dependency.isEmailValid(email);
-                  emailValidity.put(email.toUpperCase(), isValid);
-               }
-               if (isValid) {
-                  allEmails.add(email);
-               }
-            }
-         }
-      }
-   }
+//   private final List<String> allEmails = new ArrayList<>();
+//   private final Map<String, Boolean> emailValidity = new HashMap<>();
+//
+//   // chemata pe 2 threaduri, fiecare cu cate 10k de id-uri
+//   private void doRetrieveEmailsCuDeToate(List<Integer> idsChunk) {
+//      for (Integer id : idsChunk) {
+//         String email = dependency.retrieveEmail(id);
+//         synchronized (allEmails) {
+//            if (allEmails.stream().noneMatch(e -> e.equalsIgnoreCase(email))) {
+//               Boolean isValid = emailValidity.get(email.toUpperCase());
+//               if (isValid == null) {
+//                  isValid = dependency.isEmailValid(email);
+//                  emailValidity.put(email.toUpperCase(), isValid);
+//               }
+//               if (isValid) {
+//                  allEmails.add(email);
+//               }
+//            }
+//         }
+//      }
+//   }
 
    private List<String> retrieveEmails(List<Integer> idsChunk) { // pe 2 threaduri
       return idsChunk.stream().map(dependency::retrieveEmail).collect(toList());
