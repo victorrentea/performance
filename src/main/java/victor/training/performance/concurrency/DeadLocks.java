@@ -2,7 +2,9 @@ package victor.training.performance.concurrency;
 
 import lombok.Value;
 import lombok.extern.slf4j.Slf4j;
+import victor.training.performance.util.PerformanceUtil;
 
+import static victor.training.performance.util.PerformanceUtil.log;
 import static victor.training.performance.util.PerformanceUtil.sleepNanos;
 
 @Slf4j
@@ -27,27 +29,27 @@ public class DeadLocks {
          Fork secondFork = rightFork;
 
          for (int i = 0; i < 5000; i++) {
-            log.debug("I'm hungry");
+            log("I'm hungry");
 
-            log.debug("Waiting for first fork (id=" + firstFork.id + ")...");
+            log("Waiting for first fork (id=" + firstFork.id + ")...");
             synchronized (firstFork) {
-               log.debug("Took the first fork");
-               log.debug("Waiting for the second fork (id=" + secondFork.id + ")...");
+               log("Took the first fork");
+               log("Waiting for the second fork (id=" + secondFork.id + ")...");
                synchronized (secondFork) {
-                  log.debug("Took both forks. Eating 🌟🌟🌟 ...");
+                  log("Took both forks. Eating 🌟🌟🌟 ...");
                   // sleepNanos(10);
-                  log.debug("Done eating. Releasing forks");
+                  log("Done eating. Releasing forks");
                }
             }
-            log.debug("Thinking...");
+            log("Thinking...");
          }
-         log.debug("NORMAL FINISH (no deadlock happened)");
+         log("NORMAL FINISH (no deadlock happened)");
       }
 
    }
 
    public static void main(String[] args) {
-      log.debug("Start");
+      DeadLocks.log.debug("Start");
       Fork[] forks = {new Fork(1), new Fork(2), new Fork(3), new Fork(4), new Fork(5)};
       new Philosopher("Plato", forks[0], forks[1]).start();
       sleepNanos(1);

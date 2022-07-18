@@ -21,7 +21,7 @@ public class ExternalDependencyFake implements ExternalDependency {
       return this;
    }
 
-   public ExternalDependencyFake setCheckingEmails() {
+   public ExternalDependencyFake setHalfInvalid() {
       this.checkingEmails = true;
       return this;
    }
@@ -49,7 +49,7 @@ public class ExternalDependencyFake implements ExternalDependency {
       if (!checkingEmails) return true;
       else return number % 2 == 0;
    }
-   public int emailChecksPerformed() {
+   public int getNumberOfEmailChecksPerformed() {
       return emailChecksCounter.get();
    }
 }

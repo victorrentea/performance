@@ -21,15 +21,16 @@ import static java.util.stream.Collectors.toList;
 public class RaceBugs {
    private final ExternalDependency dependency;
 
-   // TODO Collect all emails with dependency#retrieveEmail(id) - takes time (networking)
-   // TODO Eliminate duplicated emails (case insensitive)
-   // TODO Only allow emails for which true == dependency#isEmailValid(email) - takes time (networking)
-   // TODO Avoid calling checkEmail twice for the same email
+   // TODO Collect all emails with dependency#retrieveEmail(id) - !!takes time (networking) - parallelize
+   // TODO Eliminate duplicated emails (case insensitive!)
+   // TODO Only allow emails for which dependency#isEmailValid(email)==true - !! takes time (networking) - parallelize
+   // TODO Avoid calling checkEmail twice for the same email (it costs $,Δt)
 
    private final List<String> allEmails = new ArrayList<>();
 
+   // called by two parallel threads
    private void doRetrieveEmails(List<Integer> idsChunk) {
-      for (Integer id : idsChunk) {
+      for (Integer id : idsChunk) { // size() = 10K
          String email = dependency.retrieveEmail(id);
          allEmails.add(email);
       }

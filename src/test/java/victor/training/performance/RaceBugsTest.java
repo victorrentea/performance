@@ -22,25 +22,40 @@ class RaceBugsTest {
 
 
    @Test
-   void retrieveEmails() throws Exception {
+   void no_race_bug___no_emails_lost() throws Exception {
       assertThat(target.retrieveEmailsInParallel(ids)).hasSize(N);
    }
 
    @Test
-   void retrieveEmailsHalfDuplicates() throws Exception {
+   void no_duplicated_emails() throws Exception {
       dependency.setHalfOverlappingEmails();
 
       assertThat(target.retrieveEmailsInParallel(ids)).hasSize(N / 2);
    }
 
    @Test
-   void retrieveEmailsHalfDuplicates_andChecked() throws Exception {
+   void no_invalid_emails() throws Exception {
+      dependency.setHalfInvalid();
+
+      assertThat(target.retrieveEmailsInParallel(ids)).hasSize(N / 2);
+   }
+
+   @Test
+   void no_invalid_emails__despite_duplicates() throws Exception {
       dependency.setHalfOverlappingEmails();
-      dependency.setCheckingEmails();
+      dependency.setHalfInvalid();
 
       assertThat(target.retrieveEmailsInParallel(ids)).hasSize(N / 4);
-      assertThat(dependency.emailChecksPerformed())
-          .describedAs("Should perform minimum number of email checks, to reduce costs")
+   }
+   @Test
+   void minimum_no_of_checks__despite_duplicates() throws Exception {
+      dependency.setHalfOverlappingEmails();
+      dependency.setHalfInvalid();
+
+      target.retrieveEmailsInParallel(ids);
+
+      assertThat(dependency.getNumberOfEmailChecksPerformed())
+          .describedAs("Should perform minimum number of email checks, to reduce costs: 50% emails are duplicates, 50% of the unique ones are valid.")
           .isEqualTo(N / 2);
    }
 
