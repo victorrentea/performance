@@ -92,10 +92,19 @@ public class RaceBugs {
       // PERICOL: 1: sunt prea multe (eu voiam 2)
       // PERICOL: 2: Thread pool starvation
 
-      return nevalidate.parallelStream().filter(email -> {
+      Stream<String> stream = nevalidate.parallelStream().filter(email -> {
          log.info("Validez " + email);
          return dependency.isEmailValid(email); // EVITI sa faci IO pe commonPool, pentru ca il poti starva
-      }).collect(toList());
+      });
+
+
+      ForkJoinPool pool = new ForkJoinPool(2);
+
+      return pool.submit(  () -> stream.collect(toList()) ).get();
+      // ca sa poti executa parallelStream-il pe un pool al tau (dimensionat, privat),
+      // trebuie sa apelezi operatia terminala a stream (eg collect()) sa ruleze pe un worker
+      // thread al unui ForkJoinPool.
+
 
       // submit the 2 tasks
 //      ExecutorService pool = new ThreadPoolExecutor(0, Integer.MAX_VALUE, 500, MILLISECONDS, new SynchronousQueue<>());
