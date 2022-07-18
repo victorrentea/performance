@@ -21,7 +21,7 @@ login with admin/admin
 
 4) in grafana http://localhost:3000/
    (user/pass  admin/admin)
-   Add a datasource to prometheus http://localhost:9090  Access=BROWSER!!
+   Add a datasource to prometheus http://host.docker.internal:9090
    
    Then add a Panel + a query like "http_server_requests_seconds_max"
    rate(http_server_requests_seconds_count[1m])
