@@ -79,11 +79,11 @@ public class RaceBugs {
       List<Integer> secondHalf = ids.subList(ids.size() / 2, ids.size());
 
 
+      // TEMA: folositi parallelStream si pentru prima faza, ca in final (cu pool privat):
       CompletableFuture<List<String>> futureEmails1 = supplyAsync(() -> retrieveEmails(firstHalf));
       CompletableFuture<List<String>> futureEmails2 = supplyAsync(() -> retrieveEmails(secondHalf));
 
-      CompletableFuture<List<String>> uniqueEmails = futureEmails1.thenCombine(futureEmails2,
-                      (e1, e2) -> concatLists(e1, e2))
+      CompletableFuture<List<String>> uniqueEmails = futureEmails1.thenCombine(futureEmails2, this::concatLists)
               .thenApply(this::eliminateDuplicates);
 
       List<String> nevalidate = uniqueEmails.get();
