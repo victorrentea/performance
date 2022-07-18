@@ -53,7 +53,7 @@ class Barman {
    public Beer pourBeer() {
       log.debug("Pouring Beer...");
       sleepq(1000);
-      return new Beer();
+      return new Beer("blond");
    }
 
    public Vodka pourVodka() {
@@ -65,7 +65,7 @@ class Barman {
 
 @Data
 class Beer {
-   private final String type = "blond";
+   private final String type;
 }
 @Data
 class Vodka {
