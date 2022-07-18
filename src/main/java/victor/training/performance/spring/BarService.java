@@ -53,7 +53,6 @@ public class BarService implements CommandLineRunner {
    }
 }
 
-
 @lombok.Value
 class DillyDilly {
    Beer beer;
@@ -67,9 +66,9 @@ class Barman {
    @Async("beerPool") // max 2 beri in paralel (un COBOL, legacy horror care nu poate fi chemat mai mult de 2 apeluri in paralel)
    public CompletableFuture<Beer> pourBeer() {
       log.debug("Pouring Beer...");
-//      if (true) {
-//         throw new IllegalArgumentException("NU mai e bere!");
-//      }
+      if (true) {
+         throw new IllegalArgumentException("NU mai e bere!");
+      }
       sleepq(1000); // REST/SOAP/RMI call
       return CompletableFuture.completedFuture(new Beer());
    }
