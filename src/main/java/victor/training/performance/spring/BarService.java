@@ -14,12 +14,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import victor.training.performance.spring.threadscope.PropagateThreadScope;
 
-import java.util.List;
 import java.util.concurrent.*;
 
-import static java.util.Arrays.asList;
 import static victor.training.performance.util.PerformanceUtil.sleepq;
 
 @Component
@@ -33,24 +30,21 @@ public class BarService implements CommandLineRunner {
       log.debug("Got " + orderDrinks());
    }
 
-   public List<Object> orderDrinks() throws ExecutionException, InterruptedException, TimeoutException {
+   public CompletableFuture<DillyDilly> orderDrinks() throws ExecutionException, InterruptedException, TimeoutException {
       log.debug("Requesting drinks...");
       long t0 = System.currentTimeMillis();
 
       ExecutorService threadPool = Executors.newFixedThreadPool(2);
 
-      Future<Beer> futureBeer = threadPool.submit(() -> barman.pourBeer()); // cat sta aici = 0
-      Future<Vodka> futureVodka = threadPool.submit(() -> barman.pourVodka());// cat sta aici = 0
+      // fix promise-ul din nodeJS
+      // Mono.fromSupplier()
+      CompletableFuture<Beer> beerPromise = CompletableFuture.supplyAsync(() -> barman.pourBeer());// cat sta aici = 0
+      CompletableFuture<Vodka> vodkaPromise = CompletableFuture.supplyAsync(() -> barman.pourVodka());// cat sta aici = 0
 
-//      Beer beer = futureBeer.get(); // cat timp sta main aici in asteptare = 1 sec
+//      Beer beer = beerPromise.get();
+//      Vodka vodka = vodkaPromise.get(); // cat timp sta main aici in asteptare = 0 sec, ca deja a trecut acea secunda
 
-//      while (!futureBeer.isDone()) { // busy waiting
-//         System.out.println("Bat darabana");
-//         sleepq(1);
-//      }
-//      futureVodka.cancel(false);
-      Beer beer = futureBeer.get();
-      Vodka vodka = futureVodka.get(); // cat timp sta main aici in asteptare = 0 sec, ca deja a trecut acea secunda
+
       threadPool.submit(() -> {
          // FIre and forget: (log in DB, send email...):
          // nu astepti dupa procesare
@@ -58,12 +52,21 @@ public class BarService implements CommandLineRunner {
          barman.injura("861&$!#&$^!&^&!@%$");
       });
 
-      long t1 = System.currentTimeMillis();
-      List<Object> drinks = asList(beer, vodka);
-      log.debug("Got my order in {} ms : {}", t1 - t0, drinks);
-      return drinks;
-   }
 
+      CompletableFuture<DillyDilly> dillyPromise = beerPromise.thenCombineAsync(vodkaPromise, (b, v) -> new DillyDilly(b, v));
+
+      long t1 = System.currentTimeMillis();
+//      DillyDilly drinks = dillyPromise.get();
+      log.debug("Got my order in {} ms :", t1 - t0);
+      return dillyPromise;
+   }
+}
+
+
+@lombok.Value
+class DillyDilly {
+   Beer beer;
+   Vodka vodka;
 }
 
 @Service
@@ -112,8 +115,8 @@ class BarController {
    private BarService service;
 
    @GetMapping
-   public String getDrinks() throws Exception {
-      return "" + service.orderDrinks();
+   public CompletableFuture<DillyDilly> getDrinks() throws Exception {
+      return service.orderDrinks();
    }
    //</editor-fold>
 }

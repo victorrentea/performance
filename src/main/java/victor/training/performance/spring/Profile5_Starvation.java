@@ -7,9 +7,9 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.context.annotation.Bean;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -21,6 +21,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.concurrent.CompletableFuture;
 
 @Slf4j
 @RestController
@@ -30,7 +31,7 @@ class SheepController {
     private final SheepService service;
 
     @GetMapping("create")
-    public Long createSheep(@RequestParam(required = false) String name) {
+    public CompletableFuture<Long> createSheep(@RequestParam(required = false) String name) {
         if (name == null) {
             name = "Bisisica " + LocalDateTime.now();
         }
@@ -53,19 +54,24 @@ class SheepService {
     private final ShepardService shepard;
 
     // @Transactional
-    public Long create(String name) {
-        String sn = shepard.registerSheep(name); // Takes 1 second (HTTP call)
-        Sheep sheep = repo.save(new Sheep(name, sn));
-        return sheep.getId();
+    public CompletableFuture<Long> create(String name) {
+        log.debug("Nu primesc chiar clasa Shepard ci " + shepard.getClass().getName());
+        CompletableFuture<String> promiseSN = shepard.registerSheep(name); // Takes 1 second (HTTP call)
+
+        // stil clasic, blocant
+//        Sheep sheep = repo.save(new Sheep(name, sn));
+//        return sheep;
+
+        // stil non-blocant : mult mai complicat, error prone, exceptii = nu, mutable data = la revedere.
+        CompletableFuture<Sheep> promisedSheep = promiseSN.thenApply(sn -> repo.save(new Sheep(name, sn)));
+        return promisedSheep.thenApply(Sheep::getId);
     }
 
     public List<Sheep> search(String name) {
+        log.info("Acum chem SELECT");
         return repo.getByNameLike(name);
     }
 }
-
-
-
 
 @Slf4j
 @Service
@@ -73,13 +79,15 @@ class SheepService {
 class ShepardService {
     private final ShepardClient client;
     @Timed("shepard")
-    public String registerSheep(String name) {
+    @Async // wtf ?!! Spring Magic
+    public CompletableFuture<String> registerSheep(String name) {
+        log.info("Acum chem shepard REST");
         SheepRegistrationResponse response = new RestTemplate()
             .getForObject("http://localhost:9999/api/register-sheep", SheepRegistrationResponse.class);
 
         // or, using Feign client
         // SheepRegistrationResponse response = client.registerSheep();
-        return response.getSn();
+        return CompletableFuture.completedFuture(response.getSn());
     }
 }
 
