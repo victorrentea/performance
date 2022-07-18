@@ -13,11 +13,12 @@ import static java.util.stream.Collectors.toList;
 @Slf4j
 public class RaceBugsIntro {
 
-   private static Integer population = 0;
+   private static Integer a = 0;
 
-   private static void doCountAlive(List<Integer> idsChunk) { // ran in 2 parallel threads
-      for (Integer id : idsChunk) {
-         population++;
+   // 2 parallel threads run this:
+   private static void doCountAlive(List<Integer> idsChunk) {
+      for (Integer id : idsChunk) { // .size() = 10k
+         a++;
       }
    }
 
@@ -29,7 +30,7 @@ public class RaceBugsIntro {
       List<Integer> secondHalf = ids.subList(ids.size() / 2, ids.size());
 
       // submit the 2 tasks
-      ExecutorService pool = new ThreadPoolExecutor(0, 2, 500, MILLISECONDS, new SynchronousQueue<>());
+      ExecutorService pool = Executors.newCachedThreadPool();
       Future<?> future1 = pool.submit(() -> doCountAlive(firstHalf));
       Future<?> future2 = pool.submit(() -> doCountAlive(secondHalf));
       log.debug("Tasks launched...");
@@ -38,7 +39,7 @@ public class RaceBugsIntro {
       future1.get();
       future2.get();
 
-      log.debug("Counted: " + population);
+      log.debug("Counted: " + a);
    }
 
 

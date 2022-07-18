@@ -19,7 +19,7 @@ import static java.util.stream.Collectors.toList;
 @Slf4j
 @RequiredArgsConstructor
 public class RaceBugs {
-   private final ExternalDependency external;
+   private final ExternalDependency dependency;
 
    // TODO Collect all emails with dependency#retrieveEmail(id) - takes time (networking)
    // TODO Eliminate duplicated emails (case insensitive)
@@ -30,7 +30,7 @@ public class RaceBugs {
 
    private void doRetrieveEmails(List<Integer> idsChunk) {
       for (Integer id : idsChunk) {
-         String email = external.retrieveEmail(id);
+         String email = dependency.retrieveEmail(id);
          allEmails.add(email);
       }
    }

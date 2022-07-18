@@ -43,7 +43,6 @@ public class BarService implements CommandLineRunner {
       log.debug("Got my order in {} ms : {}", t1 - t0, drinks);
       return drinks;
    }
-
 }
 
 @Service
@@ -53,12 +52,14 @@ class Barman {
    public Beer pourBeer() {
       log.debug("Pouring Beer...");
       sleepq(1000);
+      log.debug("Beer done");
       return new Beer("blond");
    }
 
    public Vodka pourVodka() {
       log.debug("Pouring Vodka...");
       sleepq(1000);
+      log.debug("Vodka done");
       return new Vodka();
    }
 }
