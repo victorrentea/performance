@@ -35,10 +35,14 @@ public class BarService implements CommandLineRunner {
       log.debug("Requesting drinks...");
       long t0 = System.currentTimeMillis();
 
+
       // fix promise-ul din nodeJS
       // Mono.fromSupplier()
       // pe cate threaduri  (pe ce thread pool) se ruleaza pour beer
-      CompletableFuture<Beer> beerPromise = barman.pourBeer();
+      CompletableFuture<Beer> beerPromise = barman.pourBeer()
+              .exceptionally(e -> {
+                 return new Beer("daialalta");
+              });
       CompletableFuture<Vodka> vodkaPromise = barman.pourVodka();
 
       barman.injura("861&$!#&$^!&^&!@%$");
@@ -67,10 +71,10 @@ class Barman {
    public CompletableFuture<Beer> pourBeer() {
       log.debug("Pouring Beer...");
       if (true) {
-         throw new IllegalArgumentException("NU mai e bere!");
+         throw new IllegalArgumentException("NU mai e bere blonda!");
       }
       sleepq(1000); // REST/SOAP/RMI call
-      return CompletableFuture.completedFuture(new Beer());
+      return CompletableFuture.completedFuture(new Beer("blonda"));
    }
 
    @Async("vodkaPool") // max 5 apeluri
@@ -92,7 +96,7 @@ class Barman {
 
 @Data
 class Beer {
-   private final String type = "blond";
+   private final String type;
 }
 @Data
 class Vodka {
