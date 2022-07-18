@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
@@ -34,29 +35,19 @@ public class BarService implements CommandLineRunner {
       log.debug("Requesting drinks...");
       long t0 = System.currentTimeMillis();
 
-      ExecutorService threadPool = Executors.newFixedThreadPool(2);
-
       // fix promise-ul din nodeJS
       // Mono.fromSupplier()
-      CompletableFuture<Beer> beerPromise = CompletableFuture.supplyAsync(() -> barman.pourBeer());// cat sta aici = 0
-      CompletableFuture<Vodka> vodkaPromise = CompletableFuture.supplyAsync(() -> barman.pourVodka());// cat sta aici = 0
+      // pe cate threaduri  (pe ce thread pool) se ruleaza pour beer
+      CompletableFuture<Beer> beerPromise = barman.pourBeer();
+      CompletableFuture<Vodka> vodkaPromise = barman.pourVodka();
 
-//      Beer beer = beerPromise.get();
-//      Vodka vodka = vodkaPromise.get(); // cat timp sta main aici in asteptare = 0 sec, ca deja a trecut acea secunda
+      barman.injura("861&$!#&$^!&^&!@%$");
 
-
-      threadPool.submit(() -> {
-         // FIre and forget: (log in DB, send email...):
-         // nu astepti dupa procesare
-         // dar nici nu poti sa afli daca a reusit sau nu ==> problema: sa nu scapi exceptii => Logging de errori
-         barman.injura("861&$!#&$^!&^&!@%$");
-      });
-
-
-      CompletableFuture<DillyDilly> dillyPromise = beerPromise.thenCombineAsync(vodkaPromise, (b, v) -> new DillyDilly(b, v));
+      CompletableFuture<DillyDilly> dillyPromise = beerPromise
+              .thenCombineAsync(vodkaPromise,
+                      (b, v) -> new DillyDilly(b, v));
 
       long t1 = System.currentTimeMillis();
-//      DillyDilly drinks = dillyPromise.get();
       log.debug("Got my order in {} ms :", t1 - t0);
       return dillyPromise;
    }
@@ -73,22 +64,26 @@ class DillyDilly {
 @Slf4j
 class Barman {
 
-   public Beer pourBeer() {
+   @Async("beerPool") // max 2 beri in paralel (un COBOL, legacy horror care nu poate fi chemat mai mult de 2 apeluri in paralel)
+   public CompletableFuture<Beer> pourBeer() {
       log.debug("Pouring Beer...");
 //      if (true) {
 //         throw new IllegalArgumentException("NU mai e bere!");
 //      }
       sleepq(1000); // REST/SOAP/RMI call
-      return new Beer();
+      return CompletableFuture.completedFuture(new Beer());
    }
 
-   public Vodka pourVodka() {
+   @Async("vodkaPool") // max 5 apeluri
+   public CompletableFuture<Vodka> pourVodka() {
       log.debug("Pouring Vodka...");
       sleepq(1000); // SQL
-      return new Vodka();
+      return CompletableFuture.completedFuture(new Vodka());
    }
 
+   @Async
    public void injura(String s) {
+      // fire and forget
       if (s != null) {
          System.err.println("CHIAR SE ARUNCA");
          throw new IllegalArgumentException("Iti fac buzunar!");
@@ -130,17 +125,24 @@ class BarConfig {
 //   private PropagateThreadScope propagateThreadScope;
 
    @Bean
-   public ThreadPoolTaskExecutor pool(@Value("${barman.count}") int barmanCount) {
+   public ThreadPoolTaskExecutor beerPool(@Value("${beer.count}") int barmanCount) {
       ThreadPoolTaskExecutor executor = new ThreadPoolTaskExecutor();
       executor.setCorePoolSize(barmanCount);
       executor.setMaxPoolSize(barmanCount);
       executor.setQueueCapacity(500);
-      executor.setThreadNamePrefix("barman-");
-//      executor.settask
+      executor.setThreadNamePrefix("beer-");
       executor.initialize();
-//      executor.setKeepAliveSeconds();
-//      executor.setRejectedExecutionHandler(new ThreadPoolExecutor.CallerRunsPolicy());
-//      executor.setTaskDecorator(propagateThreadScope);
+      executor.setWaitForTasksToCompleteOnShutdown(true);
+      return executor;
+   }
+   @Bean
+   public ThreadPoolTaskExecutor vodkaPool(@Value("${vodka.count}") int barmanCount) {
+      ThreadPoolTaskExecutor executor = new ThreadPoolTaskExecutor();
+      executor.setCorePoolSize(barmanCount);
+      executor.setMaxPoolSize(barmanCount);
+      executor.setQueueCapacity(500);
+      executor.setThreadNamePrefix("vodka-");
+      executor.initialize();
       executor.setWaitForTasksToCompleteOnShutdown(true);
       return executor;
    }
