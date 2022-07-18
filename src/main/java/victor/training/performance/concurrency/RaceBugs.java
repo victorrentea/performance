@@ -5,6 +5,7 @@ import lombok.extern.slf4j.Slf4j;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Future;
@@ -21,17 +22,22 @@ import static java.util.stream.Collectors.toList;
 public class RaceBugs {
    private final ExternalDependency external;
 
-   // TODO Collect all emails with dependency#retrieveEmail(id) - takes time (networking)
-   // TODO Eliminate duplicated emails (case insensitive)
+   // DONE Collect all emails with dependency#retrieveEmail(id) - takes time (networking) DONE
+   // DONE Eliminate duplicated emails (case insensitive)
    // TODO Only allow emails for which true == dependency#isEmailValid(email) - takes time (networking)
    // TODO Avoid calling checkEmail twice for the same email
 
    private final List<String> allEmails = new ArrayList<>();
 
+   // chemata pe 2 threaduri, fiecare cu cate 10k de id-uri
    private void doRetrieveEmails(List<Integer> idsChunk) {
       for (Integer id : idsChunk) {
          String email = external.retrieveEmail(id);
-         allEmails.add(email);
+         synchronized (allEmails) {
+            if (allEmails.stream().noneMatch(e -> e.equalsIgnoreCase(email))) {
+              allEmails.add(email);
+            }
+         }
       }
    }
 
