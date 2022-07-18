@@ -49,7 +49,8 @@ class FastInserter {
                  .collect(toList());
 
              jdbc.batchUpdate("INSERT INTO BIG_ENTITY(ID, DESCRIPTION) " +
-                              "VALUES ( HIBERNATE_SEQUENCE.nextval, repeat(? ,500000))",params); // random letter repeated 500.000 times
+                              "VALUES (  next value for hibernate_sequence, repeat(? ,500000))",params); // random letter repeated 500.000 times
+//                              "VALUES ( HIBERNATE_SEQUENCE.nextval, repeat(? ,500000))",params);
              log.debug("Persist {}0%", percent.incrementAndGet());
           });
       log.debug("DONE inserting {} MB in {} ms", mb, System.currentTimeMillis() - t0);
