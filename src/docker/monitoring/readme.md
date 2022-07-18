@@ -1,5 +1,6 @@
 
 1) make sure http://localhost:8081/actuator/prometheus returns data
+- add to application.properties:
 management.endpoints.web.exposure.include=*
 management.endpoint.prometheus.enabled=true
   
