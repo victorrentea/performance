@@ -14,6 +14,8 @@ import org.springframework.context.event.EventListener;
 import org.springframework.scheduling.annotation.EnableAsync;
 import victor.training.performance.jpa.JpaPerfApplication;
 
+import java.sql.Connection;
+
 @Slf4j
 @EnableAsync
 @EnableCaching
@@ -32,6 +34,9 @@ public class PerformanceApp {
     @EventListener
     public void onStart(ApplicationReadyEvent event) {
         long t1 = System.currentTimeMillis();
+
+//        Connection connection;
+//        c.abort(excecutor).
 
         log.info("🌟🌟🌟🌟🌟🌟 PerformanceApp Started in {} seconds 🌟🌟🌟🌟🌟🌟", (t1-t0)/1000);
     }

@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.RestController;
 import victor.training.performance.spring.threadscope.PropagateThreadScope;
 
 import java.util.List;
+import java.util.concurrent.*;
 
 import static java.util.Arrays.asList;
 import static victor.training.performance.util.PerformanceUtil.sleepq;
@@ -31,12 +32,18 @@ public class BarService implements CommandLineRunner {
       log.debug("Got " + orderDrinks());
    }
 
-   public List<Object> orderDrinks() {
+   public List<Object> orderDrinks() throws ExecutionException, InterruptedException {
       log.debug("Requesting drinks...");
       long t0 = System.currentTimeMillis();
 
-      Beer beer = barman.pourBeer();
-      Vodka vodka = barman.pourVodka();
+      ExecutorService threadPool = Executors.newFixedThreadPool(2);
+
+      Future<Beer> futureBeer = threadPool.submit(() -> barman.pourBeer()); // cat sta aici = 0
+      Future<Vodka> futureVodka = threadPool.submit(() -> barman.pourVodka());// cat sta aici = 0
+
+
+      Beer beer = futureBeer.get(); // cat timp sta main aici in asteptare = 1 sec
+      Vodka vodka = futureVodka.get(); // cat timp sta main aici in asteptare = 0 sec, ca deja a trecut acea secunda
 
       long t1 = System.currentTimeMillis();
       List<Object> drinks = asList(beer, vodka);
@@ -52,13 +59,13 @@ class Barman {
 
    public Beer pourBeer() {
       log.debug("Pouring Beer...");
-      sleepq(1000);
+      sleepq(1000); // REST/SOAP/RMI call
       return new Beer();
    }
 
    public Vodka pourVodka() {
       log.debug("Pouring Vodka...");
-      sleepq(1000);
+      sleepq(1000); // SQL
       return new Vodka();
    }
 }
