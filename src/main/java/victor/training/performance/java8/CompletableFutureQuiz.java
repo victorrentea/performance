@@ -46,6 +46,15 @@ public class CompletableFutureQuiz {
         //  !this method should not block!
         task1();
         task2();
-        return null; // todo
+        return null;
+    }
+
+    public CompletableFuture<?> combine() {
+        // todo execute task1() async and  task2() async in parallel,
+        //  and return a promise that completes when both tasks are done
+        //  !this method should not block!
+        task1();
+        task2();
+        return null;
     }
 }
