@@ -35,15 +35,20 @@ public class BarService implements CommandLineRunner {
       log.debug("Requesting drinks...");
       long t0 = System.currentTimeMillis();
 
+      CompletableFuture<Void> futurePaymentOk = barman.incaseazaBani(100);
 
       // fix promise-ul din nodeJS
       // Mono.fromSupplier()
       // pe cate threaduri  (pe ce thread pool) se ruleaza pour beer
-      CompletableFuture<Beer> beerPromise = barman.pourBeer()
-              .exceptionally(e -> {
-                 return new Beer("daialalta");
-              });
-      CompletableFuture<Vodka> vodkaPromise = barman.pourVodka();
+      CompletableFuture<Beer> beerPromise = futurePaymentOk
+//              .thenApply(v -> barman.blocantBeer()) //fara spring magic (@Async)
+              .thenCompose(v -> barman.pourBeer())
+              .exceptionally(e -> new Beer("daialalta"));
+      CompletableFuture<Vodka> vodkaPromise = futurePaymentOk.thenCompose(v -> barman.pourVodka());
+
+
+      CompletableFuture<Beer> beerCompletableFuture =
+              CompletableFuture.supplyAsync(() -> barman.blocantBeer());
 
       barman.injura("861&$!#&$^!&^&!@%$");
 
@@ -76,6 +81,11 @@ class Barman {
       sleepq(1000); // REST/SOAP/RMI call
       return CompletableFuture.completedFuture(new Beer("blonda"));
    }
+   public Beer blocantBeer() {
+      log.debug("Pouring Beer...");
+      sleepq(1000); // REST/SOAP/RMI call
+      return new Beer("blonda");
+   }
 
    @Async("vodkaPool") // max 5 apeluri
    public CompletableFuture<Vodka> pourVodka() {
@@ -91,6 +101,16 @@ class Barman {
          System.err.println("CHIAR SE ARUNCA");
          throw new IllegalArgumentException("Iti fac buzunar!");
       }
+   }
+
+   @Async
+   public CompletableFuture<Void> incaseazaBani(int suma) {
+      sleepq(500);
+      log.debug("Payment OK");
+      if (Math.random() < 0.5) {
+         throw new IllegalArgumentException("N-are bani!");
+      }
+      return CompletableFuture.completedFuture(null);
    }
 }
 
