@@ -4,6 +4,7 @@ package victor.training.performance.spring;
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -126,13 +127,16 @@ class BarConfig {
 //   private PropagateThreadScope propagateThreadScope;
 
    @Bean
-   public ThreadPoolTaskExecutor pool() {
+   public ThreadPoolTaskExecutor pool(@Value("${barman.count}") int barmanCount) {
       ThreadPoolTaskExecutor executor = new ThreadPoolTaskExecutor();
-      executor.setCorePoolSize(1);
-      executor.setMaxPoolSize(1);
+      executor.setCorePoolSize(barmanCount);
+      executor.setMaxPoolSize(barmanCount);
       executor.setQueueCapacity(500);
       executor.setThreadNamePrefix("barman-");
+//      executor.settask
       executor.initialize();
+//      executor.setKeepAliveSeconds();
+//      executor.setRejectedExecutionHandler(new ThreadPoolExecutor.CallerRunsPolicy());
 //      executor.setTaskDecorator(propagateThreadScope);
       executor.setWaitForTasksToCompleteOnShutdown(true);
       return executor;

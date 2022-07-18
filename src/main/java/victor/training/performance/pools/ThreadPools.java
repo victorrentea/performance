@@ -1,7 +1,9 @@
 package victor.training.performance.pools;
 
-import java.util.concurrent.Callable;
-import java.util.concurrent.ExecutorService;
+import com.sun.xml.bind.v2.TODO;
+import org.checkerframework.checker.units.qual.min;
+
+import java.util.concurrent.*;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import static victor.training.performance.util.PerformanceUtil.log;
@@ -11,14 +13,26 @@ public class ThreadPools {
 
    public static void main(String[] args) throws InterruptedException {
       // TODO Executor that keeps a fixed number (3) of threads until it is shut down
-      ExecutorService executor = null; //Executors. ?
+//      ExecutorService executor = Executors.newFixedThreadPool(3); //Executors. ?
+      // timp mari de asteptare! sau chiar OOME daca sunt foarte multe.
 
-      // TODO Executor that grows the thread pool as necessary, and kills inactive ones after 1 min
-      // ExecutorService executor = Executors. ?
+         // queue size = cat pot decent sa astepte clientii / (
+
+//       TODO Executor that grows the thread pool as necessary, and kills inactive ones after 1 min
+//
+//       ExecutorService executor = Executors.newCachedThreadPool();
+
+//      Runtime.getRuntime().availableProcessors();
+
 
       // TODO Executor that have at least 3 thread but can grow up to 10 threads,
       // with a queue of max 5 elements. Inactive threads die in 1 second.
-      // ExecutorService executor = new ThreadPoolExecutor(...)
+       ExecutorService executor = new ThreadPoolExecutor(
+               3, 3,
+               1, TimeUnit.SECONDS,
+               new ArrayBlockingQueue<>(5),
+               new ThreadPoolExecutor.CallerRunsPolicy()
+       );
 
       // TODO Vary the fixed-sized queue to see it grow the pool and then Rejecting tasks
 
