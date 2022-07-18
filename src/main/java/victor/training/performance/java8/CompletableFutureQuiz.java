@@ -41,7 +41,7 @@ public class CompletableFutureQuiz {
     }
 
     public CompletableFuture<?> chainedSteps() {
-        // todo execute task1() async and then task2() async,
+        // todo execute task1() and then task2(),
         //  and return a promise that completes when task2 finishes
         //  !this method should not block!
         task1();
@@ -49,8 +49,17 @@ public class CompletableFutureQuiz {
         return null;
     }
 
+    public CompletableFuture<?> differentThreadPool() {
+        // as previous example
+        // todo + task1() should never be ran in parallel globally, even if multiple threads call this endpoint
+        //  !this method should not block!
+        task1();
+        task2();
+        return null;
+    }
+
     public CompletableFuture<?> combine() {
-        // todo execute task1() async and  task2() async in parallel,
+        // todo execute task1() and  task2() in parallel,
         //  and return a promise that completes when both tasks are done
         //  !this method should not block!
         task1();
