@@ -11,8 +11,8 @@ public class ThreadLocals {
     public static void main(String[] args) {
         System.out.println("Here come 2 parallel HTTP requests");
         ThreadLocals app = new ThreadLocals();
-        app.httpEndpoint("alice", "Alice's data");
-//        app.httpEndpoint("bob", "Bob's data");
+        new Thread(()->app.httpEndpoint("alice", "Alice's data")).start();
+        new Thread(()->app.httpEndpoint("bob", "Bob's data")).start();
     }
 
     private final AController controller = new AController(new AService(new ARepo()));
