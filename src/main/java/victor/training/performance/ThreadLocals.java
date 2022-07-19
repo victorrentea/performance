@@ -17,17 +17,17 @@ public class ThreadLocals {
 
     private final AController controller = new AController(new AService(new ARepo()));
 
-    public static String staticCurrentUser; //DOAMNE FERESTE
+    public static ThreadLocal<String> staticCurrentUser = new ThreadLocal<>(); //DOAMNE FERESTE
     // TODO ThreadLocal<String>
 
     public static String getCurrentUser() {
-        return staticCurrentUser;
+        return staticCurrentUser.get();
     }
 
     // framework
     public void httpEndpoint(String currentUser, String data) {
         log.info("Current user is " + currentUser); // cookie, AccesToken
-        staticCurrentUser = currentUser;
+        staticCurrentUser.set(currentUser);
         // TODO pass the current user down to the repo without polluting all signatures
         controller.create(data);
     }
