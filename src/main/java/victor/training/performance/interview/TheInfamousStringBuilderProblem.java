@@ -5,14 +5,17 @@ import victor.training.performance.util.PerformanceUtil;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.util.List;
 import java.util.stream.IntStream;
 
+import static java.nio.charset.StandardCharsets.UTF_8;
 import static java.util.stream.Collectors.toList;
 
 public class TheInfamousStringBuilderProblem {
    public static void main(String[] args) throws IOException {
-      List<String> elements = IntStream.range(1, 50_000) // try 50K x 6 chars : see TLAB
+      PerformanceUtil.printJfrFile();
+      List<String> elements = IntStream.range(1, 50_000) // see TLAB
           .mapToObj(n -> "hahaha")
           .collect(toList());
 
@@ -24,7 +27,7 @@ public class TheInfamousStringBuilderProblem {
       for (String element : elements) {
          s += element;
       }
-      FileUtils.writeStringToFile(new File("out.txt"), s);
+      FileUtils.writeStringToFile(new File("out.txt"), s, UTF_8);
 
       System.out.println("Done. Took " + (System.currentTimeMillis() - t0));
       PerformanceUtil.waitForEnter();
