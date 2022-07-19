@@ -18,7 +18,8 @@ import static java.util.stream.Collectors.toList;
 @Slf4j
 @RequiredArgsConstructor
 public class RaceBugs {
-   private final ExternalDependency dependency;
+   private final ExternalDependency dependency; // 0x1412315a3
+
 
    // DONE Collect all emails with dependency#retrieveEmail(id) - takes time (networking) DONE
    // DONE Eliminate duplicated emails (case insensitive)
