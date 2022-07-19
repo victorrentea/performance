@@ -6,19 +6,18 @@ import java.util.List;
 import java.util.concurrent.*;
 import java.util.stream.IntStream;
 
-import static java.util.concurrent.TimeUnit.MILLISECONDS;
 import static java.util.stream.Collectors.toList;
 
 
 @Slf4j
 public class RaceBugsIntro {
 
-   private static Integer a = 0;
+   private static Integer id = 0;
 
    // 2 parallel threads run this:
    private static void doCountAlive(List<Integer> idsChunk) {
-      for (Integer id : idsChunk) { // .size() = 10k
-         a++;
+      for (Integer i : idsChunk) { // .size() = 10k
+         id++;
       }
    }
 
@@ -39,7 +38,7 @@ public class RaceBugsIntro {
       future1.get();
       future2.get();
 
-      log.debug("Counted: " + a);
+      log.debug("Counted: " + id);
    }
 
 
