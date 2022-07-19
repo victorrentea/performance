@@ -1,4 +1,4 @@
-package victor.training.performance.spring
+package victor.training.performance.spring.kt
 
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.RestController

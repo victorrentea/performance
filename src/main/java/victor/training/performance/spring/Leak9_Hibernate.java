@@ -28,52 +28,6 @@ import java.util.stream.Stream;
 
 import static java.util.stream.Collectors.toList;
 
-//region Fast Inserter
-
-@Service
-@RequiredArgsConstructor
-@Slf4j
-class FastInserter {
-   private final DataSource dataSource;
-
-   public void insert(int mb) {
-      log.debug("Inserting...");
-      long t0 = System.currentTimeMillis();
-      AtomicInteger percent = new AtomicInteger(0);
-      JdbcTemplate jdbc = new JdbcTemplate(dataSource);
-
-      IntStream.range(0, 10).parallel() // bad practice in real projects = DB/REST in ForkJoinPool.commonPool
-          .forEach(x -> {
-             List<Object[]> params = IntStream.range(0, mb / 5)
-                 .mapToObj(n -> new Object[]{RandomStringUtils.randomAlphabetic(1)})
-                 .collect(toList());
-
-             jdbc.batchUpdate("INSERT INTO BIG_ENTITY(ID, DESCRIPTION) " +
-                              "VALUES (  next value for hibernate_sequence, repeat(? ,500000))",params); // random letter repeated 500.000 times
-//                              "VALUES ( HIBERNATE_SEQUENCE.nextval, repeat(? ,500000))",params);
-             log.debug("Persist {}0%", percent.incrementAndGet());
-          });
-      log.debug("DONE inserting {} MB in {} ms", mb, System.currentTimeMillis() - t0);
-   }
-
-}
-//endregion
-
-@Entity
-@Getter
-class BigEntity {
-   @Id
-   @GeneratedValue
-   private Long id;
-   @Lob
-   private String description;
-}
-
-interface BigEntityRepo extends JpaRepository<BigEntity, Long> {
-   @Query("FROM BigEntity")
-   Stream<BigEntity> streamAll();
-}
-
 @Slf4j
 @RequiredArgsConstructor
 @RestController
@@ -90,28 +44,75 @@ public class Leak9_Hibernate {
 
    @GetMapping
    public String test() {
-      return "First <a href=\"/leak9/persist\">persist the data</a>, then <a href=\"/leak9/export\"> export it to a file</a>.";
+      return "First <a href=\"/leak9/persist\">persist the data</a>, then <a href=\"/leak9/export\"> export it to a file</a>.<br> Note that after each restart the database is cleared";
    }
 
    @GetMapping("persist")
    public String persist() {
       persister.insert(500);
-      return "Persisted data. Now <a href=\"/leak9/export\">export</a> and check the logs";
+      return "Inserted 500MB of data. Now <a href=\"/leak9/export\">export</a> the file 'big-entity.txt' and check the logs";
    }
 
    @GetMapping("export")
    @Transactional
    public void export() throws IOException {
       log.debug("Exporting....");
+
       try (Writer writer = new FileWriter("big-entity.txt")) {
          repo.streamAll()
              .map(BigEntity::getDescription)
              .forEach(Unchecked.consumer(writer::write));
       }
+
       log.debug("Export completed. Sleeping 2 minutes to get a heapdump...");
       PerformanceUtil.sleepq(120 * 1000);
    }
 }
+
+
+@Entity
+@Getter
+class BigEntity {
+   @Id
+   @GeneratedValue
+   private Long id;
+   @Lob
+   private String description;
+}
+
+interface BigEntityRepo extends JpaRepository<BigEntity, Long> {
+   @Query("FROM BigEntity")
+   Stream<BigEntity> streamAll();
+}
+
+@Service
+@RequiredArgsConstructor
+@Slf4j
+class FastInserter {
+   private final DataSource dataSource;
+   //<editor-fold desc="Fast Inserter">
+   public void insert(int mb) {
+      log.debug("Inserting...");
+      long t0 = System.currentTimeMillis();
+      AtomicInteger percent = new AtomicInteger(0);
+      JdbcTemplate jdbc = new JdbcTemplate(dataSource);
+
+      IntStream.range(0, 10).parallel() // bad practice in real projects = DB/REST in ForkJoinPool.commonPool
+              .forEach(x -> {
+                 List<Object[]> params = IntStream.range(0, mb / 5)
+                         .mapToObj(n -> new Object[]{RandomStringUtils.randomAlphabetic(1)})
+                         .collect(toList());
+
+                 jdbc.batchUpdate("INSERT INTO BIG_ENTITY(ID, DESCRIPTION) " +
+                                  "VALUES (  next value for hibernate_sequence, repeat(? ,500000))",params); // random letter repeated 500.000 times
+//                              "VALUES ( HIBERNATE_SEQUENCE.nextval, repeat(? ,500000))",params);
+                 log.debug("Persist {}0%", percent.incrementAndGet());
+              });
+      log.debug("DONE inserting {} MB in {} ms", mb, System.currentTimeMillis() - t0);
+   }
+   //</editor-fold>
+}
+
 
 /**
  * KEY POINTS:

@@ -1,5 +1,6 @@
 package victor.training.performance.spring;
 
+import lombok.Value;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -14,14 +15,20 @@ import java.util.UUID;
 @Slf4j
 public class Leak2_Statics {
 
-   private /*static*/ final Map<String, Integer> anInnocentMap = new HashMap<>();
+   private /*static*/ final Map<String, ALittleObject> anInnocentMap = new HashMap<>();
 
    @GetMapping
-   public String test() {
-      // fire load with jmeter
-      anInnocentMap.put(UUID.randomUUID().toString(), 1);
+   public String test() { // TODO load test with jmeter
+      ALittleObject obj = new ALittleObject("Some name", "email@example.com", 23);
+      anInnocentMap.put(UUID.randomUUID().toString(), obj);
       return "More realistic: no more obvious 20MB int[] + only happens under stress test";
    }
+}
+@Value
+class ALittleObject {
+   String name;
+   String email;
+   int age;
 }
 
 /**

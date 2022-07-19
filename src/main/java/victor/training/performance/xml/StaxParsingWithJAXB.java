@@ -44,7 +44,7 @@ public class StaxParsingWithJAXB {
 
                 RecordXml record = (RecordXml) unmarshaller.unmarshal(xmlReader);
 
-                System.out.println("Read: " + record);
+                System.out.println("Process the parsed record " + record);
             } else {
                 XMLEvent e = xmlReader.nextEvent();
                 System.out.println("Found unexpected element: " + e);

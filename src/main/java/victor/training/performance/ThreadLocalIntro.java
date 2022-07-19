@@ -13,7 +13,7 @@ public class ThreadLocalIntro {
     public static void main(String[] args) {
         System.out.println("Here come 2 parallel HTTP requests");
         ThreadLocalIntro app = new ThreadLocalIntro();
-        app.frameworkReceivesRequest("alice", "Alice's data");
+        app.httpRequest("alice", "Alice's data");
 //        app.frameworkReceivesRequest("bob", "Bob's data");
     }
 
@@ -23,7 +23,7 @@ public class ThreadLocalIntro {
     // TODO ThreadLocal<String>
 
     // inside Spring, JavaEE,..
-    public void frameworkReceivesRequest(String currentUser, String data) {
+    public void httpRequest(String currentUser, String data) {
         log.info("Current user is " + currentUser);
 //        staticCurrentUser = currentUser;
         // TODO pass the current user down to the repo WITHOUT polluting all signatures
