@@ -3,6 +3,7 @@ package victor.training.performance.concurrency;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.jetbrains.annotations.NotNull;
+import victor.training.performance.util.PerformanceUtil;
 
 import java.util.*;
 import java.util.concurrent.*;
@@ -92,10 +93,21 @@ public class RaceBugs {
       // PERICOL: 1: sunt prea multe (eu voiam 2)
       // PERICOL: 2: Thread pool starvation
 
-      Stream<String> stream = nevalidate.parallelStream().filter(email -> {
-         log.info("Validez " + email);
-         return dependency.isEmailValid(email); // EVITI sa faci IO pe commonPool, pentru ca il poti starva
-      });
+      Stream<String> stream = nevalidate.parallelStream()
+//              .map(scump)
+//              .sequential()
+//              .map(e -> {
+//                 log.debug("Sunt pe thread pt  " + e);
+////                 PerformanceUtil.sleepq(100);
+//                 return e;
+//              })
+//              .distinct()
+//              .sorted()
+              .filter(email -> {
+                  log.info("Validez " + email);
+                  return dependency.isEmailValid(email); // EVITI sa faci IO pe commonPool, pentru ca il poti starva
+               })
+              ;
 
 
       ForkJoinPool pool = new ForkJoinPool(2);
