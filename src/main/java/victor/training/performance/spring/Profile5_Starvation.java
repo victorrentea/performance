@@ -20,7 +20,7 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import java.time.LocalDateTime;
-import java.util.List;
+import java.util.*;
 import java.util.concurrent.CompletableFuture;
 
 @Slf4j
@@ -35,6 +35,11 @@ class SheepController {
         if (name == null) {
             name = "Bisisica " + LocalDateTime.now();
         }
+        HashSet<Object> set = new HashSet<>();
+        set.add("a");
+//        Queue<String> q =new LinkedList<String>();
+//        new Blocking
+
         log.debug("create " + name);
         return service.create(name);
     }
