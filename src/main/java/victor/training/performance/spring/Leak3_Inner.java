@@ -95,5 +95,5 @@ class CachingMethodObject {
  * KEY POINTS
  * - Anonymous subclasses or implementations keep a reference to the parent instance: use `->` and `Map.of`
  * - Avoid nested classes, or make them 'static'
- * - Avoid keeping heavy state
+ * - Avoid keeping heavy state in fields
  */

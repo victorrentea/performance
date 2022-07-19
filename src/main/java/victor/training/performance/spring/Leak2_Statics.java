@@ -28,6 +28,6 @@ public class Leak2_Statics {
  * KEY POINTS
  * - Never accumulate in a collection arbitrary elements without considering eviction.
  * - If you need a cache, don't create your own => use a library with max-heap protection
- * - Your are in a Spring singleton, so static or not, it makes no diferrence
+ * - If you are in a Spring singleton, making a field static or not, it makes no difference
  * - Retained heap = the amount of memory that will be freed if an object is evicted
  */

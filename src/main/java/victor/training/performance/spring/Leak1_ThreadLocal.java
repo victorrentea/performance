@@ -48,5 +48,6 @@ public class Leak1_ThreadLocal {
  * - SecurityContextHolder, @Scope("request" or "session")
  * - @Transactional, Persistence Context, JDBC Connection
  * - Logback MDC
- * If you insist to use ThreadLocal, after the first .set(), always do try { } finally { .remove(); }
+ * If you insist on using ThreadLocal, RULE=
+ *    after the first .set(), always do try { .. } finally { .remove(); }
  */
