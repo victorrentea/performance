@@ -59,7 +59,13 @@ class ARepo {
     public void save(String data) {
         String currentUser = ThreadLocals.getCurrentUser();// TODO How to get this?
         // pe bune asa faci in Spring
+        // aplicatii pentru Thread Local:
+
 //        String currentUser = SecurityContextHolder.getContext().getAuthentication().getName();
+        // @Transactional
+        // JDBC Connection
+        // @Scope("request" sau "session")
+
         log.info("INSERT INTO A(data, created_by) VALUES ({}, {})", data, currentUser);
     }
 }

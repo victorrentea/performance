@@ -11,12 +11,22 @@ public class Leak1_ThreadLocal {
    public static ThreadLocal<BigObject20MB> threadLocalMetadata = new ThreadLocal<>();
 
    @GetMapping
-   public String test() {
+   public String test() { // ruleaza pe ce thread ? pe un thread dat de tomcat, din cele 200 ale lui maxim (10 in mod normal = fara load).
+      // 10 threaduri x 20 = 200 MB
+      // 200 thrdeaduri (sub stress) x 20MB = 4 GB
+      // cand pui date in thread local dintr-un thread ce vine dintr-un thread pool >>> acel thread nu MOARE ci sta idle, si ulterior e refolosit.
       BigObject20MB bigObject = new BigObject20MB();
       bigObject.someString = "john.doe"; // username
       threadLocalMetadata.set(bigObject);
+      // regula1: nu te juca cu ThreadLocaluri
+      // regula2: daca te joci, imediat ce faci .set() urmeaza un try-finally{.remove();}
 
-      businessMethod1();
+      try {
+         businessMethod1();
+      } finally {
+         threadLocalMetadata.remove();
+      }
+
       return "Magic can do harm.";
    }
 
