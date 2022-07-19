@@ -23,7 +23,7 @@ public class Leak6_Async {
 	@GetMapping
 	public String test() {
 		BigObject20MB big = new BigObject20MB();
-		worker.workHard(new Random().nextInt(100), big::lookup);
+		worker.workHard(new Random().nextInt(100), index -> big.lookup(index));
 		return "Keep calling this 20 times within 10 seconds";
 	}
 }
@@ -44,4 +44,5 @@ class Worker {
  * KEY POINTS
  * - Don't pass large objects as params to async methods
  * - Tune the queue size of the underlying thread pool considering the size of elements
+ * - daca chiar vrei sa astepti cu multe date, nu sta cu ele in memorie, ci varsa-le udneva: in DB (CLOB) intr-un fisier temp
  */

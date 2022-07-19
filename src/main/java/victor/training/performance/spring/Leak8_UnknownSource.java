@@ -18,3 +18,8 @@ public class Leak8_UnknownSource {
  * - Most leaks and tough performance issues occur in libraries or unknown code.
  * - Profilers (visualVM and JFR) can record stack traces of allocation places (new)
  */
+
+
+// vezi intr-un heap dump ca ai prea multe ob din tipul X
+// dar nu stii cand exact s-au creat acele ob X
+// Poti inregistra (pe local/prod) stack trace-urile tuturor instantierilor de ob X pe pacursul a 5 min de ex
