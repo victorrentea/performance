@@ -14,12 +14,12 @@ import java.util.UUID;
 @Slf4j
 public class Leak2_Statics {
 
-   private /*static*/ final Map<String, Integer> anInnocentMap = new HashMap<>();
+   private static final Map<String, Integer> anInnocentMap = new HashMap<>(); // 430 K de intrari
 
    @GetMapping
    public String test() {
       // fire load with jmeter
-      anInnocentMap.put(UUID.randomUUID().toString(), 1);
+      anInnocentMap.put(UUID.randomUUID().toString(), 1000);
       return "More realistic: no more obvious 20MB int[] + only happens under stress test";
    }
 }
