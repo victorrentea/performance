@@ -43,7 +43,7 @@ public class StaxParsingWithJAXB {
                xmlReader.peek().asStartElement().getName().getLocalPart().equals("record")) {
 
                 RecordXml record = (RecordXml) unmarshaller.unmarshal(xmlReader);
-
+                // pun in DB...
                 System.out.println("Read: " + record);
             } else {
                 XMLEvent e = xmlReader.nextEvent();
