@@ -70,7 +70,9 @@ class BigEntity {
 
 interface BigEntityRepo extends JpaRepository<BigEntity, Long> {
    @Query("FROM BigEntity")
-   Stream<BigEntity> streamAll();
+   Stream<BigEntity> streamAll(); // PE SUB se descgide un ResultSet si se itereaza pe el cu rs.next()
+   // ce tine in DB deschis un cursor pentru a traversa datele unui query
+
 }
 
 @Slf4j
@@ -103,7 +105,9 @@ public class Leak9_Hibernate {
    public void export() throws IOException {
       log.debug("Exporting....");
       try (Writer writer = new FileWriter("big-entity.txt")) {
+
          repo.streamAll()
+              .peek(e -> entityManager.detach(e)) // detach the entity : " uit-o ca nu merita ! "
              .map(BigEntity::getDescription)
              .forEach(Unchecked.consumer(writer::write));
       }
