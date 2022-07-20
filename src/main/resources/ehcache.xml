@@ -25,6 +25,7 @@
     </cache>
 
     <cache alias="missed-cache" >
+        <key-type>java.time.LocalDate</key-type>
         <expiry>
             <ttl unit="minutes">30</ttl>
         </expiry>
