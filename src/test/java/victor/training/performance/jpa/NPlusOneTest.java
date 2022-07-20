@@ -60,7 +60,7 @@ public class NPlusOneTest {
 
 	@Test
 	void computeTotalNumberOfChildrenFromParents() {
-		Set<Parent> parents = repo.findAllCuCopchii(); // deja ii aveai, pt ca mai ai nevoie de cateva inform din Parent inainte in fluxul tau
+		List<Parent> parents = repo.findAll(); // deja ii aveai, pt ca mai ai nevoie de cateva inform din Parent inainte in fluxul tau
 		log.info("Loaded {} parents", parents.size());
 
 		int totalChildren = countChildren(parents);
