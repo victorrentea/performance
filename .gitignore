@@ -39,3 +39,4 @@ data-output*.txt
 /tmp/
 /data/
 /jaxb-parsed.xml
+/lib
