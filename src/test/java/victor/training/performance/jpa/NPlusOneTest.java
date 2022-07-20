@@ -114,7 +114,7 @@ public class NPlusOneTest {
 }
 
 interface ParentRepo extends JpaRepository<Parent, Long> {
-	@Query("SELECT p FROM Parent p LEFT JOIN FETCH p.children")
+	@Query("SELECT DISTINCT p FROM Parent p LEFT JOIN FETCH p.children")
 	List<Parent> findAllCuCopchii();
 }
 
