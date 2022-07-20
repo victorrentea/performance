@@ -20,7 +20,6 @@
         <spring-cloud.version>2021.0.3</spring-cloud.version>
     </properties>
 
-
     <dependencies>
         <dependency>
             <groupId>com.github.tomakehurst</groupId>
