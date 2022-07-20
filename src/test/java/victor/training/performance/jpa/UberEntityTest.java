@@ -15,9 +15,11 @@ import org.springframework.transaction.annotation.Transactional;
 import victor.training.performance.jpa.UberEntity.Status;
 
 import javax.persistence.EntityManager;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import static java.util.stream.Collectors.joining;
 import static java.util.stream.Collectors.toList;
@@ -107,22 +109,28 @@ public class UberEntityTest {
     }
 
     private List<UberSearchResult> search(UberSearchCriteria criteria) {
-        String jpql = "SELECT u FROM UberEntity u WHERE 1 = 1 ";
+        // cand faci searchuri, niciodata nu scoti entitati intregi!!!
+        String jpql = "SELECT new victor.training.performance.jpa.UberSearchResult(" +
+                      "     u.id, u.name, oc.name) " +
+                      " FROM UberEntity u " +
+                      " JOIN Country oc ON oc.id = u.originCountryId " +
+                      " WHERE 1 = 1 ";
         // alternative implementation: CriteriaAPI, Criteria+Metamodel, QueryDSL, Spring Specifications
 
         Map<String, Object> params = new HashMap<>();
+        List<String> parts = new ArrayList<>();
 
         if (criteria.name != null) {
-            jpql += " AND u.name = :name ";
+            jpql += "   AND u.name = :name   ";
             params.put("name", criteria.name);
         }
 
-        var query = em.createQuery(jpql, UberEntity.class);
+        var query = em.createQuery(jpql, UberSearchResult.class);
         for (String key : params.keySet()) {
             query.setParameter(key, params.get(key));
         }
-        var entities = query.getResultList();
-        return entities.stream().map(UberSearchResult::new).collect(toList());
+        List<UberSearchResult> dtos = query.getResultList();
+        return dtos;
     }
 }
 class UberSearchCriteria {
@@ -136,11 +144,11 @@ class UberSearchResult {
     private final Long id;
     private final String name;
     private final String originCountry;
-
-    public UberSearchResult(UberEntity entity) {
-        id = entity.getId();
-        name = entity.getName();
-        originCountry = "TODO";
-//        originCountry = entity.getOriginCountry().getName();
-    }
+//
+//    public UberSearchResult(UberEntity entity) {
+//        id = entity.getId();
+//        name = entity.getName();
+//        originCountry = "TODO";
+////        originCountry = entity.getOriginCountry().getName();
+//    }
 }
