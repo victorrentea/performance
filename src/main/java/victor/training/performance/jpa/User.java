@@ -5,6 +5,7 @@ import javax.persistence.*;
 import static javax.persistence.EnumType.STRING;
 
 @Entity
+@Table(name = "USERS")
 public class User {
     @Id
     @GeneratedValue

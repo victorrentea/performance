@@ -16,6 +16,15 @@ public class UberEntity {
     private String firstName, lastName, ibanCode, cnp, ssn, passportNumber;
 
     @ManyToOne
+    // !! se incarca eager cu JOIN catre ele daca faci findById
+    // si li se incarca lor toate atributele..
+    // Mai rau daca si ele au mai departe @ManyToOne catre altii, se incarca si aia..
+    // prea multe JOINuri
+
+    // !! se incarca cu SELECT separat daca e adus cu JQPL / findAll
+    // prea multa retea
+
+    // la ambele; de ce aduc si country daca n-am nevoie de el.
     private Country originCountry;
     @ManyToOne
     private Country nationality;
@@ -25,7 +34,7 @@ public class UberEntity {
     private Country invoicingCountry;
     @ManyToOne
     private Scope scope;
-//    @Convert(converter = ScopeEnumConverter.class)
+    //    @Convert(converter = ScopeEnumConverter.class)
 //    private ScopeEnum scopeEnum;
     @ManyToOne
     private User createdBy;

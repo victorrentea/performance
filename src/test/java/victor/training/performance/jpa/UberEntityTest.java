@@ -73,9 +73,9 @@ public class UberEntityTest {
 
 //    enum RecordStatus{ DRAFT("D"), SUMITTED("S")}  + / hibernate custom type  == > pe CHAR in DB
     @Test
-    public void findById() {
+    public void findById() { //!!!!!
         log.info("Loading a 'very OOP' @Entity by id...");
-        UberEntity uber = repo.findById(uberId).get(); // em.find(UberEntity.class, id); // plain JPA
+        UberEntity uber = repo.findById(uberId).orElseThrow(); // em.find(UberEntity.class, id); // plain JPA
         log.info("Loaded using find (inspect the above query):\n" + uber);
 
         // Use-case: I only loaded UberEntity to get its status
@@ -86,7 +86,7 @@ public class UberEntityTest {
     }
 
     @Test
-    public void findAll() {
+    public void findAll() { // in spate ruleaza JQPL: "SELECT u FROM Uber"
         log.info("Loading a 'very OOP' @Entity with JPQL ...");
         List<UberEntity> list = repo.findAll();
         log.info("Loaded using JPQL (see how many queries are above):\n" + list);
