@@ -15,7 +15,7 @@ public class UberEntity {
     private String name;
     private String firstName, lastName, ibanCode, cnp, ssn, passportNumber;
 
-    @ManyToOne
+//    @ManyToOne
     // !! se incarca eager cu JOIN catre ele daca faci findById
     // si li se incarca lor toate atributele..
     // Mai rau daca si ele au mai departe @ManyToOne catre altii, se incarca si aia..
@@ -25,7 +25,9 @@ public class UberEntity {
     // prea multa retea
 
     // la ambele; de ce aduc si country daca n-am nevoie de el.
-    private Country originCountry;
+//    private Country originCountry;
+
+    private Long originCountryId; // + pastrez FK
     @ManyToOne
     private Country nationality;
     @ManyToOne
