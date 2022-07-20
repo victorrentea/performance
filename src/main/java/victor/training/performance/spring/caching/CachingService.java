@@ -2,7 +2,9 @@ package victor.training.performance.spring.caching;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
+import org.springframework.cache.CacheManager;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
@@ -30,12 +32,18 @@ public class CachingService implements CommandLineRunner {
     }
 
 //    public void uploadSiteCsv(String csv) {
-    @CacheEvict("sites")
+//    @CacheEvict("sites")
     public void afterMiaFacutBazaPraf() { // curl localhost/evict-site-cache
         // NU O STERGE, stiu ca are corpu gol dar e aici doar ca sa intre in joc
         new RuntimeException().printStackTrace();
+
+        cacheManager.getCache("sites").clear();
+
         // Proxy de la Spring care sa evicteze cacheul
     }
+
+    @Autowired
+    private CacheManager cacheManager;
 
     @Cacheable("sites") // TODO cum merge
     public List<Site> getAllSites() {
@@ -60,12 +68,15 @@ public class CachingService implements CommandLineRunner {
 
 
     // TODO key-based cache entries
+    @Cacheable("user")
     public UserDto getUser(long id) {
         return new UserDto(userRepo.findById(id).get());
     }
 
     // TODO Evict
+    @CacheEvict(value = "user") // evict nu merge aici, MISTER. GROAZA. PANICA.
     public void updateUser(long id, String newName) {
+//        cacheManager.getCache("user").evict(id);
         // TODO 6 update profile too -> pass Dto
         User user = userRepo.findById(id).get();
         user.setUsername(newName);
