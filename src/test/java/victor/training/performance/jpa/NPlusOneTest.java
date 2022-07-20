@@ -91,18 +91,19 @@ public class NPlusOneTest {
 
 
 
-//	@Test
+	@Test
 	@Sql("/create-view.sql")
 	public void searchOnView() {
-		Stream<ParentSearchView> parentViews = repo.findAll()
-			.stream().map(p -> toDto(p));
-//		var parentViews = searchRepo.findAll();
+//		Stream<ParentSearchView> parentViews = repo.findAll()
+//			.stream().map(p -> toDto(p));
+		var parentViews = searchRepo.findAll();
 
 		// TODO 1 restrict to first page (of 1 element)
 		// TODO 2 search by parent age >= 40
 		assertThat(parentViews)
 			.extracting("name","childrenNames")
 			.containsExactlyInAnyOrder(
+				tuple("Trofim",null),
 				tuple("Victor","Emma,Vlad"),
 				tuple("Peter","Maria,Paul,Stephan"))
 		;
@@ -115,6 +116,13 @@ public class NPlusOneTest {
 }
 
 interface ParentRepo extends JpaRepository<Parent, Long> {
+	@Query(value = "select p.ID, P.NAME,\n" +
+		   "       STRING_AGG(c.NAME, ',') within group (order by c.name asc) children_names\n" +
+		   "from PARENT P\n" +
+		   "         left join CHILD C on P.ID = C.PARENT_ID\n" +
+		   "group by p.ID, P.NAME", nativeQuery = true)
+	List<Object[]> queryNativ();
+
 	@Query("SELECT p FROM Parent p LEFT JOIN FETCH p.children")
 	Set<Parent> findAllCuCopchii();
 

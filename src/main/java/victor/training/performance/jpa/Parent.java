@@ -23,7 +23,7 @@ public class Parent {
            /*fetch = FetchType.EAGER,*/ // ineficient dpdv memorie:
            // oricand oriunde in app incarci un Parent, Hibernate aduce si copchii.
            mappedBy = "parent", cascade = CascadeType.PERSIST)
-    @BatchSize(size=1000) // too much magic
+   @BatchSize(size=1000) // too much magic
    private Set<Child> children = new HashSet<>();
 
    @ManyToOne
