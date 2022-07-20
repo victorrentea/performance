@@ -6,6 +6,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.annotation.Rollback;
 import org.springframework.test.context.jdbc.Sql;
@@ -58,12 +59,15 @@ public class NPlusOneTest {
 
 	@Test
 	void computeTotalNumberOfChildrenFromParents() {
-		List<Parent> parents = repo.findAll(); // deja ii aveai, pt ca mai ai nevoie de cateva inform din Parent inainte in fluxul tau
+		List<Parent> parents = repo.findAllCuCopchii(); // deja ii aveai, pt ca mai ai nevoie de cateva inform din Parent inainte in fluxul tau
 		log.info("Loaded {} parents", parents.size());
 
 		int totalChildren = countChildren(parents);
 
 		assertThat(totalChildren).isEqualTo(5);
+
+
+		// SQL: SELECT COUNT(*) FROM CHILD       = 1 select in loc de N e mai rapid!
 	}
 
 	// far away...
@@ -110,6 +114,8 @@ public class NPlusOneTest {
 }
 
 interface ParentRepo extends JpaRepository<Parent, Long> {
+	@Query("SELECT p FROM Parent p LEFT JOIN FETCH p.children")
+	List<Parent> findAllCuCopchii();
 }
 
 
