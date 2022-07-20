@@ -3,6 +3,7 @@ package victor.training.performance.spring.caching;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.CommandLineRunner;
+import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -28,8 +29,15 @@ public class CachingService implements CommandLineRunner {
         }
     }
 
-    // TODO cache me
-    @Cacheable("sites")
+//    public void uploadSiteCsv(String csv) {
+    @CacheEvict("sites")
+    public void afterMiaFacutBazaPraf() { // curl localhost/evict-site-cache
+        // NU O STERGE, stiu ca are corpu gol dar e aici doar ca sa intre in joc
+        new RuntimeException().printStackTrace();
+        // Proxy de la Spring care sa evicteze cacheul
+    }
+
+    @Cacheable("sites") // TODO cum merge
     public List<Site> getAllSites() {
         System.out.println(" a doua oara, n-o vezi");
         return siteRepo.findAll();

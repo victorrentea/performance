@@ -22,6 +22,11 @@ public class CachingController {
         return service.getAllSites().stream().map(SiteDto::new).collect(toList());
     }
 
+    @GetMapping("evict-sites-cache")
+    public void tiamRuptBaza() {
+        service.afterMiaFacutBazaPraf();
+    }
+
     // ---- editable data ----
     @GetMapping("users")
     public List<UserDto> getAllUsers() {
