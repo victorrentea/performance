@@ -4,15 +4,15 @@ import lombok.Data;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.ManyToOne;
+import javax.persistence.*;
 
 @Data
 @Entity
 @Cache(usage = CacheConcurrencyStrategy.READ_ONLY)
+@SequenceGenerator(name = "country_seq")
 public class Country {
    @Id
+   @GeneratedValue(generator = "country_seq")
    private Long id;
    private String name;
    private String region;
@@ -25,10 +25,6 @@ public class Country {
    private Country() {
    }
 
-   public Country(Long id, String name) {
-      this.id = id;
-      this.name = name;
-   }
    public Country(String name) {
       this.name = name;
    }

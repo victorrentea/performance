@@ -15,6 +15,7 @@ import org.springframework.transaction.annotation.Transactional;
 import victor.training.performance.jpa.UberEntity.Status;
 
 import javax.persistence.EntityManager;
+import java.sql.PreparedStatement;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -49,10 +50,10 @@ public class UberEntityTest {
 
     @BeforeEach
     final void before() {
-        Country romania = new Country(1L, "Romania");
-        Country belgium = new Country(2L, "Belgium");
-        Country france = new Country(3L, "France");
-        Country serbia = new Country(4L, "Serbia");
+        Country romania = new Country("Romania");
+        Country belgium = new Country("Belgium");
+        Country france = new Country("France");
+        Country serbia = new Country("Serbia");
         User testUser = new User("test");
         Scope globalScope = new Scope(1L,"Global"); // TODO enum
         em.persist(romania);
