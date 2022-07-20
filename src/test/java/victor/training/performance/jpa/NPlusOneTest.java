@@ -132,4 +132,6 @@ interface ParentRepo extends JpaRepository<Parent, Long> {
 
 
 interface ParentSearchViewRepo extends JpaRepository<ParentSearchView, Long> {
+	@Query("SELECT psv FROM ParentSearchView psv JOIN Parent p ON p.id = psv.id WHERE p.age = ?1")
+	List<ParentSearchView> query(int age);
 }
