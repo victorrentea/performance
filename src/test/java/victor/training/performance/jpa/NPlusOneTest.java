@@ -16,6 +16,7 @@ import org.springframework.transaction.annotation.Transactional;
 import javax.persistence.EntityManager;
 import java.util.Collection;
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Stream;
 
 import static java.util.stream.Collectors.joining;
@@ -59,7 +60,7 @@ public class NPlusOneTest {
 
 	@Test
 	void computeTotalNumberOfChildrenFromParents() {
-		List<Parent> parents = repo.findAllCuCopchii(); // deja ii aveai, pt ca mai ai nevoie de cateva inform din Parent inainte in fluxul tau
+		Set<Parent> parents = repo.findAllCuCopchii(); // deja ii aveai, pt ca mai ai nevoie de cateva inform din Parent inainte in fluxul tau
 		log.info("Loaded {} parents", parents.size());
 
 		int totalChildren = countChildren(parents);
@@ -114,8 +115,11 @@ public class NPlusOneTest {
 }
 
 interface ParentRepo extends JpaRepository<Parent, Long> {
-	@Query("SELECT DISTINCT p FROM Parent p LEFT JOIN FETCH p.children")
-	List<Parent> findAllCuCopchii();
+	@Query("SELECT p FROM Parent p LEFT JOIN FETCH p.children")
+	Set<Parent> findAllCuCopchii();
+
+	@Query("SELECT COUNT(c) FROM Child c") // jpql - cel mai eficienta forma
+	int countAllChildren();
 }
 
 
