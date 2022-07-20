@@ -3,6 +3,7 @@ package victor.training.performance.spring.caching;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.CommandLineRunner;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import victor.training.performance.jpa.User;
@@ -28,7 +29,9 @@ public class CachingService implements CommandLineRunner {
     }
 
     // TODO cache me
+    @Cacheable("sites")
     public List<Site> getAllSites() {
+        System.out.println(" a doua oara, n-o vezi");
         return siteRepo.findAll();
     }
     // TODO imagine direct DB access (manual or script)

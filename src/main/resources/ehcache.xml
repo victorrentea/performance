@@ -11,6 +11,11 @@
             <heap unit="entries">1</heap>
         </resources>
     </cache>
+    <cache alias="sites" >
+        <resources>
+            <heap unit="MB">100</heap>
+        </resources>
+    </cache>
 
     <cache alias="missed-cache" >
         <expiry>
