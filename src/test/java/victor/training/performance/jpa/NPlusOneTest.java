@@ -57,8 +57,8 @@ public class NPlusOneTest {
 	}
 
 	@Test
-	void nPlusOne() {
-		List<Parent> parents = repo.findAll();
+	void computeTotalNumberOfChildrenFromParents() {
+		List<Parent> parents = repo.findAll(); // deja ii aveai, pt ca mai ai nevoie de cateva inform din Parent inainte in fluxul tau
 		log.info("Loaded {} parents", parents.size());
 
 		int totalChildren = countChildren(parents);
@@ -68,9 +68,11 @@ public class NPlusOneTest {
 
 	// far away...
 	private int countChildren(Collection<Parent> parents) {
-		log.debug("Start counting children of {} parents: {}", parents.size(), parents);
+		log.debug("Start counting children of {} parents: {}",
+				parents.size(), parents);
 		int total = 0;
 		for (Parent parent : parents) {
+			// lazy loading works only if the @Transactional is still open
 			total += parent.getChildren().size();
 		}
 		log.debug("Done counting: {} children", total);
@@ -80,7 +82,11 @@ public class NPlusOneTest {
 
 
 
-	@Test
+
+
+
+
+//	@Test
 	@Sql("/create-view.sql")
 	public void searchOnView() {
 		Stream<ParentSearchView> parentViews = repo.findAll()

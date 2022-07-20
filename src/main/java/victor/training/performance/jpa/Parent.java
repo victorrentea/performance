@@ -18,7 +18,7 @@ public class Parent {
    private String name;
    private Integer age;
 
-   @OneToMany(mappedBy = "parent", cascade = CascadeType.PERSIST)
+   @OneToMany( mappedBy = "parent", cascade = CascadeType.PERSIST)
    // @BatchSize(size=10) // too much magic
    private Set<Child> children = new HashSet<>();
 
