@@ -34,6 +34,12 @@ import static org.springframework.test.annotation.DirtiesContext.ClassMode.BEFOR
 public class UberEntityTest {
     private static final Logger log = LoggerFactory.getLogger(UberEntityTest.class);
 
+    private int _x; // un framework se astepta la "_"
+    // pt ca mapa din baza automat coloana COLU pe campul _colu; prin reflection.
+
+
+
+
     @Autowired
     private EntityManager em;
     @Autowired
@@ -99,7 +105,26 @@ public class UberEntityTest {
         log.info("Searching for 'very OOP' @Entity...");
         UberSearchCriteria criteria = new UberSearchCriteria();
         criteria.name = "::uberName::";
+        boolean cevaObscur = true   ;
+        for (int i = 1; i <= 1; i++) {
+            System.out.println();
+            System.out.println();
+            System.out.println();
 
+            if (cevaObscur) {
+                break; // nostalgia dupa GOTO label75
+            }
+            System.out.println();
+            System.out.println();
+            System.out.println();
+            System.out.println();
+            System.out.println();
+            System.out.println();
+            System.out.println();
+            System.out.println();
+            System.out.println();
+            System.out.println();
+        }
         List<UberSearchResult> dtos = search(criteria);
 
         System.out.println("Results: \n" + dtos.stream().map(UberSearchResult::toString).collect(joining("\n")));
