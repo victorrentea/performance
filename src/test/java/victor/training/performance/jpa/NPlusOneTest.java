@@ -92,13 +92,17 @@ public class NPlusOneTest {
 		assertThat(parentViews)
 			.extracting("name","childrenNames")
 			.containsExactlyInAnyOrder(
+				tuple("Trofim",""),
 				tuple("Victor","Emma,Vlad"),
 				tuple("Peter","Maria,Paul,Stephan"))
 		;
 	}
 
 	private ParentSearchView toDto(Parent p) {
-		String childrenNames = p.getChildren().stream().map(Child::getName).sorted().collect(joining(","));
+		String childrenNames = p.getChildren().stream()
+				.map(Child::getName)
+				.sorted()
+				.collect(joining(","));
 		return new ParentSearchView(p.getId(), p.getName(), childrenNames);
 	}
 }

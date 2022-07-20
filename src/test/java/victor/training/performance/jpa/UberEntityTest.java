@@ -33,26 +33,26 @@ public class UberEntityTest {
     private static final Logger log = LoggerFactory.getLogger(UberEntityTest.class);
 
     @Autowired
+    private CountryRepo countryRepo;
+    @Autowired
+    private UserRepo userRepo;
+    @Autowired
+    private ScopeRepo scopeRepo;
+    @Autowired
     private EntityManager em;
     @Autowired
-    private UberEntityRepo repo;
+    private UberEntityRepo uberRepo;
 
     private Long uberId;
 
     @BeforeEach
     final void before() {
-        Country romania = new Country(1L, "Romania");
-        Country belgium = new Country(2L, "Belgium");
-        Country france = new Country(3L, "France");
-        Country serbia = new Country(4L, "Serbia");
-        User testUser = new User("test");
-        Scope globalScope = new Scope(1L,"Global"); // TODO enum
-        em.persist(romania);
-        em.persist(belgium);
-        em.persist(france);
-        em.persist(serbia);
-        em.persist(testUser);
-        em.persist(globalScope);
+        Country romania = countryRepo.save(new Country(1L, "Romania"));
+        Country belgium = countryRepo.save(new Country(2L, "Belgium"));
+        Country france = countryRepo.save(new Country(3L, "France"));
+        Country serbia = countryRepo.save(new Country(4L, "Serbia"));
+        User testUser = userRepo.save(new User("test"));
+        Scope globalScope = scopeRepo.save(new Scope(1L, "Global")); // TODO enum
 
         UberEntity uber = new UberEntity()
                 .setName("::uberName::")
@@ -64,18 +64,16 @@ public class UberEntityTest {
                 .setScope(globalScope)
 //                .setScopeEnum(ScopeEnum.GLOBAL)
                 .setCreatedBy(testUser);
-        em.persist(uber);
-        uberId = uber.getId();
+        uberId = uberRepo.save(uber).getId();
 
         TestTransaction.end();
         TestTransaction.start();
     }
 
-//    enum RecordStatus{ DRAFT("D"), SUMITTED("S")}  + / hibernate custom type  == > pe CHAR in DB
     @Test
     public void findById() {
-        log.info("Loading a 'very OOP' @Entity by id...");
-        UberEntity uber = repo.findById(uberId).get(); // em.find(UberEntity.class, id); // plain JPA
+        log.info("Loading the @Entity by id...");
+        UberEntity uber = uberRepo.findById(uberId).orElseThrow(); // or em.find(UberEntity.class, id); in plain JPA
         log.info("Loaded using find (inspect the above query):\n" + uber);
 
         // Use-case: I only loaded UberEntity to get its status
@@ -86,9 +84,10 @@ public class UberEntityTest {
     }
 
     @Test
-    public void findAll() {
+    public void findAll_orJPQL() {
         log.info("Loading a 'very OOP' @Entity with JPQL ...");
-        List<UberEntity> list = repo.findAll();
+        List<UberEntity> list = uberRepo.findAll();
+        // List<UberEntity> list = uberRepo.all(); // EQUIVALENT
         log.info("Loaded using JPQL (see how many queries are above):\n" + list);
     }
 
