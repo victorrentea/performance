@@ -74,7 +74,7 @@ public class CachingService implements CommandLineRunner {
     }
 
     // TODO Evict
-    @CacheEvict(value = "user") // evict nu merge aici, MISTER. GROAZA. PANICA.
+    @CacheEvict(value = "user",key = "#id")
     public void updateUser(long id, String newName) {
 //        cacheManager.getCache("user").evict(id);
         // TODO 6 update profile too -> pass Dto

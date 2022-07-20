@@ -17,6 +17,7 @@
         </resources>
     </cache>
     <cache alias="user" >
+        <key-type>long</key-type> <!-- extra safety -->
         <resources>
             <heap unit="MB">100</heap>
         </resources>
