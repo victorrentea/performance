@@ -88,7 +88,7 @@ public class UberEntityTest {
     @Test
     public void findAll() { // in spate ruleaza JQPL: "SELECT u FROM Uber"
         log.info("Loading a 'very OOP' @Entity with JPQL ...");
-        List<UberEntity> list = repo.findAll();
+        List<UberEntity> list = repo.toate();
         log.info("Loaded using JPQL (see how many queries are above):\n" + list);
     }
 
