@@ -14,7 +14,7 @@ public class Country {
    @Id
    private Long id;
    private String name;
-   private String region;
+   private CountryRegion region;
    private String iso2Code;
    private String iso3Code;
    private String continent;
