@@ -6,6 +6,7 @@ import org.hibernate.annotations.CacheConcurrencyStrategy;
 
 import javax.persistence.Entity;
 import javax.persistence.Id;
+import javax.persistence.ManyToOne;
 
 @Data
 @Entity
@@ -14,6 +15,7 @@ public class Country {
    @Id
    private Long id;
    private String name;
+   @ManyToOne
    private CountryRegion region;
    private String iso2Code;
    private String iso3Code;
