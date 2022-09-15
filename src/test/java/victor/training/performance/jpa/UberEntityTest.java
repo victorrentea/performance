@@ -109,6 +109,10 @@ public class UberEntityTest {
         String jpql = "SELECT new victor.training.performance.jpa.UberSearchResult(u.id, u.name, oc.name)" +
                       " FROM UberEntity u" +
                       " JOIN Country oc ON oc.id = u.originCountryId  " +
+                      " JOIN Country c1 ON c1.id = u.nationality.id  " +
+                      " JOIN Country c2 ON c2.id = u.fiscalCountry.id  " +
+                      " JOIN Country c3 ON c3.id = u.invoicingCountry.id  " +
+                      " JOIN Country c4 ON c4.id = u.fiscalCountry.id  " +
                       " WHERE 1 = 1 ";
         // alternative implementation: CriteriaAPI, Criteria+Metamodel, QueryDSL, Spring Specifications
 
