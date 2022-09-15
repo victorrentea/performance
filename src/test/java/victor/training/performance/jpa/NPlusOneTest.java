@@ -6,6 +6,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.annotation.Rollback;
 import org.springframework.test.context.jdbc.Sql;
@@ -15,6 +16,7 @@ import org.springframework.transaction.annotation.Transactional;
 import javax.persistence.EntityManager;
 import java.util.Collection;
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Stream;
 
 import static java.util.stream.Collectors.joining;
@@ -58,7 +60,8 @@ public class NPlusOneTest {
 
 	@Test
 	void nPlusOne() {
-		List<Parent> parents = repo.findAll();
+//		List<Parent> parents = repo.findAll();
+		Set<Parent> parents = repo.findAllWithChildren();
 		log.info("Loaded {} parents", parents.size());
 
 		int totalChildren = countChildren(parents);
@@ -76,9 +79,6 @@ public class NPlusOneTest {
 		log.debug("Done counting: {} children", total);
 		return total;
 	}
-
-
-
 
 	@Test
 	@Sql("/create-view.sql")
@@ -108,6 +108,11 @@ public class NPlusOneTest {
 }
 
 interface ParentRepo extends JpaRepository<Parent, Long> {
+	@Query("SELECT p FROM Parent p" +
+		   " LEFT JOIN FETCH p.children "+
+		   " LEFT JOIN FETCH p.children2"
+	)
+	Set<Parent> findAllWithChildren();
 }
 
 

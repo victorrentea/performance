@@ -1,6 +1,7 @@
 package victor.training.performance.interview;
 
 import org.apache.commons.io.FileUtils;
+import org.jetbrains.annotations.NotNull;
 import victor.training.performance.util.PerformanceUtil;
 
 import java.io.File;
@@ -23,13 +24,20 @@ public class TheInfamousStringBuilderProblem {
       System.out.println("Start writing contents!");
       long t0 = System.currentTimeMillis();
 
-      String s = "";
-      for (String element : elements) {
-         s += element;
-      }
+      String s = thisCode(elements);
       FileUtils.writeStringToFile(new File("out.txt"), s, UTF_8);
 
       System.out.println("Done. Took " + (System.currentTimeMillis() - t0));
       PerformanceUtil.waitForEnter();
+   }
+
+   private static String thisCode(List<String> elements) {
+      StringBuilder s = new StringBuilder();
+      for (String element : elements) {
+         s.append(element); // why is this better ?!
+         // instead of allocating a new string every iteration, a stringBuilder just like ArrayList
+         // allocates more capacity than currentyly needed. so append ===>(sometimes) results in allocation
+      }
+      return s.toString();
    }
 }
