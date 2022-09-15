@@ -48,7 +48,6 @@ public class BarService implements CommandLineRunner {
         // non blocking, separate than main, but sequential
         //        CompletableFuture<Void> allDone =
         //                CompletableFuture.runAsync(() -> fetchStateFromOthers("countries"))
-        //                        .thenRun(() -> fetchStateFromOthers("fex"))
         //                        .thenRun(() -> fetchStateFromOthers("sites"));
 
         allDone

@@ -12,13 +12,21 @@ import static victor.training.performance.util.PerformanceUtil.sleepq;
 @Slf4j
 public class ParallelStreams {
    public static void main(String[] args) {
-//      Enemy.parallelRequest(); // demonstrates starvation of the shared commonPool
+      EnemyDev.parallelRequest(); // demonstrates starvation of the shared commonPool
 
       long t0 = System.currentTimeMillis();
-
+// 100 items sequential = 5130
+// 100 items parallel = 600
+// 100 items parallel but starved by other = 5128
+      // conclusion: don't do network in parallelStream, but only CPU work. That's why it's sized threads=NCPU-1
+      // !!! FIRST PLEASE CHECK THAT YOUR WORK IS HEAVY ENOUGH TO DESERVE THE RISK OF PARALELIZATION
+      // race bugs, deadlocks,
+      // loss of SecurityContextHolder= (there is a fix, see baeldung.com)
+      // loss of @Transactional
+      // loss of Logback MDC
       List<Integer> list = IntStream.range(1,100).boxed().collect(toList());
 
-      List<Integer> result = list.stream()
+      List<Integer> result = list.parallelStream()
           .filter(i -> {
              log.debug("Filter " + i);
              return i % 2 == 0;
@@ -38,10 +46,10 @@ public class ParallelStreams {
 
 // =========== far away, in a distant Package ...... =============
 @Slf4j
-class Enemy {
+class EnemyDev {
    @SneakyThrows
    public static void parallelRequest() {
-      Thread thread = new Thread(Enemy::optimized);
+      Thread thread = new Thread(EnemyDev::optimized);
       thread.setDaemon(true); // to exit program
       thread.start();
       Thread.sleep(100);
@@ -49,7 +57,7 @@ class Enemy {
    public static void optimized() {
       int result = IntStream.range(1, 1000)
           .parallel()
-          .map(Enemy::callNetworkOrDB)
+          .map(EnemyDev::callNetworkOrDB)
           .sum();
       System.out.println(result);
    }
