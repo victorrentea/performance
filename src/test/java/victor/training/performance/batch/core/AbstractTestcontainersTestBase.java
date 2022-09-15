@@ -9,6 +9,7 @@ import org.testcontainers.containers.PostgreSQLContainer;
 import org.testcontainers.containers.ToxiproxyContainer;
 import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
+import org.testcontainers.utility.DockerImageName;
 import victor.training.performance.util.JdbcContainerProperties;
 
 @SpringBootTest
@@ -29,6 +30,9 @@ public class AbstractTestcontainersTestBase {
 
    @Container
    static public ToxiproxyContainer toxiproxy = new ToxiproxyContainer("shopify/toxiproxy:2.1.0")
+//   static public ToxiproxyContainer toxiproxy = new ToxiproxyContainer( // for Mac M1 chips
+//           DockerImageName.parse("ghcr.io/shopify/toxiproxy:2.5.0-armv6")
+//               .asCompatibleSubstituteFor("shopify/toxiproxy"))
        .withNetworkAliases("toxiproxy")
        .withNetwork(network);
 
