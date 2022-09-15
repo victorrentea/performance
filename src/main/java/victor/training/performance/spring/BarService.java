@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.retry.annotation.EnableRetry;
 import org.springframework.retry.annotation.Retryable;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
@@ -37,13 +38,12 @@ public class BarService implements CommandLineRunner {
     @Override
     public void run(String... args) throws Exception { // runs at app startup
 
-        CompletableFuture<Void> f1 = CompletableFuture.runAsync(() -> fetchStateFromOthers("countries"));
-        CompletableFuture<Void> f2= CompletableFuture.runAsync(() -> fetchStateFromOthers("fex"));
-        CompletableFuture<Void> f3 = CompletableFuture.runAsync(() -> fetchStateFromOthers("sites"));
+        CompletableFuture<Void> f1 = CompletableFuture.runAsync(() -> barman.fetchStateFromOthers("countries"));
+        CompletableFuture<Void> f2= CompletableFuture.runAsync(() -> barman.fetchStateFromOthers("fex"));
+        CompletableFuture<Void> f3 = CompletableFuture.runAsync(() -> barman.fetchStateFromOthers("sites"));
 
         CompletableFuture<Void> allDone = f1.thenCombineAsync(f2, (v2, v1) -> null)
                 .thenCombineAsync(f3, (v1, v2) -> null);
-
 
         // non blocking, separate than main, but sequential
         //        CompletableFuture<Void> allDone =
@@ -58,14 +58,6 @@ public class BarService implements CommandLineRunner {
                 .thenRun(() -> log.info("Liveness = LIVE"));
 
         //      log.debug("Got " + orderDrinks());
-    }
-
-//    @Retryable(maxAttempts = 3)
-    private void fetchStateFromOthers(String refData) {
-        log.info("Loading " + refData);
-        sleepq(1000);
-//        cache put
-        log.info("Loaded " + refData);
     }
 
     public CompletableFuture<List<Object>> orderDrinks() throws ExecutionException, InterruptedException {
@@ -125,6 +117,19 @@ class Barman {
         drinks.add(vodka);
         return CompletableFuture.completedFuture(vodka);
     }
+
+    @Retryable(maxAttempts = 3)
+    public void fetchStateFromOthers(String refData) {
+       log.info("Loading " + refData);
+        sleepq(1000);
+//        cache put
+        if (Math.random() < 0.5) {
+            log.error("OUPS " + refData);
+            throw new IllegalArgumentException("Oups");
+        }
+
+       log.info("Loaded " + refData);
+    }
 }
 
 @Data
@@ -155,6 +160,7 @@ class BarController {
 
 // TODO The Foam Problem: https://www.google.com/search?q=foam+beer+why
 
+@EnableRetry
 @Configuration
 class BarConfig {
     //<editor-fold desc="Spring Config">
