@@ -11,6 +11,7 @@ import java.util.Set;
 @Getter
 @Setter
 @Entity
+//@NamedQueries("") //NO ONE USES THESE. INstead, use @Query in SDJ repository
 public class Parent {
    @Id
    @GeneratedValue
