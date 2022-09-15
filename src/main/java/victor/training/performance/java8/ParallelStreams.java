@@ -4,20 +4,24 @@ import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 
 import java.util.List;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.ForkJoinPool;
 import java.util.stream.IntStream;
+import java.util.stream.Stream;
 
 import static java.util.stream.Collectors.toList;
 import static victor.training.performance.util.PerformanceUtil.sleepq;
 
 @Slf4j
 public class ParallelStreams {
-   public static void main(String[] args) {
+   public static void main(String[] args) throws ExecutionException, InterruptedException {
       EnemyDev.parallelRequest(); // demonstrates starvation of the shared commonPool
 
       long t0 = System.currentTimeMillis();
 // 100 items sequential = 5130
 // 100 items parallel = 600
 // 100 items parallel but starved by other = 5128
+// 100 items parallel on my own pool (2o thread inside) = 300
       // conclusion: don't do network in parallelStream, but only CPU work. That's why it's sized threads=NCPU-1
       // !!! FIRST PLEASE CHECK THAT YOUR WORK IS HEAVY ENOUGH TO DESERVE THE RISK OF PARALELIZATION
       // race bugs, deadlocks,
@@ -26,17 +30,19 @@ public class ParallelStreams {
       // loss of Logback MDC
       List<Integer> list = IntStream.range(1,100).boxed().collect(toList());
 
-      List<Integer> result = list.parallelStream()
-          .filter(i -> {
-             log.debug("Filter " + i);
-             return i % 2 == 0;
-          })
-          .map(i -> {
-             log.debug("Map " + i);
-             sleepq(100); // do some 'paralellizable' I/O work (DB, REST, SOAP)
-             return i * 2;
-          })
-          .collect(toList());
+      Stream<Integer> myStream = list.parallelStream()
+              .filter(i -> {
+                 log.debug("Filter " + i);
+                 return i % 2 == 0;
+              })
+              .map(i -> {
+                 log.debug("Map " + i);
+                 sleepq(100); // do some 'paralellizable' I/O work (DB, REST, SOAP)
+                 return i * 2;
+              });
+
+      ForkJoinPool pool = new ForkJoinPool(20);
+      List<Integer> result = pool.submit(() -> myStream.collect(toList())).get();
       log.debug("Got result: " + result);
 
       long t1 = System.currentTimeMillis();
