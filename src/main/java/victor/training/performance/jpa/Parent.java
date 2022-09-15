@@ -22,7 +22,7 @@ public class Parent {
 
    @OneToMany(mappedBy = "parent", cascade = CascadeType.PERSIST/* ,fetch = FetchType.EAGER*/)
    // never because it will tell Hibe to LOAD the children every single time it gives you a Parent entity
-    @BatchSize(size=10) // too much magic
+    @BatchSize(size=20) // too much magic
    private Set<Child> children = new HashSet<>();
 
    @ManyToOne

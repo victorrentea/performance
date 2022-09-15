@@ -9,6 +9,7 @@
     <cache alias="victor.training.performance.jpa.Country" >
         <resources>
             <heap unit="entries">1000</heap>
+
         </resources>
     </cache>
 
