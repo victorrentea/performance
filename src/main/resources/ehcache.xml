@@ -15,10 +15,13 @@
 
     <cache alias="missed-cache" >
         <expiry>
+            <!-- I accept to lie shitty incorrect data to my client for 30 seconds -->
+<!--            <ttl unit="seconds">30</ttl>-->
             <ttl unit="minutes">30</ttl>
         </expiry>
         <resources>
             <heap unit="MB">100</heap>
+<!--            <disk-->
         </resources>
     </cache>
 

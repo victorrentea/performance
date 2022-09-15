@@ -3,6 +3,7 @@ package victor.training.performance.spring;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.RandomStringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -33,6 +34,11 @@ public class Leak7_Cache {
 @Service
 @Slf4j
 class Stuff {
+//   @CacheEvict("missed-cache")
+//   public void changes(LocalDateTime date) {
+//
+//   }
+
    @Cacheable("missed-cache") // = a proxy intercepts the method call and returns the cached value for that parameter
    public BigObject20MB returnCachedDataForDay(LocalDateTime date) {
       log.debug("Fetch data for date: {}", date.format(DateTimeFormatter.ISO_DATE));
