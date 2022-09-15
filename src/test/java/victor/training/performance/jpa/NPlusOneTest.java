@@ -66,7 +66,7 @@ public class NPlusOneTest {
         assertThat(totalChildren).isEqualTo(5);
     }
 
-    // far away...
+    // far away in deep production code...
     private int countChildren(Collection<Parent> parents) {
         log.debug("Start counting children of {} parents: {}", parents.size(), parents);
         int total = 0;
