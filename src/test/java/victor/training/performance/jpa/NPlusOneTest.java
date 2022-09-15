@@ -6,6 +6,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.annotation.Rollback;
 import org.springframework.test.context.jdbc.Sql;
@@ -29,82 +30,80 @@ import static org.springframework.test.annotation.DirtiesContext.ClassMode.BEFOR
 @DirtiesContext(classMode = BEFORE_EACH_TEST_METHOD)
 public class NPlusOneTest {
 
-	@Autowired
-	EntityManager em;
-	@Autowired
-	ParentRepo repo;
-	@Autowired
-	ParentSearchViewRepo searchRepo;
+    @Autowired
+    EntityManager em;
+    @Autowired
+    ParentRepo repo;
+    @Autowired
+    ParentSearchViewRepo searchRepo;
 
-	@BeforeEach
-	void persistData() {
-		repo.save(new Parent("Victor")
-				.setAge(36)
-				.addChild(new Child("Emma"))
-				.addChild(new Child("Vlad"))
-		);
-		repo.save(new Parent("Trofim") // burlac :P
-			.setAge(42));
-		repo.save(new Parent("Peter")
-				.setAge(41)
-				.addChild(new Child("Maria"))
-				.addChild(new Child("Paul"))
-				.addChild(new Child("Stephan"))
-		);
-		TestTransaction.end();
+    @BeforeEach
+    void persistData() {
+        repo.save(new Parent("Victor")
+                .setAge(36)
+                .addChild(new Child("Emma"))
+                .addChild(new Child("Vlad"))
+        );
+        repo.save(new Parent("Trofim") // burlac :P
+                .setAge(42));
+        repo.save(new Parent("Peter")
+                .setAge(41)
+                .addChild(new Child("Maria"))
+                .addChild(new Child("Paul"))
+                .addChild(new Child("Stephan"))
+        );
+        TestTransaction.end();
 
-		TestTransaction.start();
-	}
+        TestTransaction.start();
+    }
 
-	@Test
-	void nPlusOne() {
-		List<Parent> parents = repo.findAll();
-		log.info("Loaded {} parents", parents.size());
+    @Test
+    void nPlusOne() {
+        List<Parent> parents = repo.findAll();
+        log.info("Loaded {} parents", parents.size());
 
-		int totalChildren = countChildren(parents);
+        int totalChildren = countChildren(parents);
 
-		assertThat(totalChildren).isEqualTo(5);
-	}
+        assertThat(totalChildren).isEqualTo(5);
+    }
 
-	// far away...
-	private int countChildren(Collection<Parent> parents) {
-		log.debug("Start counting children of {} parents: {}", parents.size(), parents);
-		int total = 0;
-		for (Parent parent : parents) {
-			total += parent.getChildren().size();
-		}
-		log.debug("Done counting: {} children", total);
-		return total;
-	}
-
-
+    // far away...
+    private int countChildren(Collection<Parent> parents) {
+        log.debug("Start counting children of {} parents: {}", parents.size(), parents);
+        int total = 0;
+        for (Parent parent : parents) {
+            total += parent.getChildren().size();
+        }
+        log.debug("Counted {} children", total);
+        return total;
+    }
 
 
-	@Test
-	@Sql("/create-view.sql")
-	public void searchOnView() {
-		Stream<ParentSearchView> parentViews = repo.findAll()
-			.stream().map(p -> toDto(p));
-//		var parentViews = searchRepo.findAll();
+    @Test
+    @Sql("/create-view.sql")
+    public void searchOnView() {
+        Stream<ParentSearchView> parentViews = repo.findAll()
+                .stream().map(p -> toDto(p));
+        //		var parentViews = searchRepo.findAll();
 
-		// TODO 1 restrict to first page (of 1 element)
-		// TODO 2 search by parent age >= 40
-		assertThat(parentViews)
-			.extracting("name","childrenNames")
-			.containsExactlyInAnyOrder(
-				tuple("Trofim",""),
-				tuple("Victor","Emma,Vlad"),
-				tuple("Peter","Maria,Paul,Stephan"))
-		;
-	}
+        // TODO 1 restrict to first page (of 1 element)
+        // TODO 2 search by parent age >= 40
+        assertThat(parentViews)
+                .extracting("name", "childrenNames")
+                .containsExactlyInAnyOrder(
+                        tuple("Trofim", ""),
+                        tuple("Victor", "Emma,Vlad"),
+                        tuple("Peter", "Maria,Paul,Stephan"))
+        ;
+    }
 
-	private ParentSearchView toDto(Parent p) {
-		String childrenNames = p.getChildren().stream()
-				.map(Child::getName)
-				.sorted()
-				.collect(joining(","));
-		return new ParentSearchView(p.getId(), p.getName(), childrenNames);
-	}
+    private ParentSearchView toDto(Parent p) {
+        String childrenNames = p.getChildren().stream()
+                .map(Child::getName)
+                .sorted()
+                .collect(joining(","));
+        return new ParentSearchView(p.getId(), p.getName(), childrenNames);
+    }
 }
 
 interface ParentRepo extends JpaRepository<Parent, Long> {
@@ -112,4 +111,6 @@ interface ParentRepo extends JpaRepository<Parent, Long> {
 
 
 interface ParentSearchViewRepo extends JpaRepository<ParentSearchView, Long> {
+    @Query("SELECT psv FROM ParentSearchView psv JOIN Parent p ON p.id = psv.id WHERE p.age > 40")
+    ParentSearchView selectFromAggregatedResult_butQueryOnEntityModel();
 }
