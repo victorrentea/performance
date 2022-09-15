@@ -32,7 +32,6 @@ class SheepController {
     private final SheepService sheepService;
 
     @GetMapping("create")
-//    @Transactional
     public Long createSheep(@RequestParam(required = false) String name) {
         if (name == null) {
             name = "Bisisica " + LocalDateTime.now();
@@ -51,7 +50,6 @@ class SheepController {
 @Slf4j
 @Service
 @RequiredArgsConstructor
-@Transactional
 class SheepService {
     private final SheepRepo repo;
     private final ShepardService shepardService;
@@ -61,6 +59,10 @@ class SheepService {
             throw new IllegalArgumentException("Duplicated name");
         }
         String sn = shepardService.registerSheep(name); // Takes 1 second (HTTP call)
+
+        if (repo.countByName(name) != 0) {
+            throw new IllegalArgumentException("Duplicated name");
+        }
         Sheep sheep = repo.save(new Sheep(name, sn));
         return sheep.getId();
     }

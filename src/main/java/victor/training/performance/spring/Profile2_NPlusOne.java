@@ -51,6 +51,15 @@ public class Profile2_NPlusOne implements CommandLineRunner {
         log.info("DONE");
     }
 
+    @GetMapping("wow")
+    public Page<Parent> query2() {
+        Page<Parent> parentPage = repo.findByNameLike("%ar%", PageRequest.of(0, 20));
+        log.info("Returning2");
+        return parentPage;
+        // because SPring team knows dev are stupid, they kept the conn by default open and bound to this thread
+        // until the HTTP response is sent.
+        // Vlad was burning. performance. "Are you nuts ?"
+    }
     @GetMapping
     @Transactional
     public Page<ParentDto> query() {
