@@ -16,6 +16,10 @@ import org.springframework.web.bind.annotation.RestController;
 import victor.training.performance.spring.threadscope.PropagateThreadScope;
 
 import java.util.List;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
 
 import static java.util.Arrays.asList;
 import static victor.training.performance.util.PerformanceUtil.sleepq;
@@ -31,12 +35,17 @@ public class BarService implements CommandLineRunner {
       log.debug("Got " + orderDrinks());
    }
 
-   public List<Object> orderDrinks() {
+   public List<Object> orderDrinks() throws ExecutionException, InterruptedException {
       log.debug("Requesting drinks...");
       long t0 = System.currentTimeMillis();
 
-      Beer beer = barman.pourBeer();
+      ExecutorService threadPool = Executors.newFixedThreadPool(2);
+
+      Future<Beer> futureBeer = threadPool.submit(() -> barman.pourBeer());
+//      Future<Vodka> futureVodka = threadPool.submit(() -> barman.pourVodka());
       Vodka vodka = barman.pourVodka();
+
+      Beer beer = futureBeer.get(); // tomcat thread is blocked here for 0s
 
       long t1 = System.currentTimeMillis();
       List<Object> drinks = asList(beer, vodka);
@@ -51,14 +60,14 @@ class Barman {
 
    public Beer pourBeer() {
       log.debug("Pouring Beer...");
-      sleepq(1000);
+      sleepq(1000); // SOAP call/ REST call
       log.debug("Beer done");
       return new Beer("blond");
    }
 
    public Vodka pourVodka() {
       log.debug("Pouring Vodka...");
-      sleepq(1000);
+      sleepq(1000); // long SQL query
       log.debug("Vodka done");
       return new Vodka();
    }
