@@ -9,6 +9,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -21,6 +22,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 
 @Slf4j
 @RestController
@@ -30,6 +32,7 @@ class SheepController {
     private final SheepService sheepService;
 
     @GetMapping("create")
+//    @Transactional
     public Long createSheep(@RequestParam(required = false) String name) {
         if (name == null) {
             name = "Bisisica " + LocalDateTime.now();
@@ -48,19 +51,19 @@ class SheepController {
 @Slf4j
 @Service
 @RequiredArgsConstructor
+@Transactional
 class SheepService {
     private final SheepRepo repo;
     private final ShepardService shepardService;
 
-//    @Transactional
     public Long create(String name) {
+        if (repo.countByName(name) != 0) {
+            throw new IllegalArgumentException("Duplicated name");
+        }
         String sn = shepardService.registerSheep(name); // Takes 1 second (HTTP call)
         Sheep sheep = repo.save(new Sheep(name, sn));
-//        repo.save(new EmailToSend());
-//        repo.save(new AuditStuff());
         return sheep.getId();
     }
-//    @Transactional(readOnly = true)
     public List<Sheep> search(String name) {
         return repo.getByNameLike(name);
     }
@@ -96,6 +99,8 @@ class SheepRegistrationResponse {
 
 interface SheepRepo extends JpaRepository<Sheep, Long> {
     List<Sheep> getByNameLike(String name);
+
+    int countByName(String name);
 }
 
 
