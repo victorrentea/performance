@@ -27,7 +27,7 @@ import java.util.List;
 @RequestMapping("profile/sheep")
 @RequiredArgsConstructor
 class SheepController {
-    private final SheepService service;
+    private final SheepService sheepService;
 
     @GetMapping("create")
     public Long createSheep(@RequestParam(required = false) String name) {
@@ -35,48 +35,53 @@ class SheepController {
             name = "Bisisica " + LocalDateTime.now();
         }
         log.debug("create " + name);
-        return service.create(name);
+        return sheepService.create(name);
     }
 
     @GetMapping("search")
     public List<Sheep> searchSheep(@RequestParam(defaultValue = "Bisisica%") String name) {
         log.debug("search for " + name);
-        return service.search(name);
+        return sheepService.search(name);
     }
 }
 
 @Slf4j
 @Service
 @RequiredArgsConstructor
-@Transactional
 class SheepService {
     private final SheepRepo repo;
-    private final ShepardService shepard;
+    private final ShepardService shepardService;
 
+//    @Transactional
     public Long create(String name) {
-        String sn = shepard.registerSheep(name); // Takes 1 second (HTTP call)
+        String sn = shepardService.registerSheep(name); // Takes 1 second (HTTP call)
         Sheep sheep = repo.save(new Sheep(name, sn));
+//        repo.save(new EmailToSend());
+//        repo.save(new AuditStuff());
         return sheep.getId();
     }
+//    @Transactional(readOnly = true)
     public List<Sheep> search(String name) {
         return repo.getByNameLike(name);
     }
 }
+
+
+
 @Slf4j
 @Service
 @RequiredArgsConstructor
 class ShepardService {
-    private final ShepardClient client;
 
     @Timed("shepard")
     public String registerSheep(String name) {
-        SheepRegistrationResponse response = new RestTemplate()
+        SheepRegistrationResponse response1 = new RestTemplate()
             .getForObject("http://localhost:9999/api/register-sheep", SheepRegistrationResponse.class);
+        SheepRegistrationResponse response = response1;
 
-        // or, using Feign client
-        // SheepRegistrationResponse response = client.registerSheep();
         return response.getSn();
     }
+
 }
 
 @FeignClient(name = "shepard", url="http://localhost:9999/api")
