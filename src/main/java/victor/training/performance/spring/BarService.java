@@ -1,21 +1,25 @@
 package victor.training.performance.spring;
 
 
+import io.micrometer.core.instrument.MeterRegistry;
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import victor.training.performance.spring.threadscope.PropagateThreadScope;
+import victor.training.performance.spring.metrics.MonitorQueueWaitingTimeTaskDecorator;
 
 import java.util.List;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutionException;
 
 import static java.util.Arrays.asList;
 import static victor.training.performance.util.PerformanceUtil.sleepq;
@@ -31,12 +35,15 @@ public class BarService implements CommandLineRunner {
       log.debug("Got " + orderDrinks());
    }
 
-   public List<Object> orderDrinks() {
+   public List<Object> orderDrinks() throws ExecutionException, InterruptedException {
       log.debug("Requesting drinks...");
       long t0 = System.currentTimeMillis();
 
-      Beer beer = barman.pourBeer();
-      Vodka vodka = barman.pourVodka();
+      CompletableFuture<Beer> c1 = barman.pourBeer();
+      CompletableFuture<Vodka> c2 = barman.pourVodka();
+
+      Beer beer = c1.get();
+      Vodka vodka = c2.get();
 
       long t1 = System.currentTimeMillis();
       List<Object> drinks = asList(beer, vodka);
@@ -49,18 +56,20 @@ public class BarService implements CommandLineRunner {
 @Slf4j
 class Barman {
 
-   public Beer pourBeer() {
+   @Async
+   public CompletableFuture<Beer> pourBeer() {
       log.debug("Pouring Beer...");
       sleepq(1000);
       log.debug("Beer done");
-      return new Beer("blond");
+      return CompletableFuture.completedFuture(new Beer("blond"));
    }
 
-   public Vodka pourVodka() {
+   @Async
+   public CompletableFuture<Vodka> pourVodka() {
       log.debug("Pouring Vodka...");
       sleepq(1000);
       log.debug("Vodka done");
-      return new Vodka();
+      return CompletableFuture.completedFuture(new Vodka());
    }
 }
 
@@ -89,24 +98,19 @@ class BarController {
    //</editor-fold>
 }
 
-// TODO The Foam Problem: https://www.google.com/search?q=foam+beer+why
 
 @Configuration
 class BarConfig {
    //<editor-fold desc="Spring Config">
-   //   @Autowired
-//   private PropagateThreadScope propagateThreadScope;
-
    @Bean
-   public ThreadPoolTaskExecutor pool() {
+   public ThreadPoolTaskExecutor pool(MeterRegistry meterRegistry) {
       ThreadPoolTaskExecutor executor = new ThreadPoolTaskExecutor();
       executor.setCorePoolSize(1);
       executor.setMaxPoolSize(1);
       executor.setQueueCapacity(500);
       executor.setThreadNamePrefix("barman-");
+      executor.setTaskDecorator(new MonitorQueueWaitingTimeTaskDecorator(meterRegistry.timer("barman-queue-time")));
       executor.initialize();
-//      executor.setTaskDecorator(propagateThreadScope);
-      executor.setWaitForTasksToCompleteOnShutdown(true);
       return executor;
    }
    //</editor-fold>
