@@ -4,82 +4,138 @@ package victor.training.performance.spring;
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.retry.annotation.Retryable;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import victor.training.performance.spring.threadscope.PropagateThreadScope;
 
-import java.util.List;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.Future;
+import java.util.*;
+import java.util.concurrent.*;
+import java.util.concurrent.atomic.AtomicInteger;
 
+import static java.lang.System.currentTimeMillis;
 import static java.util.Arrays.asList;
 import static victor.training.performance.util.PerformanceUtil.sleepq;
 
 @Component
 @Slf4j
 public class BarService implements CommandLineRunner {
-   @Autowired
-   private Barman barman;
+    @Autowired
+    private Barman barman;
+    //   private static final ExecutorService threadPool = Executors.newFixedThreadPool(40);
+    @Autowired
+    private ThreadPoolTaskExecutor pool;
 
-   @Override
-   public void run(String... args) throws Exception { // runs at app startup
-      log.debug("Got " + orderDrinks());
-   }
+    @Override
+    public void run(String... args) throws Exception { // runs at app startup
 
-   public List<Object> orderDrinks() throws ExecutionException, InterruptedException {
-      log.debug("Requesting drinks...");
-      long t0 = System.currentTimeMillis();
+        CompletableFuture<Void> f1 = CompletableFuture.runAsync(() -> fetchStateFromOthers("countries"));
+        CompletableFuture<Void> f2= CompletableFuture.runAsync(() -> fetchStateFromOthers("fex"));
+        CompletableFuture<Void> f3 = CompletableFuture.runAsync(() -> fetchStateFromOthers("sites"));
 
-      ExecutorService threadPool = Executors.newFixedThreadPool(2);
+        CompletableFuture<Void> allDone = f1.thenCombineAsync(f2, (v2, v1) -> null)
+                .thenCombineAsync(f3, (v1, v2) -> null);
 
-      Future<Beer> futureBeer = threadPool.submit(() -> barman.pourBeer());
-//      Future<Vodka> futureVodka = threadPool.submit(() -> barman.pourVodka());
-      Vodka vodka = barman.pourVodka();
 
-      Beer beer = futureBeer.get(); // tomcat thread is blocked here for 0s
+        // non blocking, separate than main, but sequential
+        //        CompletableFuture<Void> allDone =
+        //                CompletableFuture.runAsync(() -> fetchStateFromOthers("countries"))
+        //                        .thenRun(() -> fetchStateFromOthers("fex"))
+        //                        .thenRun(() -> fetchStateFromOthers("sites"));
 
-      long t1 = System.currentTimeMillis();
-      List<Object> drinks = asList(beer, vodka);
-      log.debug("Got my order in {} ms : {}", t1 - t0, drinks);
-      return drinks;
-   }
+        allDone
+                .exceptionally(e -> {
+                    log.info("Liveness = DEAD");// kill me
+                    throw new RuntimeException(e);
+                })
+                .thenRun(() -> log.info("Liveness = LIVE"));
+
+        //      log.debug("Got " + orderDrinks());
+    }
+
+//    @Retryable(maxAttempts = 3)
+    private void fetchStateFromOthers(String refData) {
+        log.info("Loading " + refData);
+        sleepq(1000);
+//        cache put
+        log.info("Loaded " + refData);
+    }
+
+    public CompletableFuture<List<Object>> orderDrinks() throws ExecutionException, InterruptedException {
+        log.debug("Requesting drinks to {} ...", barman.getClass());
+        long t0 = currentTimeMillis();
+
+        // How is @Async working !?
+
+        CompletableFuture<Beer> futureBeer = barman.pourBeer();
+        CompletableFuture<Vodka> futureVodka = barman.pourVodka();
+
+        CompletableFuture<List<Object>> futureDrinks = futureBeer
+                .thenCombineAsync(futureVodka, (b, v) -> {
+                    long t1 = currentTimeMillis();
+                    List<Object> drinks = asList(b, v);
+                    log.debug("Got my order in {} ms : {}", t1 - t0, drinks);
+                    return drinks;
+                });
+
+
+        // DONE @Async
+        // DONE non-blocking HTTP: requirement: your app should support 1000 simultaneous HTTP requests
+        // TODO count beers
+        // TODO track all unique drinks
+
+        long t1 = currentTimeMillis();
+        log.debug("GHTTP thread is FREE here after {} ms : {}", t1 - t0);
+        return futureDrinks;
+    }
 }
 
 @Service
 @Slf4j
 class Barman {
+    //shared mutable data in a WEB API implem = 😱 HORROR!
+    private final AtomicInteger beers = new AtomicInteger(0);
+    private final Set<Object> drinks = Collections.synchronizedSet(new HashSet<>());
 
-   public Beer pourBeer() {
-      log.debug("Pouring Beer...");
-      sleepq(1000); // SOAP call/ REST call
-      log.debug("Beer done");
-      return new Beer("blond");
-   }
+    @Async
+    public CompletableFuture<Beer> pourBeer() {
+        log.debug("Pouring Beer...");
+        beers.incrementAndGet(); // correct
+        sleepq(1000); // SOAP call/ REST call
+        log.debug("Beer done");
+        Beer beer = new Beer("blond");
+        drinks.add(beer);
+        return CompletableFuture.completedFuture(beer);
+    }
 
-   public Vodka pourVodka() {
-      log.debug("Pouring Vodka...");
-      sleepq(1000); // long SQL query
-      log.debug("Vodka done");
-      return new Vodka();
-   }
+    @Async
+    public CompletableFuture<Vodka> pourVodka() {
+        log.debug("Pouring Vodka...");
+        sleepq(1000); // long SQL query
+        log.debug("Vodka done");
+
+        Vodka vodka = new Vodka();
+        drinks.add(vodka);
+        return CompletableFuture.completedFuture(vodka);
+    }
 }
 
 @Data
 class Beer {
-   private final String type;
+    private final String type;
 }
+
 @Data
 class Vodka {
-   private final String brand = "Absolut";
+    private final String brand = "Absolut";
 }
 
 // TODO when called from web, protect the http thread
@@ -87,36 +143,40 @@ class Vodka {
 @RequestMapping("bar/drink")
 @RestController
 class BarController {
-   //<editor-fold desc="Web">
-   @Autowired
-   private BarService service;
+    //<editor-fold desc="Web">
+    @Autowired
+    private BarService service;
 
-   @GetMapping
-   public String getDrinks() throws Exception {
-      return "" + service.orderDrinks();
-   }
-   //</editor-fold>
+    @GetMapping
+    public CompletableFuture<List<Object>> getDrinks() throws Exception {
+        return service.orderDrinks();
+    }
+    //</editor-fold>
 }
 
 // TODO The Foam Problem: https://www.google.com/search?q=foam+beer+why
 
 @Configuration
 class BarConfig {
-   //<editor-fold desc="Spring Config">
-   //   @Autowired
-//   private PropagateThreadScope propagateThreadScope;
-
-   @Bean
-   public ThreadPoolTaskExecutor pool() {
-      ThreadPoolTaskExecutor executor = new ThreadPoolTaskExecutor();
-      executor.setCorePoolSize(1);
-      executor.setMaxPoolSize(1);
-      executor.setQueueCapacity(500);
-      executor.setThreadNamePrefix("barman-");
-      executor.initialize();
-//      executor.setTaskDecorator(propagateThreadScope);
-      executor.setWaitForTasksToCompleteOnShutdown(true);
-      return executor;
-   }
-   //</editor-fold>
+    //<editor-fold desc="Spring Config">
+    //   @Autowired
+    //   private PropagateThreadScope propagateThreadScope;
+    //   @Value("${pool.size}")
+    //   private int poolSize;
+    @Bean
+    public ThreadPoolTaskExecutor pool(@Value("${pool.size}") int poolSize) {
+        ThreadPoolTaskExecutor executor = new ThreadPoolTaskExecutor();
+        executor.setCorePoolSize(poolSize);
+        executor.setMaxPoolSize(poolSize);
+//        executor.setQueueCapacity(5); // to little : risk = reject requests (errors)
+//        executor.setQueueCapacity(5_000_000); // out of memory + will my client WAIT for 5M items to complete? = 5 minutes
+        executor.setQueueCapacity(500); // out of memory + will my client WAIT for 5M items to complete? = 5 minutes
+        executor.setThreadNamePrefix("barman-");
+        executor.initialize();
+        executor.setRejectedExecutionHandler(new ThreadPoolExecutor.CallerRunsPolicy());
+        //      executor.setTaskDecorator(propagateThreadScope);
+        executor.setWaitForTasksToCompleteOnShutdown(true);
+        return executor;
+    }
+    //</editor-fold>
 }
