@@ -25,7 +25,7 @@ public class Parent {
    private Set<Child> children = new HashSet<>();
 
    @ManyToOne
-           (fetch = FetchType.LAZY) // avoid as it involves magic (proxhying the COutnry entity)
+//           (fetch = FetchType.LAZY) // avoid as it involves magic (proxhying the COutnry entity)
    private Country country; // surprise ! links to reference data result in N queries if you bring the parents with a JPQL
 //   private Long countryId;
 
