@@ -37,19 +37,20 @@ public class Hashing {
 
    public static void intersectCollections() {
       System.out.println("\nIteration");
-      Collection<String> importedIds = generate(20_000);
-      Collection<String> allIds = generate(18_000);
+      Collection<String> importedIds = generate(17_000);
+      Collection<String> existingIds = generate(18_000);
 
-      countIntersection(importedIds, allIds); // TODO #1 optimize
-//      countNew(importedIds, allIds); // TODO #3 one day, imported.size() < all.size()
+//      countIntersection(importedIds, existingIds); // TODO #1 optimize
+      countNew(importedIds, existingIds); // TODO #3 one day, imported.size() < all.size()
    }
 
    private static void countIntersection(Collection<?> importedIds, Collection<?> allIds) {
       System.out.println("Intersecting...");
       long t0 = System.currentTimeMillis();
       int n = 0;
+      HashSet<?> hashSet = new HashSet<>(allIds);
       for (Object a : importedIds) {
-         if (allIds.contains(a)) {
+         if (hashSet.contains(a)) {
             n++;
          }
       }
@@ -60,8 +61,8 @@ public class Hashing {
    private static <T> void countNew(Collection<T> importedIds, Collection<T> allIds) {
       System.out.println("Intersecting...");
       long t0 = System.currentTimeMillis();
-      List<T> copy = new ArrayList<>(importedIds); // TODO #2 optimize
-      copy.removeAll(allIds);
+      Set<T> copy = new HashSet<>(importedIds); // TODO #2 optimize
+      copy.removeAll(new HashSet<>(allIds));
       int n = copy.size();
       long t1 = System.currentTimeMillis();
       System.out.printf("New: n=" + n + ", took = %,d%n", t1 - t0);

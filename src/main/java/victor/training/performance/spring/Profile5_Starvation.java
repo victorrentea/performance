@@ -67,6 +67,7 @@ class SheepService {
 @RequiredArgsConstructor
 class ShepardService {
     private final ShepardClient client;
+
     @Timed("shepard")
     public String registerSheep(String name) {
         SheepRegistrationResponse response = new RestTemplate()

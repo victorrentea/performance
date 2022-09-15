@@ -26,9 +26,18 @@ public class Profile6_JAXB {
    // TODO: run this program with JFR enabled and inspect flame graph
    //  (easiest is to connect to the process from Java Mission Control)
 
+      JAXBContext context;
+
+   {
+      try {
+         context = JAXBContext.newInstance(RecordList.class, Record.class);
+      } catch (JAXBException e) {
+         throw new RuntimeException(e);
+      }
+   }
+
    @GetMapping
    public int sumRecords(@RequestParam String xml) throws JAXBException {
-      JAXBContext context = JAXBContext.newInstance(RecordList.class, Record.class);
       Unmarshaller unmarshaller = context.createUnmarshaller();
       int sum = 0;
       try (StringReader reader = new StringReader(xml)) {
