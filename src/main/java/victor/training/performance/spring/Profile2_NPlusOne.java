@@ -21,6 +21,23 @@ import victor.training.performance.jpa.Parent;
 public class Profile2_NPlusOne implements CommandLineRunner {
    private final ParentRepo repo;
    private final JdbcTemplate jdbc;
+
+   @GetMapping
+   @Transactional
+   public Page<Parent> query() {
+      Page<Parent> parentPage = repo.findByNameLike("%ar%", PageRequest.of(0, 20));
+      log.info("Returning data");
+      return parentPage;
+
+//      Page<Long> idPage = repo.findByNameLike("%ar%", PageRequest.of(0, 10));
+//      List<Long> parentIds = idPage.getContent();
+
+//      Map<Long, Parent> parents = repo.findParentsWithChildren(parentIds).stream().collect(toMap(Parent::getId, identity()));
+//      return idPage.map(parents::get);
+   }
+
+
+
    @Override
    public void run(String... args) throws Exception {
       log.warn("INSERTING data ...");
@@ -31,20 +48,6 @@ public class Profile2_NPlusOne implements CommandLineRunner {
       jdbc.update("INSERT INTO CHILD(ID, NAME, PARENT_ID) SELECT X, 'Child' || X || '-1',X FROM SYSTEM_RANGE(1, 1000)");
       jdbc.update("INSERT INTO CHILD(ID, NAME, PARENT_ID) SELECT X + 1000, 'Child' || X || '-2', X FROM SYSTEM_RANGE(1, 1000)");
       log.info("DONE");
-   }
-
-   @GetMapping
-   @Transactional
-   public Page<Parent> query() {
-      Page<Parent> parentPage = repo.findByNameLike("%ar%", PageRequest.of(0, 20));
-      log.info("Returning");
-      return parentPage;
-
-//      Page<Long> idPage = repo.findByNameLike("%ar%", PageRequest.of(0, 10));
-//      List<Long> parentIds = idPage.getContent();
-
-//      Map<Long, Parent> parents = repo.findParentsWithChildren(parentIds).stream().collect(toMap(Parent::getId, identity()));
-//      return idPage.map(parents::get);
    }
 }
 

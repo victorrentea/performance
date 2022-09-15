@@ -29,9 +29,8 @@ import static org.springframework.test.annotation.DirtiesContext.ClassMode.BEFOR
 @Rollback(false) // don't wipe the data
 @DirtiesContext(classMode = BEFORE_EACH_TEST_METHOD)
 public class NPlusOneTest {
-
     @Autowired
-    EntityManager em;
+    EntityManager entityManager;
     @Autowired
     ParentRepo repo;
     @Autowired
@@ -44,7 +43,7 @@ public class NPlusOneTest {
                 .addChild(new Child("Emma"))
                 .addChild(new Child("Vlad"))
         );
-        repo.save(new Parent("Trofim") // burlac :P
+        repo.save(new Parent("Trofim") // bachelor :)
                 .setAge(42));
         repo.save(new Parent("Peter")
                 .setAge(41)
