@@ -57,7 +57,7 @@ public class UberEntityTest {
         UberEntity uber = new UberEntity()
                 .setName("::uberName::")
                 .setStatus(Status.SUBMITTED)
-                .setOriginCountry(belgium)
+                .setOriginCountryId(belgium.getId())
                 .setFiscalCountry(romania)
                 .setInvoicingCountry(france)
                 .setNationality(serbia)
@@ -134,11 +134,11 @@ class UberSearchCriteria {
 class UberSearchResult {
     private final Long id;
     private final String name;
-    private final String originCountry;
+    private final String originCountry = "repent";
 
     public UberSearchResult(UberEntity entity) {
         id = entity.getId();
         name = entity.getName();
-        originCountry = entity.getOriginCountry().getName();
+//        originCountry = entity.getOriginCountry().getName();
     }
 }

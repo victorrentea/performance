@@ -109,8 +109,8 @@ public class NPlusOneTest {
 
 interface ParentRepo extends JpaRepository<Parent, Long> {
 	@Query("SELECT p FROM Parent p" +
-		   " LEFT JOIN FETCH p.children "+
-		   " LEFT JOIN FETCH p.children2"
+		   " LEFT JOIN FETCH p.children "
+//		   " LEFT JOIN FETCH p.children2"
 	)
 	Set<Parent> findAllWithChildren();
 }

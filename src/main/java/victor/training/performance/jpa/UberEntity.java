@@ -15,8 +15,9 @@ public class UberEntity {
     private String name;
     private String firstName, lastName, ibanCode, cnp, ssn, passportNumber;
 
-    @ManyToOne
-    private Country originCountry;
+//    @ManyToOne
+//    private Country originCountry;
+    private Long originCountryId; // + keep the FK
     @ManyToOne
     private Country nationality;
     @ManyToOne
