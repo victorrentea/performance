@@ -77,6 +77,7 @@ public class BarService implements CommandLineRunner {
                     return drinks;
                 });
 
+        barman.fireAndForget("asf1957*Q*&%*&");
 
         // DONE @Async
         // DONE non-blocking HTTP: requirement: your app should support 1000 simultaneous HTTP requests
@@ -129,6 +130,12 @@ class Barman {
         }
 
        log.info("Loaded " + refData);
+    }
+
+    @Async
+    public void fireAndForget(String s) {
+        // could take 10 miniutes, the http request staring it left immediately
+        throw new RuntimeException("Method not implemented"); // are not visible in the 'requester'
     }
 }
 
