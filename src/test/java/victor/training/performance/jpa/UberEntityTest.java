@@ -145,4 +145,15 @@ class UberSearchResultDto { //sent as JSON
         name = entity.getName();
         originCountry = entity.getOriginCountry().getName();
     }
+
+}
+interface UberSearchResultProjection { // Spring can create objects implementing this interface
+    Long getId();
+    String getName();
+    CountryWithName getOriginCountry();
+}
+
+interface CountryWithName {
+    Long getId();
+    String getName();
 }
