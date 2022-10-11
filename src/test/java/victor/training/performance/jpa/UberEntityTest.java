@@ -62,7 +62,7 @@ public class UberEntityTest {
                 .setInvoicingCountry(france)
                 .setNationality(serbia)
                 .setScope(globalScope)
-//                .setScopeEnum(ScopeEnum.GLOBAL)
+//                .setScopeEnum(ScopeEnum.GLOBAL) // better?
                 .setCreatedBy(testUser);
         uberId = uberRepo.save(uber).getId();
 
@@ -84,10 +84,10 @@ public class UberEntityTest {
     }
 
     @Test
-    public void findAll_orJPQL() {
+    public void findAll_or_JPQL() {
         log.info("Loading a 'very OOP' @Entity with JPQL ...");
         List<UberEntity> list = uberRepo.findAll();
-        // List<UberEntity> list = uberRepo.all(); // EQUIVALENT
+//         List<UberEntity> list = uberRepo.all(); // EQUIVALENT
         log.info("Loaded using JPQL (see how many queries are above):\n" + list);
     }
 
@@ -97,15 +97,19 @@ public class UberEntityTest {
         UberSearchCriteria criteria = new UberSearchCriteria();
         criteria.name = "::uberName::";
 
-        List<UberSearchResult> dtos = search(criteria);
+        List<UberSearchResultDto> dtos = search(criteria);
 
-        System.out.println("Results: \n" + dtos.stream().map(UberSearchResult::toString).collect(joining("\n")));
+        System.out.println("Results: \n" + dtos.stream().map(UberSearchResultDto::toString).collect(joining("\n")));
         assertThat(dtos)
             .extracting("id", "name", "originCountry")
             .containsExactly(tuple(uberId, "::uberName::", "Belgium"));
+
+        // TODO [1] Select new Dto
+        // TODO [2] Select u.id AS id -> Dto
+        // TODO [3] Select u -> Spring Projections
     }
 
-    private List<UberSearchResult> search(UberSearchCriteria criteria) {
+    private List<UberSearchResultDto> search(UberSearchCriteria criteria) {
         String jpql = "SELECT u FROM UberEntity u WHERE 1 = 1 ";
         // alternative implementation: CriteriaAPI, Criteria+Metamodel, QueryDSL, Spring Specifications
 
@@ -121,7 +125,7 @@ public class UberEntityTest {
             query.setParameter(key, params.get(key));
         }
         var entities = query.getResultList();
-        return entities.stream().map(UberSearchResult::new).collect(toList());
+        return entities.stream().map(UberSearchResultDto::new).collect(toList());
     }
 }
 class UberSearchCriteria {
@@ -131,12 +135,12 @@ class UberSearchCriteria {
 }
 @Data
 @AllArgsConstructor
-class UberSearchResult {
+class UberSearchResultDto { //sent as JSON
     private final Long id;
     private final String name;
     private final String originCountry;
 
-    public UberSearchResult(UberEntity entity) {
+    public UberSearchResultDto(UberEntity entity) {
         id = entity.getId();
         name = entity.getName();
         originCountry = entity.getOriginCountry().getName();
