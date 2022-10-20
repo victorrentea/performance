@@ -19,10 +19,15 @@ import victor.training.performance.spring.metrics.MonitorQueueWaitingTimeTaskDec
 
 import javax.servlet.AsyncContext;
 import javax.servlet.http.HttpServletRequest;
+import java.util.List;
 import java.util.concurrent.*;
+import java.util.function.Function;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 import static java.lang.System.currentTimeMillis;
 import static java.util.concurrent.CompletableFuture.supplyAsync;
+import static java.util.stream.Collectors.toList;
 import static victor.training.performance.util.PerformanceUtil.sleepq;
 
 @RestController
@@ -55,7 +60,6 @@ public class BarService {
     @Autowired
     ThreadPoolTaskExecutor pool;
 
-
     @GetMapping("drink")
     public CompletableFuture<DillyDilly> orderDrinks() throws ExecutionException, InterruptedException {
         log.debug("Requesting drinks...");
@@ -81,6 +85,20 @@ public class BarService {
         log.debug("Threadul tomcatului se intoarce in piscina dupa doar {} ms", t1 - t0);
         return futureDilly;
     }
+
+    //<editor-fold desc="Starve ForkJoinPool">
+    @GetMapping("starve")
+    public String starveForkJoinPool() {
+        int tasks = 10 * Runtime.getRuntime().availableProcessors();
+        for (int i = 0; i < tasks; i++) {
+            CompletableFuture.runAsync(() -> sleepq(1000));
+        }
+        // OR
+        // List<Integer> list = IntStream.range(0, tasks).boxed().parallel()
+        //       .map(i -> {sleepq(1000);return i;}).collect(toList());
+        return "ForkJoinPool.commonPool blocked for 10 seconds";
+    }
+    //</editor-fold>
 
     @GetMapping("/drink2")
     public void underTheHood_asyncServlets(HttpServletRequest request) throws ExecutionException, InterruptedException {
