@@ -66,12 +66,13 @@ public class BarService  {
 
       // promise-uri din js === CompletableFuture din Java
 
-      CompletableFuture<Beer> futureBeer = null;
-      try {
-         futureBeer = supplyAsync(() -> barman.pourBeer(), pool);
-      } catch (Exception e) {
-         throw new RuntimeException("Tratez ca nu mai e bere" + e); // ex nu mai merg.
-      }
+      CompletableFuture<Beer> futureBeer =
+              supplyAsync(() -> barman.pourBeer(), pool)
+                      .exceptionally(e -> new Beer("bruna"))
+//                      .exceptionally(e -> {
+//                         throw new RuntimeException("Imbracata ", e);
+//                      })
+              ;
       CompletableFuture<Vodka> futureVodka = supplyAsync(barman::pourVodka, pool);
 
 
