@@ -94,8 +94,8 @@ public class BarService {
             CompletableFuture.runAsync(() -> sleepq(1000));
         }
         // OR
-        // List<Integer> list = IntStream.range(0, tasks).boxed().parallel()
-        //       .map(i -> {sleepq(1000);return i;}).collect(toList());
+//         List<Integer> list = IntStream.range(0, tasks).boxed().parallel()
+//               .map(i -> {sleepq(1000);return i;}).collect(toList());
         return "ForkJoinPool.commonPool blocked for 10 seconds";
     }
     //</editor-fold>
