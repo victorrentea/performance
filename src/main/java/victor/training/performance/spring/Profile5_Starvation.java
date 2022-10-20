@@ -52,12 +52,14 @@ class SheepService {
     private final SheepRepo repo;
     private final ShepardService shepard;
 
-//    @Transactional
+    @Transactional
     public Long create(String name) {
         String sn = shepard.registerSheep(name); // Takes 1 second (HTTP call) UUID de pe fund
         Sheep sheep = repo.save(new Sheep(name, sn));
+        repo.save(new Sheep(name + "-2", sn));
         return sheep.getId();
     }
+
     public List<Sheep> search(String name) {
         return repo.getByNameLike(name);
     }
