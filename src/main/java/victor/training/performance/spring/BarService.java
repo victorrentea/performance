@@ -15,6 +15,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import victor.training.performance.spring.metrics.MonitorQueueWaitingTimeTaskDecorator;
 
+import javax.servlet.AsyncContext;
+import javax.servlet.http.HttpServletRequest;
 import java.util.concurrent.*;
 
 import static java.util.concurrent.CompletableFuture.supplyAsync;
@@ -66,15 +68,31 @@ public class BarService  {
       CompletableFuture<Beer> futureBeer = supplyAsync(barman::pourBeer, pool);
       CompletableFuture<Vodka> futureVodka = supplyAsync(barman::pourVodka, pool);
 
+
+      // folosirea thread pool pentru THROTTLING
+      // CompletableFuture.supplyAsync( ()-> repo.fatPig(), // max 4 in parallel te rog
+      //      executorCuDoar4ThreaduriCaSaProtejamBazaDePorci())
+      //      .get();
+
       CompletableFuture<DillyDilly> futureDilly = futureBeer
               .thenCombine(futureVodka, DillyDilly::new);
 
-
       long t1 = System.currentTimeMillis();
-//      List<Object> drinks = asList(beer, vodka);
       log.debug("Threadul tomcatului se intoarce in piscina dupa doar {} ms", t1 - t0);
       return futureDilly;
    }
+
+//   public void istorie(HttpServletRequest request) throws ExecutionException, InterruptedException {
+//      AsyncContext fff = request.startAsync();
+//
+//
+//      orderDrinks().thenAccept(dilly -> {
+//         fff.getResponse().getWriter().write(dilly.toString());
+//         fff.complete();
+//         // callback
+//      });
+//      // threadul e liber, dar pe promise a ramas un callback
+//   }
 }
 
 
