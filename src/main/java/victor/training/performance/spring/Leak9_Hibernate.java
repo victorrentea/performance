@@ -60,6 +60,7 @@ public class Leak9_Hibernate {
 
       try (Writer writer = new FileWriter("big-entity.txt")) {
          repo.streamAll()
+              .peek(entityManager::detach)
              .map(BigEntity::getDescription)
              .forEach(Unchecked.consumer(writer::write));
       }

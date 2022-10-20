@@ -54,9 +54,9 @@ public class Leak3_Inner {
 
 
 class CachingMethodObject {
-	public class UserRightsCalculator { // an instance of this is kept on current thread
+	public static class UserRightsCalculator { // an instance of this is kept on current thread
 		public boolean hasRight(String task) {
-			System.out.println("Stupid Code");
+			System.out.println("Stupid Code ");
 			// what's the connection between this instance and the 'bigMac' field ?
 			return true;
 		}
@@ -72,21 +72,25 @@ class CachingMethodObject {
 
 	//<editor-fold desc="Lambdas vs Anonymous implementation">
 	public Supplier<String> anonymousVsLambdas() {
-		return new Supplier<String>() {
-			@Override
-			public String get() {
-				return "Happy";
-			}
-		};
+		return () -> "Happy" ; // no links
+
+//		return new Supplier<String>() { // tine pointer la clasa outer.
+//			@Override
+//			public String get() {
+//				return "Happy";
+//			}
+//		};
 	}
 	//</editor-fold>
 
 	//<editor-fold desc="Map init in Java <= 8">
 	public Map<String, Integer> mapInit() {
-		return new HashMap<>() {{ // obviously, pre-java 10
-			put("one", 1);
-			put("two", 2);
-		}};
+		return new HashMap<>() {
+			{ // obviously, pre-java 10 instance init bloc al unei sublcase anomimca a HashMap
+				put("one", 1);
+				put("two", 2);
+			}
+		};
 	}
 	//</editor-fold>
 }
