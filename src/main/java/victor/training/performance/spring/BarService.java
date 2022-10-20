@@ -5,12 +5,10 @@ import io.micrometer.core.instrument.MeterRegistry;
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.CommandLineRunner;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.scheduling.annotation.Async;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
-import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -33,21 +31,40 @@ public class BarService  {
 //   private static final ExecutorService threadPool = Executors.newCachedThreadPool();
    // prea multe threaduri
 
-   private static final ExecutorService threadPool = Executors.newFixedThreadPool(10);
+//   private static final ExecutorService threadPool = Executors.newFixedThreadPool(10);
    // ce poa sa mearga rau daca coada e infinita?
    // - astept prea mult: clientul n-are atata rabdare
    // - OOME daca cine da in tine nu se blocheaza dupa rezultat  = "fire and forget"
-//   private static final ExecutorService threadPool = Executors.newFixedThreadPool(10);
+
+//   private static final ExecutorService pool =
+//              new ThreadPoolExecutor(
+//                      10,
+//                      10,
+//                      2, TimeUnit.SECONDS, // worker threadul moare dupa 2 sec de inactiviate
+//                      new ArrayBlockingQueue<>(10) // max 10 in coada,
+//                      , new ThreadPoolExecutor.CallerRunsPolicy()
+//              );
+   // ce poa sa mearga rau?
+   // - sa te REFUZE executorul: n-avem nici workeri nici loc in coada:
+   //    expui catre caller exceptie.
+
+   @Autowired
+   ThreadPoolTaskExecutor pool;
+
 
    @GetMapping("drink")
    public List<Object> orderDrinks() throws ExecutionException, InterruptedException {
       log.debug("Requesting drinks...");
       long t0 = System.currentTimeMillis();
 
+      // ( daca faci DOAR procesor, NU iti creezi thread pooluri noi, ci folosesti
+      // a) CompletableFuture.supplyAsync(() -> cpuWork());
+      // b) list.parallelStream()
+      // ambele ruleaza pe ForkJoinPool.commonPool() <
+      // locu unic in JVM unde submiti DOAR munca de CPU (size = N_cpu - 1)
 
-      Future<Beer> futureBeer = threadPool.submit(() -> barman.pourBeer());
-      Future<Vodka> futureVodka = threadPool.submit(() -> barman.pourVodka());
-
+      Future<Beer> futureBeer = pool.submit(() -> barman.pourBeer());
+      Future<Vodka> futureVodka = pool.submit(() -> barman.pourVodka());
 
       Beer beer = futureBeer.get(); // threadul din tomcat sta aici 1 sec
       Vodka vodka = futureVodka.get(); // aici stau 0 sec!! ca deja e gata vodka
@@ -64,9 +81,9 @@ public class BarService  {
 class Barman {
 
    public Beer pourBeer() {
-      if (true) {
-         throw new IllegalArgumentException(" NU MAI E BERE 😨");
-      }
+//      if (true) {
+//         throw new IllegalArgumentException(" NU MAI E BERE 😨");
+//      }
       log.debug("Pouring Beer...");
       sleepq(1000); // HTTP REST CALL
       log.debug("Beer done");
@@ -108,11 +125,12 @@ class BarController {
 class BarConfig {
    //<editor-fold desc="Spring Config">
    @Bean
-   public ThreadPoolTaskExecutor pool(MeterRegistry meterRegistry) {
+   public ThreadPoolTaskExecutor pool(MeterRegistry meterRegistry, @Value("${barPool.size}") int nustiu) {
       ThreadPoolTaskExecutor executor = new ThreadPoolTaskExecutor();
-      executor.setCorePoolSize(1);
-      executor.setMaxPoolSize(1);
+      executor.setCorePoolSize(nustiu);
+      executor.setMaxPoolSize(nustiu);
       executor.setQueueCapacity(500);
+      executor.setRejectedExecutionHandler(new ThreadPoolExecutor.CallerRunsPolicy());
       executor.setThreadNamePrefix("barman-");
       executor.setTaskDecorator(new MonitorQueueWaitingTimeTaskDecorator(meterRegistry.timer("barman-queue-time")));
       executor.initialize();
