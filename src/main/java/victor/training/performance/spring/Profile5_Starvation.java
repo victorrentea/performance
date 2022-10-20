@@ -6,7 +6,9 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -21,6 +23,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.concurrent.CompletableFuture;
 
 @Slf4j
 @RestController
@@ -30,7 +33,7 @@ class SheepController {
     private final SheepService service;
 
     @GetMapping("create")
-    public Long createSheep(@RequestParam(required = false) String name) {
+    public CompletableFuture<Long> createSheep(@RequestParam(required = false) String name) {
         if (name == null) {
             name = "Bisisica " + LocalDateTime.now();
         }
@@ -53,11 +56,12 @@ class SheepService {
     private final ShepardService shepard;
 
     @Transactional
-    public Long create(String name) {
+    @Async("shepardPool")
+    public CompletableFuture<Long> create(String name) {
         String sn = shepard.registerSheep(name); // Takes 1 second (HTTP call) UUID de pe fund
         Sheep sheep = repo.save(new Sheep(name, sn));
         repo.save(new Sheep(name + "-2", sn));
-        return sheep.getId();
+        return CompletableFuture.completedFuture(sheep.getId());
     }
 
     public List<Sheep> search(String name) {
@@ -114,7 +118,7 @@ class Sheep {
     }
 }
 
-//@Configuration //TODO uncomment me
+@Configuration //TODO uncomment me
 class SomeConfig {
     @Bean
     public ThreadPoolTaskExecutor shepardPool() {
