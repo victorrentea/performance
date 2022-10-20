@@ -68,21 +68,11 @@ public class BarService {
 
         CompletableFuture<Beer> futureBeer = supplyAsync(() -> barman.pourBeer(), pool)
                 .exceptionally(e -> new Beer("bruna"));
-        //.exceptionally(e -> { throw new RuntimeException("Imbracata ", e); })
 
         CompletableFuture<Vodka> futureVodka = supplyAsync(barman::pourVodka, pool);
 
-
-        // let arr = await Promise.all([getBeer(), getBeer()]);
-        // return new DillyDilly(arr[0], arr[1]);
-
-        // folosirea thread pool pentru THROTTLING
-        // CompletableFuture.supplyAsync( ()-> repo.fatPig(), // max 4 in parallel te rog
-        //      executorCuDoar4ThreaduriCaSaProtejamBazaDePorci())
-        //      .get();
-
         CompletableFuture<DillyDilly> futureDilly = futureBeer
-                .thenCombine(futureVodka, DillyDilly::new);
+                .thenCombineAsync(futureVodka, DillyDilly::new);
 
         long t1 = System.currentTimeMillis();
         log.debug("Threadul tomcatului se intoarce in piscina dupa doar {} ms", t1 - t0);
@@ -125,10 +115,20 @@ class Barman {
     }
 }
 
+@Slf4j
 @Data
 class DillyDilly {
     private final Beer beer;
     private final Vodka vodka;
+
+    public DillyDilly(Beer beer, Vodka vodka) {
+        log.info("pe ce thread fac radicali ?");
+        for (int i = 0; i < 10_00000; i++) {
+            Math.sqrt(1000);
+        }
+        this.beer = beer;
+        this.vodka = vodka;
+    }
 }
 
 @Data
