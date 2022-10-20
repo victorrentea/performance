@@ -48,13 +48,13 @@ class SheepController {
 @Slf4j
 @Service
 @RequiredArgsConstructor
-@Transactional
 class SheepService {
     private final SheepRepo repo;
     private final ShepardService shepard;
 
+//    @Transactional
     public Long create(String name) {
-        String sn = shepard.registerSheep(name); // Takes 1 second (HTTP call)
+        String sn = shepard.registerSheep(name); // Takes 1 second (HTTP call) UUID de pe fund
         Sheep sheep = repo.save(new Sheep(name, sn));
         return sheep.getId();
     }
@@ -62,6 +62,8 @@ class SheepService {
         return repo.getByNameLike(name);
     }
 }
+
+
 @Slf4j
 @Service
 @RequiredArgsConstructor

@@ -40,16 +40,17 @@ public class Hashing {
       Collection<String> importedIds = generate(20_000);
       Collection<String> allIds = generate(18_000);
 
-      countIntersection(importedIds, allIds); // TODO #1 optimize
-//      countNew(importedIds, allIds); // TODO #3 one day, imported.size() < all.size()
+//      countIntersection(importedIds, allIds); // TODO #1 optimize
+      countNew(importedIds, allIds); // TODO #3 one day, imported.size() < all.size()
    }
 
    private static void countIntersection(Collection<?> importedIds, Collection<?> allIds) {
       System.out.println("Intersecting...");
       long t0 = System.currentTimeMillis();
       int n = 0;
+      HashSet<?> set = new HashSet<>(allIds);
       for (Object a : importedIds) {
-         if (allIds.contains(a)) {
+         if (set.contains(a)) {
             n++;
          }
       }
