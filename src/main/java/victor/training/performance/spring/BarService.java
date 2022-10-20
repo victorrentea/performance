@@ -29,7 +29,15 @@ public class BarService  {
    @Autowired
    private Barman barman;
 
-   private static final ExecutorService threadPool = Executors.newCachedThreadPool();
+
+//   private static final ExecutorService threadPool = Executors.newCachedThreadPool();
+   // prea multe threaduri
+
+   private static final ExecutorService threadPool = Executors.newFixedThreadPool(10);
+   // ce poa sa mearga rau daca coada e infinita?
+   // - astept prea mult: clientul n-are atata rabdare
+   // - OOME daca cine da in tine nu se blocheaza dupa rezultat  = "fire and forget"
+//   private static final ExecutorService threadPool = Executors.newFixedThreadPool(10);
 
    @GetMapping("drink")
    public List<Object> orderDrinks() throws ExecutionException, InterruptedException {
@@ -56,6 +64,9 @@ public class BarService  {
 class Barman {
 
    public Beer pourBeer() {
+      if (true) {
+         throw new IllegalArgumentException(" NU MAI E BERE 😨");
+      }
       log.debug("Pouring Beer...");
       sleepq(1000); // HTTP REST CALL
       log.debug("Beer done");
