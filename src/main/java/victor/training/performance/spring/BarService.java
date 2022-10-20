@@ -1,9 +1,11 @@
 package victor.training.performance.spring;
 
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import io.micrometer.core.instrument.MeterRegistry;
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
+import org.jooq.lambda.Unchecked;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
@@ -19,6 +21,7 @@ import javax.servlet.AsyncContext;
 import javax.servlet.http.HttpServletRequest;
 import java.util.concurrent.*;
 
+import static java.lang.System.currentTimeMillis;
 import static java.util.concurrent.CompletableFuture.supplyAsync;
 import static victor.training.performance.util.PerformanceUtil.sleepq;
 
@@ -56,7 +59,7 @@ public class BarService {
     @GetMapping("drink")
     public CompletableFuture<DillyDilly> orderDrinks() throws ExecutionException, InterruptedException {
         log.debug("Requesting drinks...");
-        long t0 = System.currentTimeMillis();
+        long t0 = currentTimeMillis();
 
         // ( daca faci DOAR procesor, NU iti creezi thread pooluri noi, ci folosesti
         // a) CompletableFuture.supplyAsync(() -> cpuWork());
@@ -74,22 +77,23 @@ public class BarService {
         CompletableFuture<DillyDilly> futureDilly = futureBeer
                 .thenCombineAsync(futureVodka, DillyDilly::new);
 
-        long t1 = System.currentTimeMillis();
+        long t1 = currentTimeMillis();
         log.debug("Threadul tomcatului se intoarce in piscina dupa doar {} ms", t1 - t0);
         return futureDilly;
     }
 
-    //   public void istorie(HttpServletRequest request) throws ExecutionException, InterruptedException {
-    //      AsyncContext fff = request.startAsync();
-    //
-    //
-    //      orderDrinks().thenAccept(dilly -> {
-    //         fff.getResponse().getWriter().write(dilly.toString());
-    //         fff.complete();
-    //         // callback
-    //      });
-    //      // threadul e liber, dar pe promise a ramas un callback
-    //   }
+    @GetMapping("/drink2")
+    public void underTheHood_asyncServlets(HttpServletRequest request) throws ExecutionException, InterruptedException {
+        long t0 = currentTimeMillis();
+        AsyncContext asyncContext = request.startAsync(); // I will write the response async
+
+        orderDrinks().thenAccept(Unchecked.consumer(dilly -> {
+            String json = new ObjectMapper().writeValueAsString(dilly);
+            asyncContext.getResponse().getWriter().write(json);// the connection was kept open
+            asyncContext.complete(); // close the connection to the client
+        }));
+        log.info("Tomcat's thread is free in {} ms", currentTimeMillis() - t0);
+    }
 }
 
 
