@@ -11,6 +11,6 @@ public class IOTask implements Runnable {
 
     public void run() {
         // emulate waiting for external resources eg: filesystem/network
-        PerformanceUtil.sleepq(millis);
+        PerformanceUtil.sleepMillis(millis);
     }
 }

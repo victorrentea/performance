@@ -15,7 +15,7 @@ public class ConcurrentMap {
       for (int i = 0; i <100 ; i++) {
          pool.submit(ConcurrentMap::add);
       }
-      PerformanceUtil.sleepq(10);
+      PerformanceUtil.sleepMillis(10);
       for (int i = 0; i < 5; i++) {
          pool.submit(ConcurrentMap::read);
       }
@@ -24,7 +24,7 @@ public class ConcurrentMap {
    private static void read() {
       int found =0, not=0;
       for (int i = 0; i < 10_000; i++) {
-//         PerformanceUtil.sleepq(1); // this increases the hit rate
+//         PerformanceUtil.sleepMillis(1); // this increases the hit rate
          String v = map.get(c.get() - 1);
          if (v == null) {
             not ++;

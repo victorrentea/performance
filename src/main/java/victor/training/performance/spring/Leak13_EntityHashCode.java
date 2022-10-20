@@ -47,7 +47,7 @@ public class Leak13_EntityHashCode {
          service.persistPage(entities, preexistingPlusThisPage);
 
          preexistingPlusThisPage.removeAll(entities);
-//         ConcurrencyUtil.sleepq(1); // nice mem graph
+//         ConcurrencyUtil.sleepMillis(1); // nice mem graph
          log.info("Persisted Page {}...", pageIndex ++);
       }
    }

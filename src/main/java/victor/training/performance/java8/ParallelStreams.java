@@ -7,7 +7,7 @@ import java.util.List;
 import java.util.stream.IntStream;
 
 import static java.util.stream.Collectors.toList;
-import static victor.training.performance.util.PerformanceUtil.sleepq;
+import static victor.training.performance.util.PerformanceUtil.sleepMillis;
 
 @Slf4j
 public class ParallelStreams {
@@ -25,7 +25,7 @@ public class ParallelStreams {
           })
           .map(i -> {
              log.debug("Map " + i);
-             sleepq(100); // do some 'paralellizable' I/O work (DB, REST, SOAP)
+             sleepMillis(100); // do some 'paralellizable' I/O work (DB, REST, SOAP)
              return i * 2;
           })
           .collect(toList());

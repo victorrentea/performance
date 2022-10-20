@@ -5,7 +5,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import static victor.training.performance.util.PerformanceUtil.log;
-import static victor.training.performance.util.PerformanceUtil.sleepq;
+import static victor.training.performance.util.PerformanceUtil.sleepMillis;
 
 @RestController
 @RequestMapping("leak15")
@@ -36,14 +36,14 @@ public class Leak15_Deadlock {
 class KillOne {
 	public static synchronized void entryPoint() {
 		log("start One.a1()");
-		sleepq(3_000);
+		sleepMillis(3_000);
 		KillTwo.internalMethod();
 		log("start One.a1()");
 	}
 
 	public static synchronized void internalMethod() {
 		log("start One.b1()");
-		sleepq(3_000);
+		sleepMillis(3_000);
 		log("end One.b1()");
 	}
 }
@@ -53,13 +53,13 @@ class KillOne {
 class KillTwo {
 	public static synchronized void entryPoint() {
 		log("start Two.a2()");
-		sleepq(3_000);
+		sleepMillis(3_000);
 		KillOne.internalMethod();
 		log("start Two.a2()");
 	}
 	public static synchronized void internalMethod() {
 		log("start Two.b2()");
-		sleepq(3_000);
+		sleepMillis(3_000);
 		log("end Two.b2()");
 	}
 }

@@ -33,7 +33,7 @@ public class Plotter {
          }
       }
       checkSamplesInOrder(samples);
-      PerformanceUtil.sleepq(blockingMillis);
+      PerformanceUtil.sleepMillis(blockingMillis);
       receivedValues.addAll(samples.stream().map(Sample::getValue).collect(toList()));
       log.debug("SEND done");
       synchronized (callingThreads) {

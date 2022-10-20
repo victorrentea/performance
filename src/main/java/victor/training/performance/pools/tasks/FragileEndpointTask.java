@@ -3,7 +3,7 @@ package victor.training.performance.pools.tasks;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import static victor.training.performance.util.PerformanceUtil.log;
-import static victor.training.performance.util.PerformanceUtil.sleepq;
+import static victor.training.performance.util.PerformanceUtil.sleepMillis;
 
 public class FragileEndpointTask implements Runnable {
     private final int maxParallel;
@@ -26,7 +26,7 @@ public class FragileEndpointTask implements Runnable {
                 throw new IllegalArgumentException("Per SLA, you are not allowed to be called by more than two parallel requests. Prepared to be sued!");
             }
             log("Handling request #" + requestIndex.incrementAndGet());
-            sleepq(delay);
+            sleepMillis(delay);
             log("Done");
         } finally {
             parallelRequests.decrementAndGet();

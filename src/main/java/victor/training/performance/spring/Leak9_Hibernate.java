@@ -65,7 +65,7 @@ public class Leak9_Hibernate {
       }
 
       log.debug("Export completed. Sleeping 2 minutes to get a heapdump...");
-      PerformanceUtil.sleepq(120 * 1000);
+      PerformanceUtil.sleepMillis(120 * 1000);
    }
 }
 

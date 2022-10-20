@@ -3,7 +3,7 @@ package victor.training.performance.primitives;
 import java.util.concurrent.CountDownLatch;
 
 import static victor.training.performance.util.PerformanceUtil.log;
-import static victor.training.performance.util.PerformanceUtil.sleepq;
+import static victor.training.performance.util.PerformanceUtil.sleepMillis;
 import static victor.training.performance.util.PerformanceUtil.sleepSomeTime;
 
 public class Latch {
@@ -45,7 +45,7 @@ public class Latch {
 		new Racer().start();
 		new Racer().start();
 		log("Wait some time for the racers to get to their places");
-		sleepq(1000);
+		sleepMillis(1000);
 		log("Ready... Steady... Go!");
 		// TODO trigger start race
 		

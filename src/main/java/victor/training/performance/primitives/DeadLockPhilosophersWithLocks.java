@@ -69,7 +69,7 @@ public class DeadLockPhilosophersWithLocks {
 		new Philosopher("Konfuzius", forks[1], forks[2]).start();
 		new Philosopher("Socrates", forks[2], forks[3]).start();
 		new Philosopher("Voltaire", forks[3], forks[4]).start();
-		sleepq(1000);
+		sleepMillis(1000);
 		new Philosopher("Descartes", forks[4], forks[0]).start();
 	}
 }

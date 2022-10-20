@@ -27,7 +27,7 @@ public class TableDataModel {
 			System.exit(-99);
 		}
 		log.debug(candy + " was classified to " + classes);
-		PerformanceUtil.sleepq(10);
+		PerformanceUtil.sleepMillis(10);
 		currentCalls.decrementAndGet();
 	}
 

@@ -1,6 +1,5 @@
 package victor.training.performance.spring.metrics;
 
-import io.micrometer.core.instrument.MeterRegistry;
 import io.micrometer.core.instrument.Timer;
 import org.springframework.core.task.TaskDecorator;
 
@@ -8,10 +7,10 @@ import java.util.concurrent.TimeUnit;
 
 import static java.lang.System.currentTimeMillis;
 
-public class MonitorQueueWaitingTimeTaskDecorator implements TaskDecorator {
+public class MonitorQueueWaitingTime implements TaskDecorator {
     private final Timer timer;
 
-    public MonitorQueueWaitingTimeTaskDecorator(Timer timer) {
+    public MonitorQueueWaitingTime(Timer timer) {
         this.timer = timer;
     }
 

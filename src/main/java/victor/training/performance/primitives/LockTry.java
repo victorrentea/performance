@@ -4,7 +4,7 @@ import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
 import static victor.training.performance.util.PerformanceUtil.log;
-import static victor.training.performance.util.PerformanceUtil.sleepq;
+import static victor.training.performance.util.PerformanceUtil.sleepMillis;
 import static victor.training.performance.util.PerformanceUtil.sleepSomeTime;
 
 public class LockTry {
@@ -24,7 +24,7 @@ public class LockTry {
 			
 			// TODO the following dead locks T1: A,B; T2: B,A. Fix it.
 			lock.lock();
-			sleepq(1);
+			sleepMillis(1);
 			bower.lock.lock();
 			return true;
 			
@@ -55,7 +55,7 @@ public class LockTry {
 
 
 	public static void main(String[] args) {
-		sleepq(1);
+		sleepMillis(1);
 		Friend alphonse = new Friend("Alphonse");
 		Friend gaston = new Friend("Gaston");
 		

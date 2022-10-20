@@ -6,7 +6,7 @@ import java.util.Set;
 import java.util.concurrent.Semaphore;
 
 import static victor.training.performance.util.PerformanceUtil.log;
-import static victor.training.performance.util.PerformanceUtil.sleepq;
+import static victor.training.performance.util.PerformanceUtil.sleepMillis;
 
 public class Semaphore1 {
 	static class BoundedHashSet<T> {
@@ -45,7 +45,7 @@ public class Semaphore1 {
 			}
 			private void addElement(String element) {
 				try {
-					sleepq(20);
+					sleepMillis(20);
 					log("adding element " + element);
 					set.add(element);
 					log("added");
@@ -57,7 +57,7 @@ public class Semaphore1 {
 		
 		new Thread("Remover") {
 			public void run() {
-				sleepq(200);
+				sleepMillis(200);
 				remove("a");
 				remove("b");
 				remove("c");
@@ -65,7 +65,7 @@ public class Semaphore1 {
 				remove("e");
 			}
 			private void remove(String element) {
-				sleepq(20);
+				sleepMillis(20);
 				log("removing(" + element + ")");
 				set.remove(element);
 				log("removed");

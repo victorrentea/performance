@@ -1,7 +1,7 @@
 package victor.training.performance.primitives.waitnotify;
 
 import static victor.training.performance.util.PerformanceUtil.log;
-import static victor.training.performance.util.PerformanceUtil.sleepq;
+import static victor.training.performance.util.PerformanceUtil.sleepMillis;
 
 public class PingPong {
     public static final int PING = 1;
@@ -37,9 +37,9 @@ class Ping extends Thread {
                     e.printStackTrace();
                 }
 //            }
-            sleepq(100);
+            sleepMillis(100);
             log("Ping");
-            sleepq(100);
+            sleepMillis(100);
 //            synchronized (PingPong.class) {
                 PingPong.class.notifyAll();
             }
@@ -70,9 +70,9 @@ class Pong extends Thread {
                     // shaorma
                 }
 //            }
-            sleepq(100);
+            sleepMillis(100);
             log("Pong " + ++counter);
-            sleepq(100);
+            sleepMillis(100);
 //            synchronized (PingPong.class) {
                 PingPong.class.notifyAll();
             }

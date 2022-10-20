@@ -12,7 +12,7 @@ import java.io.File;
 import java.util.Map;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static victor.training.performance.util.PerformanceUtil.sleepq;
+import static victor.training.performance.util.PerformanceUtil.sleepMillis;
 
 @SpringBootTest(properties = "spring.batch.job.enabled=false")
 public class BatchAppTest extends AbstractTestcontainersTestBase{
@@ -41,7 +41,7 @@ public class BatchAppTest extends AbstractTestcontainersTestBase{
       Map<String, JobParameter> paramMap = Map.of("FILE_PATH", new JobParameter(dataFile.getAbsolutePath()));
       JobExecution run = launcher.run(job, new JobParameters(paramMap));
       while (run.getExitStatus().isRunning()) {
-         sleepq(1);
+         sleepMillis(1);
       }
       System.out.println("JOB FINISHED");
       assertThat(run.getExitStatus()).isEqualTo(ExitStatus.COMPLETED);

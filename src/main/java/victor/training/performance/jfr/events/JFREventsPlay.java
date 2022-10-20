@@ -33,7 +33,7 @@ public class JFREventsPlay {
       HttpRequest request = HttpRequest.newBuilder().uri(URI.create(uri)).build();
 
 
-      PerformanceUtil.sleepq(100000);
+      PerformanceUtil.sleepMillis(100000);
 
       HttpResponse<String> response = null;
       try {

@@ -20,12 +20,12 @@ public class CandyStore {
       for (int i = 0; i < 20; i++) {
          candyFactories.submit(() -> {
             for (int j = 0; j < 1000; j++) {
-               PerformanceUtil.sleepq(50);
+               PerformanceUtil.sleepMillis(50);
                sendMethod.accept(new Candy());
             }
          });
       }
-      PerformanceUtil.sleepq(20);
+      PerformanceUtil.sleepMillis(20);
    }
 
    private static Consumer<Candy> getSendMethod(TableModel model) {

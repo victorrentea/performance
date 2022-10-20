@@ -3,7 +3,7 @@ package victor.training.performance.primitives;
 import java.util.ArrayList;
 import java.util.List;
 
-import static victor.training.performance.util.PerformanceUtil.sleepq;
+import static victor.training.performance.util.PerformanceUtil.sleepMillis;
 
 public class CopyOnWrite {
 
@@ -17,7 +17,7 @@ public class CopyOnWrite {
             // TODO add delay
             s += e + " ";
          }
-         sleepq(300);
+         sleepMillis(300);
          System.out.println(s);
       }
    }
@@ -34,7 +34,7 @@ class Builder implements Runnable {
    public void run() {
       for (int i = 0; i < 1000; i++) {
          list.add(i);
-         sleepq(300); // TODO reduce delay
+         sleepMillis(300); // TODO reduce delay
       }
    }
 }

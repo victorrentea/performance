@@ -33,13 +33,13 @@ public class Leak3_Inner {
 	@GetMapping("anon")
 	public String anon() {
 		Supplier<String> supplier = new CachingMethodObject().anonymousVsLambdas();
-		PerformanceUtil.sleepq(20_000); // some long workflow
+		PerformanceUtil.sleepMillis(20_000); // some long workflow
 		return supplier.get();
 	}
 	@GetMapping("map")
 	public Map<String, Integer> map() {
 		Map<String, Integer> map = new CachingMethodObject().mapInit();
-		PerformanceUtil.sleepq(20_000); // some long workflow
+		PerformanceUtil.sleepMillis(20_000); // some long workflow
 		return map;
 	}
 	//</editor-fold>
@@ -48,7 +48,7 @@ public class Leak3_Inner {
 		if (!calculator.hasRight("launch")) {
 			return;
 		}
-		PerformanceUtil.sleepq(20_000); // long flow and/or heavy parallel load
+		PerformanceUtil.sleepMillis(20_000); // long flow and/or heavy parallel load
 	}
 }
 

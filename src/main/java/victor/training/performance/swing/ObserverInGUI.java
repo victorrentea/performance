@@ -15,7 +15,7 @@ public class ObserverInGUI {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				System.out.println("Indexing...");
-				PerformanceUtil.sleepq(1000);// Increase
+				PerformanceUtil.sleepMillis(1000);// Increase
 				System.out.println("Done");
 				Random r = new Random();
 				myFrame.button1.setBackground(new Color(r.nextInt(256), r.nextInt(256), r.nextInt(256)));

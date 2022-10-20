@@ -12,7 +12,7 @@ import victor.training.performance.util.BigObject20MB;
 import java.util.Random;
 import java.util.function.Function;
 
-import static victor.training.performance.util.PerformanceUtil.sleepq;
+import static victor.training.performance.util.PerformanceUtil.sleepMillis;
 
 @RestController
 @RequestMapping("leak6")
@@ -34,7 +34,7 @@ class Worker {
 	@Async
 	public void workHard(int param, Function<Integer, Integer> lookup) {
 		log.debug("Starting to work hard...");
-		sleepq(10_000);
+		sleepMillis(10_000);
 		int result = param + lookup.apply((int) Math.sqrt(param));
 		log.debug("Done task. result=" + result);
 	}

@@ -19,7 +19,7 @@ public class PerformanceUtil {
     }
 
     public static void sleepSomeTime(int min, int max) {
-        sleepq(randomInt(min, max));
+        sleepMillis(randomInt(min, max));
     }
 
     public static int randomInt(int min, int max) {
@@ -59,7 +59,7 @@ public class PerformanceUtil {
     /**
      * Sleeps quietly (without throwing a checked exception)
      */
-    public static void sleepq(long millis) {
+    public static void sleepMillis(long millis) {
         try {
             Thread.sleep(millis);
         } catch (InterruptedException e) {

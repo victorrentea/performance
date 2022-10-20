@@ -6,7 +6,7 @@ import org.springframework.stereotype.Repository;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.RestController;
 
-import static victor.training.performance.util.PerformanceUtil.sleepq;
+import static victor.training.performance.util.PerformanceUtil.sleepMillis;
 
 @Slf4j
 public class ThreadLocalIntro {
@@ -50,7 +50,7 @@ class AService {
     private final ARepo aRepo;
 
     public void create(String data) {
-        sleepq(10); // some delay, to reproduce the race bug
+        sleepMillis(10); // some delay, to reproduce the race bug
         aRepo.save(data);
     }
 }

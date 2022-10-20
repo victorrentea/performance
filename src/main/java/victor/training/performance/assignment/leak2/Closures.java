@@ -18,7 +18,7 @@ public class Closures {
          final String toPrint = "Hello " + id;
          @Override
          public String get() {
-            PerformanceUtil.sleepq(20_000); // KEEP
+            PerformanceUtil.sleepMillis(20_000); // KEEP
             return toPrint + now();
          }
       };

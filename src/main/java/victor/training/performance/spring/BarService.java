@@ -1,75 +1,87 @@
 package victor.training.performance.spring;
 
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import io.micrometer.core.instrument.MeterRegistry;
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
+import org.jooq.lambda.Unchecked;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.scheduling.annotation.Async;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
-import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import victor.training.performance.spring.metrics.MonitorQueueWaitingTimeTaskDecorator;
+import victor.training.performance.spring.metrics.MonitorQueueWaitingTime;
 
+import javax.servlet.AsyncContext;
+import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 
+import static java.lang.System.currentTimeMillis;
 import static java.util.Arrays.asList;
-import static victor.training.performance.util.PerformanceUtil.sleepq;
+import static victor.training.performance.util.PerformanceUtil.sleepMillis;
 
-@Component
+@RestController
 @Slf4j
-public class BarService implements CommandLineRunner {
+public class BarService {
    @Autowired
    private Barman barman;
 
-   @Override
-   public void run(String... args) throws Exception { // runs at app startup
-      log.debug("Got " + orderDrinks());
-   }
-
+   @GetMapping("drink")
    public List<Object> orderDrinks() throws ExecutionException, InterruptedException {
       log.debug("Requesting drinks...");
       long t0 = System.currentTimeMillis();
 
-      CompletableFuture<Beer> c1 = barman.pourBeer();
-      CompletableFuture<Vodka> c2 = barman.pourVodka();
-
-      Beer beer = c1.get();
-      Vodka vodka = c2.get();
+      Beer beer = barman.pourBeer();
+      Vodka vodka = barman.pourVodka();
 
       long t1 = System.currentTimeMillis();
       List<Object> drinks = asList(beer, vodka);
       log.debug("Got my order in {} ms : {}", t1 - t0, drinks);
       return drinks;
    }
+
+   //<editor-fold desc="History Lesson: Async Servlets">
+   @GetMapping("/drink-raw")
+   public void underTheHood_asyncServlets(HttpServletRequest request) throws ExecutionException, InterruptedException {
+      long t0 = currentTimeMillis();
+      AsyncContext asyncContext = request.startAsync(); // I will write the response async
+
+      //var futureDrinks = orderDrinks();
+      var futureDrinks = CompletableFuture.supplyAsync(() -> {
+         sleepMillis(2000);
+         return new Beer("blond");
+      });
+      futureDrinks.thenAccept(Unchecked.consumer(dilly -> {
+         String json = new ObjectMapper().writeValueAsString(dilly);
+         asyncContext.getResponse().getWriter().write(json);// the connection was kept open
+         asyncContext.complete(); // close the connection to the client
+      }));
+      log.info("Tomcat's thread is free in {} ms", currentTimeMillis() - t0);
+   }
+   //</editor-fold>
 }
 
 @Service
 @Slf4j
 class Barman {
 
-   @Async
-   public CompletableFuture<Beer> pourBeer() {
+   public Beer pourBeer() {
       log.debug("Pouring Beer...");
-      sleepq(1000);
+      sleepMillis(1000); // imagine slow REST call
       log.debug("Beer done");
-      return CompletableFuture.completedFuture(new Beer("blond"));
+      return new Beer("blond");
    }
 
-   @Async
-   public CompletableFuture<Vodka> pourVodka() {
+   public Vodka pourVodka() {
       log.debug("Pouring Vodka...");
-      sleepq(1000);
+      sleepMillis(1000); // long query
       log.debug("Vodka done");
-      return CompletableFuture.completedFuture(new Vodka());
+      return new Vodka();
    }
 }
 
@@ -82,34 +94,18 @@ class Vodka {
    private final String brand = "Absolut";
 }
 
-// TODO when called from web, protect the http thread
-@Slf4j
-@RequestMapping("bar/drink")
-@RestController
-class BarController {
-   //<editor-fold desc="Web">
-   @Autowired
-   private BarService service;
-
-   @GetMapping
-   public String getDrinks() throws Exception {
-      return "" + service.orderDrinks();
-   }
-   //</editor-fold>
-}
-
 
 @Configuration
 class BarConfig {
-   //<editor-fold desc="Spring Config">
+   //<editor-fold desc="Custom thread pool">
    @Bean
-   public ThreadPoolTaskExecutor pool(MeterRegistry meterRegistry) {
+   public ThreadPoolTaskExecutor barPool(MeterRegistry meterRegistry) {
       ThreadPoolTaskExecutor executor = new ThreadPoolTaskExecutor();
       executor.setCorePoolSize(1);
       executor.setMaxPoolSize(1);
       executor.setQueueCapacity(500);
       executor.setThreadNamePrefix("barman-");
-      executor.setTaskDecorator(new MonitorQueueWaitingTimeTaskDecorator(meterRegistry.timer("barman-queue-time")));
+      executor.setTaskDecorator(new MonitorQueueWaitingTime(meterRegistry.timer("barman-queue-time")));
       executor.initialize();
       return executor;
    }
