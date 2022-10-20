@@ -15,12 +15,14 @@ public class CompactCollections {
       // Use-case: I had to keep a large number of IDs throughout a long memory-intensive batch
       long heap0 = PerformanceUtil.getUsedHeapBytes();
 
-      LinkedList<Long> list = LongStream.range(0, 1_000_000).boxed().collect(Collectors.toCollection(LinkedList::new));
+      Long[] list = LongStream
+              .range(0, 1_000_000).boxed()
+              .toArray(Long[]::new);
 //      new Long[]
       // HashSet 63  MB because galeti arbori liste inlantuite
       // LinkedList 37 MB because
       // ArrayList 36 MB because
-      // Long[] 44 MB because WTF? nu stiu de studiat
+      // Long[] 20 MB because
       // long[] 8 MB because
       // int[] 4 MB because
       int[] patrat; // iarta0ma da ocupa de 10 ori mai putin decat un Set<Long>
