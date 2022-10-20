@@ -18,32 +18,31 @@ import org.springframework.web.bind.annotation.RestController;
 import victor.training.performance.spring.metrics.MonitorQueueWaitingTimeTaskDecorator;
 
 import java.util.List;
-import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.ExecutionException;
+import java.util.concurrent.*;
 
 import static java.util.Arrays.asList;
 import static victor.training.performance.util.PerformanceUtil.sleepq;
 
-@Component
+@RestController
 @Slf4j
-public class BarService implements CommandLineRunner {
+public class BarService  {
    @Autowired
    private Barman barman;
 
-   @Override
-   public void run(String... args) throws Exception { // runs at app startup
-      log.debug("Got " + orderDrinks());
-   }
+   private static final ExecutorService threadPool = Executors.newCachedThreadPool();
 
+   @GetMapping("drink")
    public List<Object> orderDrinks() throws ExecutionException, InterruptedException {
       log.debug("Requesting drinks...");
       long t0 = System.currentTimeMillis();
 
-      CompletableFuture<Beer> c1 = barman.pourBeer();
-      CompletableFuture<Vodka> c2 = barman.pourVodka();
 
-      Beer beer = c1.get();
-      Vodka vodka = c2.get();
+      Future<Beer> futureBeer = threadPool.submit(() -> barman.pourBeer());
+      Future<Vodka> futureVodka = threadPool.submit(() -> barman.pourVodka());
+
+
+      Beer beer = futureBeer.get(); // threadul din tomcat sta aici 1 sec
+      Vodka vodka = futureVodka.get(); // aici stau 0 sec!! ca deja e gata vodka
 
       long t1 = System.currentTimeMillis();
       List<Object> drinks = asList(beer, vodka);
@@ -56,20 +55,18 @@ public class BarService implements CommandLineRunner {
 @Slf4j
 class Barman {
 
-   @Async
-   public CompletableFuture<Beer> pourBeer() {
+   public Beer pourBeer() {
       log.debug("Pouring Beer...");
-      sleepq(1000);
+      sleepq(1000); // HTTP REST CALL
       log.debug("Beer done");
-      return CompletableFuture.completedFuture(new Beer("blond"));
+      return new Beer("blond");
    }
 
-   @Async
-   public CompletableFuture<Vodka> pourVodka() {
+   public Vodka pourVodka() {
       log.debug("Pouring Vodka...");
-      sleepq(1000);
+      sleepq(1000); // 'fat sql' / WSDL call, apel de desenat rosia pe cantar.
       log.debug("Vodka done");
-      return CompletableFuture.completedFuture(new Vodka());
+      return new Vodka();
    }
 }
 
@@ -91,10 +88,7 @@ class BarController {
    @Autowired
    private BarService service;
 
-   @GetMapping
-   public String getDrinks() throws Exception {
-      return "" + service.orderDrinks();
-   }
+
    //</editor-fold>
 }
 
