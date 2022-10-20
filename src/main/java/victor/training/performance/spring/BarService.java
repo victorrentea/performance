@@ -15,10 +15,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import victor.training.performance.spring.metrics.MonitorQueueWaitingTimeTaskDecorator;
 
-import java.util.List;
 import java.util.concurrent.*;
 
-import static java.util.Arrays.asList;
 import static java.util.concurrent.CompletableFuture.supplyAsync;
 import static victor.training.performance.util.PerformanceUtil.sleepq;
 
@@ -54,7 +52,7 @@ public class BarService  {
 
 
    @GetMapping("drink")
-   public List<Object> orderDrinks() throws ExecutionException, InterruptedException {
+   public CompletableFuture<DillyDilly> orderDrinks() throws ExecutionException, InterruptedException {
       log.debug("Requesting drinks...");
       long t0 = System.currentTimeMillis();
 
@@ -65,18 +63,21 @@ public class BarService  {
       // locu unic in JVM unde submiti DOAR munca de CPU (size = N_cpu - 1)
 
       // promise-uri din js === CompletableFuture din Java
-      Future<Beer> futureBeer = supplyAsync(barman::pourBeer, pool);
-      Future<Vodka> futureVodka = supplyAsync(barman::pourVodka, pool);
+      CompletableFuture<Beer> futureBeer = supplyAsync(barman::pourBeer, pool);
+      CompletableFuture<Vodka> futureVodka = supplyAsync(barman::pourVodka, pool);
 
-      Beer beer = futureBeer.get(); // threadul din tomcat sta aici 1 sec
-      Vodka vodka = futureVodka.get(); // aici stau 0 sec!! ca deja e gata vodka
+      CompletableFuture<DillyDilly> futureDilly = futureBeer
+              .thenCombine(futureVodka, DillyDilly::new);
+
 
       long t1 = System.currentTimeMillis();
-      List<Object> drinks = asList(beer, vodka);
-      log.debug("Got my order in {} ms : {}", t1 - t0, drinks);
-      return drinks;
+//      List<Object> drinks = asList(beer, vodka);
+      log.debug("Threadul tomcatului se intoarce in piscina dupa doar {} ms", t1 - t0);
+      return futureDilly;
    }
 }
+
+
 
 @Service
 @Slf4j
@@ -98,6 +99,12 @@ class Barman {
       log.debug("Vodka done");
       return new Vodka();
    }
+}
+
+@Data
+class DillyDilly {
+   private final Beer beer;
+   private final Vodka vodka;
 }
 
 @Data
