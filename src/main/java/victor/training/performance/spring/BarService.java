@@ -65,7 +65,13 @@ public class BarService  {
       // locu unic in JVM unde submiti DOAR munca de CPU (size = N_cpu - 1)
 
       // promise-uri din js === CompletableFuture din Java
-      CompletableFuture<Beer> futureBeer = supplyAsync(barman::pourBeer, pool);
+
+      CompletableFuture<Beer> futureBeer = null;
+      try {
+         futureBeer = supplyAsync(() -> barman.pourBeer(), pool);
+      } catch (Exception e) {
+         throw new RuntimeException("Tratez ca nu mai e bere" + e); // ex nu mai merg.
+      }
       CompletableFuture<Vodka> futureVodka = supplyAsync(barman::pourVodka, pool);
 
 
@@ -102,9 +108,9 @@ public class BarService  {
 class Barman {
 
    public Beer pourBeer() {
-//      if (true) {
-//         throw new IllegalArgumentException(" NU MAI E BERE 😨");
-//      }
+      if (true) {
+         throw new IllegalArgumentException(" NU MAI E BERE 😨");
+      }
       log.debug("Pouring Beer...");
       sleepq(1000); // HTTP REST CALL
       log.debug("Beer done");
