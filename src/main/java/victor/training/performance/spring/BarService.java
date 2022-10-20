@@ -64,6 +64,20 @@ public class BarService {
       log.info("Tomcat's thread is free in {} ms", currentTimeMillis() - t0);
    }
    //</editor-fold>
+
+   //<editor-fold desc="Starve ForkJoinPool">
+   @GetMapping("starve")
+   public String starveForkJoinPool() {
+      int tasks = 10 * Runtime.getRuntime().availableProcessors();
+      for (int i = 0; i < tasks; i++) {
+         CompletableFuture.runAsync(() -> sleepMillis(1000));
+      }
+      // OR
+      // List<Integer> list = IntStream.range(0, tasks).boxed().parallel()
+      //       .map(i -> {sleepq(1000);return i;}).collect(toList());
+      return "ForkJoinPool.commonPool blocked for 10 seconds";
+   }
+   //</editor-fold>
 }
 
 @Service
@@ -93,7 +107,6 @@ class Beer {
 class Vodka {
    private final String brand = "Absolut";
 }
-
 
 @Configuration
 class BarConfig {
