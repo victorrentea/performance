@@ -19,6 +19,7 @@ import java.util.List;
 import java.util.concurrent.*;
 
 import static java.util.Arrays.asList;
+import static java.util.concurrent.CompletableFuture.supplyAsync;
 import static victor.training.performance.util.PerformanceUtil.sleepq;
 
 @RestController
@@ -63,8 +64,9 @@ public class BarService  {
       // ambele ruleaza pe ForkJoinPool.commonPool() <
       // locu unic in JVM unde submiti DOAR munca de CPU (size = N_cpu - 1)
 
-      Future<Beer> futureBeer = pool.submit(() -> barman.pourBeer());
-      Future<Vodka> futureVodka = pool.submit(() -> barman.pourVodka());
+      // promise-uri din js === CompletableFuture din Java
+      Future<Beer> futureBeer = supplyAsync(barman::pourBeer, pool);
+      Future<Vodka> futureVodka = supplyAsync(barman::pourVodka, pool);
 
       Beer beer = futureBeer.get(); // threadul din tomcat sta aici 1 sec
       Vodka vodka = futureVodka.get(); // aici stau 0 sec!! ca deja e gata vodka
