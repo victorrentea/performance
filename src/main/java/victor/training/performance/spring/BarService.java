@@ -66,12 +66,15 @@ public class BarService {
 
         // promise-uri din js === CompletableFuture din Java
 
-        CompletableFuture<Beer> futureBeer = supplyAsync(() -> barman.pourBeer(), pool);
-        futureBeer.exceptionally(e -> new Beer("bruna"));
+        CompletableFuture<Beer> futureBeer = supplyAsync(() -> barman.pourBeer(), pool)
+                .exceptionally(e -> new Beer("bruna"));
         //.exceptionally(e -> { throw new RuntimeException("Imbracata ", e); })
 
         CompletableFuture<Vodka> futureVodka = supplyAsync(barman::pourVodka, pool);
 
+
+        // let arr = await Promise.all([getBeer(), getBeer()]);
+        // return new DillyDilly(arr[0], arr[1]);
 
         // folosirea thread pool pentru THROTTLING
         // CompletableFuture.supplyAsync( ()-> repo.fatPig(), // max 4 in parallel te rog
