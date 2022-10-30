@@ -52,8 +52,8 @@ public class Combining {
     /**
      * Run dependency#task(s) passing the string provided by the dependency#call(). Do not block (get/join)!
      */
-    public void p03_chainConsume() throws ExecutionException, InterruptedException {
-        String s = dependency.call().get();
+    public void p03_chainConsume() throws InterruptedException {
+        String s = dependency.call().join();
         dependency.task(s);
     }
 
@@ -63,8 +63,8 @@ public class Combining {
     /**
      * Same as previous, but return a CF< Void > to let the caller know of when the task finishes, and of any exceptions
      */
-    public CompletableFuture<Void> p04_flatMap() throws ExecutionException, InterruptedException {
-        String s = dependency.call().get();
+    public CompletableFuture<Void> p04_flatMap() {
+        String s = dependency.call().join();
         dependency.task(s);
         return completedFuture(null);
     }
@@ -77,9 +77,9 @@ public class Combining {
      * Wait for both to complete and then complete the returned future.
      * Not blocking.
      */
-    public CompletableFuture<Void> p05_forkJoin() throws ExecutionException, InterruptedException {
-        String s = dependency.call().get();
-        dependency.task(s).get();
+    public CompletableFuture<Void> p05_forkJoin() {
+        String s = dependency.call().join();
+        dependency.task(s).join();
         dependency.cleanup();
         return completedFuture(null);
     }
@@ -91,7 +91,7 @@ public class Combining {
      * callResult + " " + ageResult
      * and complete the returned future with this value. Don't block.
      */
-    public CompletableFuture<String> p06_combine() throws ExecutionException, InterruptedException {
+    public CompletableFuture<String> p06_combine() {
         return null;
     }
 
@@ -103,7 +103,7 @@ public class Combining {
      * [HARD⭐️] if the first completes with error, wait for the second.
      * [HARD⭐️⭐️⭐️] If both in error, complete in error.
      */
-    public CompletableFuture<String> p07_fastest() throws ExecutionException, InterruptedException {
+    public CompletableFuture<String> p07_fastest() {
         return null;
     }
 

@@ -45,7 +45,7 @@ public class CompletableFutureWorkshop {
      * - detect blocking ??
      *
      * Advanced Scenarios
-     *      * - timeout > ex | value
+     * - timeout > ex | value
      * - Message Bridge (fire on request MQ, wait on a reply MQ to complete the pending httpRequest
      * - buffer (wait for N, fire all)
      * - cache: get/put full async
