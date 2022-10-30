@@ -35,7 +35,6 @@ class ExceptionsTest {
 
     @InjectMocks
     Exceptions workshop;
-    //    private static final
 
     private static final ExecutorService secondExecutor = Executors.newFixedThreadPool(1, new NamedThreadFactory("second"));
 
@@ -49,6 +48,15 @@ class ExceptionsTest {
         assertThat(outputCapture.toString())
                 .contains("Exception occurred")
                 .contains(TestRootCauseException.class.getSimpleName());
+    }
+    @Test
+    @CaptureSystemOutput
+    void p01_log_OK(OutputCapture outputCapture) {
+        when(dependencyMock.call()).thenReturn(CompletableFuture.completedFuture("abc"));
+
+        workshop.p01_log();
+
+        assertThat(outputCapture.toString()).isEmpty();
     }
 
     @Test

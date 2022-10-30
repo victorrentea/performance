@@ -31,6 +31,7 @@ class CombiningTest {
     Dependency dependency;
     @InjectMocks
     Combining workshop;
+    CombiningSolved workshopSolved;
 
     @Test
     void p01_transform() throws ExecutionException, InterruptedException {
@@ -51,14 +52,19 @@ class CombiningTest {
     }
 
     @Test
-    void p03_chainConsume() {
-        when(dependency.call()).thenReturn(completedFuture("abc"));
+    void p03_chainConsume() throws ExecutionException, InterruptedException {
+        CompletableFuture<String> callFuture = new CompletableFuture<>();
+        when(dependency.call()).thenReturn(callFuture);
+
         workshop.p03_chainConsume();
+
+        verify(dependency,times(0)).task("abc");
+        callFuture.complete("abc");
         verify(dependency).task("abc");
     }
 
     @Test
-    void p04_flatMap() {
+    void p04_flatMap() throws ExecutionException, InterruptedException {
         CompletableFuture<String> future = new CompletableFuture<>();
         when(dependency.call()).thenReturn(future);
         when(dependency.task("a")).thenReturn(completedFuture(null));
