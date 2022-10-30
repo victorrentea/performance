@@ -1,4 +1,4 @@
-package victor.training.performance.java8.cf;
+package victor.training.performance.util;
 
 import org.jetbrains.annotations.NotNull;
 

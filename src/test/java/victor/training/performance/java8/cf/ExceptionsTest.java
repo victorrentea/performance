@@ -1,7 +1,7 @@
 package victor.training.performance.java8.cf;
 
-import org.jooq.lambda.Unchecked;
 import org.junit.jupiter.api.MethodOrderer;
+import org.junit.jupiter.api.MethodOrderer.MethodName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestMethodOrder;
 import org.junit.jupiter.api.Timeout;
@@ -13,6 +13,7 @@ import victor.training.performance.java8.cf.Exceptions.Dependency;
 import victor.training.performance.java8.cf.TestUtils.CaptureThreadName;
 import victor.training.performance.util.CaptureSystemOutput;
 import victor.training.performance.util.CaptureSystemOutput.OutputCapture;
+import victor.training.performance.util.NamedThreadFactory;
 import victor.training.performance.util.PerformanceUtil;
 
 import java.io.File;
@@ -27,14 +28,14 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
-@TestMethodOrder(MethodOrderer.MethodName.class)
+@TestMethodOrder(MethodName.class)
 @Timeout(1)
 class ExceptionsTest {
     @Mock
     Dependency dependencyMock;
 
     @InjectMocks
-    Exceptions workshop;
+    ExceptionsSolved workshop;
 
     private static final ExecutorService secondExecutor = Executors.newFixedThreadPool(1, new NamedThreadFactory("second"));
 
