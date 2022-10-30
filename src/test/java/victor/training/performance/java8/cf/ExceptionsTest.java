@@ -4,6 +4,7 @@ import org.jooq.lambda.Unchecked;
 import org.junit.jupiter.api.MethodOrderer;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestMethodOrder;
+import org.junit.jupiter.api.Timeout;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
@@ -27,6 +28,7 @@ import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 @TestMethodOrder(MethodOrderer.MethodName.class)
+@Timeout(1)
 class ExceptionsTest {
     @Mock
     Dependency dependencyMock;
@@ -118,6 +120,16 @@ class ExceptionsTest {
 
         File file = new File("out.txt");
         assertThat(Files.readString(file.toPath())).isEqualTo("abc");
+        assertThat(file.delete()).isTrue();
+    }
+
+    @Test
+    void p06_cleanup_KO() throws ExecutionException, InterruptedException, IOException {
+        when(dependencyMock.call()).thenAnswer(x -> supplyAsync(() -> {throw new TestRootCauseException();}, delayedExecutor(100, MILLISECONDS)));
+
+        assertThatThrownBy(() -> workshop.p06_cleanup().get());
+
+        File file = new File("out.txt");
         assertThat(file.delete()).isTrue();
     }
 

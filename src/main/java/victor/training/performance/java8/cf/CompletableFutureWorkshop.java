@@ -20,12 +20,7 @@ public class CompletableFutureWorkshop {
      * - flatmap (call CF with the response of CF)
      * - CF0.fork{CF1,CF2}->join{cfResult} * RACE BUG => Immutables
      * -    diff vs Either
-     *
-     *
-     * Time
-     * - timeout > ex | value
      * - anyOf
-     * - fire a CF after a delay
      *
      * Exceptions
      * - catch() {log}
@@ -38,6 +33,7 @@ public class CompletableFutureWorkshop {
      * Thread Pools
      * - launch on common
      * - launch on dedicated
+     * - fire a CF after a delay
      * - receive a CF, process its response on another Executor
      * - combine 2 CF, change what thread executes the BiFunction
      * - propagate thread locals over a ThreadPoolTaskExecutor
@@ -49,6 +45,7 @@ public class CompletableFutureWorkshop {
      * - detect blocking ??
      *
      * Advanced Scenarios
+     *      * - timeout > ex | value
      * - Message Bridge (fire on request MQ, wait on a reply MQ to complete the pending httpRequest
      * - buffer (wait for N, fire all)
      * - cache: get/put full async

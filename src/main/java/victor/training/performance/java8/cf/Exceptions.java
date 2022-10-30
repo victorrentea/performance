@@ -1,6 +1,5 @@
 package victor.training.performance.java8.cf;
 
-import lombok.RequiredArgsConstructor;
 import org.jooq.lambda.Unchecked;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -13,17 +12,19 @@ import java.util.concurrent.ExecutionException;
 
 import static java.util.concurrent.CompletableFuture.completedFuture;
 
-@RequiredArgsConstructor
 public class Exceptions {
     private static final Logger log = LoggerFactory.getLogger(Exceptions.class);
+
+    public Exceptions(Dependency dependency) {
+        this.dependency = dependency;
+    }
+
+    private final Dependency dependency;
 
     interface Dependency {
         CompletableFuture<String> call();
         CompletableFuture<String> backup();
     }
-
-    private final Dependency dependency;
-
 
     // ==================================================================================================
 
@@ -92,6 +93,7 @@ public class Exceptions {
     /**
      * [HARD⭐️] Call dependency#backup() on any exception in the future (same as previous), but do NOT use .get() or .join().
      * Hint: you'll need to use handle() and thenCompose()
+     * Variation: retry?
      */
     public CompletableFuture<String> p05_defaultFutureNonBlocking() {
         try {
