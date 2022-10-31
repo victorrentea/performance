@@ -36,6 +36,25 @@ public class BarService {
 
     @GetMapping("drink")
     public CompletableFuture<DillyDilly> orderDrinks() throws ExecutionException, InterruptedException {
+        return altaMetodaDintrunService()
+//                .thenApply(d -> {
+//                    log.info("Degusta de otrava " + d);
+//                    return d;
+//                })
+                .whenComplete((dilly,err)-> {
+                    if (dilly!=null) {
+                        log.info("Degusta de otrava " + dilly);
+                    }
+                })
+
+                ;
+    }
+
+
+
+
+
+    private CompletableFuture<DillyDilly> altaMetodaDintrunService() {
         log.debug("Requesting drinks...");
         long t0 = currentTimeMillis();
         CompletableFuture<Beer> futureBeer = supplyAsync(() -> barman.pourBeer());
@@ -44,15 +63,15 @@ public class BarService {
                 ;
 
         // NU ai voie CF.get() ever!!!! defeats the purpose.
-//        Beer beer = futureBeer.get(); // threadul tomcatului 1/ 200 sta blocat aici ca 🐂 degeaba
-//        Vodka vodka = futureVodka.get();
+        //        Beer beer = futureBeer.get(); // threadul tomcatului 1/ 200 sta blocat aici ca 🐂 degeaba
+        //        Vodka vodka = futureVodka.get();
 
         CompletableFuture<DillyDilly> futureDilly =
                 futureBeer.thenCombine(futureVodka, (beer, vodka) -> new DillyDilly(beer, vodka));
 
         // promise (JS)  fetch(url).then(result=> {}) ===
         // CompletableFuture (Java) = un Future tunat cu multe metode de chaining de procesare async /
-             // iti permite sa inlantui procesari FARA Sa blochezi nici un thread.
+        // iti permite sa inlantui procesari FARA Sa blochezi nici un thread.
 
         // 💡facem un wait all si apoi get pe fiecare.
         long t1 = currentTimeMillis();
