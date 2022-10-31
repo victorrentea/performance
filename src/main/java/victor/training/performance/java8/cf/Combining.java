@@ -40,7 +40,8 @@ public class Combining {
     // ==================================================================================================
 
     /**
-     * Run dependency#task(s) passing the string provided as parameter, then dependency#cleanup()
+     * Run dependency#task(s) passing the string provided as parameter, then dependency#cleanup();
+     * Hint: completableFuture.then....
      */
     public void p02_chainRun(String s) {
         dependency.task(s);
