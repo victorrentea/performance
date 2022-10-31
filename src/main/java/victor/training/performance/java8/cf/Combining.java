@@ -17,7 +17,8 @@ public class Combining {
     interface Dependency {
         CompletableFuture<String> call();
 
-        CompletableFuture<Void> task(String s);
+        CompletableFuture<Void> task(String s); // inseamna ca fct asta NU face defapt nimic cand o chemi, ci doar
+        // starteaza o procesare lunga IO nonblocanta
 
         void cleanup();
 
@@ -37,7 +38,9 @@ public class Combining {
      * Return the uppercase of the future value, not blocking.
      */
     public CompletableFuture<String> p01_transform() {
-        return dependency.call();
+        return dependency.call().thenApply(String::toUpperCase); // orice procesare in memory imediata
+        // pe rezultatele unui CF se pun in thenApply eg unmarshall la un JSON, parsare de int, adaugare de noi date
+        // f(x) {cf.thenApply(mama -> x.withMama(mama))
     }
 
     // ==================================================================================================
@@ -47,8 +50,14 @@ public class Combining {
      * Hint: completableFuture.then....
      */
     public void p02_chainRun(String s) {
-        dependency.task(s);
-        dependency.cleanup();
+        // ASTEA NU RULEAZA DACA A SARIT EROARE MAI SUS IN LANT
+//        dependency.task(s).thenAccept(v -> dependency.cleanup()); // naspa ca oricum nu faci nimic cu v
+//        dependency.task(s).thenRun(dependency::cleanup); // tot nu e bun ca vreau sa curat oricum
+
+        // ruleaza cleanup chiar daca task da chix
+        dependency.task(s).whenComplete((v,eroare)->dependency.cleanup()); // ~ finally
+
+
     }
 
     // ==================================================================================================
@@ -57,8 +66,7 @@ public class Combining {
      * Run dependency#task(s) passing the string provided by the dependency#call(). Do not block (get/join)!
      */
     public void p03_chainConsume() throws InterruptedException, ExecutionException {
-        String s = dependency.call().get();
-        dependency.task(s);
+        dependency.call().thenAccept(dependency::task);
     }
 
 
@@ -68,9 +76,11 @@ public class Combining {
      * Same as previous, but return a CF< Void > to let the caller know of when the task finishes, and of any exceptions
      */
     public CompletableFuture<Void> p04_flatMap() throws ExecutionException, InterruptedException {
-        String s = dependency.call().get();
-        dependency.task(s);
-        return completedFuture(null);
+//         dependency.call().thenApply(s -> dependency.task(s)); // CF<CF<Void>>
+
+//        return dependency.call().thenAccept(s -> dependency.task(s));
+        return dependency.call().thenCompose(s -> dependency.task(s)); // un fel de flatMap care asteapta sa
+        // se termine si CF intors de lambda pana termina CF returnat de functie
     }
 
     // ==================================================================================================
@@ -82,10 +92,25 @@ public class Combining {
      * Not blocking.
      */
     public CompletableFuture<Void> p05_forkJoin() throws ExecutionException, InterruptedException {
-        String s = dependency.call().get();
-        dependency.task(s).get();
-        dependency.cleanup();
-        return completedFuture(null);
+        CompletableFuture<String> callFuture = dependency.call();
+//        callFuture.whenComplete((s, err) -> {
+//            if (err == null) dependency.task(s);
+//        });
+        CompletableFuture<Void> futureTask = callFuture.thenCompose(s -> {
+            log.info("Start task");
+            PerformanceUtil.sleepMillis(100);
+            log.info("end task");
+            return dependency.task(s);
+        });
+        CompletableFuture<Void> futureCleanup = callFuture.thenRun(() -> {
+            log.info("Start cleanup");
+            PerformanceUtil.sleepMillis(100);
+            log.info("end cleanup");
+            dependency.cleanup();
+        });
+
+//        return futureTask.thenCombine(futureCleanup, (v1,v2)-> null);
+        return CompletableFuture.allOf(futureTask, futureCleanup); // mai sugestiv un pic
     }
 
     // ==================================================================================================
