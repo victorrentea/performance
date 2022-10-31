@@ -27,15 +27,14 @@
 - mocks returning a CF: then complete/fail
 - mocks delaying response
 - integration testing with WireMock
-- detect blocking ??
 
 ## Real-life Scenarios
 - Data enrichment
-  - a() and b()
-  - a(), then b1(a)
-  - a(), then b1(a) and c1(a)
-  - a(), then b1(a), then c2(a,b)
-  - a() and b() and c() => ABC(a,b,c)
+  - a() and b() ==> AB(a,b)
+  - a(), then b1(a) ==> AB(a,b)
+  - a(), then b1(a) and c1(a) ==> ABC(a,b,c)
+  - a(), then b1(a), then c2(a,b) ==> ABC(a,b,c)
+  - a() and b() and c() ==> ABC(a,b,c)
 - HTTP-Message Bridge 
   - from a HTTP request send message on request MQ
   - keep the connection open 
