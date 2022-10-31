@@ -19,8 +19,7 @@ import victor.training.performance.spring.metrics.MonitorQueueWaitingTime;
 import javax.servlet.AsyncContext;
 import javax.servlet.http.HttpServletRequest;
 import java.util.List;
-import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.ExecutionException;
+import java.util.concurrent.*;
 
 import static java.lang.System.currentTimeMillis;
 import static java.util.Arrays.asList;
@@ -36,11 +35,15 @@ public class BarService {
    public List<Object> orderDrinks() throws ExecutionException, InterruptedException {
       log.debug("Requesting drinks...");
       long t0 = System.currentTimeMillis();
+//      ExecutorService threadPool = Executors.newCachedThreadPool() // periculos caci la spikeuriu de requesturi poti aloca threaduri infinit de multe: JVM crash OOM, OS
+      ExecutorService threadPool = Executors.newFixedThreadPool(2);
+      Future<Beer> futureBeer = threadPool.submit(() -> barman.pourBeer());
+      Future<Vodka> futureVodka = threadPool.submit(() -> barman.pourVodka());
 
-      // ce pot sa fac daca sunt independente apelurile.
-      // turnam berea si vodka in paralel.
-      Vodka vodka = barman.pourVodka();
-      Beer beer = barman.pourBeer();
+      Beer beer = futureBeer.get(); // cat timp sta blocat aici threadul Tomcatului:  1sec
+      Vodka vodka = futureVodka.get(); // cat timp sta aici: 0 sec
+
+      // 💡facem un wait all si apoi get pe fiecare.
 
       long t1 = System.currentTimeMillis();
       List<Object> drinks = asList(beer, vodka);
