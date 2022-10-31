@@ -7,6 +7,7 @@ import org.junit.jupiter.api.Timeout;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 import victor.training.performance.java8.cf.TestUtils.CaptureThreadName;
 import victor.training.performance.util.PerformanceUtil;
@@ -77,6 +78,25 @@ public class ThreadPoolsTest {
         assertThat(resultFuture.isDone()).isFalse();
         PerformanceUtil.sleepMillis(301);
         assertThat(resultFuture.isDone()).isTrue();
+    }
+
+    @Test
+    public void p05_defaultAfterTimeout_inTime() {
+        when(dependency.network()).thenAnswer(x -> {
+            PerformanceUtil.sleepMillis(100);
+            return "data";
+        });
+        CompletableFuture<String> resultFuture = workshop.p05_defaultAfterTimeout();
+        assertThat(resultFuture.join()).isEqualTo("data");
+    }
+    @Test
+    public void p05_defaultAfterTimeout_timeout() {
+        when(dependency.network()).thenAnswer(x -> {
+            PerformanceUtil.sleepMillis(600);
+            return "data";
+        });
+        CompletableFuture<String> resultFuture = workshop.p05_defaultAfterTimeout();
+        assertThat(resultFuture.join()).isEqualTo("default");
     }
 
 }

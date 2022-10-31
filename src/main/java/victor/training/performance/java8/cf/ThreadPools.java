@@ -67,4 +67,13 @@ public class ThreadPools {
         PerformanceUtil.sleepMillis(500);
         return completedFuture("Surprise!");
     }
+
+    // ==================================================================================================
+
+    /**
+     * Allow #network() 500 millis to complete in 'customExecutor', otherwise complete with "default".
+     */
+    public CompletableFuture<String> p05_defaultAfterTimeout() {
+        return CompletableFuture.supplyAsync(() -> dependency.network());
+    }
 }

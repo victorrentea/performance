@@ -35,4 +35,9 @@ public class ThreadPoolsSolved extends ThreadPools{
     public CompletableFuture<String> p04_delayed() {
         return supplyAsync(() -> "Surprise!", CompletableFuture.delayedExecutor(500, MILLISECONDS));
     }
+
+    public CompletableFuture<String> p05_defaultAfterTimeout() {
+        return CompletableFuture.supplyAsync(() -> dependency.network())
+                .completeOnTimeout("default", 500, MILLISECONDS);
+    }
 }

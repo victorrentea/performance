@@ -160,4 +160,5 @@ class CombiningTest {
 
         assertThatThrownBy(() ->workshop.p07_fastest().get());
     }
+
 }
