@@ -62,11 +62,7 @@ public class BarService {
                 futureBeer.thenCombine(futureVodka, (beer, vodka) -> new DillyDilly(beer, vodka));
         long t1 = currentTimeMillis();
 
-        runAsync(() -> barman.injur("^*!%$!@^$%*!!(")).exceptionally(e -> {
-            log.error("VALEU: era s-o scap: ", e);
-            return null;
-        }); // CF<Void>
-        // pt ca nu am facut .get pe un CF > "fire-and-forget" IN LOG: nici o eroare
+       barman.injur("^*!%$!@^$%*!!("); // Springu: lasa-ma pe mine. ai Incredere in MINE!!
         log.debug("Ajung in patuc?");
 
         log.debug("Threadul Tomcatului scapa de req asta in {} ms", t1 - t0);
@@ -156,7 +152,8 @@ class Barman {
             return vodka;
         }, CompletableFuture.delayedExecutor(1, SECONDS));
     }
-
+    @Async // asta il face pe Spring sa logeze automat orice eroare apare in fct asta ?
+    // dece ? pentru ca stie sigur ca tu NU AI CUM sa mai vezi eroare (intrucat nu returnezi CF<VOid> sau atlceva,..)
     public void injur(String uratura) {
         if (uratura != null) {
             log.error("Imposibil. Io chiar scap eroarea!?!!");
