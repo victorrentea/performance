@@ -100,7 +100,8 @@ public class Combining {
 
     /**
      * Launch #call and #fetchAge in parallel.
-     * The value of the first to complete, converted to string, should be used to complete the returned future.
+     * The value of the first to complete (ignore the other),
+     * converted to string, should be used to complete the returned future.
      * [HARD⭐️] if the first completes with error, wait for the second.
      * [HARD⭐️⭐️⭐️] If both in error, complete in error.
      */
