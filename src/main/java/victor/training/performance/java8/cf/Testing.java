@@ -3,6 +3,12 @@ package victor.training.performance.java8.cf;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.task.SimpleAsyncTaskExecutor;
+import org.springframework.core.task.TaskDecorator;
 import org.springframework.http.HttpEntity;
 import org.springframework.stereotype.Component;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -17,11 +23,13 @@ import java.util.concurrent.TimeUnit;
 
 @RestController
 public class Testing {
+    private static final Logger log = LoggerFactory.getLogger(Testing.class);
     private final TestingDependency dependency;
 
     public Testing(TestingDependency dependency) {
         this.dependency = dependency;
     }
+
     @GetMapping
     public CompletableFuture<XY> methodToTest(@RequestParam(defaultValue = "1") String id) {
         return dependency.apiACall(id)
@@ -57,17 +65,19 @@ class XY {
     private final X x;
     private final Y y;
 }
+@Slf4j
 @Component
 class TestingDependency {
     public CompletableFuture<X> apiACall(String id) {
         return new AsyncRestTemplate()
-                .getForEntity("http://localhost:9999/api/a/{id}", X.class, id)
+                .getForEntity("http://localhost:9999/api/x/{id}", X.class, id)
                 .completable()
-                .thenApply(HttpEntity::getBody);
+                .thenApply(HttpEntity::getBody)
+                .whenComplete((x, err)-> {log.info("Response from X " + x);});
     }
     public CompletableFuture<Y> apiBCall(String id) {
         return new AsyncRestTemplate()
-                .getForEntity("http://localhost:9999/api/b/{id}", Y.class, id)
+                .getForEntity("http://localhost:9999/api/y/{id}", Y.class, id)
                 .completable()
                 .thenApply(HttpEntity::getBody);
     }
