@@ -50,20 +50,6 @@ public class Combining {
         dependency.cleanup();
     }
 
-    @GetMapping
-    public void method() {
-        Thread thread = new Thread(() -> { // + 1 MB
-            System.out.println("Treaba");
-            PerformanceUtil.sleepMillis(10);
-        });
-        thread.setDaemon(true); // daca toate threadurile
-        // non-deamon au terminat, asta nu conteaza, JVM se inchide.
-
-        thread.start();
-        // iesi imediat, atunci threadul tomcatului
-        // poate lua alt HTTP request de pe teava
-    }
-
     // ==================================================================================================
 
     /**
