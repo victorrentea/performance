@@ -63,12 +63,15 @@ class CombiningTest {
     void p04_flatMap() throws ExecutionException, InterruptedException {
         CompletableFuture<String> future = new CompletableFuture<>();
         when(dependency.call()).thenReturn(future);
-        when(dependency.task("a")).thenReturn(completedFuture(null));
+        CompletableFuture<Void> taskFuture = new CompletableFuture<>();
+        when(dependency.task("a")).thenReturn(taskFuture);
 
         CompletableFuture<Void> resultFuture = workshop.p04_flatMap();
 
         assertThat(resultFuture.isDone()).isFalse();
         future.complete("a");
+        assertThat(resultFuture.isDone()).isFalse();
+        taskFuture.complete(null);
         assertThat(resultFuture.isDone()).isTrue();
     }
 
