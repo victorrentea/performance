@@ -2,6 +2,7 @@ package victor.training.performance.spring;
 
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import io.micrometer.core.annotation.Timed;
 import io.micrometer.core.instrument.MeterRegistry;
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
@@ -36,8 +37,10 @@ public class BarService {
       log.debug("Requesting drinks...");
       long t0 = System.currentTimeMillis();
 
-      Beer beer = barman.pourBeer();
+      // ce pot sa fac daca sunt independente apelurile.
+      // turnam berea si vodka in paralel.
       Vodka vodka = barman.pourVodka();
+      Beer beer = barman.pourBeer();
 
       long t1 = System.currentTimeMillis();
       List<Object> drinks = asList(beer, vodka);
@@ -93,7 +96,9 @@ class Barman {
 
    public Vodka pourVodka() {
       log.debug("Pouring Vodka...");
-      sleepMillis(1000); // long query
+      sleepMillis(1000); // long query maria DB conn ai uitat sa pui
+      // indecsii in PROD!!!. ai pus indecsi pe toti si dupa faci
+      // un un INSEEEEEEEEEEEEEERT
       log.debug("Vodka done");
       return new Vodka();
    }

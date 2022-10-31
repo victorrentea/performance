@@ -2,9 +2,12 @@ package victor.training.performance.java8.cf;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.web.bind.annotation.GetMapping;
+import victor.training.performance.util.PerformanceUtil;
 
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
+import java.util.stream.Stream;
 
 import static java.util.concurrent.CompletableFuture.*;
 
@@ -43,8 +46,30 @@ public class Combining {
      * Run dependency#task(s) passing the string provided as parameter, then dependency#cleanup()
      */
     public void p02_chainRun(String s) {
+//        String p = "destept";
+//
+//        CompletableFuture.runAsync(() -> {
+//            p = "altu";
+//        });
+
+
+
         dependency.task(s);
         dependency.cleanup();
+    }
+
+    @GetMapping
+    public void method() {
+        Thread thread = new Thread(() -> { // + 1 MB
+            System.out.println("Treaba");
+            PerformanceUtil.sleepMillis(10);
+        });
+        thread.setDaemon(true); // daca toate threadurile
+        // non-deamon au terminat, asta nu conteaza, JVM se inchide.
+
+        thread.start();
+        // iesi imediat, atunci threadul tomcatului
+        // poate lua alt HTTP request de pe teava
     }
 
     // ==================================================================================================

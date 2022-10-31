@@ -1,6 +1,5 @@
 package victor.training.performance.java8.cf;
 
-import org.junit.jupiter.api.MethodOrderer;
 import org.junit.jupiter.api.MethodOrderer.MethodName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestMethodOrder;
@@ -19,7 +18,10 @@ import victor.training.performance.util.PerformanceUtil;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
-import java.util.concurrent.*;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 import static java.util.concurrent.CompletableFuture.*;
 import static java.util.concurrent.TimeUnit.MILLISECONDS;
@@ -35,7 +37,7 @@ class ExceptionsTest {
     Dependency dependencyMock;
 
     @InjectMocks
-    ExceptionsSolved workshop;
+    Exceptions workshop;
 
     private static final ExecutorService secondExecutor = Executors.newFixedThreadPool(1, new NamedThreadFactory("second"));
 
