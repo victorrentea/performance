@@ -25,6 +25,7 @@ import org.springframework.web.client.RestTemplate;
 
 import javax.servlet.AsyncContext;
 import javax.servlet.http.HttpServletRequest;
+import java.util.List;
 import java.util.concurrent.*;
 
 import static java.lang.System.currentTimeMillis;
@@ -138,19 +139,21 @@ class Barman {
 
     private RestTemplate restTemplate = new RestTemplate();
 
-    @Async
     public CompletableFuture<Beer> pourBeer() { // dureze timp!
         log.debug("Pouring Beer...");
 
+// RAU F RAU pemntru ca starvez commonPool: blocand unul din ce le N-1 (la mine 9) threaduri cu I/O
+        CompletableFuture<Beer> futureBeer = supplyAsync(() ->
+                restTemplate.getForObject("http://localhost:9999/api/beer", Beer.class));
 
-        Beer beer = restTemplate.getForObject("http://localhost:9999/api/beer", Beer.class);
 
+//        List.of(1,2,3).parallelStream() // tot pe commonPool
 
         log.debug("Beer done");
 //        if (true) {
 //            throw new NullPointerException("BUG!");
 //        }
-        return CompletableFuture.completedFuture(beer);
+        return futureBeer;
     }
 
     public Vodka pourVodka() {
