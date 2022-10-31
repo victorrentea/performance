@@ -20,6 +20,8 @@ import javax.servlet.http.HttpServletRequest;
 import java.util.concurrent.*;
 
 import static java.lang.System.currentTimeMillis;
+import static java.util.concurrent.CompletableFuture.supplyAsync;
+import static java.util.concurrent.TimeUnit.SECONDS;
 import static victor.training.performance.util.PerformanceUtil.sleepMillis;
 
 @RestController
@@ -33,39 +35,44 @@ public class BarService {
     ThreadPoolTaskExecutor threadPool;
 
     @GetMapping("drink")
-    public DillyDilly orderDrinks() throws ExecutionException, InterruptedException {
+    public CompletableFuture<DillyDilly> orderDrinks() throws ExecutionException, InterruptedException {
         log.debug("Requesting drinks...");
-        long t0 = System.currentTimeMillis();
+        long t0 = currentTimeMillis();
+        CompletableFuture<Beer> futureBeer = supplyAsync(() -> barman.pourBeer());
+        CompletableFuture<Vodka> futureVodka = supplyAsync(() -> barman.pourVodka())
+                .thenCompose(v -> barman.addIce(v)) // mai joaca un CF "coase-l si p'asta"
+                ;
 
-        Future<Beer> futureBeer = threadPool.submit(() -> barman.pourBeer());
-        Future<Vodka> futureVodka = threadPool.submit(() -> barman.pourVodka());
+        // NU ai voie CF.get() ever!!!! defeats the purpose.
+//        Beer beer = futureBeer.get(); // threadul tomcatului 1/ 200 sta blocat aici ca 🐂 degeaba
+//        Vodka vodka = futureVodka.get();
 
-        Beer beer = futureBeer.get(); // threadul tomcatului 1/ 200 sta blocat aici ca 🐂 degeaba
-        Vodka vodka = futureVodka.get();
+        CompletableFuture<DillyDilly> futureDilly =
+                futureBeer.thenCombine(futureVodka, (beer, vodka) -> new DillyDilly(beer, vodka));
 
+        // promise (JS)  fetch(url).then(result=> {}) ===
+        // CompletableFuture (Java) = un Future tunat cu multe metode de chaining de procesare async /
+             // iti permite sa inlantui procesari FARA Sa blochezi nici un thread.
 
         // 💡facem un wait all si apoi get pe fiecare.
-        long t1 = System.currentTimeMillis();
-        DillyDilly dilly = new DillyDilly(beer, vodka);
-        log.debug("Got my order in {} ms : {}", t1 - t0, dilly);
-        return dilly;
+        long t1 = currentTimeMillis();
+        log.debug("Threadul Tomcatului scapa de req asta in {} ms", t1 - t0);
+        return futureDilly;
     }
+    // cine scrie catre client rezultatul efectiv pe HTTP response?
 
 
 
-    //<editor-fold desc="History Lesson: Async Servlets">
+    //<editor-fold desc="History Lesson: Async Servlets 10 ani din Servet 3.0">
     @GetMapping("/drink-raw")
     public void underTheHood_asyncServlets(HttpServletRequest request) throws ExecutionException, InterruptedException {
         long t0 = currentTimeMillis();
         AsyncContext asyncContext = request.startAsync(); // I will write the response async
 
         //var futureDrinks = orderDrinks();
-        var futureDrinks = CompletableFuture.supplyAsync(() -> {
-            sleepMillis(2000);
-            return new Beer("blond");
-        });
+        var futureDrinks = orderDrinks();
         futureDrinks.thenAccept(Unchecked.consumer(dilly -> {
-            String json = new ObjectMapper().writeValueAsString(dilly);
+            String json = new ObjectMapper().writeValueAsString(dilly); // serialize as JSON
             asyncContext.getResponse().getWriter().write(json);// the connection was kept open
             asyncContext.complete(); // close the connection to the client
         }));
@@ -88,10 +95,17 @@ public class BarService {
     //</editor-fold>
 }
 
+@Slf4j
 @lombok.Value
 class DillyDilly {
      Beer beer;
      Vodka vodka;
+
+    public DillyDilly(Beer beer, Vodka vodka) {
+        this.beer = beer;
+        this.vodka = vodka;
+        log.info("Amestec cocktail"); // unde ruleaza lambda de combina rezultatele celor 2 bauturi?
+    }
 }
 
 @Service
@@ -113,6 +127,14 @@ class Barman {
         log.debug("Vodka done");
         return new Vodka();
     }
+
+//    public Vodka addIce(Vodka vodka) { // in0memory instantaneous tranformation
+    public CompletableFuture<Vodka> addIce(Vodka vodka) { // NETWORK call (alt api call)
+        return supplyAsync(() -> {
+            vodka.setIce(true);
+            return vodka;
+        }, CompletableFuture.delayedExecutor(1, SECONDS));
+    }
 }
 
 @Data
@@ -123,6 +145,7 @@ class Beer {
 @Data
 class Vodka {
     private final String brand = "Absolut";
+    private boolean ice; // PROST PROST PROST DATE MUTABILE IN MULTITHREAD. Kididing !! NICIODATA  Ca da in race conditions.
 }
 
 @Configuration
