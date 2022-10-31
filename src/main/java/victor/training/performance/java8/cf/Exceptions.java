@@ -8,7 +8,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.Writer;
 import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.ExecutionException;
+import java.util.function.Function;
 
 import static java.util.concurrent.CompletableFuture.completedFuture;
 
@@ -32,12 +32,10 @@ public class Exceptions {
      * Log any exception from the future, but leave the exception unchanged.
      */
     public CompletableFuture<String> p01_log() {
-        try {
-            return dependency.call();
-        } catch (Exception e) {
-            log.error("Exception occurred: " + e, e);  // <-- do this on any exception in the future, then delete this USELESS catch
-            throw e;
-        }
+        return dependency.call().exceptionally(e -> {
+            log.error("Exception occurred: " + e, e);
+            throw new RuntimeException(e);
+        });
     }
 
     // ==================================================================================================
@@ -46,11 +44,9 @@ public class Exceptions {
      * Wrap any exception from the future in a new IllegalStateException("Call failed", original).
      */
     public CompletableFuture<String> p02_wrap() {
-        try {
-            return dependency.call();
-        } catch (Exception e) { // la shto. Nu apare niciodata o Exception din call()
-            throw new IllegalStateException("Call failed", e); // <-- do this on any exception in the future, then delete this USELESS catch
-        }
+       return dependency.call().exceptionally(e-> {
+           throw new IllegalStateException("Call failed", e);
+       });
     }
 
     // ==================================================================================================
@@ -59,11 +55,7 @@ public class Exceptions {
      * Return "default" on any exception in the future.
      */
     public CompletableFuture<String> p03_defaultValue() {
-        try {
-            return dependency.call();
-        } catch (Exception e) {
-            return completedFuture("default"); // <-- do this on any exception in the future, then delete this USELESS catch
-        }
+            return dependency.call().exceptionally(e->"default");
     }
 
     // ==================================================================================================
@@ -71,11 +63,7 @@ public class Exceptions {
      * Call dependency#backup() on any exception in the future.
      */
     public CompletableFuture<String> p04_defaultFuture() {
-        try {
-            return dependency.call();
-        } catch (Exception e) {
-            return dependency.backup(); // <-- do this on any exception in the future, then delete this USELESS catch
-        }
+        return dependency.call().exceptionally(e -> dependency.backup().join());
     }
     // ==================================================================================================
     /**
@@ -84,11 +72,13 @@ public class Exceptions {
      * Variation: retry?
      */
     public CompletableFuture<String> p05_defaultFutureNonBlocking() {
-        try {
-            return dependency.call();
-        } catch (Exception e) {
-            return dependency.backup(); // <-- do this on any exception in the future, then delete this USELESS catch
-        }
+         return dependency.call().handle((s, err) -> {
+             if (err != null) {
+                 return dependency.backup();
+             } else {
+                 return completedFuture(s);
+             }
+         }).thenCompose(Function.identity()); // TODO retryable
     }
 
     // ==================================================================================================
@@ -96,10 +86,10 @@ public class Exceptions {
      * Close the resource (Writer) after the future completes
      */
     public CompletableFuture<Void> p06_cleanup() throws IOException {
-        try(Writer writer = new FileWriter("out.txt")) {// <-- make sure you close the writer AFTER the CF completes!
+        Writer writer = new FileWriter("out.txt");
             return dependency.call()
-                    .thenAccept(Unchecked.consumer(s -> writer.write(s))) // Unchecked.consumer converts any exception into a runtime one
+                    .thenAccept(Unchecked.consumer(writer::write)) // Unchecked.consumer converts any exception into a runtime one
+                    .whenComplete(Unchecked.biConsumer((v,e) -> writer.close())) // hook: nu afecteaza ce intoarce CF
                     ;
-        }
     }
 }

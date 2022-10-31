@@ -43,14 +43,16 @@ class ExceptionsTest {
 
     @Test
     @CaptureSystemOutput
-    void p01_log(OutputCapture outputCapture) {
+    void p01_log_KO(OutputCapture outputCapture) {
         when(dependencyMock.call()).thenReturn(CompletableFuture.failedFuture(new TestRootCauseException()));
 
-        workshop.p01_log();
+        CompletableFuture<String> returnedFuture = workshop.p01_log();
 
         assertThat(outputCapture.toString())
                 .contains("Exception occurred")
                 .contains(TestRootCauseException.class.getSimpleName());
+        assertThatThrownBy(returnedFuture::get)
+                .hasRootCauseInstanceOf(TestRootCauseException.class);
     }
     @Test
     @CaptureSystemOutput
