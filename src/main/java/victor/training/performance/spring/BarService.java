@@ -36,11 +36,11 @@ public class BarService {
       log.debug("Requesting drinks...");
       long t0 = System.currentTimeMillis();
 //      ExecutorService threadPool = Executors.newCachedThreadPool() // periculos caci la spikeuriu de requesturi poti aloca threaduri infinit de multe: JVM crash OOM, OS
-      ExecutorService threadPool = Executors.newFixedThreadPool(2);
+      ExecutorService threadPool = Executors.newFixedThreadPool(1);
       Future<Beer> futureBeer = threadPool.submit(() -> barman.pourBeer());
-      Beer beer = futureBeer.get(); // cat timp sta blocat aici threadul Tomcatului:  1sec
       Future<Vodka> futureVodka = threadPool.submit(() -> barman.pourVodka());
 
+      Beer beer = futureBeer.get(); // cat timp sta blocat aici threadul Tomcatului:  1sec
       Vodka vodka = futureVodka.get(); // cat timp sta aici: 0 sec
 
       // 💡facem un wait all si apoi get pe fiecare.
