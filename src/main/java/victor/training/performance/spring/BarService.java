@@ -30,7 +30,10 @@ import static victor.training.performance.util.PerformanceUtil.sleepMillis;
 @Slf4j
 public class BarService {
     @Autowired
-    private Barman barman;
+    private Barman barman; // acum SPring iti injecteaza un PROXY la barman (o sublclasa dinamica)
+    // ca sa-ti poata fura
+    // apelul de metoda si sa ti-l ruleze pe al t thread !!!!!!\
+
     // niciodata asa: ci cu ThreadPoolTaskExecutor de sprign va rog !
 //    ExecutorService threadPool = Executors.newFixedThreadPool(2); // nu aloci un thread pool la fiecare req ci partajezi cu fratii
     @Autowired
@@ -41,7 +44,7 @@ public class BarService {
         log.debug("Requesting drinks cui: {}...", barman.getClass());
         long t0 = currentTimeMillis();
 
-        CompletableFuture<Beer> futureBeer = CompletableFuture.supplyAsync(()->barman.pourBeer())
+        CompletableFuture<Beer> futureBeer = barman.pourBeer()
                 // tu cand chemi pourBeer ea nu incepe executia ATUNCI pe loc, ci
                 // mai tarziu intr-un alt thread. Junioru e in soc anafilactic/spasme
                 // cine face asta?! Proxy-ul
@@ -123,7 +126,8 @@ class DillyDilly {
 @Service
 @Slf4j
 class Barman {
-    public Beer pourBeer() { // dureze timp!
+    @Async
+    public CompletableFuture<Beer> pourBeer() { // dureze timp!
         log.debug("Pouring Beer...");
         if (true) {
             throw new IllegalStateException("Nu mai e bere blonda !!!! E*Y&Q*R^(&R^*&R^&*R^&**%&(*!&)(&@!)*!@$*!@&%*!");
@@ -133,7 +137,7 @@ class Barman {
 //        if (true) {
 //            throw new NullPointerException("BUG!");
 //        }
-        return new Beer("blond");
+        return CompletableFuture.completedFuture(new Beer("blond"));
     }
 
     public Vodka pourVodka() {
