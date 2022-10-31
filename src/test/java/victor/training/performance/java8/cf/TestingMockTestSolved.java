@@ -10,7 +10,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.client.HttpClientErrorException;
 
 import java.nio.charset.Charset;
-import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.TimeUnit;
 
 import static java.util.concurrent.CompletableFuture.*;
@@ -31,39 +30,39 @@ public class TestingMockTestSolved {
         HttpClientErrorException notFound = HttpClientErrorException.create(HttpStatus.NOT_FOUND,
                 "Not Found", new HttpHeaders(), null, Charset.defaultCharset());
         when(dependencyMock.apiACall(ID)).thenReturn(failedFuture(notFound));
-        when(dependencyMock.apiBCall(ID)).thenReturn(completedFuture(new B("b")));
+        when(dependencyMock.apiBCall(ID)).thenReturn(completedFuture(new Y("y")));
 
-        AB result = testing.methodToTest(ID).get();
+        XY result = testing.methodToTest(ID).get();
 
-        assertThat(result).isEqualTo(new AB(new A("Not Found"), new B("b")));
+        assertThat(result).isEqualTo(new XY(new X("Not Found"), new Y("y")));
     }
 
     @Test
     void aTimeout() throws Exception {
-        when(dependencyMock.apiACall(ID)).thenReturn(supplyAsync(()->new A("never"), delayedExecutor(600, TimeUnit.MILLISECONDS)));
-        when(dependencyMock.apiBCall(ID)).thenReturn(completedFuture(new B("b")));
+        when(dependencyMock.apiACall(ID)).thenReturn(supplyAsync(()->new X("never"), delayedExecutor(600, TimeUnit.MILLISECONDS)));
+        when(dependencyMock.apiBCall(ID)).thenReturn(completedFuture(new Y("y")));
 
-        AB result = testing.methodToTest(ID).get();
+        XY result = testing.methodToTest(ID).get();
 
-        assertThat(result).isEqualTo(new AB(new A("Timeout"), new B("b")));
+        assertThat(result).isEqualTo(new XY(new X("Timeout"), new Y("y")));
     }
 
     @Test
     void aSolo() throws Exception {
-        when(dependencyMock.apiACall(ID)).thenReturn(completedFuture(new A("SOLO")));
+        when(dependencyMock.apiACall(ID)).thenReturn(completedFuture(new X("SOLO")));
 
-        AB result = testing.methodToTest(ID).get();
+        XY result = testing.methodToTest(ID).get();
 
-        assertThat(result).isEqualTo(new AB(new A("SOLO"), null));
+        assertThat(result).isEqualTo(new XY(new X("SOLO"), null));
     }
 
     @Test
     void aAndB() throws Exception {
-        when(dependencyMock.apiACall(ID)).thenReturn(completedFuture(new A("a")));
-        when(dependencyMock.apiBCall(ID)).thenReturn(completedFuture(new B("b")));
+        when(dependencyMock.apiACall(ID)).thenReturn(completedFuture(new X("x")));
+        when(dependencyMock.apiBCall(ID)).thenReturn(completedFuture(new Y("y")));
 
-        AB result = testing.methodToTest(ID).get();
+        XY result = testing.methodToTest(ID).get();
 
-        assertThat(result).isEqualTo(new AB(new A("a"), new B("b")));
+        assertThat(result).isEqualTo(new XY(new X("x"), new Y("y")));
     }
 }

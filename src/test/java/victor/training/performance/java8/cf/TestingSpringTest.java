@@ -17,7 +17,7 @@ public class TestingSpringTest {
 
     @Test
     void integrationTest() throws ExecutionException, InterruptedException {
-        AB ab = testing.methodToTest("1").get();
-        assertThat(ab).isEqualTo(new AB(new A("aaa"), new B("bbb")));
+        XY XY = testing.methodToTest("1").get();
+        assertThat(XY).isEqualTo(new XY(new X("x"), new Y("y")));
     }
 }

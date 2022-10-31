@@ -1,7 +1,7 @@
 {
   "request": {
     "method": "GET",
-    "urlPathPattern": "/api/b/.*"
+    "urlPathPattern": "/api/x/.*"
   },
   "response": {
     "status": 200,
@@ -9,10 +9,10 @@
       "Content-Type": "application/json"
     },
     "jsonBody" : {
-      "b": "bbb"
+      "x": "x"
     },
 
-    "fixedDelayMilliseconds": 500
+    "fixedDelayMilliseconds": 50
 
   }
 }
