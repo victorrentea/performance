@@ -52,8 +52,8 @@ public class Combining {
     /**
      * Run dependency#task(s) passing the string provided by the dependency#call(). Do not block (get/join)!
      */
-    public void p03_chainConsume() throws InterruptedException {
-        String s = dependency.call().join();
+    public void p03_chainConsume() throws InterruptedException, ExecutionException {
+        String s = dependency.call().get();
         dependency.task(s);
     }
 
@@ -63,8 +63,8 @@ public class Combining {
     /**
      * Same as previous, but return a CF< Void > to let the caller know of when the task finishes, and of any exceptions
      */
-    public CompletableFuture<Void> p04_flatMap() {
-        String s = dependency.call().join();
+    public CompletableFuture<Void> p04_flatMap() throws ExecutionException, InterruptedException {
+        String s = dependency.call().get();
         dependency.task(s);
         return completedFuture(null);
     }
@@ -77,9 +77,9 @@ public class Combining {
      * Wait for both to complete and then complete the returned future.
      * Not blocking.
      */
-    public CompletableFuture<Void> p05_forkJoin() {
-        String s = dependency.call().join();
-        dependency.task(s).join();
+    public CompletableFuture<Void> p05_forkJoin() throws ExecutionException, InterruptedException {
+        String s = dependency.call().get();
+        dependency.task(s).get();
         dependency.cleanup();
         return completedFuture(null);
     }
