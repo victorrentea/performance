@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -20,6 +21,7 @@ import javax.servlet.http.HttpServletRequest;
 import java.util.concurrent.*;
 
 import static java.lang.System.currentTimeMillis;
+import static java.util.concurrent.CompletableFuture.runAsync;
 import static java.util.concurrent.CompletableFuture.supplyAsync;
 import static java.util.concurrent.TimeUnit.SECONDS;
 import static victor.training.performance.util.PerformanceUtil.sleepMillis;
@@ -36,48 +38,39 @@ public class BarService {
 
     @GetMapping("drink")
     public CompletableFuture<DillyDilly> orderDrinks() throws ExecutionException, InterruptedException {
-        return altaMetodaDintrunService()
-//                .thenApply(d -> {
-//                    log.info("Degusta de otrava " + d);
-//                    return d;
-//                })
-                .whenComplete((dilly,err)-> {
-                    if (dilly!=null) {
-                        log.info("Degusta de otrava " + dilly);
-                    }
-                })
-
-                ;
-    }
-
-
-
-
-
-    private CompletableFuture<DillyDilly> altaMetodaDintrunService() {
-        log.debug("Requesting drinks...");
+        log.debug("Requesting drinks cui: {}...", barman.getClass());
         long t0 = currentTimeMillis();
-        CompletableFuture<Beer> futureBeer = supplyAsync(() -> barman.pourBeer());
+
+        CompletableFuture<Beer> futureBeer = CompletableFuture.supplyAsync(()->barman.pourBeer())
+                // tu cand chemi pourBeer ea nu incepe executia ATUNCI pe loc, ci
+                // mai tarziu intr-un alt thread. Junioru e in soc anafilactic/spasme
+                // cine face asta?! Proxy-ul
+
+                .exceptionally(e -> {
+                    if (e.getCause() instanceof IllegalStateException)
+                        return new Beer("bruna");
+                    else throw new RuntimeException(e);
+                });
         CompletableFuture<Vodka> futureVodka = supplyAsync(() -> barman.pourVodka())
                 .thenCompose(v -> barman.addIce(v)) // mai joaca un CF "coase-l si p'asta"
                 ;
 
-        // NU ai voie CF.get() ever!!!! defeats the purpose.
-        //        Beer beer = futureBeer.get(); // threadul tomcatului 1/ 200 sta blocat aici ca 🐂 degeaba
-        //        Vodka vodka = futureVodka.get();
-
         CompletableFuture<DillyDilly> futureDilly =
                 futureBeer.thenCombine(futureVodka, (beer, vodka) -> new DillyDilly(beer, vodka));
-
-        // promise (JS)  fetch(url).then(result=> {}) ===
-        // CompletableFuture (Java) = un Future tunat cu multe metode de chaining de procesare async /
-        // iti permite sa inlantui procesari FARA Sa blochezi nici un thread.
-
-        // 💡facem un wait all si apoi get pe fiecare.
         long t1 = currentTimeMillis();
+
+        runAsync(() -> barman.injur("^*!%$!@^$%*!!(")).exceptionally(e -> {
+            log.error("VALEU: era s-o scap: ", e);
+            return null;
+        }); // CF<Void>
+        // pt ca nu am facut .get pe un CF > "fire-and-forget" IN LOG: nici o eroare
+        log.debug("Ajung in patuc?");
+
         log.debug("Threadul Tomcatului scapa de req asta in {} ms", t1 - t0);
         return futureDilly;
     }
+
+
     // cine scrie catre client rezultatul efectiv pe HTTP response?
 
 
@@ -130,11 +123,16 @@ class DillyDilly {
 @Service
 @Slf4j
 class Barman {
-
-    public Beer pourBeer() {
+    public Beer pourBeer() { // dureze timp!
         log.debug("Pouring Beer...");
+        if (true) {
+            throw new IllegalStateException("Nu mai e bere blonda !!!! E*Y&Q*R^(&R^*&R^&*R^&**%&(*!&)(&@!)*!@$*!@&%*!");
+        }
         sleepMillis(1000); // imagine slow REST call
         log.debug("Beer done");
+//        if (true) {
+//            throw new NullPointerException("BUG!");
+//        }
         return new Beer("blond");
     }
 
@@ -153,6 +151,13 @@ class Barman {
             vodka.setIce(true);
             return vodka;
         }, CompletableFuture.delayedExecutor(1, SECONDS));
+    }
+
+    public void injur(String uratura) {
+        if (uratura != null) {
+            log.error("Imposibil. Io chiar scap eroarea!?!!");
+            throw new IllegalArgumentException("Iti fac buzunar! / Te casez!");
+        }
     }
 }
 
