@@ -2,19 +2,26 @@ package victor.training.performance.spring;
 
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import io.micrometer.core.annotation.Timed;
 import io.micrometer.core.instrument.MeterRegistry;
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.jooq.lambda.Unchecked;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.retry.annotation.Retryable;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.client.RestTemplate;
 
 import javax.servlet.AsyncContext;
 import javax.servlet.http.HttpServletRequest;
@@ -122,21 +129,33 @@ class DillyDilly {
 @Service
 @Slf4j
 class Barman {
+
+    //        if (true) {
+    //            throw new IllegalStateException("Nu mai e bere blonda !!!! E*Y&Q*R^(&R^*&R^&*R^&**%&(*!&)(&@!)*!@$*!@&%*!");
+    //        }
+    //        sleepMillis(1000); // imagine slow REST call
+
+
+    private RestTemplate restTemplate = new RestTemplate();
+
     @Async
     public CompletableFuture<Beer> pourBeer() { // dureze timp!
         log.debug("Pouring Beer...");
-        if (true) {
-            throw new IllegalStateException("Nu mai e bere blonda !!!! E*Y&Q*R^(&R^*&R^&*R^&**%&(*!&)(&@!)*!@$*!@&%*!");
-        }
-        sleepMillis(1000); // imagine slow REST call
+
+
+        Beer beer = restTemplate.getForObject("http://localhost:9999/api/beer", Beer.class);
+
+
         log.debug("Beer done");
 //        if (true) {
 //            throw new NullPointerException("BUG!");
 //        }
-        return CompletableFuture.completedFuture(new Beer("blond"));
+        return CompletableFuture.completedFuture(beer);
     }
 
     public Vodka pourVodka() {
+//        new Exception().printStackTrace();
+
         log.debug("Pouring Vodka...");
         sleepMillis(1000); // long query maria DB conn ai uitat sa pui
         // indecsii in PROD!!!. ai pus indecsi pe toti si dupa faci
@@ -152,6 +171,14 @@ class Barman {
             return vodka;
         }, CompletableFuture.delayedExecutor(1, SECONDS));
     }
+
+
+//    @Transactional
+//    @Retryable
+//    @Cacheable
+//    @PreAuthorized
+//    @Secured
+//    @Timed
     @Async // asta il face pe Spring sa logeze automat orice eroare apare in fct asta ?
     // dece ? pentru ca stie sigur ca tu NU AI CUM sa mai vezi eroare (intrucat nu returnezi CF<VOid> sau atlceva,..)
     public void injur(String uratura) {
@@ -163,8 +190,10 @@ class Barman {
 }
 
 @Data
+@NoArgsConstructor
+@AllArgsConstructor
 class Beer {
-    private final String type;
+    private String type;
 }
 
 @Data
