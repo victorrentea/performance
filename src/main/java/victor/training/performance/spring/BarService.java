@@ -30,13 +30,14 @@ import static victor.training.performance.util.PerformanceUtil.sleepMillis;
 public class BarService {
    @Autowired
    private Barman barman;
+   // niciodata asa: ci cu ThreadPoolTaskExecutor de sprign va rog !
+    ExecutorService threadPool = Executors.newFixedThreadPool(10); // nu aloci un thread pool la fiecare req ci partajezi cu fratii
 
    @GetMapping("drink")
    public List<Object> orderDrinks() throws ExecutionException, InterruptedException {
       log.debug("Requesting drinks...");
       long t0 = System.currentTimeMillis();
 //      ExecutorService threadPool = Executors.newCachedThreadPool() // periculos caci la spikeuriu de requesturi poti aloca threaduri infinit de multe: JVM crash OOM, OS
-      ExecutorService threadPool = Executors.newFixedThreadPool(1); // nu aloci un thread pool la fiecare req ci partajezi cu fratii
       Future<Beer> futureBeer = threadPool.submit(() -> barman.pourBeer());
       Future<Vodka> futureVodka = threadPool.submit(() -> barman.pourVodka());
 
@@ -48,6 +49,7 @@ public class BarService {
       long t1 = System.currentTimeMillis();
       List<Object> drinks = asList(beer, vodka);
       log.debug("Got my order in {} ms : {}", t1 - t0, drinks);
+      threadPool.shutdown();
       return drinks;
    }
 
