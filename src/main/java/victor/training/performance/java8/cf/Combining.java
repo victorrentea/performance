@@ -95,7 +95,9 @@ public class Combining {
      * Not blocking.
      */
     public CompletableFuture<Void> p05_forkJoin() throws ExecutionException, InterruptedException {
-        CompletableFuture<String> callFuture = dependency.call();
+        CompletableFuture<String> callFuture = dependency.call()
+               ;
+        callFuture.thenAccept(s -> log.info("pe ce thread " + s));
 //        callFuture.whenComplete((s, err) -> {
 //            if (err == null) dependency.task(s);
 //        });

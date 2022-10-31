@@ -94,7 +94,7 @@ class CombiningTest {
         assertThat(resultFuture.isDone()).isFalse();
         // call completes
         log.info("Call completes");
-        callFuture.complete("a");
+        callFuture.completeAsync(()->"a"); //
         PerformanceUtil.sleepMillis(50);
         verify(dependency).cleanup();
         verify(dependency).task("a");
