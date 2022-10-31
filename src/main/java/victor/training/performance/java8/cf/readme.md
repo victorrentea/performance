@@ -1,3 +1,7 @@
+## Basics
+- completing with value
+- completing with exception
+
 ## Combining
 - thenApply
 - thenRun
@@ -19,11 +23,18 @@
 - Combine 2 CF, change what thread executes the BiFunction
 
 ## Testing
-- complete with result|exception
-- mocks returning a CF, then completed.
+- mocks returning a CF: then complete/fail
+- mocks delaying response
+- integration testing with WireMock
 - detect blocking ??
 
-## Advanced Scenarios
+## Real-life Scenarios
+- Data enrichment
+  - a() and b()
+  - a(), then b1(a)
+  - a(), then b1(a) and c1(a)
+  - a(), then b1(a), then c2(a,b)
+  - a() and b() and c() => ABC(a,b,c)
 - HTTP-Message Bridge 
   - from a HTTP request send message on request MQ
   - keep the connection open 
@@ -35,6 +46,7 @@
   - Within 5 seconds, 
   - Every five seconds emit (log) a signal.
   - If a http req arrives with the next n 5 sec
-- buffer (wait for N, fire all)
+- timed buffer (wait for N, fire all)
 - cache: get/put full async
 - rate limiting over WebClient adapter
+- profiling

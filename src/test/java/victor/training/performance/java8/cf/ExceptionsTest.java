@@ -68,7 +68,6 @@ class ExceptionsTest {
 
         assertThatThrownBy(result::get)
                 .hasCauseInstanceOf(IllegalStateException.class) // get() wraps the exception within an ExecutionException
-                .hasMessageContaining("Call failed") // set the instructed message
                 .hasRootCauseInstanceOf(TestRootCauseException.class) // added original exception as the cause
         ;
     }

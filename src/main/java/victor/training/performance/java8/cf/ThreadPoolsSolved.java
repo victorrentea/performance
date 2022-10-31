@@ -26,17 +26,27 @@ public class ThreadPoolsSolved extends ThreadPools{
                 .thenApplyAsync(s -> dependency.cpuWork(s));
     }
 
-    public CompletableFuture<String> p03_combineAsync() {
+    public CompletableFuture<String> p03_cpu_then_cpu(String s1, String s2) {
+        return supplyAsync(() -> dependency.cpuWork(s1))
+                .thenCompose(r1-> supplyAsync(() -> dependency.cpuWork(s2)).thenApply(r2 -> r1 + r2));
+    }
+
+    public CompletableFuture<String> p04_cpu_par_cpu(String s1, String s2) {
+        return supplyAsync(() -> dependency.cpuWork(s1))
+                .thenCombine(supplyAsync(() -> dependency.cpuWork(s2)), (r1,r2)-> r1 + r2);
+    }
+
+    public CompletableFuture<String> p05_combineAsync() {
         CompletableFuture<String> networkFuture = supplyAsync(() -> dependency.network(), customExecutor);
         CompletableFuture<String> diskFuture = supplyAsync(() -> dependency.disk(), customExecutor);
         return networkFuture.thenCombineAsync(diskFuture, (n, d) -> dependency.cpuWork(n + " " + d));
     }
 
-    public CompletableFuture<String> p04_delayed() {
+    public CompletableFuture<String> p06_delayed() {
         return supplyAsync(() -> "Surprise!", CompletableFuture.delayedExecutor(500, MILLISECONDS));
     }
 
-    public CompletableFuture<String> p05_defaultAfterTimeout() {
+    public CompletableFuture<String> p07_defaultAfterTimeout() {
         return CompletableFuture.supplyAsync(() -> dependency.network())
                 .completeOnTimeout("default", 500, MILLISECONDS);
     }

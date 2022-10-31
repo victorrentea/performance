@@ -1,5 +1,7 @@
 package victor.training.performance.java8.cf;
 
+import com.sun.xml.bind.v2.TODO;
+import org.apache.commons.lang.NotImplementedException;
 import org.jooq.lambda.Unchecked;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -34,7 +36,10 @@ public class Exceptions {
     public CompletableFuture<String> p01_log() {
         try {
             return dependency.call();
+            //TODO experiment handle() imbracand exceptia!
         } catch (Exception e) {
+            //TODO sa te uiti doar dupa exceptia originala logata
+
             log.error("Exception occurred: " + e, e);  // <-- do this on any exception in the future, then delete this USELESS catch
             throw e;
         }
@@ -49,7 +54,7 @@ public class Exceptions {
         try {
             return dependency.call();
         } catch (Exception e) {
-            throw new IllegalStateException("Call failed", e); // <-- do this on any exception in the future, then delete this USELESS catch
+            throw new IllegalStateException(e); // <-- do this on any exception in the future, then delete this USELESS catch
         }
     }
 
@@ -84,11 +89,7 @@ public class Exceptions {
      * Variation: retry?
      */
     public CompletableFuture<String> p05_defaultFutureNonBlocking() {
-        try {
-            return dependency.call();
-        } catch (Exception e) {
-            return dependency.backup(); // <-- do this on any exception in the future, then delete this USELESS catch
-        }
+        throw new NotImplementedException("Not implemented");
     }
 
     // ==================================================================================================

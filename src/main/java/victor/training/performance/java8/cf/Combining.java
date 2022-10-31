@@ -31,7 +31,7 @@ public class Combining {
     // ==================================================================================================
 
     /**
-     * Return the uppercase of the future value, not blocking.
+     * Return the uppercase of the future value, without blocking (.get() or .join()).
      */
     public CompletableFuture<String> p01_transform() {
         return dependency.call();
@@ -40,7 +40,7 @@ public class Combining {
     // ==================================================================================================
 
     /**
-     * Run dependency#task(s) passing the string provided as parameter, then dependency#cleanup();
+     * Run dependency#task(s), then dependency#cleanup();
      * Hint: completableFuture.then....
      */
     public void p02_chainRun(String s) {
@@ -51,7 +51,7 @@ public class Combining {
     // ==================================================================================================
 
     /**
-     * Run dependency#task(s) passing the string provided by the dependency#call(). Do not block (get/join)!
+     * Run dependency#task(s) passing the string returned by the dependency#call(). Do not block (get/join)!
      */
     public void p03_chainConsume() throws InterruptedException, ExecutionException {
         String s = dependency.call().get();
@@ -62,9 +62,11 @@ public class Combining {
     // ==================================================================================================
 
     /**
-     * Same as previous, but return a CF< Void > to let the caller know of when the task finishes, and of any exceptions
+     * Same as previous, but return a CompletableFuture< Void > to let the caller:
+     * (a) know when the task finished, and/or
+     * (b) find out of any exceptions
      */
-    public CompletableFuture<Void> p04_flatMap() throws ExecutionException, InterruptedException {
+    public CompletableFuture<Void> p04_chainFutures() throws ExecutionException, InterruptedException {
         String s = dependency.call().get();
         dependency.task(s);
         return completedFuture(null);
@@ -74,9 +76,9 @@ public class Combining {
 
     /**
      * Launch #call;
-     * When it completes launch #task and #cleanup in parallel;
-     * Wait for both to complete and then complete the returned future.
-     * Not blocking.
+     * When it completes launch #task and #cleanup;
+     * After both complete, complete the returned future.
+     * Reminder: Don't block! (no .get or .join)
      */
     public CompletableFuture<Void> p05_forkJoin() throws ExecutionException, InterruptedException {
         String s = dependency.call().get();
@@ -88,7 +90,7 @@ public class Combining {
     // ==================================================================================================
 
     /**
-     * Launch #call and #fetchAge in parallel. When both complete, combine their values like so:
+     * Launch #call and #fetchAge. When BOTH complete, combine their values like so:
      * callResult + " " + ageResult
      * and complete the returned future with this value. Don't block.
      */
@@ -101,9 +103,10 @@ public class Combining {
     /**
      * Launch #call and #fetchAge in parallel.
      * The value of the first to complete (ignore the other),
-     * converted to string, should be used to complete the returned future.
-     * Hint: thenCombine waits for all to complete.
+     *      converted to string, should be used to complete the returned future.
+     * Hint: thenCombine waits for all to complete. - Not good
      * Hint#2: Either... or anyOf()
+     * -- after solving Exceptions.java  --
      * [HARD⭐️] if the first completes with error, wait for the second.
      * [HARD⭐️⭐️⭐️] If both in error, complete in error.
      */

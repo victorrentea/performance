@@ -9,6 +9,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import victor.training.performance.java8.cf.Combining.Dependency;
+import victor.training.performance.util.PerformanceUtil;
 
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
@@ -28,7 +29,6 @@ class CombiningTest {
     Dependency dependency;
     @InjectMocks
     Combining workshop;
-    CombiningSolved workshopSolved;
 
     @Test
     void p01_transform() throws ExecutionException, InterruptedException {
@@ -61,12 +61,12 @@ class CombiningTest {
     }
 
     @Test
-    void p04_flatMap() throws ExecutionException, InterruptedException {
+    void p04_chainFutures() throws ExecutionException, InterruptedException {
         CompletableFuture<String> future = new CompletableFuture<>();
         when(dependency.call()).thenReturn(future);
         when(dependency.task("a")).thenReturn(completedFuture(null));
 
-        CompletableFuture<Void> resultFuture = workshop.p04_flatMap();
+        CompletableFuture<Void> resultFuture = workshop.p04_chainFutures();
 
         assertThat(resultFuture.isDone()).isFalse();
         future.complete("a");
@@ -79,7 +79,7 @@ class CombiningTest {
         CompletableFuture<Void> taskFuture = new CompletableFuture<>();
         when(dependency.call()).thenReturn(callFuture);
         when(dependency.task("a")).thenAnswer(x -> {
-            log.info("Calling #task");
+            log.info("Calling #task"); // TODO nu in paralel!!!!!!
             return taskFuture;
         });
 
@@ -91,12 +91,14 @@ class CombiningTest {
         assertThat(resultFuture.isDone()).isFalse();
         // call completes
         log.info("Call completes");
-        callFuture.complete("a");
+        callFuture.completeAsync(()->"a");
+        PerformanceUtil.sleepMillis(50);
         verify(dependency).cleanup();
         verify(dependency).task("a");
         assertThat(resultFuture.isDone()).isFalse();
         // task completes
         taskFuture.complete(null);
+        PerformanceUtil.sleepMillis(50);
         assertThat(resultFuture.isDone()).isTrue();
     }
 
