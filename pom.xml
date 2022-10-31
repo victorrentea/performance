@@ -16,7 +16,7 @@
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <java.version>11</java.version>
-        <kotlin.version>1.6.21</kotlin.version>
+        <!--<kotlin.version>1.6.21</kotlin.version>-->
         <spring-cloud.version>2021.0.3</spring-cloud.version>
     </properties>
 
@@ -172,7 +172,7 @@
 
 
         <!-- ❤️ Kotlin Area ❤️ -->
-        <dependency>
+        <!--<dependency>
             <groupId>com.fasterxml.jackson.module</groupId>
             <artifactId>jackson-module-kotlin</artifactId>
         </dependency>
@@ -188,7 +188,7 @@
         <dependency>
             <groupId>org.jetbrains.kotlin</groupId>
             <artifactId>kotlin-stdlib-jdk8</artifactId>
-        </dependency>
+        </dependency>-->
 
 
 
@@ -220,6 +220,7 @@
                 </configuration>
             </plugin>
             <!-- ❤️ Kotlin Area ❤️ -->
+<!--
             <plugin>
                 <artifactId>kotlin-maven-plugin</artifactId>
                 <groupId>org.jetbrains.kotlin</groupId>
@@ -249,6 +250,7 @@
                     </execution>
                 </executions>
             </plugin>
+-->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
