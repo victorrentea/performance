@@ -8,6 +8,7 @@ import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 import org.jooq.lambda.Unchecked;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
@@ -31,13 +32,15 @@ public class BarService {
     @Autowired
     private Barman barman;
     // niciodata asa: ci cu ThreadPoolTaskExecutor de sprign va rog !
+//    ExecutorService threadPool = Executors.newFixedThreadPool(2); // nu aloci un thread pool la fiecare req ci partajezi cu fratii
+    @Autowired
+    ThreadPoolTaskExecutor threadPool;
 
     @GetMapping("drink")
     public List<Object> orderDrinks() throws ExecutionException, InterruptedException {
         log.debug("Requesting drinks...");
         long t0 = System.currentTimeMillis();
 
-        ExecutorService threadPool = Executors.newFixedThreadPool(2); // nu aloci un thread pool la fiecare req ci partajezi cu fratii
         Future<Beer> futureBeer = threadPool.submit(() -> barman.pourBeer());
         Future<Vodka> futureVodka = threadPool.submit(() -> barman.pourVodka());
 
@@ -122,11 +125,11 @@ class Vodka {
 @Configuration
 class BarConfig {
     //<editor-fold desc="Custom thread pool">
-    @Bean
-    public ThreadPoolTaskExecutor barPool(MeterRegistry meterRegistry) {
+    @Bean // defineste un bean spring numit "barPool" de tip ThreadPoolTaskExecutor
+    public ThreadPoolTaskExecutor barPool(MeterRegistry meterRegistry, @Value("${bar.pool.size}") int n) {
         ThreadPoolTaskExecutor executor = new ThreadPoolTaskExecutor();
-        executor.setCorePoolSize(1);
-        executor.setMaxPoolSize(1);
+        executor.setCorePoolSize(n);
+        executor.setMaxPoolSize(n);
         executor.setQueueCapacity(500);
         executor.setThreadNamePrefix("barman-");
         executor.setTaskDecorator(new MonitorQueueWaitingTime(meterRegistry.timer("barman-queue-time")));
