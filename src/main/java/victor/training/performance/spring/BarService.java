@@ -36,7 +36,7 @@ public class BarService {
       log.debug("Requesting drinks...");
       long t0 = System.currentTimeMillis();
 //      ExecutorService threadPool = Executors.newCachedThreadPool() // periculos caci la spikeuriu de requesturi poti aloca threaduri infinit de multe: JVM crash OOM, OS
-      ExecutorService threadPool = Executors.newFixedThreadPool(1);
+      ExecutorService threadPool = Executors.newFixedThreadPool(1); // nu aloci un thread pool la fiecare req ci partajezi cu fratii
       Future<Beer> futureBeer = threadPool.submit(() -> barman.pourBeer());
       Future<Vodka> futureVodka = threadPool.submit(() -> barman.pourVodka());
 
