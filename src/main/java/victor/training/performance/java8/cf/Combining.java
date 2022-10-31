@@ -46,14 +46,6 @@ public class Combining {
      * Run dependency#task(s) passing the string provided as parameter, then dependency#cleanup()
      */
     public void p02_chainRun(String s) {
-//        String p = "destept";
-//
-//        CompletableFuture.runAsync(() -> {
-//            p = "altu";
-//        });
-
-
-
         dependency.task(s);
         dependency.cleanup();
     }
