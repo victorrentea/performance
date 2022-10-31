@@ -27,7 +27,7 @@ public class Exceptions {
     }
 
     // ==================================================================================================
-
+// Hint: multe solutiie contin cuvantul 'exception'
     /**
      * Log any exception from the future, but leave the exception unchanged.
      */
@@ -48,7 +48,7 @@ public class Exceptions {
     public CompletableFuture<String> p02_wrap() {
         try {
             return dependency.call();
-        } catch (Exception e) {
+        } catch (Exception e) { // la shto. Nu apare niciodata o Exception din call()
             throw new IllegalStateException("Call failed", e); // <-- do this on any exception in the future, then delete this USELESS catch
         }
     }

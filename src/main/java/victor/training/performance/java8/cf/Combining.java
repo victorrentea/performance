@@ -2,11 +2,14 @@ package victor.training.performance.java8.cf;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.web.bind.annotation.GetMapping;
 import victor.training.performance.util.PerformanceUtil;
 
+import java.util.Objects;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
+import java.util.function.Function;
 import java.util.stream.Stream;
 
 import static java.util.concurrent.CompletableFuture.*;
@@ -96,15 +99,15 @@ public class Combining {
 //        callFuture.whenComplete((s, err) -> {
 //            if (err == null) dependency.task(s);
 //        });
-        CompletableFuture<Void> futureTask = callFuture.thenCompose(s -> {
+        CompletableFuture<Void> futureTask = callFuture.thenComposeAsync(s -> {
             log.info("Start task");
-            PerformanceUtil.sleepMillis(100);
+            PerformanceUtil.sleepMillis(10);
             log.info("end task");
             return dependency.task(s);
         });
-        CompletableFuture<Void> futureCleanup = callFuture.thenRun(() -> {
+        CompletableFuture<Void> futureCleanup = callFuture.thenRunAsync(() -> {
             log.info("Start cleanup");
-            PerformanceUtil.sleepMillis(100);
+            PerformanceUtil.sleepMillis(10);
             log.info("end cleanup");
             dependency.cleanup();
         });
@@ -112,6 +115,7 @@ public class Combining {
 //        return futureTask.thenCombine(futureCleanup, (v1,v2)-> null);
         return CompletableFuture.allOf(futureTask, futureCleanup); // mai sugestiv un pic
     }
+
 
     // ==================================================================================================
 
@@ -121,7 +125,7 @@ public class Combining {
      * and complete the returned future with this value. Don't block.
      */
     public CompletableFuture<String> p06_combine() {
-        return null;
+        return dependency.call().thenCombine(dependency.fetchAge(), (c, a) -> c + " " + a);
     }
 
     // ==================================================================================================
@@ -136,7 +140,12 @@ public class Combining {
      * [HARD⭐️⭐️⭐️] If both in error, complete in error.
      */
     public CompletableFuture<String> p07_fastest() {
-         return null;
+        // concurs vreau: pornesc 2, primu care-mi da, ala il iau.
+        //        return callFuture.applyToEither(ageFuture, v -> v);
+//        return callFuture.applyToEither(ageFuture, Function.identity());
+
+        return anyOf(dependency.call(), dependency.fetchAge())
+                .thenApply(Objects::toString);
     }
 
 

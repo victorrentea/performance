@@ -9,6 +9,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import victor.training.performance.java8.cf.Combining.Dependency;
+import victor.training.performance.util.PerformanceUtil;
 
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
@@ -94,11 +95,13 @@ class CombiningTest {
         // call completes
         log.info("Call completes");
         callFuture.complete("a");
+        PerformanceUtil.sleepMillis(50);
         verify(dependency).cleanup();
         verify(dependency).task("a");
         assertThat(resultFuture.isDone()).isFalse();
         // task completes
         taskFuture.complete(null);
+        PerformanceUtil.sleepMillis(50);
         assertThat(resultFuture.isDone()).isTrue();
     }
 
