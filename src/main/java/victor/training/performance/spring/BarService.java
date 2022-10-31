@@ -14,6 +14,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpEntity;
 import org.springframework.retry.annotation.Retryable;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
@@ -21,6 +22,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.client.AsyncRestTemplate;
 import org.springframework.web.client.RestTemplate;
 
 import javax.servlet.AsyncContext;
@@ -138,21 +140,24 @@ class Barman {
 
 
     private RestTemplate restTemplate = new RestTemplate();
-
+// @Async pe metoda e rau pentru ca presupune ca blochezi threaduri inautru. Ori tu, om destept, nu faci asta, ci folosesti drivere/clienti reactivi/nonblocanti ca sa-ti faci IO
     public CompletableFuture<Beer> pourBeer() { // dureze timp!
         log.debug("Pouring Beer...");
 
 // RAU F RAU pemntru ca starvez commonPool: blocand unul din ce le N-1 (la mine 9) threaduri cu I/O
-        CompletableFuture<Beer> futureBeer = supplyAsync(() ->
-                restTemplate.getForObject("http://localhost:9999/api/beer", Beer.class));
+//        CompletableFuture<Beer> futureBeer = supplyAsync(() ->
+//                restTemplate.getForObject("http://localhost:9999/api/beer", Beer.class));
 
-
-//        List.of(1,2,3).parallelStream() // tot pe commonPool
+        //1) fitza: WebClient.....toFuture()
+        //2) stilu vechi AsyncRestTemplate
+        // driver de DB: https://github.com/aerospike/aerospike-client-java-reactive
+        // Maria: https://mariadb.com/docs/connect/programming-languages/java-r2dbc/
+        CompletableFuture<Beer> futureBeer =
+                new AsyncRestTemplate().getForEntity("http://localhost:9999/api/beer", Beer.class)
+                .completable()
+                .thenApply(HttpEntity::getBody);
 
         log.debug("Beer done");
-//        if (true) {
-//            throw new NullPointerException("BUG!");
-//        }
         return futureBeer;
     }
 
