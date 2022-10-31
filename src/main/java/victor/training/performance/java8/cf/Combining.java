@@ -102,11 +102,13 @@ public class Combining {
      * Launch #call and #fetchAge in parallel.
      * The value of the first to complete (ignore the other),
      * converted to string, should be used to complete the returned future.
+     * Hint: thenCombine waits for all to complete.
+     * Hint#2: Either... or anyOf()
      * [HARD⭐️] if the first completes with error, wait for the second.
      * [HARD⭐️⭐️⭐️] If both in error, complete in error.
      */
     public CompletableFuture<String> p07_fastest() {
-        return null;
+         return null;
     }
 
 
