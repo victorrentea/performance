@@ -35,25 +35,25 @@ class ExceptionsTest {
     Dependency dependencyMock;
 
     @InjectMocks
-    ExceptionsSolved workshop;
+    Exceptions workshop;
 
     private static final ExecutorService secondExecutor = Executors.newFixedThreadPool(1, new NamedThreadFactory("second"));
 
     @Test
     @CaptureSystemOutput
-    void p01_log(OutputCapture outputCapture) {
-        when(dependencyMock.call()).thenReturn(CompletableFuture.failedFuture(new TestRootCauseException()));
+    void p01_log_KO(OutputCapture outputCapture) {
+        when(dependencyMock.call()).thenReturn(failedFuture(new TestRootCauseException()));
 
-        workshop.p01_log();
+        assertThatThrownBy(() -> workshop.p01_log().get())
+                .hasCauseInstanceOf(TestRootCauseException.class);
 
         assertThat(outputCapture.toString())
-                .contains("Exception occurred")
                 .contains(TestRootCauseException.class.getSimpleName());
     }
     @Test
     @CaptureSystemOutput
     void p01_log_OK(OutputCapture outputCapture) {
-        when(dependencyMock.call()).thenReturn(CompletableFuture.completedFuture("abc"));
+        when(dependencyMock.call()).thenReturn(completedFuture("abc"));
 
         workshop.p01_log();
 
@@ -62,7 +62,7 @@ class ExceptionsTest {
 
     @Test
     void p02_wrap() {
-        when(dependencyMock.call()).thenReturn(CompletableFuture.failedFuture(new TestRootCauseException()));
+        when(dependencyMock.call()).thenReturn(failedFuture(new TestRootCauseException()));
 
         CompletableFuture<String> result = workshop.p02_wrap();
 
@@ -74,7 +74,7 @@ class ExceptionsTest {
 
     @Test
     void p03_defaultValue_KO() throws ExecutionException, InterruptedException {
-        when(dependencyMock.call()).thenReturn(CompletableFuture.failedFuture(new TestRootCauseException()));
+        when(dependencyMock.call()).thenReturn(failedFuture(new TestRootCauseException()));
         assertThat(workshop.p03_defaultValue().get()).isEqualTo("default");
     }
 

@@ -23,7 +23,7 @@ public class CombiningSolved extends Combining {
         return dependency.call().thenCompose(s -> dependency.task(s));
     }
 
-    public CompletableFuture<Void> p05_forkJoin() {
+    public CompletableFuture<Void> p05_all() {
         CompletableFuture<String> callFuture = dependency.call();
         return CompletableFuture.allOf(
                 callFuture.thenCompose(s -> dependency.task(s)),

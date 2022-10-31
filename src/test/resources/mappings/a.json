@@ -1,0 +1,18 @@
+{
+  "request": {
+    "method": "GET",
+    "urlPathPattern": "/api/a/.*"
+  },
+  "response": {
+    "status": 200,
+    "headers": {
+      "Content-Type": "application/json"
+    },
+    "jsonBody" : {
+      "a": "aaa"
+    },
+
+    "fixedDelayMilliseconds": 50
+
+  }
+}

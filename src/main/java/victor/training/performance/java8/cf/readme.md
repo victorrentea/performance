@@ -19,6 +19,7 @@
 ## Thread Pools
 - launch on ForkJoinPool.commonPool
 - launch on dedicated thread pool
+- launch in parallel 2 steps
 - Complete a CF after a delay
 - Combine 2 CF, change what thread executes the BiFunction
 

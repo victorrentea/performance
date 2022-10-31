@@ -19,6 +19,7 @@ import static java.util.concurrent.TimeUnit.MILLISECONDS;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.Mockito.*;
+import static victor.training.performance.util.PerformanceUtil.sleepMillis;
 
 @ExtendWith(MockitoExtension.class)
 @TestMethodOrder(MethodName.class)
@@ -78,27 +79,26 @@ class CombiningTest {
         CompletableFuture<String> callFuture = new CompletableFuture<>();
         CompletableFuture<Void> taskFuture = new CompletableFuture<>();
         when(dependency.call()).thenReturn(callFuture);
-        when(dependency.task("a")).thenAnswer(x -> {
-            log.info("Calling #task"); // TODO nu in paralel!!!!!!
-            return taskFuture;
-        });
+        when(dependency.task("a")).thenReturn(taskFuture);
 
-        CompletableFuture<Void> resultFuture = workshop.p05_forkJoin();
+        CompletableFuture<Void> resultFuture = workshop.p05_all();
 
         // initially
         verify(dependency, times(0)).cleanup();
         verify(dependency, times(0)).task(anyString());
         assertThat(resultFuture.isDone()).isFalse();
-        // call completes
+
+        // after #call() completes
         log.info("Call completes");
         callFuture.completeAsync(()->"a");
-        PerformanceUtil.sleepMillis(50);
+        sleepMillis(50); // support parallelization Play
         verify(dependency).cleanup();
         verify(dependency).task("a");
         assertThat(resultFuture.isDone()).isFalse();
-        // task completes
+
+        // after #task() completes
         taskFuture.complete(null);
-        PerformanceUtil.sleepMillis(50);
+        sleepMillis(50); // support parallelization Play
         assertThat(resultFuture.isDone()).isTrue();
     }
 

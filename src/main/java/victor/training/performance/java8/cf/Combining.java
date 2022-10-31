@@ -75,12 +75,12 @@ public class Combining {
     // ==================================================================================================
 
     /**
-     * Launch #call;
-     * When it completes launch #task and #cleanup;
+     * Launch #call; when it completes launch #task and #cleanup;
      * After both complete, complete the returned future.
-     * Reminder: Don't block! (no .get or .join)
+     * Reminder: Don't block! (no .get or .join) in the entire workshop!
+     * Play: try to run #task() and #cleanup() in parallel (log.info prints the thread name) Hint: ...Async(
      */
-    public CompletableFuture<Void> p05_forkJoin() throws ExecutionException, InterruptedException {
+    public CompletableFuture<Void> p05_all() throws ExecutionException, InterruptedException {
         String s = dependency.call().get();
         dependency.task(s).get();
         dependency.cleanup();

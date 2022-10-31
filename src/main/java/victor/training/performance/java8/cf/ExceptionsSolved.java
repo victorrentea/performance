@@ -8,6 +8,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.Writer;
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.CompletionException;
 import java.util.concurrent.ExecutionException;
 
 import static java.util.concurrent.CompletableFuture.completedFuture;
@@ -21,9 +22,15 @@ public class ExceptionsSolved extends Exceptions {
 
     public CompletableFuture<String> p01_log() {
         return dependency.call()
-                .whenComplete((r, e) -> {
-                    if (e != null) log.error("Exception occurred: " + e, e);
+                .exceptionally(e -> {
+                    log.error("Exception occurred: " + e, e);
+                    throw new CompletionException(e); // throw e wrapped in CompletionException to propagate e as-is
                 });
+        // or hook methods
+//        return dependency.call()
+//                .whenComplete((r, e) -> {
+//                    if (e != null) log.error("Exception occurred: " + e, e);
+//                });
     }
 
     public CompletableFuture<String> p02_wrap() {

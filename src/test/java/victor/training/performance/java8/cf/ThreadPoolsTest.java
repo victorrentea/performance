@@ -26,7 +26,7 @@ public class ThreadPoolsTest {
     @Mock
     Dependency dependency;
     @InjectMocks
-    ThreadPools workshop;
+    ThreadPoolsSolved workshop;
 
 
     @Test
