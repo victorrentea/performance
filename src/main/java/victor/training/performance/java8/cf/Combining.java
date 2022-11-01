@@ -16,6 +16,8 @@ public class Combining {
 
         CompletableFuture<Void> task(String s);
 
+        CompletableFuture<Integer> parseIntRemotely(String s);
+
         void cleanup();
 
         CompletableFuture<Integer> fetchAge();
@@ -73,6 +75,17 @@ public class Combining {
     }
 
     // ==================================================================================================
+    /**
+     * Launch #call(); when it completes, call #parseIntRemotely(s) with the result,
+     * and return the parsed int.
+     */
+    public CompletableFuture<Integer> p05_chainFuturesWithResult() throws ExecutionException, InterruptedException {
+        String s = dependency.call().get();
+        int i = dependency.parseIntRemotely(s).get();
+        return completedFuture(i);
+    }
+
+    // ==================================================================================================
 
     /**
      * Launch #call; when it completes launch #task and #cleanup;
@@ -80,7 +93,7 @@ public class Combining {
      * Reminder: Don't block! (no .get or .join) in the entire workshop!
      * Play: try to run #task() and #cleanup() in parallel (log.info prints the thread name) Hint: ...Async(
      */
-    public CompletableFuture<Void> p05_all() throws ExecutionException, InterruptedException {
+    public CompletableFuture<Void> p06_all() throws ExecutionException, InterruptedException {
         String s = dependency.call().get();
         dependency.task(s).get();
         dependency.cleanup();
@@ -94,7 +107,7 @@ public class Combining {
      * callResult + " " + ageResult
      * and complete the returned future with this value. Don't block.
      */
-    public CompletableFuture<String> p06_combine() {
+    public CompletableFuture<String> p07_combine() {
         return null;
     }
 
@@ -110,7 +123,7 @@ public class Combining {
      * [HARD⭐️] if the first completes with error, wait for the second.
      * [HARD⭐️⭐️⭐️] If both in error, complete in error.
      */
-    public CompletableFuture<String> p07_fastest() {
+    public CompletableFuture<String> p08_fastest() {
          return null;
     }
 

@@ -9,7 +9,6 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import victor.training.performance.java8.cf.Combining.Dependency;
-import victor.training.performance.util.PerformanceUtil;
 
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
@@ -73,15 +72,22 @@ class CombiningTest {
         future.complete("a");
         assertThat(resultFuture.isDone()).isTrue();
     }
+    @Test
+    void p05_chainFuturesWithResult() throws ExecutionException, InterruptedException {
+        when(dependency.call()).thenReturn(completedFuture("1"));
+        when(dependency.parseIntRemotely("a")).thenReturn(completedFuture(1));
+
+        assertThat(workshop.p05_chainFuturesWithResult().get()).isEqualTo(1);
+    }
 
     @Test
-    void p05_forkJoin() throws ExecutionException, InterruptedException {
+    void p06_forkJoin() throws ExecutionException, InterruptedException {
         CompletableFuture<String> callFuture = new CompletableFuture<>();
         CompletableFuture<Void> taskFuture = new CompletableFuture<>();
         when(dependency.call()).thenReturn(callFuture);
         when(dependency.task("a")).thenReturn(taskFuture);
 
-        CompletableFuture<Void> resultFuture = workshop.p05_all();
+        CompletableFuture<Void> resultFuture = workshop.p06_all();
 
         // initially
         verify(dependency, times(0)).cleanup();
@@ -103,7 +109,7 @@ class CombiningTest {
     }
 
     @Test
-    void p06_combine() throws ExecutionException, InterruptedException {
+    void p07_combine() throws ExecutionException, InterruptedException {
         CompletableFuture<String> callFuture = new CompletableFuture<>();
         CompletableFuture<Integer> ageFuture = new CompletableFuture<>();
         when(dependency.call()).thenAnswer(x -> {
@@ -115,7 +121,7 @@ class CombiningTest {
             return ageFuture;
         });
 
-        CompletableFuture<String> resultFuture = workshop.p06_combine();
+        CompletableFuture<String> resultFuture = workshop.p07_combine();
 
         // initially
         assertThat(resultFuture.isDone()).isFalse();
@@ -127,32 +133,32 @@ class CombiningTest {
     }
 
     @Test
-    void p07_fastest_1() throws ExecutionException, InterruptedException {
+    void p08_fastest_1() throws ExecutionException, InterruptedException {
         when(dependency.call()).thenReturn(supplyAsync(() -> "John", delayedExecutor(100, MILLISECONDS)));
         when(dependency.fetchAge()).thenReturn(supplyAsync(() -> 36, delayedExecutor(200, MILLISECONDS)));
 
-        assertThat(workshop.p07_fastest().get()).isEqualTo("John");
+        assertThat(workshop.p08_fastest().get()).isEqualTo("John");
     }
     @Test
-    void p07_fastest_2() throws ExecutionException, InterruptedException {
+    void p08_fastest_2() throws ExecutionException, InterruptedException {
         when(dependency.call()).thenReturn(supplyAsync(() -> "John", delayedExecutor(200, MILLISECONDS)));
         when(dependency.fetchAge()).thenReturn(supplyAsync(() -> 36, delayedExecutor(100, MILLISECONDS)));
 
-        assertThat(workshop.p07_fastest().get()).isEqualTo("36");
+        assertThat(workshop.p08_fastest().get()).isEqualTo("36");
     }
     @Test
     @Disabled("HARD-CORE⭐️")
-    void p07_fastest_2_err() throws ExecutionException, InterruptedException {
+    void p08_fastest_2_err() throws ExecutionException, InterruptedException {
         when(dependency.call()).thenReturn(supplyAsync(() -> "John", delayedExecutor(200, MILLISECONDS)));
         when(dependency.fetchAge()).thenReturn(supplyAsync(() -> {
             throw new TestRootCauseException();
         }, delayedExecutor(100, MILLISECONDS)));
 
-        assertThat(workshop.p07_fastest().get()).isEqualTo("John");
+        assertThat(workshop.p08_fastest().get()).isEqualTo("John");
     }
     @Test
     @Disabled("HARD-CORE⭐️️⭐️️⭐️️")
-    void p07_fastest_2_err_x_2() throws ExecutionException, InterruptedException {
+    void p08_fastest_2_err_x_2() throws ExecutionException, InterruptedException {
         when(dependency.call()).thenReturn(supplyAsync(() -> {
             throw new TestRootCauseException();
         }, delayedExecutor(200, MILLISECONDS)));
@@ -160,7 +166,7 @@ class CombiningTest {
             throw new TestRootCauseException();
         }, delayedExecutor(100, MILLISECONDS)));
 
-        assertThatThrownBy(() ->workshop.p07_fastest().get());
+        assertThatThrownBy(() ->workshop.p08_fastest().get());
     }
 
 }

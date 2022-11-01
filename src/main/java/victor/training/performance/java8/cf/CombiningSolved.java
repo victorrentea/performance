@@ -1,6 +1,7 @@
 package victor.training.performance.java8.cf;
 
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutionException;
 
 public class CombiningSolved extends Combining {
     public CombiningSolved(Dependency dependency) {
@@ -20,22 +21,33 @@ public class CombiningSolved extends Combining {
     }
 
     public CompletableFuture<Void> p04_chainFutures() {
+        // CF<CF<Void>>  << wow! too much wrapping
+        // dependency.call().thenApply(s -> dependency.task(s));
+
+        // the returned CF terminates too early when task has only started!
+        // return dependency.call().thenAccept(s -> dependency.task(s));
+
+        // the returned CF terminates when the composed CF (returned by the lambda) finishes
         return dependency.call().thenCompose(s -> dependency.task(s));
     }
 
-    public CompletableFuture<Void> p05_all() {
+    public CompletableFuture<Integer> p05_chainFuturesWithResult() {
+        return dependency.call().thenCompose(s -> dependency.parseIntRemotely(s));
+    }
+
+    public CompletableFuture<Void> p06_all() {
         CompletableFuture<String> callFuture = dependency.call();
         return CompletableFuture.allOf(
                 callFuture.thenCompose(s -> dependency.task(s)),
                 callFuture.thenRun(() -> dependency.cleanup()));
     }
 
-    public CompletableFuture<String> p06_combine() {
+    public CompletableFuture<String> p07_combine() {
         return dependency.call().thenCombine(dependency.fetchAge(),
                 (c, a) -> c + " " + a);
     }
 
-    public CompletableFuture<String> p07_fastest() {
+    public CompletableFuture<String> p08_fastest() {
         return dependency.call().applyToEither(dependency.fetchAge().thenApply(i -> i.toString()), a -> a);
         //        return anyOf(dependency.call(), dependency.fetchAge().thenApply(i -> i.toString())).thenApply(o -> (String) o);
     }
