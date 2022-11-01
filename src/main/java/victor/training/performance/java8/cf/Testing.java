@@ -18,6 +18,8 @@ import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionException;
 import java.util.concurrent.TimeUnit;
 
+import static java.util.concurrent.CompletableFuture.completedFuture;
+
 @RestController
 public class Testing {
     private static final Logger log = LoggerFactory.getLogger(Testing.class);
@@ -38,9 +40,12 @@ public class Testing {
                     }
                 })
                 .completeOnTimeout(new X("Timeout"), 500, TimeUnit.MILLISECONDS)
-                .thenCompose(x -> x.getX().equals("SOLO") ?
-                        CompletableFuture.completedFuture(new XY(x, null)) :
-                        dependency.apiBCall(id).thenApply(y -> new XY(x, y)));
+                .thenCompose(x -> {
+                    if (x.getX().equals("SOLO"))
+                        return completedFuture(new XY(x, null));
+                    else
+                        return dependency.apiBCall(id).thenApply(y -> new XY(x, y));
+                });
     }
 
 }

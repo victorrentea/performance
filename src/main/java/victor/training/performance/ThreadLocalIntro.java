@@ -6,6 +6,8 @@ import org.springframework.stereotype.Repository;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.security.Principal;
+
 import static victor.training.performance.util.PerformanceUtil.sleepMillis;
 
 @Slf4j
@@ -22,24 +24,25 @@ public class ThreadLocalIntro {
     public static String staticCurrentUser;
     // TODO ThreadLocal<String>
 
+
     // inside Spring, JavaEE,..
     public void httpRequest(String currentUser, String data) {
         log.info("Current user is " + currentUser);
 //        staticCurrentUser = currentUser;
         // TODO pass the current user down to the repo WITHOUT polluting all signatures
-        controller.create(data);
+        controller.create(data, currentUser);
     }
 }
 
-
+// ===================================
 // ---------- Controller -----------
 @RestController
 @RequiredArgsConstructor
 class AController {
     private final AService aService;
 
-    public void create(String data) {
-        aService.create(data);
+    public void create(String data, String  currentUser) {
+        aService.create(data, currentUser);
     }
 }
 
@@ -49,18 +52,18 @@ class AController {
 class AService {
     private final ARepo aRepo;
 
-    public void create(String data) {
+    public void create(String data, String username) {
         sleepMillis(10); // some delay, to reproduce the race bug
-        aRepo.save(data);
+        aRepo.save(data, username);
     }
 }
 
 // ----------- Repository ------------
 @Repository
 @Slf4j
-class ARepo {
-    public void save(String data) {
-        String currentUser = "TODO"; // TODO Where to get this from?
+class ARepo { // the deepest place in my code.
+    public void save(String data, String username) {
+        String currentUser = username; // TODO Where to get this from?
         log.info("INSERT INTO A(data, created_by) VALUES ({}, {})", data, currentUser);
     }
 }

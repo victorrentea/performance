@@ -38,8 +38,10 @@ public class ThreadPools {
     }
 
     // ==================================================================================================
-    /**
-     * Call #network() on 'customExecutor' then pass its result to #cpuWork() running on ForkJoinPool.commonPool
+    /*
+     * Call #network() on 'customExecutor'
+     *    then pass its result to #cpuWork() running on ForkJoinPool.commonPool
+     * Hint: Use an ...Async method, twice :)
      */
     public CompletableFuture<String> p02_network_then_cpu() {
         String s = dependency.network();
