@@ -36,6 +36,7 @@ import java.util.concurrent.*;
 
 import static java.lang.System.currentTimeMillis;
 import static java.util.concurrent.CompletableFuture.*;
+import static java.util.concurrent.TimeUnit.MILLISECONDS;
 import static java.util.concurrent.TimeUnit.SECONDS;
 import static victor.training.performance.util.PerformanceUtil.sleepMillis;
 
@@ -119,10 +120,14 @@ public class BarService {
     //</editor-fold>
 }
 
+
 @Slf4j
 @Aspect // magie de spring care-ti da posibilitatea sa interceptezi apeluri de metode tie, muritorului de rand
 @Component
 class IntercepteazaMetodeCeReturneazaCF {
+    @Autowired
+    private MeterRegistry meterRegistry;
+
     @Around("execution(java.util.concurrent.CompletableFuture *(..))")
     public Object intercept(ProceedingJoinPoint pjp) throws Throwable {
         log.info("Cheama useru metoda  " + pjp.getSignature().getName());
@@ -130,6 +135,7 @@ class IntercepteazaMetodeCeReturneazaCF {
         CompletableFuture<?> returnedFuture = (CompletableFuture<?>) pjp.proceed();
         returnedFuture.thenRun(() -> {
             long t1 = currentTimeMillis();
+            meterRegistry.timer(pjp.getSignature().getName()).record(t1 - t0, MILLISECONDS);
             log.info("CF returnat de " + pjp.getSignature().getName() +" s-a terminat in " + (t1-t0) + " ms");
         });
         return returnedFuture;
