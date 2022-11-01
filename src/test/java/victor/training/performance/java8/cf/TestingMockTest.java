@@ -36,6 +36,7 @@ public class TestingMockTest {
 
     @Test
     void aTimeout() throws Exception {
+        // TODO: hint: .thenAnswer instead of .thenReturn
         fail("TODO");
     }
 
