@@ -16,7 +16,7 @@ public class LoosingChildren {
 
         System.out.println(puiiMei.contains(child0));
         // adolescenta
-        child0.setName("Emma-Simona");
+//        child0.setName("Emma-Simona");
 
         System.out.println(puiiMei.contains(child0)); //==
         puiiMei.add(child0);
@@ -28,7 +28,6 @@ public class LoosingChildren {
 
 @Data
 @AllArgsConstructor
-@NoArgsConstructor
 class Copil {
-    private String name; //
+    private final String name; //
 }
