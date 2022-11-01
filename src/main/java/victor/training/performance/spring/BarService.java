@@ -2,36 +2,30 @@ package victor.training.performance.spring;
 
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import io.micrometer.core.annotation.Timed;
 import io.micrometer.core.instrument.MeterRegistry;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang.RandomStringUtils;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
 import org.jooq.lambda.Unchecked;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.cache.annotation.Cacheable;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.http.HttpEntity;
-import org.springframework.retry.annotation.Retryable;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.client.AsyncRestTemplate;
 import org.springframework.web.client.RestTemplate;
 
 import javax.servlet.AsyncContext;
 import javax.servlet.http.HttpServletRequest;
-import java.util.List;
 import java.util.concurrent.*;
 
 import static java.lang.System.currentTimeMillis;
@@ -53,11 +47,16 @@ public class BarService {
     @Autowired
     ThreadPoolTaskExecutor threadPool;
 
+    public static final ThreadLocal<String> useruCurentDinSpring = new ThreadLocal<>();
+
     @GetMapping("drink")
     public CompletableFuture<DillyDilly> orderDrinks() throws ExecutionException, InterruptedException {
+        // sa presupunem ca ai trecut printr-un Spring Security care a pus pe thread numele userului curent
+        String username = RandomStringUtils.randomAlphabetic(6);
+        useruCurentDinSpring.set(username);
         log.debug("Requesting drinks cui: {}...", barman.getClass());
         long t0 = currentTimeMillis();
-
+functieCareIaDepeUnThreadLocal();
         CompletableFuture<Beer> futureBeer = barman.pourBeer()
                 // tu cand chemi pourBeer ea nu incepe executia ATUNCI pe loc, ci
                 // mai tarziu intr-un alt thread. Junioru e in soc anafilactic/spasme
@@ -73,7 +72,10 @@ public class BarService {
                 ;
 
         CompletableFuture<DillyDilly> futureDilly =
-                futureBeer.thenCombine(futureVodka, (beer, vodka) -> new DillyDilly(beer, vodka));
+                futureBeer.thenCombine(futureVodka, (beer, vodka) -> {
+                    log.info("Amestec Dilly pt : " + useruCurentDinSpring.get());
+                    return new DillyDilly(beer, vodka);
+                });
         long t1 = currentTimeMillis();
 
 //       barman.injur("^*!%$!@^$%*!!("); // Springu: lasa-ma pe mine. ai Incredere in MINE!!
@@ -81,6 +83,10 @@ public class BarService {
 
         log.debug("Threadul Tomcatului scapa de req asta in {} ms", t1 - t0);
         return futureDilly;
+    }
+
+    public static void functieCareIaDepeUnThreadLocal() {
+        log.info("Userul este : " + useruCurentDinSpring.get());
     }
 
 
