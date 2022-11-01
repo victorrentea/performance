@@ -20,17 +20,26 @@ public class ThreadLocalIntro {
     }
 
     private final AController controller = new AController(new AService(new ARepo()));
-
-    public static String staticCurrentUser;
+// thread local este o varibila magica in care orice pun din threadul X doar threadul X vede datele.
+    //
+    public static ThreadLocal<String> staticCurrentUser=new ThreadLocal<>();
     // TODO ThreadLocal<String>
 
 
     // inside Spring, JavaEE,..
     public void httpRequest(String currentUser, String data) {
         log.info("Current user is " + currentUser);
-        staticCurrentUser = currentUser;
+        staticCurrentUser.set(currentUser);
         controller.create(data);
     }
+    // 🥺 la ce ne trebuie magia asta ?
+
+    // JDBC Connection
+    // SecurityContextHolder (useru curent din spring)
+    // @Transactional
+    // @Scope("request/session")
+    // Logback MDC ?!
+
 }
 
 // ===================================
@@ -62,7 +71,8 @@ class AService {
 @Slf4j
 class ARepo { // the deepest place in my code.
     public void save(String data) {
-        String currentUser = ThreadLocalIntro.staticCurrentUser; // TODO Where to get this from?
+//        String currentUser = SecurityContextHolder.getContext().getAuthentication().getName;
+        String currentUser = ThreadLocalIntro.staticCurrentUser.get(); // TODO Where to get this from?
         log.info("INSERT INTO A(data, created_by) VALUES ({}, {})", data, currentUser);
     }
 }
