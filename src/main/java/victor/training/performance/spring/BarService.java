@@ -63,7 +63,7 @@ public class BarService {
                         return new Beer("bruna");
                     else throw new RuntimeException(e);
                 });
-        CompletableFuture<Vodka> futureVodka = supplyAsync(() -> barman.pourVodka(), threadPool)
+        CompletableFuture<Vodka> futureVodka = supplyAsync(() -> barman.pourVodka())
                 .thenCompose(v -> barman.addIce(v)) // mai joaca un CF "coase-l si p'asta"
                 ;
 
