@@ -31,8 +31,7 @@ import java.util.List;
 import java.util.concurrent.*;
 
 import static java.lang.System.currentTimeMillis;
-import static java.util.concurrent.CompletableFuture.runAsync;
-import static java.util.concurrent.CompletableFuture.supplyAsync;
+import static java.util.concurrent.CompletableFuture.*;
 import static java.util.concurrent.TimeUnit.SECONDS;
 import static victor.training.performance.util.PerformanceUtil.sleepMillis;
 
@@ -64,7 +63,7 @@ public class BarService {
                         return new Beer("bruna");
                     else throw new RuntimeException(e);
                 });
-        CompletableFuture<Vodka> futureVodka = supplyAsync(() -> barman.pourVodka())
+        CompletableFuture<Vodka> futureVodka = supplyAsync(() -> barman.pourVodka(), threadPool)
                 .thenCompose(v -> barman.addIce(v)) // mai joaca un CF "coase-l si p'asta"
                 ;
 
@@ -152,10 +151,12 @@ class Barman {
         //2) stilu vechi AsyncRestTemplate
         // driver de DB: https://github.com/aerospike/aerospike-client-java-reactive
         // Maria: https://mariadb.com/docs/connect/programming-languages/java-r2dbc/
-        CompletableFuture<Beer> futureBeer =
-                new AsyncRestTemplate().getForEntity("http://localhost:9999/api/beer", Beer.class)
-                .completable()
-                .thenApply(HttpEntity::getBody);
+//        CompletableFuture<Beer> futureBeer =
+//                new AsyncRestTemplate().getForEntity("http://localhost:9999/api/beer", Beer.class)
+//                .completable()
+//                .thenApply(HttpEntity::getBody);
+
+        CompletableFuture<Beer> futureBeer = supplyAsync(() -> new Beer("blonda"), delayedExecutor(1, SECONDS));
 
         log.debug("Beer done");
         return futureBeer;
