@@ -62,22 +62,23 @@ class CombiningTest {
 
     @Test
     void p04_chainFutures() throws ExecutionException, InterruptedException {
+        when(dependency.call()).thenReturn(completedFuture("1"));
+        when(dependency.parseIntRemotely("a")).thenReturn(completedFuture(1));
+
+        assertThat(workshop.p04_chainFutures().get()).isEqualTo(1);
+    }
+
+    @Test
+    void p05_chainFutures_returnFutureVoid() throws ExecutionException, InterruptedException {
         CompletableFuture<String> future = new CompletableFuture<>();
         when(dependency.call()).thenReturn(future);
         when(dependency.task("a")).thenReturn(completedFuture(null));
 
-        CompletableFuture<Void> resultFuture = workshop.p04_chainFutures();
+        CompletableFuture<Void> resultFuture = workshop.p05_chainFutures_returnFutureVoid();
 
         assertThat(resultFuture.isDone()).isFalse();
         future.complete("a");
         assertThat(resultFuture.isDone()).isTrue();
-    }
-    @Test
-    void p05_chainFuturesWithResult() throws ExecutionException, InterruptedException {
-        when(dependency.call()).thenReturn(completedFuture("1"));
-        when(dependency.parseIntRemotely("a")).thenReturn(completedFuture(1));
-
-        assertThat(workshop.p05_chainFuturesWithResult().get()).isEqualTo(1);
     }
 
     @Test

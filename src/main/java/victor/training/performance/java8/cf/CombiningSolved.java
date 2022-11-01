@@ -20,7 +20,7 @@ public class CombiningSolved extends Combining {
         dependency.call().thenAccept(s -> dependency.task(s));
     }
 
-    public CompletableFuture<Void> p04_chainFutures() {
+    public CompletableFuture<Void> p05_chainFutures_returnFutureVoid() {
         // CF<CF<Void>>  << wow! too much wrapping
         // dependency.call().thenApply(s -> dependency.task(s));
 
@@ -31,7 +31,7 @@ public class CombiningSolved extends Combining {
         return dependency.call().thenCompose(s -> dependency.task(s));
     }
 
-    public CompletableFuture<Integer> p05_chainFuturesWithResult() {
+    public CompletableFuture<Integer> p04_chainFutures() {
         return dependency.call().thenCompose(s -> dependency.parseIntRemotely(s));
     }
 

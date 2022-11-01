@@ -60,6 +60,16 @@ public class Combining {
         dependency.task(s);
     }
 
+    // ==================================================================================================
+    /**
+     * Launch #call(); when it completes, call #parseIntRemotely(s) with the result,
+     * and return the parsed int.
+     */
+    public CompletableFuture<Integer> p04_chainFutures() throws ExecutionException, InterruptedException {
+        String s = dependency.call().get();
+        int i = dependency.parseIntRemotely(s).get();
+        return completedFuture(i);
+    }
 
     // ==================================================================================================
 
@@ -68,22 +78,12 @@ public class Combining {
      * (a) know when the task finished, and/or
      * (b) find out of any exceptions
      */
-    public CompletableFuture<Void> p04_chainFutures() throws ExecutionException, InterruptedException {
+    public CompletableFuture<Void> p05_chainFutures_returnFutureVoid() throws ExecutionException, InterruptedException {
         String s = dependency.call().get();
         dependency.task(s);
         return completedFuture(null);
     }
 
-    // ==================================================================================================
-    /**
-     * Launch #call(); when it completes, call #parseIntRemotely(s) with the result,
-     * and return the parsed int.
-     */
-    public CompletableFuture<Integer> p05_chainFuturesWithResult() throws ExecutionException, InterruptedException {
-        String s = dependency.call().get();
-        int i = dependency.parseIntRemotely(s).get();
-        return completedFuture(i);
-    }
 
     // ==================================================================================================
 
