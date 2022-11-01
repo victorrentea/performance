@@ -8,6 +8,9 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.aspectj.lang.ProceedingJoinPoint;
+import org.aspectj.lang.annotation.Around;
+import org.aspectj.lang.annotation.Aspect;
 import org.jooq.lambda.Unchecked;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -18,6 +21,7 @@ import org.springframework.http.HttpEntity;
 import org.springframework.retry.annotation.Retryable;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
+import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -71,7 +75,7 @@ public class BarService {
                 futureBeer.thenCombine(futureVodka, (beer, vodka) -> new DillyDilly(beer, vodka));
         long t1 = currentTimeMillis();
 
-       barman.injur("^*!%$!@^$%*!!("); // Springu: lasa-ma pe mine. ai Incredere in MINE!!
+//       barman.injur("^*!%$!@^$%*!!("); // Springu: lasa-ma pe mine. ai Incredere in MINE!!
         log.debug("Ajung in patuc?");
 
         log.debug("Threadul Tomcatului scapa de req asta in {} ms", t1 - t0);
@@ -116,6 +120,23 @@ public class BarService {
 }
 
 @Slf4j
+@Aspect // magie de spring care-ti da posibilitatea sa interceptezi apeluri de metode tie, muritorului de rand
+@Component
+class IntercepteazaMetodeCeReturneazaCF {
+    @Around("execution(java.util.concurrent.CompletableFuture *(..))")
+    public Object intercept(ProceedingJoinPoint pjp) throws Throwable {
+        log.info("Cheama useru metoda  " + pjp.getSignature().getName());
+        long t0 = currentTimeMillis();
+        CompletableFuture<?> returnedFuture = (CompletableFuture<?>) pjp.proceed();
+        returnedFuture.thenRun(() -> {
+            long t1 = currentTimeMillis();
+            log.info("CF returnat de " + pjp.getSignature().getName() +" s-a terminat in " + (t1-t0) + " ms");
+        });
+        return returnedFuture;
+    }
+}
+
+@Slf4j
 @lombok.Value
 class DillyDilly {
      Beer beer;
@@ -153,9 +174,10 @@ class Barman {
         // mai bun, asa e la voi
 //        CompletableFuture<Beer> futureBeer = WebClient.create().get().url("http://localhost:9999/api/beer")...toFuture();
 
-        CompletableFuture<Beer> futureBeer = supplyAsync(() -> new Beer("blonda"), delayedExecutor(1, SECONDS));
-
-        log.debug("Beer done");
+        CompletableFuture<Beer> futureBeer = supplyAsync(() -> new Beer("blonda"),
+                delayedExecutor(1, SECONDS))
+                ;
+        futureBeer.thenAccept( b-> log.debug("Beer done: " +b));
         return futureBeer;
     }
 
