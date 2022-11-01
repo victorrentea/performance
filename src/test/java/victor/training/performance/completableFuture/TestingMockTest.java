@@ -38,7 +38,13 @@ public class TestingMockTest {
 
     @Test
     void aTimeout() throws Exception {
-        // TODO: hint: .thenAnswer instead of .thenReturn
+        // Hints:
+        // #1) CF.supplyAsync(() -> x, delayedExecutor(1, SECOND)) creates a future that completes 1 second after the call to supplyAsync
+        // #2) Mockito.when(..y()).thenAnswer(a-> STUFF) defers STUFF to run exactly when it's called from tested code
+        // #1+#2) .thenAnswer(x-> supplyAsync(()->x,delayedExecutor(1,SECOND)) completes the CF exactly 1 sec after y() is called from production
+
+        // BUT, these are advanced subtleties. Here, just thenReturn(#1) would do it.
+
         fail("TODO");
     }
 
