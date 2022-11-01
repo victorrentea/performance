@@ -31,7 +31,7 @@ public class TestingMockTest {
 
         XY result =  testing.methodToTest(ID).get();
 
-        assertThat(result).isEqualTo(new XY(new X("Not Found"), new Y("b")));
+        assertThat(result).isEqualTo(new XY(new X("Not Found"), new Y("y")));
     }
 
     @Test

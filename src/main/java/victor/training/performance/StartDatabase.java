@@ -10,7 +10,7 @@ public class StartDatabase {
 
 		deletePreviousDB();
 
-		// Allow auto-creating new databases on disk at first connection
+		// Allow auto-creating new databases on blockDisk at first connection
 		org.h2.tools.Server.createTcpServer("-ifNotExists").start();
 	}
 

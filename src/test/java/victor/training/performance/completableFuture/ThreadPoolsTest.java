@@ -43,14 +43,14 @@ public class ThreadPoolsTest {
     public void p02_network_then_cpu() {
         TestUtils.CaptureThreadName cpuThreadCapture = new TestUtils.CaptureThreadName();
         TestUtils.CaptureThreadName networkThreadCapture = new TestUtils.CaptureThreadName();
-        when(dependency.network()).thenAnswer(networkThreadCapture.answer("a"));
+        when(dependency.blockNetwork()).thenAnswer(networkThreadCapture.answer("a"));
         when(dependency.cpuWork("a")).thenAnswer(cpuThreadCapture.answer("A"));
 
         CompletableFuture<String> resultFuture = workshop.p02_network_then_cpu();
 
         assertThat(resultFuture.join()).isEqualTo("A");
         assertThat(cpuThreadCapture.getThreadName()).contains("commonPool");
-        assertThat(networkThreadCapture.getThreadName()).contains("mypool");
+        assertThat(networkThreadCapture.getThreadName()).contains("customExecutor");
     }
     @Test
     public void p03_cpu_then_cpu() throws ExecutionException, InterruptedException {
@@ -62,7 +62,9 @@ public class ThreadPoolsTest {
         assertThat(currentTimeMillis() - t0).isLessThan(50);
 
         String result = resultFuture.get();
-        assertThat(currentTimeMillis() - t0).isGreaterThan(150);
+        assertThat(currentTimeMillis() - t0)
+                .describedAs("Should run sequential, not in parallel. supplyAsync(()->f()) starts f() in a separate thread.")
+                .isGreaterThan(150);
         assertThat(result).isEqualTo("r1r2");
     }
     @Test
@@ -75,15 +77,17 @@ public class ThreadPoolsTest {
         assertThat(currentTimeMillis() - t0).isLessThan(50);
 
         String result = resultFuture.get();
-        assertThat(currentTimeMillis() - t0).isLessThan(150);
+        assertThat(currentTimeMillis() - t0)
+                .describedAs("Should run in parallel. Hint: thenCombine...")
+                .isLessThan(150);
         assertThat(result).isEqualTo("r1r2");
     }
     @Test
     public void p05_combineAsync() {
         TestUtils.CaptureThreadName networkThreadCapture = new TestUtils.CaptureThreadName();
-        when(dependency.network()).thenAnswer(networkThreadCapture.answer("net"));
+        when(dependency.blockNetwork()).thenAnswer(networkThreadCapture.answer("net"));
         TestUtils.CaptureThreadName diskThreadCapture = new TestUtils.CaptureThreadName();
-        when(dependency.disk()).thenAnswer(diskThreadCapture.answer("disk"));
+        when(dependency.blockDisk()).thenAnswer(diskThreadCapture.answer("blockDisk"));
         TestUtils.CaptureThreadName cpuThreadCapture = new TestUtils.CaptureThreadName();
         when(dependency.cpuWork("net disk")).thenAnswer(cpuThreadCapture.answer("A"));
 
@@ -91,8 +95,8 @@ public class ThreadPoolsTest {
 
         assertThat(resultFuture.join()).isEqualTo("A");
         assertThat(cpuThreadCapture.getThreadName()).contains("commonPool");
-        assertThat(networkThreadCapture.getThreadName()).contains("mypool");
-        assertThat(diskThreadCapture.getThreadName()).contains("mypool");
+        assertThat(networkThreadCapture.getThreadName()).contains("customExecutor");
+        assertThat(diskThreadCapture.getThreadName()).contains("customExecutor");
     }
 
     @Test
@@ -108,7 +112,7 @@ public class ThreadPoolsTest {
 
     @Test
     public void p07_defaultAfterTimeout_inTime() {
-        when(dependency.network()).thenAnswer(x -> {
+        when(dependency.blockNetwork()).thenAnswer(x -> {
             PerformanceUtil.sleepMillis(100);
             return "data";
         });
@@ -117,7 +121,7 @@ public class ThreadPoolsTest {
     }
     @Test
     public void p07_defaultAfterTimeout_timeout() {
-        when(dependency.network()).thenAnswer(x -> {
+        when(dependency.blockNetwork()).thenAnswer(x -> {
             PerformanceUtil.sleepMillis(600);
             return "data";
         });

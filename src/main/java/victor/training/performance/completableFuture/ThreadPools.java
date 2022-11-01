@@ -14,8 +14,8 @@ public class ThreadPools {
     protected final Logger log = LoggerFactory.getLogger(getClass());
 
     interface Dependency {
-        String network();
-        String disk();
+        String blockNetwork();
+        String blockDisk();
         String cpuWork(String s);
     }
     final Dependency dependency;
@@ -24,7 +24,7 @@ public class ThreadPools {
         this.dependency = dependency;
     }
 
-    final ExecutorService customExecutor = Executors.newFixedThreadPool(2, new NamedThreadFactory("mypool"));
+    final ExecutorService customExecutor = Executors.newFixedThreadPool(2, new NamedThreadFactory("customExecutor"));
 
 
     // ==================================================================================================
@@ -38,10 +38,11 @@ public class ThreadPools {
 
     // ==================================================================================================
     /**
-     * Call #network() on 'customExecutor' then pass its result to #cpuWork() running on ForkJoinPool.commonPool
+     * Call #blockNetwork() on 'customExecutor' then pass its result to #cpuWork() running on ForkJoinPool.commonPool
+     * Hint: you'll need to use two methods ending in ...Async
      */
     public CompletableFuture<String> p02_network_then_cpu() {
-        String s = dependency.network();
+        String s = dependency.blockNetwork();
         return completedFuture(dependency.cpuWork(s));
     }
 
@@ -70,12 +71,12 @@ public class ThreadPools {
 
     // ==================================================================================================
     /**
-     * Call #network() and #disk() on 'customExecutor' then combine their results (network + ' ' + disk)
+     * Call #blockNetwork() and #blockDisk() on 'customExecutor' then combine their results (blockNetwork + ' ' + blockDisk)
      * and pass the data to #cpuWork() running on commonPool.
      */
     public CompletableFuture<String> p05_combineAsync() {
-        String net = dependency.network();
-        String disk = dependency.disk();
+        String net = dependency.blockNetwork();
+        String disk = dependency.blockDisk();
         String result = dependency.cpuWork(net + " " + disk);
         return completedFuture(result);
     }
@@ -92,9 +93,9 @@ public class ThreadPools {
     // ==================================================================================================
 
     /**
-     * Allow #network() 500 millis to complete in 'customExecutor', otherwise complete with "default".
+     * Allow #blockNetwork() 500 millis to complete in 'customExecutor', otherwise complete with "default".
      */
     public CompletableFuture<String> p07_defaultAfterTimeout() {
-        return CompletableFuture.supplyAsync(() -> dependency.network());
+        return CompletableFuture.supplyAsync(() -> dependency.blockNetwork());
     }
 }

@@ -14,6 +14,7 @@ import java.util.concurrent.TimeUnit;
 
 import static java.util.concurrent.CompletableFuture.*;
 import static java.util.concurrent.CompletableFuture.failedFuture;
+import static java.util.concurrent.TimeUnit.MILLISECONDS;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.when;
 
@@ -27,10 +28,10 @@ public class TestingMockTestSolved {
 
     @Test
     void aNotFound() throws Exception {
-        HttpClientErrorException notFound = HttpClientErrorException.create(HttpStatus.NOT_FOUND,
+        HttpClientErrorException notFoundException = HttpClientErrorException.create(HttpStatus.NOT_FOUND,
                 "Not Found", new HttpHeaders(), null, Charset.defaultCharset());
-        when(dependencyMock.apiACall(ID)).thenReturn(failedFuture(notFound));
-        when(dependencyMock.apiBCall(ID)).thenReturn(completedFuture(new Y("y")));
+        when(dependencyMock.fetchX(ID)).thenReturn(failedFuture(notFoundException));
+        when(dependencyMock.fetchY(ID)).thenReturn(completedFuture(new Y("y")));
 
         XY result = testing.methodToTest(ID).get();
 
@@ -39,8 +40,8 @@ public class TestingMockTestSolved {
 
     @Test
     void aTimeout() throws Exception {
-        when(dependencyMock.apiACall(ID)).thenReturn(supplyAsync(()->new X("never"), delayedExecutor(600, TimeUnit.MILLISECONDS)));
-        when(dependencyMock.apiBCall(ID)).thenReturn(completedFuture(new Y("y")));
+        when(dependencyMock.fetchX(ID)).thenReturn(supplyAsync(()->new X("never"), delayedExecutor(600, MILLISECONDS)));
+        when(dependencyMock.fetchY(ID)).thenReturn(completedFuture(new Y("y")));
 
         XY result = testing.methodToTest(ID).get();
 
@@ -49,7 +50,7 @@ public class TestingMockTestSolved {
 
     @Test
     void aSolo() throws Exception {
-        when(dependencyMock.apiACall(ID)).thenReturn(completedFuture(new X("SOLO")));
+        when(dependencyMock.fetchX(ID)).thenReturn(completedFuture(new X("SOLO")));
 
         XY result = testing.methodToTest(ID).get();
 
@@ -58,8 +59,8 @@ public class TestingMockTestSolved {
 
     @Test
     void aAndB() throws Exception {
-        when(dependencyMock.apiACall(ID)).thenReturn(completedFuture(new X("x")));
-        when(dependencyMock.apiBCall(ID)).thenReturn(completedFuture(new Y("y")));
+        when(dependencyMock.fetchX(ID)).thenReturn(completedFuture(new X("x")));
+        when(dependencyMock.fetchY(ID)).thenReturn(completedFuture(new Y("y")));
 
         XY result = testing.methodToTest(ID).get();
 

@@ -29,7 +29,7 @@ public class Testing {
 
     @GetMapping
     public CompletableFuture<XY> methodToTest(@RequestParam(defaultValue = "1") String id) {
-        return dependency.apiACall(id)
+        return dependency.fetchX(id)
                 .exceptionally(ex -> {
                     if (ex instanceof HttpClientErrorException.NotFound) {
                         return new X("Not Found");
@@ -40,7 +40,7 @@ public class Testing {
                 .completeOnTimeout(new X("Timeout"), 500, TimeUnit.MILLISECONDS)
                 .thenCompose(x -> x.getX().equals("SOLO") ?
                         CompletableFuture.completedFuture(new XY(x, null)) :
-                        dependency.apiBCall(id).thenApply(y -> new XY(x, y)));
+                        dependency.fetchY(id).thenApply(y -> new XY(x, y)));
     }
 
 }
@@ -65,14 +65,14 @@ class XY {
 @Slf4j
 @Component
 class TestingDependency {
-    public CompletableFuture<X> apiACall(String id) {
+    public CompletableFuture<X> fetchX(String id) {
         return new AsyncRestTemplate()
                 .getForEntity("http://localhost:9999/api/x/{id}", X.class, id)
                 .completable()
                 .thenApply(HttpEntity::getBody)
                 .whenComplete((x, err)-> {log.info("Response from X " + x);});
     }
-    public CompletableFuture<Y> apiBCall(String id) {
+    public CompletableFuture<Y> fetchY(String id) {
         return new AsyncRestTemplate()
                 .getForEntity("http://localhost:9999/api/y/{id}", Y.class, id)
                 .completable()
