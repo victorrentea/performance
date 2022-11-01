@@ -11,8 +11,10 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import victor.training.performance.java8.cf.Enrich.*;
 
 import java.util.concurrent.ExecutionException;
+import java.util.concurrent.TimeUnit;
 
-import static java.util.concurrent.CompletableFuture.completedFuture;
+import static java.lang.System.currentTimeMillis;
+import static java.util.concurrent.CompletableFuture.*;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.when;
 import static victor.training.performance.java8.cf.Enrich.*;
@@ -22,7 +24,7 @@ import static victor.training.performance.java8.cf.TestUtils.delayedAnswer;
 @ExtendWith(MockitoExtension.class)
 @TestMethodOrder(MethodName.class)
 @Timeout(1)
-public class EnrichTest {
+public class    EnrichTest {
     @Mock
     Dependency dependency;
     @InjectMocks
@@ -81,6 +83,23 @@ public class EnrichTest {
 
         assertThat(workshop.p05_a_then_b1_then_c2(1).get()).isEqualTo(new ABC(a, b,c));
     }
+
+
+    // exercitiu pt studenti
+//    @Test
+//    void p05_a_then_b1_then_c2_saNUBLOCK() throws ExecutionException, InterruptedException {
+//        when(dependency.a(1)).thenReturn(completedFuture(a));
+//        when(dependency.b(1)).thenReturn(supplyAsync(()->b, delayedExecutor(500, TimeUnit.MILLISECONDS)));
+//        when(dependency.c(1)).thenReturn(completedFuture(c));
+//
+//        long t0 = currentTimeMillis();
+//        ABC r = workshop.p05_a_then_b1_then_c2(1).get();
+//        long t1 = currentTimeMillis();
+//        assertThat(t1 - t0).isLessThan(400);
+//
+//        assertThat(r).isEqualTo(new ABC(a, b,c));
+//    }
+
 
     @Test
     @Timeout(400)
