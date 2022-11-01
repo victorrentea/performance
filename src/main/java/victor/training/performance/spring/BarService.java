@@ -132,12 +132,6 @@ class DillyDilly {
 @Slf4j
 class Barman {
 
-    //        if (true) {
-    //            throw new IllegalStateException("Nu mai e bere blonda !!!! E*Y&Q*R^(&R^*&R^&*R^&**%&(*!&)(&@!)*!@$*!@&%*!");
-    //        }
-    //        sleepMillis(1000); // imagine slow REST call
-
-
     private RestTemplate restTemplate = new RestTemplate();
 // @Async pe metoda e rau pentru ca presupune ca blochezi threaduri inautru. Ori tu, om destept, nu faci asta, ci folosesti drivere/clienti reactivi/nonblocanti ca sa-ti faci IO
     public CompletableFuture<Beer> pourBeer() { // dureze timp!
@@ -155,6 +149,9 @@ class Barman {
 //                new AsyncRestTemplate().getForEntity("http://localhost:9999/api/beer", Beer.class)
 //                .completable()
 //                .thenApply(HttpEntity::getBody);
+
+        // mai bun, asa e la voi
+//        CompletableFuture<Beer> futureBeer = WebClient.create().get().url("http://localhost:9999/api/beer")...toFuture();
 
         CompletableFuture<Beer> futureBeer = supplyAsync(() -> new Beer("blonda"), delayedExecutor(1, SECONDS));
 
