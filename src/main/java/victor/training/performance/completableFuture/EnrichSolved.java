@@ -1,6 +1,4 @@
-package victor.training.performance.java8.cf;
-
-import lombok.Value;
+package victor.training.performance.completableFuture;
 
 import java.util.concurrent.CompletableFuture;
 

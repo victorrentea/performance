@@ -1,7 +1,6 @@
-package victor.training.performance.java8.cf;
+package victor.training.performance.completableFuture;
 
 import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.ExecutionException;
 
 public class CombiningSolved extends Combining {
     public CombiningSolved(Dependency dependency) {

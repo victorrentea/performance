@@ -1,7 +1,4 @@
-package victor.training.performance.java8.cf;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+package victor.training.performance.completableFuture;
 
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionException;

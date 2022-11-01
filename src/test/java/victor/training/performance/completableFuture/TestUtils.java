@@ -1,15 +1,10 @@
-package victor.training.performance.java8.cf;
+package victor.training.performance.completableFuture;
 
-import org.checkerframework.checker.units.qual.A;
 import org.mockito.stubbing.Answer;
 import victor.training.performance.util.PerformanceUtil;
 
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 import java.util.function.BiConsumer;
-import java.util.function.BiFunction;
 import java.util.function.Consumer;
-import java.util.function.Supplier;
 
 public class TestUtils {
 

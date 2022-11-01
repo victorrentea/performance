@@ -1,4 +1,4 @@
-package victor.training.performance.java8.cf;
+package victor.training.performance.completableFuture;
 
 import org.jooq.lambda.Unchecked;
 import org.slf4j.Logger;

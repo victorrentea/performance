@@ -1,13 +1,10 @@
-package victor.training.performance.java8.cf;
+package victor.training.performance.completableFuture;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.CompletionException;
 import java.util.concurrent.ExecutionException;
-
-import static java.util.concurrent.CompletableFuture.*;
 
 public class Basics {
     protected final Logger log = LoggerFactory.getLogger(getClass());

@@ -1,4 +1,4 @@
-package victor.training.performance.java8.cf;
+package victor.training.performance.completableFuture;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;

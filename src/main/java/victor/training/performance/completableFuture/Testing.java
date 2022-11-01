@@ -1,4 +1,4 @@
-package victor.training.performance.java8.cf;
+package victor.training.performance.completableFuture;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -6,9 +6,6 @@ import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.task.SimpleAsyncTaskExecutor;
-import org.springframework.core.task.TaskDecorator;
 import org.springframework.http.HttpEntity;
 import org.springframework.stereotype.Component;
 import org.springframework.web.bind.annotation.GetMapping;

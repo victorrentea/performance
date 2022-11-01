@@ -1,4 +1,4 @@
-package victor.training.performance.java8.cf;
+package victor.training.performance.completableFuture;
 
 import org.junit.jupiter.api.*;
 import org.junit.jupiter.api.MethodOrderer.MethodName;
@@ -8,7 +8,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import victor.training.performance.java8.cf.Combining.Dependency;
+import victor.training.performance.completableFuture.Combining.Dependency;
 
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;

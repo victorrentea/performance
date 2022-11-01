@@ -1,29 +1,18 @@
-package victor.training.performance.java8.cf;
+package victor.training.performance.completableFuture;
 
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.MethodOrderer.MethodName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestMethodOrder;
 import org.junit.jupiter.api.Timeout;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.junit.jupiter.MockitoExtension;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import victor.training.performance.java8.cf.Combining.Dependency;
 import victor.training.performance.util.CaptureSystemOutput;
 import victor.training.performance.util.CaptureSystemOutput.OutputCapture;
-import victor.training.performance.util.PerformanceUtil;
 
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 
 import static java.util.concurrent.CompletableFuture.*;
-import static java.util.concurrent.TimeUnit.MILLISECONDS;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.mockito.Mockito.*;
 import static victor.training.performance.util.PerformanceUtil.sleepMillis;
 
 @TestMethodOrder(MethodName.class)

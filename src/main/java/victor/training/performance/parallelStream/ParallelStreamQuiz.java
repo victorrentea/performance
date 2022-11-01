@@ -1,4 +1,4 @@
-package victor.training.performance.java8;
+package victor.training.performance.parallelStream;
 
 import lombok.extern.slf4j.Slf4j;
 

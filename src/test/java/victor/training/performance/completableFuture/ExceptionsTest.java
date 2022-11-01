@@ -1,6 +1,5 @@
-package victor.training.performance.java8.cf;
+package victor.training.performance.completableFuture;
 
-import org.junit.jupiter.api.MethodOrderer;
 import org.junit.jupiter.api.MethodOrderer.MethodName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestMethodOrder;
@@ -9,8 +8,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import victor.training.performance.java8.cf.Exceptions.Dependency;
-import victor.training.performance.java8.cf.TestUtils.CaptureThreadName;
+import victor.training.performance.completableFuture.Exceptions.Dependency;
 import victor.training.performance.util.CaptureSystemOutput;
 import victor.training.performance.util.CaptureSystemOutput.OutputCapture;
 import victor.training.performance.util.NamedThreadFactory;
@@ -110,7 +108,7 @@ class ExceptionsTest {
             return "backup";
         }, secondExecutor));
         // record the thread in which the backup value is emitted
-        CaptureThreadName captureThreadName = new CaptureThreadName();
+        TestUtils.CaptureThreadName captureThreadName = new TestUtils.CaptureThreadName();
 
         String result = workshop.p05_defaultFutureNonBlocking()
                 .whenComplete(captureThreadName).get();

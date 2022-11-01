@@ -1,4 +1,4 @@
-package victor.training.performance.java8.cf.complex;
+package victor.training.performance.completableFuture.complex;
 
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.RandomStringUtils;

@@ -1,14 +1,7 @@
-package victor.training.performance.java8.cf;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import victor.training.performance.util.NamedThreadFactory;
+package victor.training.performance.completableFuture;
 
 import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 
-import static java.util.concurrent.CompletableFuture.completedFuture;
 import static java.util.concurrent.CompletableFuture.supplyAsync;
 import static java.util.concurrent.TimeUnit.MILLISECONDS;
 

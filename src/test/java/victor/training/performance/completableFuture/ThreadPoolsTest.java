@@ -1,4 +1,4 @@
-package victor.training.performance.java8.cf;
+package victor.training.performance.completableFuture;
 
 import org.junit.jupiter.api.MethodOrderer.MethodName;
 import org.junit.jupiter.api.Test;
@@ -8,7 +8,6 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import victor.training.performance.java8.cf.TestUtils.CaptureThreadName;
 import victor.training.performance.util.PerformanceUtil;
 
 import java.util.concurrent.CompletableFuture;
@@ -17,7 +16,7 @@ import java.util.concurrent.ExecutionException;
 import static java.lang.System.currentTimeMillis;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.when;
-import static victor.training.performance.java8.cf.ThreadPools.*;
+import static victor.training.performance.completableFuture.ThreadPools.*;
 
 @ExtendWith(MockitoExtension.class)
 @Timeout(1)
@@ -31,7 +30,7 @@ public class ThreadPoolsTest {
 
     @Test
     public void p01_cpu() {
-        CaptureThreadName captureThreadName = new CaptureThreadName();
+        TestUtils.CaptureThreadName captureThreadName = new TestUtils.CaptureThreadName();
         when(dependency.cpuWork("a")).thenAnswer(captureThreadName.answer("A"));
 
         CompletableFuture<String> resultFuture = workshop.p01_cpu("a");
@@ -42,8 +41,8 @@ public class ThreadPoolsTest {
 
     @Test
     public void p02_network_then_cpu() {
-        CaptureThreadName cpuThreadCapture = new CaptureThreadName();
-        CaptureThreadName networkThreadCapture = new CaptureThreadName();
+        TestUtils.CaptureThreadName cpuThreadCapture = new TestUtils.CaptureThreadName();
+        TestUtils.CaptureThreadName networkThreadCapture = new TestUtils.CaptureThreadName();
         when(dependency.network()).thenAnswer(networkThreadCapture.answer("a"));
         when(dependency.cpuWork("a")).thenAnswer(cpuThreadCapture.answer("A"));
 
@@ -81,11 +80,11 @@ public class ThreadPoolsTest {
     }
     @Test
     public void p05_combineAsync() {
-        CaptureThreadName networkThreadCapture = new CaptureThreadName();
+        TestUtils.CaptureThreadName networkThreadCapture = new TestUtils.CaptureThreadName();
         when(dependency.network()).thenAnswer(networkThreadCapture.answer("net"));
-        CaptureThreadName diskThreadCapture = new CaptureThreadName();
+        TestUtils.CaptureThreadName diskThreadCapture = new TestUtils.CaptureThreadName();
         when(dependency.disk()).thenAnswer(diskThreadCapture.answer("disk"));
-        CaptureThreadName cpuThreadCapture = new CaptureThreadName();
+        TestUtils.CaptureThreadName cpuThreadCapture = new TestUtils.CaptureThreadName();
         when(dependency.cpuWork("net disk")).thenAnswer(cpuThreadCapture.answer("A"));
 
         CompletableFuture<String> resultFuture = workshop.p05_combineAsync();
