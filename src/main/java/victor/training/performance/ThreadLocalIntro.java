@@ -28,9 +28,8 @@ public class ThreadLocalIntro {
     // inside Spring, JavaEE,..
     public void httpRequest(String currentUser, String data) {
         log.info("Current user is " + currentUser);
-//        staticCurrentUser = currentUser;
-        // TODO pass the current user down to the repo WITHOUT polluting all signatures
-        controller.create(data, currentUser);
+        staticCurrentUser = currentUser;
+        controller.create(data);
     }
 }
 
@@ -41,8 +40,8 @@ public class ThreadLocalIntro {
 class AController {
     private final AService aService;
 
-    public void create(String data, String  currentUser) {
-        aService.create(data, currentUser);
+    public void create(String data) {
+        aService.create(data);
     }
 }
 
@@ -52,9 +51,9 @@ class AController {
 class AService {
     private final ARepo aRepo;
 
-    public void create(String data, String username) {
+    public void create(String data) {
         sleepMillis(10); // some delay, to reproduce the race bug
-        aRepo.save(data, username);
+        aRepo.save(data);
     }
 }
 
@@ -62,8 +61,8 @@ class AService {
 @Repository
 @Slf4j
 class ARepo { // the deepest place in my code.
-    public void save(String data, String username) {
-        String currentUser = username; // TODO Where to get this from?
+    public void save(String data) {
+        String currentUser = ThreadLocalIntro.staticCurrentUser; // TODO Where to get this from?
         log.info("INSERT INTO A(data, created_by) VALUES ({}, {})", data, currentUser);
     }
 }
