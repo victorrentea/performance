@@ -90,7 +90,7 @@ public class Exceptions {
 
     // ==================================================================================================
     /**
-     * Close the resource (Writer) after the future completes
+     * Close the resource (Writer) after the future completes.
      */
     public CompletableFuture<Void> p06_cleanup() throws IOException {
         try(Writer writer = new FileWriter("out.txt")) {// <-- make sure you close the writer AFTER the CF completes!
@@ -99,4 +99,5 @@ public class Exceptions {
                     ;
         }
     }
+
 }

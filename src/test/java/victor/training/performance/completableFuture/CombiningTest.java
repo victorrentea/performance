@@ -1,5 +1,6 @@
 package victor.training.performance.completableFuture;
 
+import org.awaitility.Awaitility;
 import org.junit.jupiter.api.*;
 import org.junit.jupiter.api.MethodOrderer.MethodName;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -9,6 +10,8 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import victor.training.performance.completableFuture.Combining.Dependency;
+import victor.training.performance.util.CaptureSystemOutput;
+import victor.training.performance.util.CaptureSystemOutput.OutputCapture;
 
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
@@ -28,7 +31,7 @@ class CombiningTest {
     @Mock
     Dependency dependency;
     @InjectMocks
-    Combining workshop;
+    CombiningSolved workshop;
 
     @Test
     void p01_transform() throws ExecutionException, InterruptedException {
@@ -62,7 +65,7 @@ class CombiningTest {
 
     @Test
     void p04_chainFutures() throws ExecutionException, InterruptedException {
-        when(dependency.call()).thenReturn(completedFuture("1"));
+        when(dependency.call()).thenReturn(completedFuture("a"));
         when(dependency.parseIntRemotely("a")).thenReturn(completedFuture(1));
 
         assertThat(workshop.p04_chainFutures().get()).isEqualTo(1);
@@ -169,5 +172,37 @@ class CombiningTest {
 
         assertThatThrownBy(() ->workshop.p08_fastest().get());
     }
+
+
+    @Test
+    void p09_fireAndForget_normal() throws ExecutionException, InterruptedException {
+        when(dependency.call()).thenReturn(completedFuture("abc"));
+        when(dependency.audit("abc")).thenReturn(completedFuture(null));
+
+        workshop.p09_fireAndForget().get();
+
+        sleepMillis(300);
+        verify(dependency).audit("abc");
+    }
+    @Test
+    @Timeout(value = 450, unit = MILLISECONDS)
+    void p09_fireAndForget_doesNotWait_forAudit() throws ExecutionException, InterruptedException {
+        when(dependency.call()).thenReturn(completedFuture("abc"));
+        when(dependency.audit("abc")).thenReturn(supplyAsync(()->null,delayedExecutor(500, MILLISECONDS)));
+
+        workshop.p09_fireAndForget().get();
+    }
+    @Test
+    @CaptureSystemOutput
+    void p09_fireAndForget_doesNotFailForAudit_butLogs(OutputCapture outputCapture) throws ExecutionException, InterruptedException {
+        when(dependency.call()).thenReturn(completedFuture("abc"));
+        when(dependency.audit("abc")).thenReturn(failedFuture(new RuntimeException("TEST EXCEPTION")));
+
+        workshop.p09_fireAndForget().get();
+
+        assertThat(outputCapture.toString()).contains("TEST EXCEPTION");
+    }
+
+
 
 }

@@ -21,6 +21,8 @@ public class Combining {
         void cleanup();
 
         CompletableFuture<Integer> fetchAge();
+
+        CompletableFuture<Void> audit(String s);
     }
 
     final Dependency dependency;
@@ -114,8 +116,9 @@ public class Combining {
     // ==================================================================================================
 
     /**
+     * === The contest ===
      * Launch #call and #fetchAge in parallel.
-     * The value of the first to complete (ignore the other),
+     * The value of the FIRST to complete (ignore the other),
      *      converted to string, should be used to complete the returned future.
      * Hint: thenCombine waits for all to complete. - Not good
      * Hint#2: Either... or anyOf()
@@ -127,5 +130,16 @@ public class Combining {
          return null;
     }
 
+    // ==================================================================================================
+    /**
+     * Launch #call(); When it completes, call #audit() with the value and then return it.
+     * ⚠️ Don't wait for #audit() to complete (useful in case it takes time)
+     * ⚠️ If #audit() fails, ignore that error (don't fail the returned future), but also log the error!
+     */
+    public CompletableFuture<String> p09_fireAndForget() throws ExecutionException, InterruptedException {
+        String s = dependency.call().get();
+        dependency.audit(s).get(); // <- run this in fire-and-forget style
+        return completedFuture(s);
+    }
 
 }

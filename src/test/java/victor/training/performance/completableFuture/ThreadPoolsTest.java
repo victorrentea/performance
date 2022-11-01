@@ -25,7 +25,7 @@ public class ThreadPoolsTest {
     @Mock
     Dependency dependency;
     @InjectMocks
-    ThreadPools workshop;
+    ThreadPoolsSolved workshop;
 
 
     @Test
@@ -87,7 +87,7 @@ public class ThreadPoolsTest {
         TestUtils.CaptureThreadName networkThreadCapture = new TestUtils.CaptureThreadName();
         when(dependency.blockNetwork()).thenAnswer(networkThreadCapture.answer("net"));
         TestUtils.CaptureThreadName diskThreadCapture = new TestUtils.CaptureThreadName();
-        when(dependency.blockDisk()).thenAnswer(diskThreadCapture.answer("blockDisk"));
+        when(dependency.blockDisk()).thenAnswer(diskThreadCapture.answer("disk"));
         TestUtils.CaptureThreadName cpuThreadCapture = new TestUtils.CaptureThreadName();
         when(dependency.cpuWork("net disk")).thenAnswer(cpuThreadCapture.answer("A"));
 

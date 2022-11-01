@@ -50,7 +50,7 @@ public class EnrichSolved extends Enrich {
                         .thenApply(c -> new ABC(ab.a, ab.b, c)));
     }
 
-    public CompletableFuture<ABC> p05_a_then_b1_then_c2(int id) {
+    public CompletableFuture<ABC> p05_a_b_c(int id) {
         CompletableFuture<A> futureA = dependency.a(id);
         CompletableFuture<B> futureB = dependency.b(id);
         CompletableFuture<C> futureC = dependency.c(id);
@@ -68,30 +68,30 @@ public class EnrichSolved extends Enrich {
 
 
         return dependency.a(id)
-                .thenApply(a -> new MyContext().withA(a))
+            .thenApply(a -> new MyContext().withA(a))
 
-                // *** sequential
-//                .thenCompose(context -> dependency.b1(context.a).thenApply(context::withB))
-//                .thenCompose(context -> dependency.c1(context.a).thenApply(context::withC))
+            // *** sequential
+            // .thenCompose(context -> dependency.b1(context.a).thenApply(context::withB)
+            // .thenCompose(context -> dependency.c1(context.a).thenApply(context::withC))
 
-                // *** parallel
-                 .thenCompose(context->
-                         dependency.b1(context.a).thenCombine(
-                         dependency.c1(context.a), (b,c)->context.withB(b).withC(c)))
+            // *** parallel
+             .thenCompose(context->
+                     dependency.b1(context.a).thenCombine(
+                     dependency.c1(context.a), (b,c)->context.withB(b).withC(c)))
 
-                .thenApply(context -> context.withA1(logic(context.a, context.b, context.c)))
+            .thenApply(context -> context.withA1(logic(context.a, context.b, context.c)))
 
-                .thenCompose(context -> dependency.saveA(context.a1).thenApply(a -> context))
+            .thenCompose(context -> dependency.saveA(context.a1).thenApply(a -> context))
 
-                .whenComplete((context, e__) -> {
-                    if (context != null) dependency.auditA(context.a1, context.a)
-                            .whenComplete((v, err)-> {
-                                if (err != null) {
-                                    err.printStackTrace();
-                                }
-                            });
-                })
-                .thenApply(context -> null);
+            .whenComplete((context, e__) -> {
+                if (context != null) dependency.auditA(context.a1, context.a)
+                        .whenComplete((v, err)-> {
+                            if (err != null) {
+                                err.printStackTrace();
+                            }
+                        });
+            })
+            .thenApply(context -> null);
     }
     @Data
     @AllArgsConstructor

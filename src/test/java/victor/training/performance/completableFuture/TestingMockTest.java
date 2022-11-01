@@ -1,5 +1,6 @@
 package victor.training.performance.completableFuture;
 
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -14,6 +15,7 @@ import java.nio.charset.Charset;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.fail;
 
+@Disabled //REMOVE ME AND WRITE THE TESTS
 @ExtendWith(MockitoExtension.class)
 public class TestingMockTest {
     public static final String ID = "1";

@@ -94,7 +94,7 @@ public class Enrich {
     /**
      * a(id) || b(id) || c(id) ==> ABC(a,b,c)
      */
-    public CompletableFuture<ABC> p05_a_then_b1_then_c2(int id) {
+    public CompletableFuture<ABC> p05_a_b_c(int id) {
         return null;
     }
 

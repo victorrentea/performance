@@ -12,10 +12,8 @@ import victor.training.performance.completableFuture.Enrich.A;
 import victor.training.performance.completableFuture.Enrich.B;
 import victor.training.performance.util.CaptureSystemOutput;
 import victor.training.performance.util.CaptureSystemOutput.OutputCapture;
-import victor.training.performance.util.PerformanceUtil;
 
 import java.util.concurrent.ExecutionException;
-import java.util.concurrent.TimeUnit;
 
 import static java.util.concurrent.CompletableFuture.*;
 import static java.util.concurrent.TimeUnit.MILLISECONDS;
@@ -72,11 +70,11 @@ public class EnrichTest {
         verify(dependency).c1(a); // call ONCE
     }
     @Test
-    @Timeout(500)
+    @Timeout(value = 500, unit = MILLISECONDS)
     void p03_a_then_b1_par_c1___runs_in_parallel() throws ExecutionException, InterruptedException {
         when(dependency.a(1)).thenReturn(completedFuture(a));
-        when(dependency.b1(a)).thenAnswer(TestUtils.delayedAnswer(300, completedFuture(b)));
-        when(dependency.c1(a)).thenAnswer(TestUtils.delayedAnswer(300, completedFuture(c)));
+        when(dependency.b1(a)).thenAnswer(x -> supplyAsync(() -> b, delayedExecutor(300, MILLISECONDS)));
+        when(dependency.c1(a)).thenAnswer(x -> supplyAsync(() -> c, delayedExecutor(300, MILLISECONDS)));
 
         workshop.p03_a_then_b1_par_c1(1).get();
 
@@ -99,12 +97,12 @@ public class EnrichTest {
     }
 
     @Test
-    void p05_a_then_b1_then_c2() throws ExecutionException, InterruptedException {
+    void p05_a_b_c() throws ExecutionException, InterruptedException {
         when(dependency.a(1)).thenReturn(completedFuture(a));
         when(dependency.b(1)).thenReturn(completedFuture(b));
         when(dependency.c(1)).thenReturn(completedFuture(c));
 
-        assertThat(workshop.p05_a_then_b1_then_c2(1).get()).isEqualTo(new ABC(a, b,c));
+        assertThat(workshop.p05_a_b_c(1).get()).isEqualTo(new ABC(a, b,c));
 
         verify(dependency).a(1); // call ONCE
         verify(dependency).b(1); // call ONCE
@@ -112,13 +110,13 @@ public class EnrichTest {
     }
 
     @Test
-    @Timeout(400)
-    void p05_a_then_b1_then_c2___runs_in_parallel() throws ExecutionException, InterruptedException {
-        when(dependency.a(1)).thenAnswer(TestUtils.delayedAnswer(300, completedFuture(a)));
-        when(dependency.b(1)).thenAnswer(TestUtils.delayedAnswer(300, completedFuture(b)));
-        when(dependency.c(1)).thenAnswer(TestUtils.delayedAnswer(300, completedFuture(c)));
+    @Timeout(value = 500, unit = MILLISECONDS)
+    void p05_a_b_c___runs_in_parallel() throws ExecutionException, InterruptedException {
+        when(dependency.a(1)).thenAnswer(x -> supplyAsync(() -> a, delayedExecutor(300, MILLISECONDS)));
+        when(dependency.b(1)).thenAnswer(x -> supplyAsync(() -> b, delayedExecutor(300, MILLISECONDS)));
+        when(dependency.c(1)).thenAnswer(x -> supplyAsync(() -> c, delayedExecutor(300, MILLISECONDS)));
 
-        workshop.p05_a_then_b1_then_c2(1).get();
+        workshop.p05_a_b_c(1).get();
     }
 
     @Nested
@@ -148,7 +146,7 @@ public class EnrichTest {
         }
 
         @Test
-        @Timeout(400)
+        @Timeout(value = 400, unit = MILLISECONDS)
         void doesNotWaitForAuditToComplete() throws ExecutionException, InterruptedException {
             when(dependency.saveA(any())).thenAnswer(x -> completedFuture(x.getArgument(0)));
             when(dependency.auditA(any(), eq(a))).thenReturn(supplyAsync(() -> null, delayedExecutor(500, MILLISECONDS)));

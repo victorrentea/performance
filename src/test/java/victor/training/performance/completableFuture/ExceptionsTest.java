@@ -33,7 +33,7 @@ class ExceptionsTest {
     Dependency dependencyMock;
 
     @InjectMocks
-    Exceptions workshop;
+    ExceptionsSolved workshop;
 
     private static final ExecutorService secondExecutor = Executors.newFixedThreadPool(1, new NamedThreadFactory("second"));
 

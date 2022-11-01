@@ -1,6 +1,7 @@
 package victor.training.performance.completableFuture;
 
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutionException;
 
 public class CombiningSolved extends Combining {
     public CombiningSolved(Dependency dependency) {
@@ -53,4 +54,13 @@ public class CombiningSolved extends Combining {
     // https://stackoverflow.com/questions/33913193/completablefuture-waiting-for-first-one-normally-return
 
 
+    public CompletableFuture<String> p09_fireAndForget() throws ExecutionException, InterruptedException {
+        return dependency.call()
+                .whenComplete((s, err) -> {
+                    if (s != null) dependency.audit(s).exceptionally(e-> {
+                        log.error("ERROR", e);
+                        return null;
+                    });
+                });
+    }
 }
