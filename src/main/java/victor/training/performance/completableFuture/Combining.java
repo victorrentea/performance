@@ -116,16 +116,26 @@ public class Combining {
     // ==================================================================================================
 
     /**
-     * Launch #call; when it completes launch #task and #cleanup;
+     * Launch #call; when it completes launch #task and #cleanup (necesar dupa call);
      * After both complete, complete the returned future.
      * Reminder: Don't block! (no .get or .join) in the entire workshop!
      * Play: try to run #task() and #cleanup() in parallel (log.info prints the thread name) Hint: ...Async(
      */
     public CompletableFuture<Void> p06_all() throws ExecutionException, InterruptedException {
-        String s = dependency.call().get();
-        dependency.task(s).get();
-        dependency.cleanup();
-        return completedFuture(null);
+//        String s = dependency.call().get();
+//        dependency.task(s).get();
+//        dependency.cleanup();
+//        return completedFuture(null);
+
+        CompletableFuture<String> futureString = dependency.call();
+
+        // Fork: dintr-un singur CF pornesti 2,3...
+        CompletableFuture<Void> future1 = futureString.thenCompose(s -> dependency.task(s));
+        CompletableFuture<Void> future2 = futureString.thenRun(() -> dependency.cleanup());
+
+        // join
+//        return future1.thenCombine(future2, (v1,v2) -> null);
+        return CompletableFuture.allOf(future1, future2);
     }
 
     // ==================================================================================================
