@@ -21,6 +21,7 @@ import java.util.concurrent.*;
 
 import static java.lang.System.currentTimeMillis;
 import static java.util.Arrays.asList;
+import static java.util.concurrent.CompletableFuture.supplyAsync;
 import static victor.training.performance.util.PerformanceUtil.sleepMillis;
 
 @RestController
@@ -44,9 +45,13 @@ public class BarService {
 //      Future<Beer> futureBeer = barPool.submit(() -> barman.pourBeer());
 //      Future<Vodka> futureVodka = barPool.submit(() -> barman.pourVodka());
 
-      // java8 style
-      Future<Beer> futureBeer = CompletableFuture.supplyAsync(() -> barman.pourBeer());
-      Future<Vodka> futureVodka = CompletableFuture.supplyAsync(() -> barman.pourVodka());
+      // java8 style, da fraer ca nu i-am spus thread poolul pe care sa ruleze @Catalin.
+      // => a rulat pe ForkJoinPool.commonPool <- un thread pool unic defalt dispo din java8+
+      // pe care ruleaza:
+      // - orice CompletableFuture.*Async()
+      // - .parallelStream()
+      Future<Beer> futureBeer = supplyAsync(() -> barman.pourBeer(),barPool);
+      Future<Vodka> futureVodka = supplyAsync(() -> barman.pourVodka(),barPool);
 
       log.debug("Aici a plecat chelnerul cu comanda");
       log.debug("thread ruleaza aici  aceasta linie?");
@@ -66,7 +71,7 @@ public class BarService {
       AsyncContext asyncContext = request.startAsync(); // I will write the response async
 
       //var futureDrinks = orderDrinks();
-      var futureDrinks = CompletableFuture.supplyAsync(() -> {
+      var futureDrinks = supplyAsync(() -> {
          sleepMillis(2000);
          return new Beer("blond");
       });
