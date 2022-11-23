@@ -12,19 +12,27 @@ import static victor.training.performance.util.PerformanceUtil.sleepMillis;
 @Slf4j
 public class ParallelStreams {
    public static void main(String[] args) {
-//      Enemy.parallelRequest(); // demonstrates starvation of the shared commonPool
+      Enemy.parallelRequest(); // demonstrates starvation of the shared commonPool
 
       long t0 = System.currentTimeMillis();
 
-      List<Integer> list = IntStream.range(1,100).boxed().collect(toList());
+      List<Integer> customerIds = IntStream.range(1,100).boxed().collect(toList());
 
-      List<Integer> result = list.stream()
+
+      // aici : ForkJoinPool.commonPool se gasesc by default un nr de
+      // N_logical_threads-1 threaduri = 7-11
+      // de ce N = sa nu sufoce procesoarele daca ceea ce faci pe acele taskuri estee pure CPU work!!!
+      // de ce -1 = sa lase loc si pentru stapanu (ala care vrea munca) = th care face .paralellStream
+      // apropos, poti sa modifici size-ul din JVM de -D......=30
+      List<Integer> result = customerIds.parallelStream()
           .filter(i -> {
              log.debug("Filter " + i);
              return i % 2 == 0;
           })
           .map(i -> {
              log.debug("Map " + i);
+
+             // #asaNU
              sleepMillis(100); // do some 'paralellizable' I/O work (DB, REST, SOAP)
              return i * 2;
           })
