@@ -25,7 +25,7 @@ import static victor.training.performance.util.PerformanceUtil.sleepMillis;
 
 @ExtendWith(MockitoExtension.class)
 @TestMethodOrder(MethodName.class)
-@Timeout(1)
+@Timeout(1) // opreste testu dupa 1 sec daca nu e gata
 class CombiningTest {
     private static final Logger log = LoggerFactory.getLogger(CombiningTest.class);
     @Mock
@@ -129,6 +129,8 @@ class CombiningTest {
         verify(dependency, times(0)).cleanup();
         verify(dependency, times(0)).task(anyString());
         assertThat(resultFuture.isDone()).isFalse();
+
+//        resultFuture.get(); bloca indefinit threadul testului pentru ca complete de mai jos era necesar sa porneasca toata povestea
 
         // after #call() completes
         log.info("Call completes");
