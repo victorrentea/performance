@@ -36,7 +36,7 @@ public class BarService {
 
 
    @GetMapping("drink")
-   public DillyDilly orderDrinks() throws ExecutionException, InterruptedException {
+   public CompletableFuture<DillyDilly> orderDrinks() throws ExecutionException, InterruptedException {
       log.debug("Requesting drinks...");
       long t0 = System.currentTimeMillis();
 
@@ -55,13 +55,17 @@ public class BarService {
       log.debug("Aici a plecat chelnerul cu comanda");
       log.debug("thread ruleaza aici  aceasta linie?");
       // pe CF nu e indicat sa faci .get()
-      Beer beer = futureBeer.get(); // 1 sec sta aici blocat th tomcatului
-      Vodka vodka = futureVodka.get(); // 0 sec cat sta aici blocat th tomcatului
+//      Beer beer = futureBeer.get(); // 1 sec sta aici blocat th tomcatului
+//      Vodka vodka = futureVodka.get(); // 0 sec cat sta aici blocat th tomcatului
+
+      CompletableFuture<DillyDilly> futureDilly = futureBeer.thenCombine(futureVodka,
+              (beer, vodka) -> new DillyDilly(beer, vodka))
+//              .thenCompose(di -> altNetworkCallCareDaCF(di))
+              ;
 
       long t1 = System.currentTimeMillis();
-      DillyDilly dilly = new DillyDilly(beer, vodka);
-      log.debug("Got my order in {} ms : {}", t1 - t0, dilly);
-      return dilly;
+      log.debug("Got my order in {} ms = cat sta blocat th tomcatului : {}", t1 - t0, "dilly");
+      return futureDilly;
    }
 
 
