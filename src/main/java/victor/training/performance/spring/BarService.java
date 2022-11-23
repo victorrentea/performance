@@ -2,18 +2,17 @@ package victor.training.performance.spring;
 
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import io.micrometer.core.instrument.MeterRegistry;
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 import org.jooq.lambda.Unchecked;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
-import victor.training.performance.spring.metrics.MonitorQueueWaitingTime;
 
 import javax.servlet.AsyncContext;
 import javax.servlet.http.HttpServletRequest;
@@ -30,17 +29,19 @@ public class BarService {
    @Autowired
    private Barman barman;
 
-   // java standard, fara Spring:
-   private static final ExecutorService threadPool = Executors.newFixedThreadPool(2);
+   // java standard, fara Spring (antipattern daca ai spring around):
+//   private static final ExecutorService threadPool = Executors.newFixedThreadPool(20);
 
+   @Autowired
+   private ThreadPoolTaskExecutor barPool;
 
 
    @GetMapping("drink")
    public List<Object> orderDrinks() throws ExecutionException, InterruptedException {
       log.debug("Requesting drinks...");
       long t0 = System.currentTimeMillis();
-      Future<Beer> futureBeer = threadPool.submit(() -> barman.pourBeer());
-      Future<Vodka> futureVodka = threadPool.submit(() -> barman.pourVodka());
+      Future<Beer> futureBeer = barPool.submit(() -> barman.pourBeer());
+      Future<Vodka> futureVodka = barPool.submit(() -> barman.pourVodka());
       log.debug("Aici a plecat chelnerul cu comanda");
       log.debug("thread ruleaza aici  aceasta linie?");
       Beer beer = futureBeer.get(); // 1 sec sta aici blocat th tomcatului
@@ -119,13 +120,12 @@ class Vodka {
 class BarConfig {
    //<editor-fold desc="Custom thread pool">
    @Bean
-   public ThreadPoolTaskExecutor barPool(MeterRegistry meterRegistry) {
+   public ThreadPoolTaskExecutor barPool(@Value("${bar.pool.size}") int size) {
       ThreadPoolTaskExecutor executor = new ThreadPoolTaskExecutor();
-      executor.setCorePoolSize(1);
-      executor.setMaxPoolSize(1);
+      executor.setCorePoolSize(size);
+      executor.setMaxPoolSize(size);
       executor.setQueueCapacity(500);
       executor.setThreadNamePrefix("barman-");
-      executor.setTaskDecorator(new MonitorQueueWaitingTime(meterRegistry.timer("barman-queue-time")));
       executor.initialize();
       return executor;
    }
