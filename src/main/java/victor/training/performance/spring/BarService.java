@@ -57,7 +57,10 @@ public class BarService {
                  supplyAsync(() -> barman.pourBeer(),barPool)
                          .exceptionally(e -> {
                             log.error("VALEU "+ e );
-                            throw new CompletionException(e); //o arunci mai departe
+
+//                            throw new CompletionException(e); //o arunci mai departe
+                            // fall back to default value:
+                            return null;
                          });
          CompletableFuture<Vodka> futureVodka =
                  supplyAsync(() -> barman.pourVodka(),barPool)
