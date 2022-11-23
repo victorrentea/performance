@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.RestController;
 import javax.servlet.AsyncContext;
 import javax.servlet.http.HttpServletRequest;
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.CompletionException;
 import java.util.concurrent.ExecutionException;
 
 import static java.lang.System.currentTimeMillis;
@@ -51,9 +52,13 @@ public class BarService {
       // - orice CompletableFuture.*Async()
       // - .parallelStream()
       // CompletableFuture === promise din js/ts
-      try {
+//      try {
          CompletableFuture<Beer> futureBeer =
-                 supplyAsync(() -> barman.pourBeer(),barPool);
+                 supplyAsync(() -> barman.pourBeer(),barPool)
+                         .exceptionally(e -> {
+                            log.error("VALEU "+ e );
+                            throw new CompletionException(e); //o arunci mai departe
+                         });
          CompletableFuture<Vodka> futureVodka =
                  supplyAsync(() -> barman.pourVodka(),barPool)
                 .thenApply(v -> v.withGheata(true));
@@ -73,10 +78,10 @@ public class BarService {
          long t1 = System.currentTimeMillis();
          log.debug("Got my order in {} ms = cat sta blocat th tomcatului : {}", t1 - t0, "dilly");
          return futureDilly;
-      } catch (IllegalStateException e) {
-         log.error("VALEU: "+ e);
-         throw e;
-      }
+//      } catch (IllegalStateException e) {
+//         log.error("VALEU: "+ e);
+//         throw e;
+//      }
    }
 
 
