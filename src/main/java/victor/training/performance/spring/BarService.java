@@ -18,8 +18,7 @@ import victor.training.performance.spring.metrics.MonitorQueueWaitingTime;
 import javax.servlet.AsyncContext;
 import javax.servlet.http.HttpServletRequest;
 import java.util.List;
-import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.ExecutionException;
+import java.util.concurrent.*;
 
 import static java.lang.System.currentTimeMillis;
 import static java.util.Arrays.asList;
@@ -35,9 +34,13 @@ public class BarService {
    public List<Object> orderDrinks() throws ExecutionException, InterruptedException {
       log.debug("Requesting drinks...");
       long t0 = System.currentTimeMillis();
-
-      Beer beer = barman.pourBeer();
-      Vodka vodka = barman.pourVodka();
+      ExecutorService threadPool = Executors.newFixedThreadPool(2);
+      Future<Beer> futureBeer = threadPool.submit(() -> barman.pourBeer());
+      Future<Vodka> futureVodka = threadPool.submit(() -> barman.pourVodka());
+      log.debug("Aici a plecat chelnerul cu comanda");
+      log.debug("thread ruleaza aici  aceasta linie?");
+      Beer beer = futureBeer.get(); // 1 sec sta aici blocat th tomcatului
+      Vodka vodka = futureVodka.get(); // 0 sec cat sta aici blocat th tomcatului
 
       long t1 = System.currentTimeMillis();
       List<Object> drinks = asList(beer, vodka);
@@ -86,7 +89,7 @@ class Barman {
 
    public Beer pourBeer() {
       log.debug("Pouring Beer...");
-      sleepMillis(1000); // imagine slow REST call
+      sleepMillis(1000); // imagine slow REST call, WSDL, PL/SQL
       log.debug("Beer done");
       return new Beer("blond");
    }
