@@ -104,6 +104,7 @@ public class BarService {
 class Barman {
 
    public Beer pourBeer() {
+      if(true) throw new IllegalStateException("Nu mai e bere!!!!!!!! 😭😭😭😭😭😭😭");
       log.debug("Pouring Beer...");
       sleepMillis(1000); // imagine slow REST call, WSDL, PL/SQL
       log.debug("Beer done");
