@@ -2,6 +2,7 @@ package victor.training.performance.spring;
 
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.github.dockerjava.api.command.AuthCmd.Exec;
 import lombok.Data;
 import lombok.With;
 import lombok.extern.slf4j.Slf4j;
@@ -17,9 +18,8 @@ import org.springframework.web.bind.annotation.RestController;
 
 import javax.servlet.AsyncContext;
 import javax.servlet.http.HttpServletRequest;
-import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.CompletionException;
-import java.util.concurrent.ExecutionException;
+import java.util.concurrent.*;
+import java.util.concurrent.ThreadPoolExecutor.CallerRunsPolicy;
 
 import static java.lang.System.currentTimeMillis;
 import static java.util.concurrent.CompletableFuture.supplyAsync;
@@ -194,7 +194,13 @@ class BarConfig {
       //    a) latente aberante pentru req; latenta
       //    b) OOM
       executor.setThreadNamePrefix("barman-");
+      executor.setRejectedExecutionHandler(new CallerRunsPolicy());
       executor.initialize();
+
+//      Executors.newFixedThreadPool() // problema: unbouded queue
+//      Executors.newCachedThreadPool(); //problema: oricate threaduri - te dau afara security brici!
+
+
       return executor;
    }
    //</editor-fold>

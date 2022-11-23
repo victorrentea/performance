@@ -5,6 +5,7 @@ import org.slf4j.LoggerFactory;
 
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
+import java.util.function.Consumer;
 
 import static java.util.concurrent.CompletableFuture.*;
 
@@ -49,18 +50,28 @@ public class Combining {
      * Hint: completableFuture.then....
      */
     public void p02_chainRun(String s) {
-        dependency.task(s);
-        dependency.cleanup();
+        Void v = null;
+        CompletableFuture<Void> cfVoid = dependency.task(s);
+        // De ce intoarce oare task CF<Void> daca io stiu ca singura valoare pote veni null
+        // - sa afli eroarea
+        // - sa poti sa astepti sa se termine
+        cfVoid.thenRun(() -> dependency.cleanup());
     }
 
     // ==================================================================================================
 
     /**
-     * Run dependency#task(s) passing the string returned by the dependency#call(). Do not block (get/join)!
+     * Run dependency#task(s) passing the string returned by the dependency#call().
+     * Obviously, Do not block (get/join)!
      */
     public void p03_chainConsume() throws InterruptedException, ExecutionException {
-        String s = dependency.call().get();
-        dependency.task(s);
+//        String s = dependency.call().get(); // punctele de fidele
+//
+//        dependency.task(s); // promotii disponibilia
+
+
+        dependency.call()
+                .thenAccept(s -> dependency.task(s));
     }
 
     // ==================================================================================================
@@ -69,9 +80,20 @@ public class Combining {
      * and return the parsed int.
      */
     public CompletableFuture<Integer> p04_chainFutures() throws ExecutionException, InterruptedException {
-        String s = dependency.call().get();
-        int i = dependency.parseIntRemotely(s).get();
-        return completedFuture(i);
+//        String s = dependency.call().get();
+//        int i = dependency.parseIntRemotely(s).get();
+//        return completedFuture(i);
+//
+        return dependency.call()
+                .thenCompose(s -> dependency.parseIntRemotely(s))
+                ;
+
+                //                .thenCombine(dependency.parseIntRemotely(s))
+        //flatMap
+    // Optional<Optional<Integer>> ->
+    /// Stream<Stream<>>
+//                .thenAccept(s -> dependency.parseIntRemotely(s));
+
     }
 
     // ==================================================================================================
@@ -82,9 +104,12 @@ public class Combining {
      * (b) find out of any exceptions
      */
     public CompletableFuture<Void> p05_chainFutures_returnFutureVoid() throws ExecutionException, InterruptedException {
-        String s = dependency.call().get();
-        dependency.task(s);
-        return completedFuture(null);
+//        String s = dependency.call().get();
+//        dependency.task(s);
+//        return completedFuture(null);
+
+        return dependency.call()
+                .thenAccept(s -> dependency.task(s));
     }
 
 

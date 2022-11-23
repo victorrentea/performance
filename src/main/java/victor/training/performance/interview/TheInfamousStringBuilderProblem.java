@@ -23,11 +23,12 @@ public class TheInfamousStringBuilderProblem {
       System.out.println("Start writing contents!");
       long t0 = System.currentTimeMillis();
 
-      String s = "";
+      StringBuilder s = new StringBuilder();
       for (String element : elements) {
-         s += element;
+         s.append(element);
       }
-      FileUtils.writeStringToFile(new File("out.txt"), s, UTF_8);
+
+      FileUtils.writeStringToFile(new File("out.txt"), s.toString(), UTF_8);
 
       System.out.println("Done. Took " + (System.currentTimeMillis() - t0));
       PerformanceUtil.waitForEnter();
