@@ -82,27 +82,13 @@ public class EnrichTest {
         verify(dependency).b1(a); // call ONCE
         verify(dependency).c1(a); // call ONCE
     }
-
     @Test
-    void p04_a_then_b1_then_c2() throws ExecutionException, InterruptedException {
-        when(dependency.a(1)).thenReturn(completedFuture(a));
-        when(dependency.b1(a)).thenReturn(completedFuture(b));
-        when(dependency.c2(a, b)).thenReturn(completedFuture(c));
-
-        assertThat(workshop.p04_a_then_b1_then_c2(1).get()).isEqualTo(new ABC(a, b, c));
-
-        verify(dependency).a(1); // call ONCE
-        verify(dependency).b1(a); // call ONCE
-        verify(dependency).c2(a, b); // call ONCE
-    }
-
-    @Test
-    void p05_a_b_c() throws ExecutionException, InterruptedException {
+    void p04_a_b_c() throws ExecutionException, InterruptedException {
         when(dependency.a(1)).thenReturn(completedFuture(a));
         when(dependency.b(1)).thenReturn(completedFuture(b));
         when(dependency.c(1)).thenReturn(completedFuture(c));
 
-        assertThat(workshop.p05_a_b_c(1).get()).isEqualTo(new ABC(a, b,c));
+        assertThat(workshop.p04_a_b_c(1).get()).isEqualTo(new ABC(a, b,c));
 
         verify(dependency).a(1); // call ONCE
         verify(dependency).b(1); // call ONCE
@@ -111,13 +97,27 @@ public class EnrichTest {
 
     @Test
     @Timeout(value = 500, unit = MILLISECONDS)
-    void p05_a_b_c___runs_in_parallel() throws ExecutionException, InterruptedException {
+    void p04_a_b_c___runs_in_parallel() throws ExecutionException, InterruptedException {
         when(dependency.a(1)).thenAnswer(x -> supplyAsync(() -> a, delayedExecutor(300, MILLISECONDS)));
         when(dependency.b(1)).thenAnswer(x -> supplyAsync(() -> b, delayedExecutor(300, MILLISECONDS)));
         when(dependency.c(1)).thenAnswer(x -> supplyAsync(() -> c, delayedExecutor(300, MILLISECONDS)));
 
-        workshop.p05_a_b_c(1).get();
+        workshop.p04_a_b_c(1).get();
     }
+    @Test
+    void p05_a_then_b1_then_c2() throws ExecutionException, InterruptedException {
+        when(dependency.a(1)).thenReturn(completedFuture(a));
+        when(dependency.b1(a)).thenReturn(completedFuture(b));
+        when(dependency.c2(a, b)).thenReturn(completedFuture(c));
+
+        assertThat(workshop.p05_a_then_b1_then_c2(1).get()).isEqualTo(new ABC(a, b, c));
+
+        verify(dependency).a(1); // call ONCE
+        verify(dependency).b1(a); // call ONCE
+        verify(dependency).c2(a, b); // call ONCE
+    }
+
+
 
     @Nested
     class P06_ComplexFlow {

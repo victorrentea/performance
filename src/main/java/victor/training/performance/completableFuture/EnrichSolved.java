@@ -35,7 +35,7 @@ public class EnrichSolved extends Enrich {
     }
 
 
-    public CompletableFuture<ABC> p04_a_then_b1_then_c2(int id) {
+    public CompletableFuture<ABC> p05_a_then_b1_then_c2(int id) {
         // vertical solution
 //        CompletableFuture<A> futureA = dependency.a(id);
 //        CompletableFuture<B> futureB = futureA.thenCompose(a -> dependency.b1(a));
@@ -50,7 +50,7 @@ public class EnrichSolved extends Enrich {
                         .thenApply(c -> new ABC(ab.a, ab.b, c)));
     }
 
-    public CompletableFuture<ABC> p05_a_b_c(int id) {
+    public CompletableFuture<ABC> p04_a_b_c(int id) {
         CompletableFuture<A> futureA = dependency.a(id);
         CompletableFuture<B> futureB = dependency.b(id);
         CompletableFuture<C> futureC = dependency.c(id);
