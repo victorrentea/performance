@@ -44,7 +44,7 @@ public class Combining {
     // ==================================================================================================
 
     /**
-     * Run dependency#task(s), then dependency#cleanup();
+     * Run dependency#task(s); After it completes, call dependency#cleanup();
      * Hint: completableFuture.then....
      */
     public void p02_chainRun(String s) {
@@ -93,7 +93,7 @@ public class Combining {
      * Launch #call; when it completes launch #task and #cleanup;
      * After both complete, complete the returned future.
      * Reminder: Don't block! (no .get or .join) in the entire workshop!
-     * Play: try to run #task() and #cleanup() in parallel (log.info prints the thread name) Hint: ...Async(
+     * Bonus: try to run #task() and #cleanup() in parallel (log.info prints the thread name) Hint: ...Async(
      */
     public CompletableFuture<Void> p06_all() throws ExecutionException, InterruptedException {
         String s = dependency.call().get();
