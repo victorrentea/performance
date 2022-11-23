@@ -187,8 +187,12 @@ class BarConfig {
    public ThreadPoolTaskExecutor barPool(@Value("${bar.pool.size}") int size) {
       ThreadPoolTaskExecutor executor = new ThreadPoolTaskExecutor();
       executor.setCorePoolSize(size);
-      executor.setMaxPoolSize(size);
-      executor.setQueueCapacity(500);
+      executor.setMaxPoolSize(size/**2*/); // periculos daca optimizezi "la oha" fara sa masori: poti sa faci mai mult rau decat
+      executor.setQueueCapacity(500); // cat pui aici ?
+      // mare sa fie
+      // > MULT(1M) =>
+      //    a) latente aberante pentru req; latenta
+      //    b) OOM
       executor.setThreadNamePrefix("barman-");
       executor.initialize();
       return executor;

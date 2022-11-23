@@ -38,7 +38,8 @@ public class Combining {
      * Return the uppercase of the future value, without blocking (.get() or .join()).
      */
     public CompletableFuture<String> p01_transform() {
-        return dependency.call();
+        return dependency.call()
+                .thenApply(v->v.toUpperCase());
     }
 
     // ==================================================================================================
