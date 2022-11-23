@@ -130,6 +130,7 @@ public class Combining {
         CompletableFuture<String> futureString = dependency.call();
 
         // Fork: dintr-un singur CF pornesti 2,3...
+        // astea 2 nu ruleaza in paralel!! acum
         CompletableFuture<Void> future1 = futureString.thenCompose(s -> dependency.task(s));
         CompletableFuture<Void> future2 = futureString.thenRun(() -> dependency.cleanup());
 
