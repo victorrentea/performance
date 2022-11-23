@@ -139,6 +139,13 @@ public class Combining {
         // join
 //        return future1.thenCombine(future2, (v1,v2) -> null);
         return CompletableFuture.allOf(future1, future2);
+//        , future3)
+//                .thenApply(v -> {
+//                    future1.get() // sigur non-blocante
+//                    future2.get()
+//                    future3.get()
+//                    return new Obiect
+//                });
     }
 
     // ==================================================================================================

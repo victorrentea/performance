@@ -2,9 +2,11 @@ package victor.training.performance.completableFuture;
 
 import lombok.AllArgsConstructor;
 import lombok.Value;
+import org.jooq.lambda.Unchecked;
 
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
+import java.util.function.Function;
 
 import static java.util.concurrent.CompletableFuture.completedFuture;
 
@@ -49,7 +51,8 @@ public class Enrich {
     // ⚠️ ATTENTION ⚠️ ENTERING HEAVEN
     //
     // ALL THE NETWORK CALLS HAVE BEEN ALREADY CAREFULLY WRAPPED IN NON-BLOCKING FUNCTIONS
-    //   eg. relying on WebClient or reactive drivers (R2DBC, reactive kafka, cassandra)
+    //   eg. relying on WebClient (non-blocking REST client)
+    //   or reactive drivers (R2DBC, reactive kafka,Mongo + cassandra)
     // NO FUNCTION EVER BLOCKS ANY THREAD ANYMORE
     // ********************************
 
@@ -60,7 +63,10 @@ public class Enrich {
      * a(id) || b(id) ==> AB(a,b)
      */
     public CompletableFuture<AB> p01_a_par_b(int id) {
-        return null;
+        CompletableFuture<A> fa = dependency.a(id);
+        CompletableFuture<B> fb = dependency.b(id);
+
+        return fa.thenCombine(fb, AB::new);
     }
 
     // ==================================================================================================
@@ -69,7 +75,9 @@ public class Enrich {
      * a(id), then b1(a) ==> AB(a,b)
      */
     public CompletableFuture<AB> p02_a_then_b1(int id) {
-        return null;
+        CompletableFuture<A> fa = dependency.a(id);
+        CompletableFuture<B> fb = fa.thenCompose(a -> dependency.b1(a));
+        return fa.thenCombine(fb, AB::new);
     }
 
     // ==================================================================================================
@@ -78,7 +86,16 @@ public class Enrich {
      * a(id), then b1(a) || c1(a) ==> ABC(a,b,c)
      */
     public CompletableFuture<ABC> p03_a_then_b1_par_c1(int id) {
-        return null;
+        CompletableFuture<A> fa = dependency.a(id);
+        CompletableFuture<B> fb = fa.thenCompose(a -> dependency.b1(a));
+        CompletableFuture<C> fc = fa.thenCompose(a -> dependency.c1(a));
+
+        // #asaNU. prea -> in -> abuz de clojure
+//        fa.thenCompose(a -> fb.thenCombine(fc, (b, c) -> new ABC(a, b, c)));
+
+        return CompletableFuture.allOf(fa, fb, fc)
+                .thenApply(v -> new ABC(fa.join(), fb.join(), fc.join()));
+//                .thenApply(Unchecked.function(v -> new ABC(fa.get(), fb.get(), fc.get())));
     }
 
     // ==================================================================================================
@@ -87,7 +104,13 @@ public class Enrich {
      * a(id), then b1(a), then c2(a,b) ==> ABC(a,b,c)
      */
     public CompletableFuture<ABC> p04_a_then_b1_then_c2(int id) {
-        return null;
+        CompletableFuture<A> fa = dependency.a(id);
+        CompletableFuture<B> fb = fa.thenCompose(a -> dependency.b1(a));
+        CompletableFuture<C> fc = fa.thenCombine(fb, (a, b) -> dependency.c2(a, b))
+                .thenCompose(Function.identity());
+        return CompletableFuture.allOf(fa, fb, fc)
+                .thenApply(v -> new ABC(fa.join(), fb.join(), fc.join()));
+
     }
     // ==================================================================================================
 
