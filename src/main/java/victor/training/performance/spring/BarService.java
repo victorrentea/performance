@@ -51,27 +51,32 @@ public class BarService {
       // - orice CompletableFuture.*Async()
       // - .parallelStream()
       // CompletableFuture === promise din js/ts
-      CompletableFuture<Beer> futureBeer =
-              supplyAsync(() -> barman.pourBeer(),barPool);
-      CompletableFuture<Vodka> futureVodka =
-              supplyAsync(() -> barman.pourVodka(),barPool)
-             .thenApply(v -> v.withGheata(true));
+      try {
+         CompletableFuture<Beer> futureBeer =
+                 supplyAsync(() -> barman.pourBeer(),barPool);
+         CompletableFuture<Vodka> futureVodka =
+                 supplyAsync(() -> barman.pourVodka(),barPool)
+                .thenApply(v -> v.withGheata(true));
 
-      log.debug("Aici a plecat chelnerul cu comanda");
-      log.debug("thread ruleaza aici  aceasta linie?");
-      // pe CF nu e indicat sa faci .get()
-//      Beer beer = futureBeer.get(); // 1 sec sta aici blocat th tomcatului
-//      Vodka vodka = futureVodka.get(); // 0 sec cat sta aici blocat th tomcatului
+         log.debug("Aici a plecat chelnerul cu comanda");
+         log.debug("thread ruleaza aici  aceasta linie?");
+         // pe CF nu e indicat sa faci .get()
+         //      Beer beer = futureBeer.get(); // 1 sec sta aici blocat th tomcatului
+         //      Vodka vodka = futureVodka.get(); // 0 sec cat sta aici blocat th tomcatului
 
-      CompletableFuture<DillyDilly> futureDilly =
-              futureBeer.thenCombine(futureVodka,
-                  (beer, vodka) -> new DillyDilly(beer, vodka))
-//              .thenCompose(di -> altNetworkCallCareDaCF(di))
-              ;
+         CompletableFuture<DillyDilly> futureDilly =
+                 futureBeer.thenCombine(futureVodka,
+                     (beer, vodka) -> new DillyDilly(beer, vodka))
+   //              .thenCompose(di -> altNetworkCallCareDaCF(di))
+                 ;
 
-      long t1 = System.currentTimeMillis();
-      log.debug("Got my order in {} ms = cat sta blocat th tomcatului : {}", t1 - t0, "dilly");
-      return futureDilly;
+         long t1 = System.currentTimeMillis();
+         log.debug("Got my order in {} ms = cat sta blocat th tomcatului : {}", t1 - t0, "dilly");
+         return futureDilly;
+      } catch (IllegalStateException e) {
+         log.error("VALEU: "+ e);
+         throw e;
+      }
    }
 
 
@@ -141,7 +146,7 @@ class DillyDilly {
 class Barman {
 
    public Beer pourBeer() {
-//      if(true) throw new IllegalStateException("Nu mai e bere!!!!!!!! 😭😭😭😭😭😭😭");
+      if(true) throw new IllegalStateException("Nu mai e bere!!!!!!!! 😭😭😭😭😭😭😭");
       log.debug("Pouring Beer...");
       sleepMillis(1000); // imagine slow REST call, WSDL, PL/SQL
       log.debug("Beer done");

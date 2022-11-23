@@ -9,14 +9,13 @@ import java.util.concurrent.ExecutionException;
 public class Basics {
     protected final Logger log = LoggerFactory.getLogger(getClass());
 
-
     // ==================================================================================================
 
     /**
      * Create a completed future with the value "Hi"
      */
     public CompletableFuture<String> p01_completed() {
-        return null;
+        return CompletableFuture.completedFuture("Hi");
     }
 
     // ==================================================================================================
@@ -27,17 +26,23 @@ public class Basics {
      * Note: a method returning CompletableFuture is NOT allowed to throw exceptions, so this is a good practice!👌
      */
     public CompletableFuture<String> p02_failed(boolean failed) {
-        return null;
+        if (failed) {
+            return CompletableFuture.failedFuture(new IllegalArgumentException());
+        }else
+        return CompletableFuture.completedFuture("Hi");
+
     }
 
     // ==================================================================================================
 
     /**
-     * BLOCK the current thread to get the value from the future using .join() (Not recommended in production).
+     * BLOCK the current thread to get the value from the future using .get();
+     * .join() (Not recommended in production).
      * Note: only runtime exceptions
      */
     public String p03_join(CompletableFuture<String> future) {
-        return null;
+//        return future.get();
+        return future.join();
     }
 
     // ==================================================================================================
@@ -48,8 +53,19 @@ public class Basics {
      * Note: the original exception comes wrapped in another exception - guess which one?
      */
     public String p04_joinException(CompletableFuture<String> future) {
+
+//        try {
+//            faceRetea();
+//        } catch (Exception e) {
+//            throw new RuntimeException(e);
+//        }
+
         return null;
     }
+
+//    public CompletableFuture<String> faceRetea() {
+//
+//    }
 
     // ==================================================================================================
 
