@@ -40,8 +40,14 @@ public class BarService {
    public List<Object> orderDrinks() throws ExecutionException, InterruptedException {
       log.debug("Requesting drinks...");
       long t0 = System.currentTimeMillis();
-      Future<Beer> futureBeer = barPool.submit(() -> barman.pourBeer());
-      Future<Vodka> futureVodka = barPool.submit(() -> barman.pourVodka());
+
+//      Future<Beer> futureBeer = barPool.submit(() -> barman.pourBeer());
+//      Future<Vodka> futureVodka = barPool.submit(() -> barman.pourVodka());
+
+      // java8 style
+      Future<Beer> futureBeer = CompletableFuture.supplyAsync(() -> barman.pourBeer());
+      Future<Vodka> futureVodka = CompletableFuture.supplyAsync(() -> barman.pourVodka());
+
       log.debug("Aici a plecat chelnerul cu comanda");
       log.debug("thread ruleaza aici  aceasta linie?");
       Beer beer = futureBeer.get(); // 1 sec sta aici blocat th tomcatului
