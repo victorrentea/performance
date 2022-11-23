@@ -18,7 +18,7 @@ import static victor.training.performance.util.PerformanceUtil.sleepMillis;
 @TestMethodOrder(MethodName.class)
 @Timeout(1)
 class BasicsTest {
-    Basics workshop = new BasicsSolved();
+    Basics workshop = new Basics();
 
     @Test
     void p01_completed() throws ExecutionException, InterruptedException {

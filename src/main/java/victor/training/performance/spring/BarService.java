@@ -3,6 +3,7 @@ package victor.training.performance.spring;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.Data;
+import lombok.With;
 import lombok.extern.slf4j.Slf4j;
 import org.jooq.lambda.Unchecked;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,7 +17,8 @@ import org.springframework.web.bind.annotation.RestController;
 
 import javax.servlet.AsyncContext;
 import javax.servlet.http.HttpServletRequest;
-import java.util.concurrent.*;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutionException;
 
 import static java.lang.System.currentTimeMillis;
 import static java.util.concurrent.CompletableFuture.supplyAsync;
@@ -49,8 +51,11 @@ public class BarService {
       // - orice CompletableFuture.*Async()
       // - .parallelStream()
       // CompletableFuture === promise din js/ts
-      CompletableFuture<Beer> futureBeer = supplyAsync(() -> barman.pourBeer(),barPool);
-      CompletableFuture<Vodka> futureVodka = supplyAsync(() -> barman.pourVodka(),barPool);
+      CompletableFuture<Beer> futureBeer =
+              supplyAsync(() -> barman.pourBeer(),barPool);
+      CompletableFuture<Vodka> futureVodka =
+              supplyAsync(() -> barman.pourVodka(),barPool)
+             .thenApply(v -> v.withGheata(true));
 
       log.debug("Aici a plecat chelnerul cu comanda");
       log.debug("thread ruleaza aici  aceasta linie?");
@@ -58,8 +63,9 @@ public class BarService {
 //      Beer beer = futureBeer.get(); // 1 sec sta aici blocat th tomcatului
 //      Vodka vodka = futureVodka.get(); // 0 sec cat sta aici blocat th tomcatului
 
-      CompletableFuture<DillyDilly> futureDilly = futureBeer.thenCombine(futureVodka,
-              (beer, vodka) -> new DillyDilly(beer, vodka))
+      CompletableFuture<DillyDilly> futureDilly =
+              futureBeer.thenCombine(futureVodka,
+                  (beer, vodka) -> new DillyDilly(beer, vodka))
 //              .thenCompose(di -> altNetworkCallCareDaCF(di))
               ;
 
@@ -76,11 +82,11 @@ public class BarService {
       long t0 = currentTimeMillis();
       AsyncContext asyncContext = request.startAsync(); // I will write the response async
 
-      var futureDrinks = orderDrinks();
-//      var futureDrinks = supplyAsync(() -> {
-//         sleepMillis(2000);
-//         return new Beer("blond");
-//      });
+//      var futureDrinks = orderDrinks();
+      var futureDrinks = supplyAsync(() -> {
+         sleepMillis(2000);
+         return new Beer("blond");
+      });
       futureDrinks.thenAccept(Unchecked.consumer(dilly -> {
          String json = new ObjectMapper().writeValueAsString(dilly);
          asyncContext.getResponse().getWriter().write(json);// the connection was kept open
@@ -105,10 +111,29 @@ public class BarService {
    //</editor-fold>
 }
 
-@Data
+@Slf4j
 class DillyDilly {
    private final Beer beer;
    private final Vodka vodka;
+
+   public DillyDilly(Beer beer, Vodka vodka) {
+      log.debug("ce thread amesteva b + v?");
+      this.beer = beer;
+      this.vodka = vodka;
+   }
+
+   public Beer getBeer() {
+      return this.beer;
+   }
+
+   public Vodka getVodka() {
+      return this.vodka;
+   }
+
+
+   public String toString() {
+      return "DillyDilly(beer=" + this.getBeer() + ", vodka=" + this.getVodka() + ")";
+   }
 }
 
 @Service
@@ -127,7 +152,7 @@ class Barman {
       log.debug("Pouring Vodka...");
       sleepMillis(1000); // long query
       log.debug("Vodka done");
-      return new Vodka();
+      return new Vodka(false);
    }
 }
 
@@ -138,6 +163,8 @@ class Beer {
 @Data
 class Vodka {
    private final String brand = "Absolut";
+   @With
+   private final boolean gheata;
 }
 
 @Configuration
