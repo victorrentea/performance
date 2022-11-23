@@ -85,11 +85,43 @@ class CombiningTest {
     }
 
     @Test
+    void p06_forkJoin_inParallel() throws ExecutionException, InterruptedException {
+        when(dependency.call()).thenReturn(completedFuture("a"));
+        when(dependency.task("a")).thenAnswer(c -> {
+            log.debug("2Start Task");
+            sleepMillis(800);
+            log.debug("2End Task");
+            return completedFuture(null);
+        });
+        doAnswer(c -> {
+            log.debug("1Start Cleanup");
+            sleepMillis(800);
+            log.debug("1End Cleanup");
+            return null;
+        }).when(dependency).cleanup();
+
+        workshop.p06_all().get();
+        // should finish <= 1sec, as per @Timeout(1) on class
+    }
+
+    @Test
     void p06_forkJoin() throws ExecutionException, InterruptedException {
         CompletableFuture<String> callFuture = new CompletableFuture<>();
         CompletableFuture<Void> taskFuture = new CompletableFuture<>();
         when(dependency.call()).thenReturn(callFuture);
-        when(dependency.task("a")).thenReturn(taskFuture);
+        when(dependency.task("a")).thenAnswer(c -> {
+            log.debug("2Pe ce thread sunt aici ?");
+            sleepMillis(100);
+            log.debug("2Dupa");
+            return taskFuture;
+        });
+        doAnswer(c -> {
+            log.debug("1Pe ce thread sunt aici ?");
+            sleepMillis(100);
+            log.debug("1Dupa");
+            return null;
+        }).when(dependency).cleanup();
+
 
         CompletableFuture<Void> resultFuture = workshop.p06_all();
 
