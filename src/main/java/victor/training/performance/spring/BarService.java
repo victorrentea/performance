@@ -76,11 +76,11 @@ public class BarService {
       long t0 = currentTimeMillis();
       AsyncContext asyncContext = request.startAsync(); // I will write the response async
 
-      //var futureDrinks = orderDrinks();
-      var futureDrinks = supplyAsync(() -> {
-         sleepMillis(2000);
-         return new Beer("blond");
-      });
+      var futureDrinks = orderDrinks();
+//      var futureDrinks = supplyAsync(() -> {
+//         sleepMillis(2000);
+//         return new Beer("blond");
+//      });
       futureDrinks.thenAccept(Unchecked.consumer(dilly -> {
          String json = new ObjectMapper().writeValueAsString(dilly);
          asyncContext.getResponse().getWriter().write(json);// the connection was kept open
