@@ -25,13 +25,14 @@ public class EnrichSolved extends Enrich {
 
 
     public CompletableFuture<ABC> p03_a_then_b1_par_c1(int id) {
-//        CompletableFuture<A> futureA = dependency.a(id);
-//        CompletableFuture<B> futureB = futureA.thenComposeAsync(a -> dependency.b1(a));
-//        CompletableFuture<C> futureC = futureA.thenComposeAsync(a -> dependency.c1(a));
-//        return futureB.thenCombine(futureC, (b, c) -> new ABC(futureA.join(), b, c)); // Cons: join()
+        CompletableFuture<A> futureA = dependency.a(id);
+        CompletableFuture<B> futureB = futureA.thenComposeAsync(a -> dependency.b1(a));
+        CompletableFuture<C> futureC = futureA.thenComposeAsync(a -> dependency.c1(a));
+        return futureB.thenCombine(futureC, (b, c) -> new ABC(futureA.join(), b, c)); // Cons: join()
 
-        return dependency.a(id)
-                .thenCompose(a -> dependency.b1(a).thenCombine(dependency.c1(a), (b,c) -> new ABC(a,b,c)));
+        // too geek ?
+//        return dependency.a(id)
+//                .thenCompose(a -> dependency.b1(a).thenCombine(dependency.c1(a), (b,c) -> new ABC(a,b,c)));
     }
 
 
