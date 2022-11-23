@@ -5,6 +5,8 @@ import org.slf4j.LoggerFactory;
 
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 public class Basics {
     protected final Logger log = LoggerFactory.getLogger(getClass());
@@ -87,18 +89,24 @@ public class Basics {
      * Hint: use a method ending in ..Async(Runnable)
      */
     public void p06_run() {
-
+        CompletableFuture.runAsync(() -> {
+            log.info("Hi");
+        });
     }
 
     // ==================================================================================================
 
     /**
-     * Run Thread.currentThread().getName() in another thread, and complete the returned CF with that value.
+     * Run Thread.currentThread().getName() in another thread,
+     * and complete the returned CF with that value.
+     *
      * Hint: pass a Supplier to a static method of CF
      * Play: what is that thread name? Google that thread name [2 min].
      */
     public CompletableFuture<String> p07_supply() {
-        return null;
+        ExecutorService alMeu = Executors.newFixedThreadPool(1);
+        return CompletableFuture.supplyAsync(() ->
+                 Thread.currentThread().getName()/*, alMeu*/);
     }
     // ==================================================================================================
 
@@ -106,7 +114,15 @@ public class Basics {
      * Print the value in the future, whenever it's ready.
      */
     public void p08_accept(CompletableFuture<String> future) {
+        // ex reale: sa dau send pe un kafka
+        // sa dau un mail., sa inserez in baza.
 
+        future.thenAccept(v -> {
+            System.out.println(v); // callback atunci cand futureul se "completeaza"
+            // 2 scenarii sunt posibile aici:
+            //1) ruleaza pe ALT THREAD(ala care termina CF primit param)
+            //2) rulez AICI PE LOC IN THREADUL MEU: daca CF deja e terminat
+        });
     }
 
 
