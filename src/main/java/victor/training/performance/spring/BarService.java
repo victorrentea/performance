@@ -16,11 +16,9 @@ import org.springframework.web.bind.annotation.RestController;
 
 import javax.servlet.AsyncContext;
 import javax.servlet.http.HttpServletRequest;
-import java.util.List;
 import java.util.concurrent.*;
 
 import static java.lang.System.currentTimeMillis;
-import static java.util.Arrays.asList;
 import static java.util.concurrent.CompletableFuture.supplyAsync;
 import static victor.training.performance.util.PerformanceUtil.sleepMillis;
 
@@ -38,7 +36,7 @@ public class BarService {
 
 
    @GetMapping("drink")
-   public List<Object> orderDrinks() throws ExecutionException, InterruptedException {
+   public DillyDilly orderDrinks() throws ExecutionException, InterruptedException {
       log.debug("Requesting drinks...");
       long t0 = System.currentTimeMillis();
 
@@ -50,19 +48,23 @@ public class BarService {
       // pe care ruleaza:
       // - orice CompletableFuture.*Async()
       // - .parallelStream()
-      Future<Beer> futureBeer = supplyAsync(() -> barman.pourBeer(),barPool);
-      Future<Vodka> futureVodka = supplyAsync(() -> barman.pourVodka(),barPool);
+      // CompletableFuture === promise din js/ts
+      CompletableFuture<Beer> futureBeer = supplyAsync(() -> barman.pourBeer(),barPool);
+      CompletableFuture<Vodka> futureVodka = supplyAsync(() -> barman.pourVodka(),barPool);
 
       log.debug("Aici a plecat chelnerul cu comanda");
       log.debug("thread ruleaza aici  aceasta linie?");
+      // pe CF nu e indicat sa faci .get()
       Beer beer = futureBeer.get(); // 1 sec sta aici blocat th tomcatului
       Vodka vodka = futureVodka.get(); // 0 sec cat sta aici blocat th tomcatului
 
       long t1 = System.currentTimeMillis();
-      List<Object> drinks = asList(beer, vodka);
-      log.debug("Got my order in {} ms : {}", t1 - t0, drinks);
-      return drinks;
+      DillyDilly dilly = new DillyDilly(beer, vodka);
+      log.debug("Got my order in {} ms : {}", t1 - t0, dilly);
+      return dilly;
    }
+
+
 
    //<editor-fold desc="History Lesson: Async Servlets">
    @GetMapping("/drink-raw")
@@ -99,12 +101,18 @@ public class BarService {
    //</editor-fold>
 }
 
+@Data
+class DillyDilly {
+   private final Beer beer;
+   private final Vodka vodka;
+}
+
 @Service
 @Slf4j
 class Barman {
 
    public Beer pourBeer() {
-      if(true) throw new IllegalStateException("Nu mai e bere!!!!!!!! 😭😭😭😭😭😭😭");
+//      if(true) throw new IllegalStateException("Nu mai e bere!!!!!!!! 😭😭😭😭😭😭😭");
       log.debug("Pouring Beer...");
       sleepMillis(1000); // imagine slow REST call, WSDL, PL/SQL
       log.debug("Beer done");
