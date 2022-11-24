@@ -113,7 +113,9 @@ public class UberEntityTest {
     // asta e homepageul accesat de 10 ori/sec
     private List<UberSearchResultDto> search(UberSearchCriteria criteria) {
         // NU CARE CUMVA Sa scoti entitati intregi la searchurile fierbinti
-        String jpql = "SELECT u.id, u.name, c.name " +
+        // mandatory: faci asa: select new ...Dto din jqpl
+        String jpql = "SELECT new victor.training.performance.jpa.UberSearchResultDto(" +
+                      "u.id, u.name, c.name) " +
                       "FROM UberEntity u JOIN Country c ON c.id = u.originCountryId WHERE 1 = 1 ";
         // alternative implementation: CriteriaAPI, Criteria+Metamodel, QueryDSL, Spring Specifications
 
@@ -124,14 +126,12 @@ public class UberEntityTest {
             params.put("name", criteria.name);
         }
 
-        var query = em.createQuery(jpql, Object[].class);
+        var query = em.createQuery(jpql, UberSearchResultDto.class);
         for (String key : params.keySet()) {
             query.setParameter(key, params.get(key));
         }
         var entities = query.getResultList();
-        return entities.stream().map(arr -> new UberSearchResultDto(
-                (Long)arr[0], (String)arr[1], (String)arr[2]
-        )).collect(toList());
+        return entities;
     }
 }
 class UberSearchCriteria {
