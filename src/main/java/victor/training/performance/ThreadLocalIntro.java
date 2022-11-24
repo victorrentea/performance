@@ -25,13 +25,13 @@ public class ThreadLocalIntro {
 
     private final AController controller = new AController(new AService(new ARepo()));
 
-    public static String staticCurrentUser;
+    public static ThreadLocal<String> staticCurrentUser = new ThreadLocal<>();
     // TODO ThreadLocal<String>
 
     // inside Spring, JavaEE,.. Filter web JWT OAuth AT  { subject: "jdoe" }
     public void httpRequest(String currentUser, String data) {
         log.info("Current user is " + currentUser);
-        staticCurrentUser = currentUser;
+        staticCurrentUser.set(currentUser);
         // TODO pass the current user down to the repo WITHOUT polluting all signatures
         controller.create(data);
     }
@@ -68,7 +68,7 @@ class AService {
 @Slf4j
 class ARepo {
     public void save(String data) {
-        String currentUser = ThreadLocalIntro.staticCurrentUser; // TODO Where to get this from?
+        String currentUser = ThreadLocalIntro.staticCurrentUser.get(); // TODO Where to get this from?
 //        SecurityContextHolder.getContext().getAuthentication().getName();
         log.info("INSERT INTO A(data, created_by) VALUES ({}, {})", data, currentUser);
     }
