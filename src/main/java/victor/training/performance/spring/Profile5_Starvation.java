@@ -54,6 +54,8 @@ class SheepService {
     private final ShepardService shepard;
 
     public Long create(String name) {
+        System.out.println("Magia proxy-urilor (daca n-o stii pasta, scoate Spring din CV): "
+            + shepard.getClass().getName());
         String sn = shepard.registerSheep(name); // Takes 1 second (HTTP call)
         Sheep sheep = repo.save(new Sheep(name, sn));
         return sheep.getId();
@@ -67,7 +69,12 @@ class SheepService {
 @RequiredArgsConstructor
 class ShepardService {
     private final ShepardClient client;
-    @Timed("shepard")
+
+
+    // mai fain decat t0 t1= t1-t0
+    @Timed("shepard") // ii spune lui spring sa introduca un proxy in fata metodei
+    // care intercepteaza apelul masoara cat a durat, raportand apoi pe http://localhost:8080/actuator/prometheus
+    // ca sa-l poti urmari pe grafana
     public String registerSheep(String name) {
         SheepRegistrationResponse response = new RestTemplate()
             .getForObject("http://localhost:9999/api/register-sheep", SheepRegistrationResponse.class);

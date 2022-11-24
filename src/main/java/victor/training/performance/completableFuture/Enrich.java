@@ -141,7 +141,6 @@ public class Enrich {
 //        B b0 = dependency.b1(a0).get();
 //        C c0 = dependency.c1(a0).get();
 
-
         return dependency.a(id).thenApply(a -> new MyContext().withA0(a))
                 .thenCompose(context -> dependency.b1(context.getA0()).thenApply(context::withB0))
                 .thenCompose(context -> dependency.c1(context.getA0()).thenApply(c -> context.withC0(c)))
