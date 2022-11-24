@@ -32,20 +32,20 @@ public class NPlusOneTest {
     @Autowired
     EntityManager entityManager;
     @Autowired
-    ParentRepo repo;
+    ParentRepo parentRepo;
     @Autowired
     ParentSearchViewRepo searchRepo;
 
     @BeforeEach
     void persistData() {
-        repo.save(new Parent("Victor")
+        parentRepo.save(new Parent("Victor")
                 .setAge(36)
                 .addChild(new Child("Emma"))
                 .addChild(new Child("Vlad"))
         );
-        repo.save(new Parent("Trofim") // bachelor :)
+        parentRepo.save(new Parent("Trofim") // bachelor :)
                 .setAge(42));
-        repo.save(new Parent("Peter")
+        parentRepo.save(new Parent("Peter")
                 .setAge(41)
                 .addChild(new Child("Maria"))
                 .addChild(new Child("Paul"))
@@ -58,7 +58,7 @@ public class NPlusOneTest {
 
     @Test
     void nPlusOne() {
-        List<Parent> parents = repo.findAll();
+        List<Parent> parents = parentRepo.findAll();
         log.info("Loaded {} parents", parents.size());
 
         int totalChildren = countChildren(parents);
@@ -71,7 +71,7 @@ public class NPlusOneTest {
         log.debug("Start counting children of {} parents: {}", parents.size(), parents);
         int total = 0;
         for (Parent parent : parents) {
-            total += parent.getChildren().size();
+            total += parent.getChildren().size(); // lazy load: aduce la nevoie copii x N = N+1
         }
         log.debug("Counted {} children", total);
         return total;
@@ -81,7 +81,7 @@ public class NPlusOneTest {
     @Test
     @Sql("/create-view.sql")
     public void searchOnView() {
-        Stream<ParentSearchView> parentViews = repo.findAll()
+        Stream<ParentSearchView> parentViews = parentRepo.findAll()
                 .stream().map(p -> toDto(p));
         //		var parentViews = searchRepo.findAll();
 

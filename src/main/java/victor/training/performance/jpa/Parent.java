@@ -18,7 +18,11 @@ public class Parent {
    private String name;
    private Integer age;
 
-   @OneToMany(mappedBy = "parent", cascade = CascadeType.PERSIST)
+   @OneToMany(mappedBy = "parent", cascade = CascadeType.PERSIST
+//           , fetch = FetchType.EAGER // asta o pui doar din groaza de LazyInitializationException,
+           // nu ca-ti pasa de performanta. ca tot face Hiber N queryuri\
+           // de ce zboara Vlad la tine sa-ti spuna ca nu: pt ca tocmai ai incarcat toti copii PESTE TOT unde vreodata scoti parinit din DBF.
+   )
    // @BatchSize(size=10) // too much magic
    private Set<Child> children = new HashSet<>();
 
