@@ -2,6 +2,7 @@ package victor.training.performance.completableFuture;
 
 import lombok.AllArgsConstructor;
 import lombok.Value;
+import lombok.With;
 import org.jooq.lambda.Unchecked;
 
 import java.util.concurrent.CompletableFuture;
@@ -135,13 +136,31 @@ public class Enrich {
      * Play: propagate an Immutable Context
      */
     public CompletableFuture<Void> p06_complexFlow(int id) throws ExecutionException, InterruptedException {
-        A a0 = dependency.a(id).get();
-        B b0 = dependency.b1(a0).get();
-        C c0 = dependency.c1(a0).get();
-        A a1 = logic(a0, b0, c0);
-        dependency.saveA(a1).get();
-        dependency.auditA(a1, a0); // don't wait for this to complete (fire-and-forget)
-        return completedFuture(null);
+        // adun date
+//        A a0 = dependency.a(id).get();
+//        B b0 = dependency.b1(a0).get();
+//        C c0 = dependency.c1(a0).get();
+
+
+        return dependency.a(id).thenApply(a -> new MyContext().withA0(a))
+                .thenCompose(context -> dependency.b1(context.getA0()).thenApply(context::withB0))
+                .thenCompose(context -> dependency.c1(context.getA0()).thenApply(c -> context.withC0(c)))
+                .thenApply(context -> context.withA1(logic(context.getA0(), context.getB0(), context.getC0())))
+                .thenCompose(context -> dependency.saveA(context.getA1()).thenApply(x -> context))
+//                .thenCompose(context -> dependency.auditA(context.getA1(), context.getA0())) Problema: latente si erori in audit impacteaza clientu
+                .thenAccept(context -> dependency.auditA(context.getA1(), context.getA0())) // fire and forget
+                ;
+    }
+    @With
+    @AllArgsConstructor
+    @Value// @Data + private final pe campuri
+    static class MyContext {
+        A a0;
+        B b0;
+        C c0;
+        A a1;
+        public MyContext() {
+            this(null, null, null, null);}
     }
 
     public A logic(A a, B b, C c) {
