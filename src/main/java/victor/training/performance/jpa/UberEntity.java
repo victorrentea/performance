@@ -15,8 +15,12 @@ public class UberEntity {
     private String name;
     private String firstName, lastName, ibanCode, cnp, ssn, passportNumber;
 
-    @ManyToOne
-    private Country originCountry;
+
+    // atunci cand o entitate refera @...ToOne, by default JPA se obliga sa aduca automat si pe aia odata cu parinte (+1 SELECT sau +1 JOIN)
+//    @ManyToOne
+//    private Country originCountry;
+    private Long originCountryId; // + FL
+
     @ManyToOne
     private Country nationality;
     @ManyToOne

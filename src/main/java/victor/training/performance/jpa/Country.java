@@ -10,7 +10,7 @@ import javax.persistence.ManyToOne;
 
 @Data
 @Entity
-@Cache(usage = CacheConcurrencyStrategy.READ_ONLY)
+//@Cache(usage = CacheConcurrencyStrategy.READ_ONLY)
 public class Country {
    @Id
    private Long id;
