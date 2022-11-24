@@ -16,6 +16,7 @@ import org.springframework.transaction.annotation.Transactional;
 import javax.persistence.EntityManager;
 import java.util.Collection;
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Stream;
 
 import static java.util.stream.Collectors.joining;
@@ -58,7 +59,7 @@ public class NPlusOneTest {
 
     @Test
     void nPlusOne() {
-        List<Parent> parents = parentRepo.loadParentsWithChildren();
+        Set<Parent> parents = parentRepo.loadParentsWithChildren();
         log.info("Loaded {} parents", parents.size());
 
         int totalChildren = countChildren(parents);
@@ -113,7 +114,7 @@ interface ParentRepo extends JpaRepository<Parent, Long> {
 
 
     @Query("SELECT p FROM Parent p LEFT JOIN FETCH p.children")
-    List<Parent> loadParentsWithChildren();
+    Set<Parent> loadParentsWithChildren();
 
 
 
