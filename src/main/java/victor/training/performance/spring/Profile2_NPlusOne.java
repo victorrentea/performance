@@ -36,6 +36,12 @@ public class Profile2_NPlusOne implements CommandLineRunner {
    @Transactional
    public Page<Parent> query() {
       Page<Parent> parentPage = repo.findByNameLike("%ar%", PageRequest.of(0, 20));
+
+      parentPage.getContent().get(0).getChildren().size(); // NU O STERGE. E CRITICA> evita N+1 q.
+      // imi pare rau. am folosit magie @BatchSize(20)
+      // acea adnotare nu JPA (Hivber) daca vede ca accesezi 1 copil al unuio parinte intr-o TRANZACTIE,
+      // va preincarca in avans copii tuturor parintilor in paginin de cate 20 OMG de ce ?!!
+
       log.info("Returning data");
       return parentPage;
 

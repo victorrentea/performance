@@ -2,6 +2,7 @@ package victor.training.performance.jpa;
 
 import lombok.Getter;
 import lombok.Setter;
+import org.hibernate.annotations.BatchSize;
 
 import javax.persistence.*;
 import java.util.HashSet;
@@ -23,7 +24,7 @@ public class Parent {
            // nu ca-ti pasa de performanta. ca tot face Hiber N queryuri\
            // de ce zboara Vlad la tine sa-ti spuna ca nu: pt ca tocmai ai incarcat toti copii PESTE TOT unde vreodata scoti parinit din DBF.
    )
-   // @BatchSize(size=10) // too much magic
+    @BatchSize(size=20) // too much magic
    private Set<Child> children = new HashSet<>();
 
    @ManyToOne
