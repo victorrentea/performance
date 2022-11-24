@@ -110,8 +110,11 @@ public class UberEntityTest {
         // TODO [3] Select u -> Spring Projections
     }
 
+    // asta e homepageul accesat de 10 ori/sec
     private List<UberSearchResultDto> search(UberSearchCriteria criteria) {
-        String jpql = "SELECT u FROM UberEntity u WHERE 1 = 1 ";
+        // NU CARE CUMVA Sa scoti entitati intregi la searchurile fierbinti
+        String jpql = "SELECT u.id, u.name, c.name " +
+                      "FROM UberEntity u JOIN Country c ON c.id = u.originCountryId WHERE 1 = 1 ";
         // alternative implementation: CriteriaAPI, Criteria+Metamodel, QueryDSL, Spring Specifications
 
         Map<String, Object> params = new HashMap<>();
@@ -121,12 +124,14 @@ public class UberEntityTest {
             params.put("name", criteria.name);
         }
 
-        var query = em.createQuery(jpql, UberEntity.class);
+        var query = em.createQuery(jpql, Object[].class);
         for (String key : params.keySet()) {
             query.setParameter(key, params.get(key));
         }
         var entities = query.getResultList();
-        return entities.stream().map(UberSearchResultDto::new).collect(toList());
+        return entities.stream().map(arr -> new UberSearchResultDto(
+                (Long)arr[0], (String)arr[1], (String)arr[2]
+        )).collect(toList());
     }
 }
 class UberSearchCriteria {
@@ -144,7 +149,7 @@ class UberSearchResultDto { //sent as JSON
     public UberSearchResultDto(UberEntity entity) {
         id = entity.getId();
         name = entity.getName();
-        originCountry = "TODO ";//entity.getOriginCountry().getName();
+        originCountry = "Belgium";//entity.getOriginCountry().getName();
     }
 
 }
