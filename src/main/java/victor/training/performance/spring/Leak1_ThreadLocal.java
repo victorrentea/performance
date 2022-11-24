@@ -14,9 +14,24 @@ public class Leak1_ThreadLocal {
    public String test() {
       BigObject20MB bigObject = new BigObject20MB();
       bigObject.someString = "john.doe"; // username
-      threadLocalMetadata.set(bigObject);
 
-      businessMethod1();
+      // legi de threadul curent date grele si NU le scoti de pe thread.
+      // threadul Tomcat pleaca inapo in poolul de 200 cu 20mb de picior
+      // pe local Tocmcat nu are nevoie de mai mult de 10 (=core size) 10x20 =200 MB
+      // sub stress (load) tomcat mareste pool la 200 x 20 = 4GB = OOME
+
+      // DACA VREODATA TE MANANCA (n-ar trebuie sa te manance)
+      // sa te joci NU UITA sa faci try {} finally{remove()}
+      // Sr: dc te prind cu ThreadLocal te bag la FixIt. In loc fa :
+      // @Scope("request"), ia din Toke informatii de user
+      //   SecurityContextHolder.getAuthentication().getPrincipal(): Object
+      threadLocalMetadata.set(bigObject);
+      try {
+         businessMethod1();
+      } finally {
+         threadLocalMetadata.remove(); //
+      }
+
       return "Magic can do harm.";
    }
 

@@ -15,8 +15,21 @@ import java.util.UUID;
 @Slf4j
 public class Leak2_Statics {
 
-   private /*static*/ final Map<String, ALittleObject> anInnocentMap = new HashMap<>();
+   private final Map<String, ALittleObject> anInnocentMap = new HashMap<>();
 
+
+   // ******************************
+   //  DACA TE MANANCA SA FACI VREUN CACHE DE MANA TA. NU O FACE.
+   //   foloseste copilul mamei tale un framework 15y ehcache,caffeine,redis
+   // ******************************
+
+//
+//   public void cautaInCache(String key) {
+//      ALittleObject entry = anInnocentMap.get(key);
+//      if (entry.timestamp.isBefore(now.minusMInutes(5))) {
+//         return null;
+//      }
+//   }
    @GetMapping
    public String test() { // TODO load test with jmeter
       ALittleObject obj = new ALittleObject("Some name", "email@example.com", 23);
