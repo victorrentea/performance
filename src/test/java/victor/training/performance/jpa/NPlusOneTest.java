@@ -16,8 +16,6 @@ import org.springframework.transaction.annotation.Transactional;
 import javax.persistence.EntityManager;
 import java.util.Collection;
 import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import static java.util.stream.Collectors.joining;
@@ -60,7 +58,7 @@ public class NPlusOneTest {
 
     @Test
     void nPlusOne() {
-        List<Parent> parents = parentRepo.findAll();
+        List<Parent> parents = parentRepo.loadParentsWithChildren();
         log.info("Loaded {} parents", parents.size());
 
         int totalChildren = countChildren(parents);
@@ -72,10 +70,10 @@ public class NPlusOneTest {
     private int countChildren(Collection<Parent> parents) {
         log.debug("Start counting children of {} parents: {}", parents.size(), parents);
         int total = 0;
-//        for (Parent parent : parents) {
-//            total += parent.getChildren().size(); // lazy load: aduce la nevoie copii x N = N+1
-//        }
-        total = parentRepo.countChildrenForParents(parents.stream().map(Parent::getId).collect(Collectors.toList()));
+        for (Parent parent : parents) {
+            total += parent.getChildren().size(); // lazy load: aduce la nevoie copii x N = N+1
+        }
+//        total = parentRepo.loadParentsWithChildren(parents.stream().map(Parent::getId).collect(Collectors.toList()));
         log.debug("Counted {} children", total);
         return total;
     }
@@ -111,7 +109,14 @@ public class NPlusOneTest {
 interface ParentRepo extends JpaRepository<Parent, Long> {
     // tot timpul poti sa faci un query dedicat sa aduci exact ce-ti trebuie. Speri ca JPQL nu SQL
     @Query("SELECT count(c) FROM Child c WHERE c.parent.id IN (?1)") // (parentId,1) IN ((?,1),(?,1),(?,1) ...20k )
-    int countChildrenForParents(List<Long> parentId);
+    int loadParentsWithChildren(List<Long> parentId);
+
+
+    @Query("SELECT p FROM Parent p LEFT JOIN FETCH p.children")
+    List<Parent> loadParentsWithChildren();
+
+
+
 }
 
 interface ChildRepo extends JpaRepository<Child, Long> {
