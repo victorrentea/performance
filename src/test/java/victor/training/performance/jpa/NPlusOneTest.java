@@ -83,9 +83,9 @@ public class NPlusOneTest {
     @Test
     @Sql("/create-view.sql")
     public void searchOnView() {
-        Stream<ParentSearchView> parentViews = parentRepo.findAll()
-                .stream().map(p -> toDto(p));
-        //		var parentViews = searchRepo.findAll();
+//        Stream<ParentSearchView> parentViews = parentRepo.findAll()
+//                .stream().map(p -> toDto(p));
+        var parentViews = searchRepo.findAll();
 
         // TODO 1 restrict to first page (of 1 element)
         // TODO 2 search by parent age >= 40

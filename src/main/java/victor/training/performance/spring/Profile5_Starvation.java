@@ -48,14 +48,12 @@ class SheepController {
 @Slf4j
 @Service
 @RequiredArgsConstructor
-@Transactional
 class SheepService {
     private final SheepRepo repo;
     private final ShepardService shepard;
 
+//    @Transactional
     public Long create(String name) {
-        System.out.println("Magia proxy-urilor (daca n-o stii pasta, scoate Spring din CV): "
-            + shepard.getClass().getName());
         String sn = shepard.registerSheep(name); // Takes 1 second (HTTP call)
         Sheep sheep = repo.save(new Sheep(name, sn));
         return sheep.getId();
@@ -64,6 +62,10 @@ class SheepService {
         return repo.getByNameLike(name);
     }
 }
+
+
+
+
 @Slf4j
 @Service
 @RequiredArgsConstructor
