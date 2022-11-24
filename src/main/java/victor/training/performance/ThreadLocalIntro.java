@@ -38,6 +38,15 @@ public class ThreadLocalIntro {
 }
 
 
+
+// ce e aia thread local si de ce ne pasa ?
+// - SecurityContextHolder
+// - @Transactional
+// - %X{} in Logback = MDC
+// - Apache Sleuth
+// - @Scope("request"/"session")
+
+
 // ---------- Controller -----------
 @RestController
 @RequiredArgsConstructor

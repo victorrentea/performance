@@ -15,6 +15,7 @@ import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
+import victor.training.performance.spring.threadscope.PropagateThreadScope;
 
 import javax.servlet.AsyncContext;
 import javax.servlet.http.HttpServletRequest;
@@ -195,6 +196,7 @@ class BarConfig {
       //    b) OOM
       executor.setThreadNamePrefix("barman-");
       executor.setRejectedExecutionHandler(new CallerRunsPolicy());
+      executor.setTaskDecorator(new PropagateThreadScope(null));
       executor.initialize();
 
 //      Executors.newFixedThreadPool() // problema: unbouded queue
