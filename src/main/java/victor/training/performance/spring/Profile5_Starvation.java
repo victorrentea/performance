@@ -4,7 +4,6 @@ import io.micrometer.core.annotation.Timed;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.context.annotation.Bean;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
@@ -30,10 +29,7 @@ class SheepController {
     private final SheepService service;
 
     @GetMapping("create")
-    public Long createSheep(@RequestParam(required = false) String name) {
-        if (name == null) {
-            name = "Bisisica " + LocalDateTime.now();
-        }
+    public Long createSheep(@RequestParam(defaultValue = "Bisisica") String name) {
         log.debug("create " + name);
         return service.create(name);
     }
@@ -62,27 +58,17 @@ class SheepService {
         return repo.getByNameLike(name);
     }
 }
-@Slf4j
 @Service
-@RequiredArgsConstructor
 class ShepardService {
-    private final ShepardClient client;
     @Timed("shepard")
     public String registerSheep(String name) {
+        // REMEMBER: to StartWireMock.java to serve a resposne with delay 1000ms
         SheepRegistrationResponse response = new RestTemplate()
             .getForObject("http://localhost:9999/api/register-sheep", SheepRegistrationResponse.class);
-
-        // or, using Feign client
-        // SheepRegistrationResponse response = client.registerSheep();
         return response.getSn();
     }
 }
 
-@FeignClient(name = "shepard", url="http://localhost:9999/api")
-interface ShepardClient {
-    @GetMapping("register-sheep")
-    SheepRegistrationResponse registerSheep();
-}
 @Data
 class SheepRegistrationResponse {
     private String sn;
