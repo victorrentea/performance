@@ -4,18 +4,19 @@ import lombok.Data;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
 
 @Data
 @Entity
-@Cache(usage = CacheConcurrencyStrategy.READ_ONLY)
+//@Cache(usage = CacheConcurrencyStrategy.READ_ONLY)
 public class Country {
    @Id
    private Long id;
    private String name;
-   @ManyToOne
+   @ManyToOne(cascade = CascadeType.PERSIST) // for easier testing
    private CountryRegion region;
    private String iso2Code;
    private String iso3Code;
