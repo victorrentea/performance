@@ -21,8 +21,7 @@ import victor.training.performance.jpa.JpaPerfApplication;
 public class PerformanceApp {
     private static final long t0 = System.currentTimeMillis();
 
-    // enables the use of @Timed
-    @Bean
+    @Bean // enables the use of @Timed on methods
     public TimedAspect timedAspect(MeterRegistry meterRegistry) {
         return new TimedAspect(meterRegistry);
     }

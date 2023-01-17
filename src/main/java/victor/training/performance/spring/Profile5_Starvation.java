@@ -58,6 +58,7 @@ class SheepService {
         return repo.getByNameLike(name);
     }
 }
+
 @Service
 class ShepardService {
     @Timed("shepard")
