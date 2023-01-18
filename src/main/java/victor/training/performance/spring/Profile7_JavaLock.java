@@ -18,11 +18,13 @@ import static victor.training.performance.util.PerformanceUtil.sleepMillis;
 @RequestMapping("profile/javalock")
 @RequiredArgsConstructor
 public class Profile7_JavaLock {
-  private final Deque<Integer> recentTickets = new LinkedList<>();
+  private final TicketRepo ticketRepo;
+
+  private final Deque<Integer> recentTicketIds = new LinkedList<>();
 
   @GetMapping("recent")
-  public Deque<Integer> getRecentTickets() {
-    return recentTickets;
+  public Deque<Integer> getRecentTicketIds() {
+    return recentTicketIds;
   }
 
   @GetMapping
@@ -33,9 +35,9 @@ public class Profile7_JavaLock {
 
   private synchronized BPMTicket fetchTicket(int ticketId) {
     // critical area vv
-    recentTickets.remove(ticketId); // BUG#7235
-    recentTickets.addFirst(ticketId);
-    if (recentTickets.size() > 10) recentTickets.removeLast();
+    recentTicketIds.remove(ticketId); // BUG#7235 2017
+    recentTicketIds.addFirst(ticketId);
+    if (recentTicketIds.size() > 10) recentTicketIds.removeLast();
     // critical area ^^
     return restGetFromBPM(ticketId);
   }
