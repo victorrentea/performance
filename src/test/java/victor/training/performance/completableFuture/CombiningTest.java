@@ -83,6 +83,16 @@ class CombiningTest {
         future.complete("a");
         assertThat(resultFuture.isDone()).isTrue();
     }
+    @Test
+    void p05_chainFutures_returnFutureVoid_error() throws ExecutionException, InterruptedException {
+        when(dependency.call()).thenReturn(completedFuture("a"));
+        when(dependency.task("a")).thenReturn(failedFuture(new IllegalArgumentException()));
+
+        CompletableFuture<Void> resultFuture = workshop.p05_chainFutures_returnFutureVoid();
+
+        assertThatThrownBy(() -> resultFuture.get())
+                .hasCauseInstanceOf(IllegalArgumentException.class);
+    }
 
     @Test
     void p06_forkJoin() throws ExecutionException, InterruptedException {
