@@ -4,6 +4,7 @@ import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 
 import java.util.List;
+import java.util.concurrent.ForkJoinPool;
 import java.util.stream.IntStream;
 
 import static java.util.stream.Collectors.toList;
@@ -12,12 +13,15 @@ import static victor.training.performance.util.PerformanceUtil.sleepMillis;
 @Slf4j
 public class ParallelStreams {
    public static void main(String[] args) {
-//      Enemy.parallelRequest(); // demonstrates starvation of the shared commonPool
+      Enemy.parallelRequest(); // demonstrates starvation of the shared commonPool
 
       long t0 = System.currentTimeMillis();
 
       List<Integer> list = IntStream.range(1,100).boxed().collect(toList());
 
+      // parallelStream by default runs your tasks on a special ThreadPool global per JVM
+      // called ForkJoinPool.commonPool that has exactly Ncpu-1 threads.
+      // in my case: 10 cpu => pool size = 9 => 5 sec / 10 (main+9) = 0.6 s
       List<Integer> result = list.parallelStream()
           .filter(i -> {
              log.debug("Filter " + i);
