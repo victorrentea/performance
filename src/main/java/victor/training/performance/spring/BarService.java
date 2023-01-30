@@ -7,6 +7,7 @@ import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 import org.jooq.lambda.Unchecked;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
@@ -30,16 +31,17 @@ public class BarService {
    @Autowired
    private Barman barman;
    // java SE 10y ago
-   private static final ExecutorService threadPool =
-           Executors.newFixedThreadPool(2);
+
+   @Autowired
+   ThreadPoolTaskExecutor barPool;
 
    @GetMapping("drink")
    public List<Object> orderDrinks() throws ExecutionException, InterruptedException {
       log.debug("Requesting drinks...");
       long t0 = System.currentTimeMillis();
 
-      Future<Beer> futureBeer = threadPool.submit(() -> barman.pourBeer());
-      Future<Vodka> futureVodka = threadPool.submit(() -> barman.pourVodka());
+      Future<Beer> futureBeer = barPool.submit(() -> barman.pourBeer());
+      Future<Vodka> futureVodka = barPool.submit(() -> barman.pourVodka());
 
       Beer beer = futureBeer.get();
       Vodka vodka = futureVodka.get();
@@ -118,10 +120,11 @@ class Vodka {
 class BarConfig {
    //<editor-fold desc="Custom thread pool">
    @Bean
-   public ThreadPoolTaskExecutor barPool(MeterRegistry meterRegistry) {
+   public ThreadPoolTaskExecutor barPool(MeterRegistry meterRegistry,
+                                         @Value("${barman.thread.count}")int count) {
       ThreadPoolTaskExecutor executor = new ThreadPoolTaskExecutor();
-      executor.setCorePoolSize(1);
-      executor.setMaxPoolSize(1);
+      executor.setCorePoolSize(count);
+      executor.setMaxPoolSize(count);
       executor.setQueueCapacity(500);
       executor.setThreadNamePrefix("barman-");
       executor.setTaskDecorator(new MonitorQueueWaitingTime(meterRegistry.timer("barman-queue-time")));
