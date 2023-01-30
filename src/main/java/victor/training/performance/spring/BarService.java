@@ -29,13 +29,14 @@ import static victor.training.performance.util.PerformanceUtil.sleepMillis;
 public class BarService {
    @Autowired
    private Barman barman;
+   // java SE 10y ago
+   private static final ExecutorService threadPool =
+           Executors.newFixedThreadPool(2);
 
    @GetMapping("drink")
    public List<Object> orderDrinks() throws ExecutionException, InterruptedException {
       log.debug("Requesting drinks...");
       long t0 = System.currentTimeMillis();
-
-      ExecutorService threadPool = Executors.newFixedThreadPool(2);
 
       Future<Beer> futureBeer = threadPool.submit(() -> barman.pourBeer());
       Future<Vodka> futureVodka = threadPool.submit(() -> barman.pourVodka());
