@@ -4,15 +4,17 @@ import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 
 import java.util.List;
+import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ForkJoinPool;
 import java.util.stream.IntStream;
+import java.util.stream.Stream;
 
 import static java.util.stream.Collectors.toList;
 import static victor.training.performance.util.PerformanceUtil.sleepMillis;
 
 @Slf4j
 public class ParallelStreams {
-   public static void main(String[] args) {
+   public static void main(String[] args) throws ExecutionException, InterruptedException {
       Enemy.parallelRequest(); // demonstrates starvation of the shared commonPool
 
       long t0 = System.currentTimeMillis();
@@ -25,17 +27,18 @@ public class ParallelStreams {
       // parallelStream by default runs your tasks on a special ThreadPool global per JVM
       // called ForkJoinPool.commonPool that has exactly Ncpu-1 threads.
       // in my case: 10 cpu => pool size = 9 => 5 sec / 10 (main+9) = 0.6 s
-      List<Integer> result = list.parallelStream()
-          .filter(i -> {
-             log.debug("Filter " + i);
-             return i % 2 == 0;
-          })
-          .map(i -> {
-             log.debug("Map " + i);
-             sleepMillis(100); // REST get do some 'paralellizable' I/O work (DB, REST, SOAP)
-             return i * 2;
-          })
-          .collect(toList());
+      Stream<Integer> stream = list.parallelStream()
+              .filter(i -> {
+                 log.debug("Filter " + i);
+                 return i % 2 == 0;
+              })
+              .map(i -> {
+                 log.debug("Map " + i);
+                 sleepMillis(100); // REST get do some 'paralellizable' I/O work (DB, REST, SOAP)
+                 return i * 2;
+              });
+      ForkJoinPool pool = new ForkJoinPool(20);
+      List<Integer> result = pool.submit(()->stream.collect(toList())).get();
       log.debug("Got result: " + result);
 
       long t1 = System.currentTimeMillis();
