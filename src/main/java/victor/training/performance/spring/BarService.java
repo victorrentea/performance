@@ -15,9 +15,7 @@ import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
-import victor.training.performance.spring.Barman.Beer;
-import victor.training.performance.spring.Barman.DillyDilly;
-import victor.training.performance.spring.Barman.Vodka;
+import org.springframework.web.client.RestTemplate;
 import victor.training.performance.spring.metrics.MonitorQueueWaitingTime;
 
 import javax.servlet.AsyncContext;
@@ -74,7 +72,7 @@ public class BarService {
       //var futureDrinks = orderDrinks();
       var futureDrinks = supplyAsync(() -> {
          sleepMillis(2000);
-         return new Beer("blond");
+         return new Beer().setType("blond");
       });
       futureDrinks.thenAccept(Unchecked.consumer(dilly -> {
          String json = new ObjectMapper().writeValueAsString(dilly);
@@ -111,9 +109,11 @@ class Barman {
 //      if (true) {
 //         throw new IllegalStateException("no beer omg!");
 //      }
-      sleepMillis(1000); // imagine slow REST call
+
+      Beer beer = new RestTemplate().getForObject("http://localhost:9999/api/beer", Beer.class);
+//      sleepMillis(1000); // imagine slow REST call
       log.debug("Beer done");
-      return new Beer("blond");
+      return beer;
    }
 
 //@Async("barPool")
@@ -132,7 +132,7 @@ class DillyDilly {
 }
 @Data
 class Beer {
-   private final String type;
+   private String type;
 }
 @Data
 class Vodka {
