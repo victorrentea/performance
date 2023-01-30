@@ -18,8 +18,7 @@ import victor.training.performance.spring.metrics.MonitorQueueWaitingTime;
 import javax.servlet.AsyncContext;
 import javax.servlet.http.HttpServletRequest;
 import java.util.List;
-import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.ExecutionException;
+import java.util.concurrent.*;
 
 import static java.lang.System.currentTimeMillis;
 import static java.util.Arrays.asList;
@@ -36,8 +35,14 @@ public class BarService {
       log.debug("Requesting drinks...");
       long t0 = System.currentTimeMillis();
 
-      Beer beer = barman.pourBeer();
-      Vodka vodka = barman.pourVodka();
+      ExecutorService threadPool = Executors.newFixedThreadPool(2);
+
+      Future<Beer> futureBeer = threadPool.submit(() -> barman.pourBeer());
+      Future<Vodka> futureVodka = threadPool.submit(() -> barman.pourVodka());
+
+      Beer beer = futureBeer.get();
+      Vodka vodka = futureVodka.get();
+
 
       long t1 = System.currentTimeMillis();
       List<Object> drinks = asList(beer, vodka);

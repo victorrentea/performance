@@ -50,7 +50,12 @@ public class Profile2_NPlusOne implements CommandLineRunner {
 
    @Override
    public void run(String... args) throws Exception {
+//      new Thread(() -> { // -100 KB mem
+//         System.out.println("Stuff");
+//         restTemplate.getf.... // 1sec
+//      });
       log.warn("INSERTING data ...");
+      String s = args + "";
       jdbc.update("INSERT INTO COUNTRY(ID, NAME) SELECT X, 'Country ' || X  FROM SYSTEM_RANGE(1, 20)");
       jdbc.update("INSERT INTO PARENT(ID, NAME, COUNTRY_ID) SELECT X, 'Parent' || X, 1 + MOD(X,20)  FROM SYSTEM_RANGE(1, 1000)");
 
