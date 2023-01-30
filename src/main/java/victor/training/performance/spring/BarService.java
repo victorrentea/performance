@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -31,16 +32,24 @@ public class BarService {
    private Barman barman;
    // java SE 10y ago
 
-   @Autowired
-   ThreadPoolTaskExecutor barPool;
+//   @Autowired
+//   ThreadPoolTaskExecutor barPool;
 
    @GetMapping("drink")
    public CompletableFuture<DillyDilly> orderDrinks() throws ExecutionException, InterruptedException {
       log.debug("Requesting drinks...");
       long t0 = System.currentTimeMillis();
 
-      CompletableFuture<Beer> beerPromise = supplyAsync(() -> barman.pourBeer(), barPool);
-      CompletableFuture<Vodka> vodkaPromise = supplyAsync(() -> barman.pourVodka(), barPool);
+//      CompletableFuture<Beer> beerPromise = supplyAsync(() -> barman.pourBeer(), barPool);
+//      CompletableFuture<Vodka> vodkaPromise = supplyAsync(() -> barman.pourVodka(), barPool);
+
+      CompletableFuture<Beer> beerPromise = null; // feels like a normal method call. But it's not !!!
+      try {
+         beerPromise = barman.pourBeer();
+      } catch (IllegalStateException e) {
+         throw new RuntimeException("HANDLE"+ e); // never runs!!!
+      }
+      CompletableFuture<Vodka> vodkaPromise = barman.pourVodka(); // feels like a normal method call. But it's not !!!
 
       CompletableFuture<DillyDilly> futureDilly = beerPromise.thenCombine(vodkaPromise,
               (b, v) -> {
@@ -92,18 +101,22 @@ public class BarService {
 @Slf4j
 class Barman {
 
-   public Beer pourBeer() {
+   @Async("barPool")
+   public CompletableFuture<Beer> pourBeer() {
       log.debug("Pouring Beer...");
+      if (true) {
+         throw new IllegalStateException("no beer omg!");
+      }
       sleepMillis(1000); // imagine slow REST call
       log.debug("Beer done");
-      return new Beer("blond");
+      return CompletableFuture.completedFuture(new Beer("blond"));
    }
-
-   public Vodka pourVodka() {
+@Async("barPool")
+   public CompletableFuture<Vodka> pourVodka() {
       log.debug("Pouring Vodka...");
       sleepMillis(1000); // long query
       log.debug("Vodka done");
-      return new Vodka();
+      return CompletableFuture.completedFuture(new Vodka());
    }
 }
 
@@ -132,6 +145,18 @@ class BarConfig {
       executor.setMaxPoolSize(count);
       executor.setQueueCapacity(500);
       executor.setThreadNamePrefix("barman-");
+      executor.setTaskDecorator(new MonitorQueueWaitingTime(meterRegistry.timer("barman-queue-time")));
+      executor.initialize();
+      return executor;
+   }
+   @Bean
+   public ThreadPoolTaskExecutor barPool2(MeterRegistry meterRegistry,
+                                         @Value("${barman.thread.count}")int count) {
+      ThreadPoolTaskExecutor executor = new ThreadPoolTaskExecutor();
+      executor.setCorePoolSize(count);
+      executor.setMaxPoolSize(count);
+      executor.setQueueCapacity(500);
+      executor.setThreadNamePrefix("barman2-");
       executor.setTaskDecorator(new MonitorQueueWaitingTime(meterRegistry.timer("barman-queue-time")));
       executor.initialize();
       return executor;
