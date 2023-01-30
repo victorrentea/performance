@@ -5,6 +5,7 @@ import org.slf4j.LoggerFactory;
 
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
+import java.util.function.Function;
 
 import static java.util.concurrent.CompletableFuture.*;
 
@@ -38,7 +39,7 @@ public class Combining {
      * Return the uppercase of the future value, without blocking (.get() or .join()).
      */
     public CompletableFuture<String> p01_transform() {
-        return dependency.call();
+        return dependency.call().thenApply(v->v.toUpperCase());
     }
 
     // ==================================================================================================
@@ -48,8 +49,14 @@ public class Combining {
      * Hint: completableFuture.then....
      */
     public void p02_chainRun(String s) {
-        dependency.task(s);
-        dependency.cleanup();
+        dependency.task(s) // a CF can produce DATA or ERROR
+
+//                .thenRun(() -> dependency.cleanup()) // only for success
+
+                // finally {
+                .whenComplete((v,t) -> dependency.cleanup()) //also runs for exception
+        ;
+//        dependency.cleanup(); // right now, called too early
     }
 
     // ==================================================================================================
@@ -58,32 +65,42 @@ public class Combining {
      * Run dependency#task(s) passing the string returned by the dependency#call(). Do not block (get/join)!
      */
     public void p03_chainConsume() throws InterruptedException, ExecutionException {
-        String s = dependency.call().get();
-        dependency.task(s);
+//        String s = dependency.call().get();
+//        dependency.task(s);
+
+         dependency.call()
+                .thenAccept(s -> dependency.task(s));
     }
 
     // ==================================================================================================
     /**
-     * Launch #call(); when it completes, call #parseIntRemotely(s) with the result,
+     * Launch #call();
+     * when it completes, call #parseIntRemotely(s) with the result,
      * and return the parsed int.
      */
     public CompletableFuture<Integer> p04_chainFutures() throws ExecutionException, InterruptedException {
-        String s = dependency.call().get();
-        int i = dependency.parseIntRemotely(s).get();
-        return completedFuture(i);
+//        String s = dependency.call().get();
+//        int i = dependency.parseIntRemotely(s).get();
+//        return completedFuture(i);
+        return dependency.call()
+                .thenCompose(s -> dependency.parseIntRemotely(s));
     }
 
     // ==================================================================================================
 
     /**
-     * Same as previous, but return a CompletableFuture< Void > to let the caller:
+     * Return a CompletableFuture< Void > to let the caller:
      * (a) know when the task finished, and/or
      * (b) find out of any exceptions
      */
     public CompletableFuture<Void> p05_chainFutures_returnFutureVoid() throws ExecutionException, InterruptedException {
-        String s = dependency.call().get();
-        dependency.task(s);
-        return completedFuture(null);
+//        String s = dependency.call().get();
+//        dependency.task(s);
+//        return completedFuture(null);
+
+        return dependency.call()
+                .thenCompose(s -> dependency.task(s));
+
     }
 
 
@@ -96,10 +113,14 @@ public class Combining {
      * Bonus: try to run #task() and #cleanup() in parallel (log.info prints the thread name) Hint: ...Async(
      */
     public CompletableFuture<Void> p06_all() throws ExecutionException, InterruptedException {
-        String s = dependency.call().get();
-        dependency.task(s).get();
-        dependency.cleanup();
-        return completedFuture(null);
+//        String s = dependency.call().get();
+//        dependency.task(s).get();
+//        dependency.cleanup();
+//        return completedFuture(null);
+        return dependency.call()
+                .thenAccept(s -> dependency.task(s))
+                .thenRun(() -> dependency.cleanup());
+
     }
 
     // ==================================================================================================
@@ -110,7 +131,8 @@ public class Combining {
      * and complete the returned future with this value. Don't block.
      */
     public CompletableFuture<String> p07_combine() {
-        return null;
+        return dependency.call().thenCombine(dependency.fetchAge(),
+                (a,b)->a + " " + b);
     }
 
     // ==================================================================================================
@@ -127,7 +149,10 @@ public class Combining {
      * [HARD⭐️⭐️⭐️] If both in error, complete in error.
      */
     public CompletableFuture<String> p08_fastest() {
-         return null;
+         return dependency.call().applyToEither(
+                 dependency.fetchAge().thenApply(i -> i.toString()),
+                 x->x
+         );
     }
 
     // ==================================================================================================

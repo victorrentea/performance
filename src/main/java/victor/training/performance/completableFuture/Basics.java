@@ -16,7 +16,7 @@ public class Basics {
      * Create a completed future with the value "Hi"
      */
     public CompletableFuture<String> p01_completed() {
-        return null;
+        return CompletableFuture.completedFuture("Hi");
     }
 
     // ==================================================================================================
@@ -27,7 +27,10 @@ public class Basics {
      * Note: a method returning CompletableFuture is NOT allowed to throw exceptions, so this is a good practice!👌
      */
     public CompletableFuture<String> p02_failed(boolean failed) {
-        return null;
+        if (failed) {
+            return CompletableFuture.failedFuture(new IllegalArgumentException());
+        }
+        return CompletableFuture.completedFuture("Hi");
     }
 
     // ==================================================================================================
@@ -37,7 +40,7 @@ public class Basics {
      * Note: only runtime exceptions
      */
     public String p03_join(CompletableFuture<String> future) {
-        return null;
+        return null; // SKIP
     }
 
     // ==================================================================================================
@@ -48,7 +51,11 @@ public class Basics {
      * Note: the original exception comes wrapped in another exception - guess which one?
      */
     public String p04_joinException(CompletableFuture<String> future) {
-        return null;
+        try {
+            return future.join();
+        } catch (Exception e) {
+            return e.getCause().getMessage();
+        }
     }
 
     // ==================================================================================================
@@ -90,7 +97,8 @@ public class Basics {
      * Print the value in the future, whenever it's ready.
      */
     public void p08_accept(CompletableFuture<String> future) {
-
+//        while (!future.isDone()) ; // get fired
+        future.thenAccept(s -> System.out.println(s));
     }
 
 

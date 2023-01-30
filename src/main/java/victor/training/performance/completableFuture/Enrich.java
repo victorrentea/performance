@@ -2,7 +2,11 @@ package victor.training.performance.completableFuture;
 
 import lombok.AllArgsConstructor;
 import lombok.Value;
+import org.springframework.web.bind.annotation.GetMapping;
 
+import java.util.HashMap;
+import java.util.Map;
+import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 
@@ -87,8 +91,42 @@ public class Enrich {
      * a(id) || b(id) || c(id) ==> ABC(a,b,c)
      */
     public CompletableFuture<ABC> p04_a_b_c(int id) {
-        return null;
+        CompletableFuture<A> fa = dependency.a(id);
+        CompletableFuture<B> fb = dependency.b(id);
+        CompletableFuture<C> fc = dependency.c(id);
+//        return completedFuture(new ABC(fa.join(), fb.join(), fc.join()));
+
+//        return fa.thenCombine(fb, (a, b) -> new ABC(a, b, null))
+//                .thenCombine(fc, (ab, c) -> new ABC(ab.a, ab.b, c));
+
+
+        return CompletableFuture.allOf(fa,fb)
+                .thenApply(v-> new ABC(fa.join(), fb.join(), fc.join()))
+                ;
     }
+
+//    private static final Map<session, futureResponseOnTheReplyRabbitMQ<score>> map;
+//    CompletableFuture<String> taskInProgress;
+//    @GetMapping
+//    public String isitdone(t) {
+//        if (taskInProgress.isDone()) {
+//
+//        }
+//        map.get().complete(data)
+//    }
+
+//    private static final Map<String, CompletableFuture<String>> map = new HashMap<>();
+//    @GetMapping("submit")
+//    public CompletableFuture<String> method() {
+//        CompletableFuture<String> f = new CompletableFuture<>();
+//        String corrId = UUID.randomUUID().toString();
+//        map.put(corrId, f);
+//        return f;
+//    }
+//    @MessageListener()
+//    public void method() {
+//        map(msg.getCorr).complete(mesage.getBodgy())
+//    }
 
     // ==================================================================================================
 
@@ -96,6 +134,7 @@ public class Enrich {
      * a(id), then b1(a), then c2(a,b) ==> ABC(a,b,c)
      */
     public CompletableFuture<ABC> p05_a_then_b1_then_c2(int id) {
+
         return null;
     }
 
