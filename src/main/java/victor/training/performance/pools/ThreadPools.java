@@ -1,7 +1,7 @@
 package victor.training.performance.pools;
 
-import java.util.concurrent.Callable;
-import java.util.concurrent.ExecutorService;
+import java.util.concurrent.*;
+import java.util.concurrent.ThreadPoolExecutor.CallerRunsPolicy;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import static victor.training.performance.util.PerformanceUtil.log;
@@ -11,14 +11,19 @@ public class ThreadPools {
 
    public static void main(String[] args) throws InterruptedException {
       // TODO Executor that keeps a fixed number (3) of threads until it is shut down
-      ExecutorService executor = null; //Executors. ?
+//      ExecutorService executor = Executors.newFixedThreadPool(3);
 
       // TODO Executor that grows the thread pool as necessary, and kills inactive ones after 1 min
-      // ExecutorService executor = Executors. ?
+//       ExecutorService executor = Executors.newCachedThreadPool();
 
       // TODO Executor that have at least 3 thread but can grow up to 10 threads,
-      // with a queue of max 5 elements. Inactive threads die in 1 second.
-      // ExecutorService executor = new ThreadPoolExecutor(...)
+      //  with a queue of max 5 elements. Inactive threads die in 1 second.
+      ExecutorService executor = new ThreadPoolExecutor( // plain java
+              3, 3,
+              1, TimeUnit.SECONDS,
+              new ArrayBlockingQueue<>(5),
+              new CallerRunsPolicy() // risky because that might kill tomcat's thread -> 503 POST /place-bet ->NOT good
+      );
 
       // TODO Vary the fixed-sized queue to see it grow the pool and then Rejecting tasks
 

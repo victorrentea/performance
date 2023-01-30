@@ -20,6 +20,7 @@ import victor.training.performance.spring.metrics.MonitorQueueWaitingTime;
 import javax.servlet.AsyncContext;
 import javax.servlet.http.HttpServletRequest;
 import java.util.concurrent.*;
+import java.util.concurrent.ThreadPoolExecutor.CallerRunsPolicy;
 
 import static java.lang.System.currentTimeMillis;
 import static java.util.concurrent.CompletableFuture.supplyAsync;
@@ -155,6 +156,7 @@ class BarConfig {
       executor.setQueueCapacity(500);
       executor.setThreadNamePrefix("barman-");
       executor.setTaskDecorator(new MonitorQueueWaitingTime(meterRegistry.timer("barman-queue-time")));
+      executor.setRejectedExecutionHandler(new CallerRunsPolicy());
       executor.initialize();
       return executor;
    }
