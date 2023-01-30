@@ -15,6 +15,9 @@ import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
+import victor.training.performance.spring.Barman.Beer;
+import victor.training.performance.spring.Barman.DillyDilly;
+import victor.training.performance.spring.Barman.Vodka;
 import victor.training.performance.spring.metrics.MonitorQueueWaitingTime;
 
 import javax.servlet.AsyncContext;
@@ -32,24 +35,24 @@ public class BarService {
    private Barman barman;
    // java SE 10y ago
 
-//   @Autowired
-//   ThreadPoolTaskExecutor barPool;
+   @Autowired
+   ThreadPoolTaskExecutor barPool;
 
    @GetMapping("drink")
    public CompletableFuture<DillyDilly> orderDrinks() throws ExecutionException, InterruptedException {
       log.debug("Requesting drinks...");
       long t0 = System.currentTimeMillis();
 
-//      CompletableFuture<Beer> beerPromise = supplyAsync(() -> barman.pourBeer(), barPool);
-//      CompletableFuture<Vodka> vodkaPromise = supplyAsync(() -> barman.pourVodka(), barPool);
+      CompletableFuture<Beer> beerPromise = supplyAsync(() -> barman.pourBeer(), barPool);
+      CompletableFuture<Vodka> vodkaPromise = supplyAsync(() -> barman.pourVodka(), barPool);
 
-      CompletableFuture<Beer> beerPromise = null; // feels like a normal method call. But it's not !!!
-      try {
-         beerPromise = barman.pourBeer();
-      } catch (IllegalStateException e) {
-         throw new RuntimeException("HANDLE"+ e); // never runs!!!
-      }
-      CompletableFuture<Vodka> vodkaPromise = barman.pourVodka(); // feels like a normal method call. But it's not !!!
+//      CompletableFuture<Beer> beerPromise = null; // feels like a normal method call. But it's not !!!
+//      try {
+//         beerPromise = barman.pourBeer();
+//      } catch (IllegalStateException e) {
+//         throw new RuntimeException("HANDLE"+ e); // never runs!!!
+//      }
+//      CompletableFuture<Vodka> vodkaPromise = barman.pourVodka(); // feels like a normal method call. But it's not !!!
 
       CompletableFuture<DillyDilly> futureDilly = beerPromise.thenCombine(vodkaPromise,
               (b, v) -> {
@@ -101,22 +104,24 @@ public class BarService {
 @Slf4j
 class Barman {
 
-   @Async("barPool")
-   public CompletableFuture<Beer> pourBeer() {
+//   @Async("barPool")
+//   public CompletableFuture<Beer> pourBeer() {
+   public Beer pourBeer() {
       log.debug("Pouring Beer...");
-      if (true) {
-         throw new IllegalStateException("no beer omg!");
-      }
+//      if (true) {
+//         throw new IllegalStateException("no beer omg!");
+//      }
       sleepMillis(1000); // imagine slow REST call
       log.debug("Beer done");
-      return CompletableFuture.completedFuture(new Beer("blond"));
+      return new Beer("blond");
    }
-@Async("barPool")
-   public CompletableFuture<Vodka> pourVodka() {
+
+//@Async("barPool")
+   public Vodka pourVodka() {
       log.debug("Pouring Vodka...");
       sleepMillis(1000); // long query
       log.debug("Vodka done");
-      return CompletableFuture.completedFuture(new Vodka());
+      return new Vodka();
    }
 }
 
