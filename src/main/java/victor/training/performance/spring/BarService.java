@@ -10,12 +10,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.scheduling.annotation.Async;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.client.RestTemplate;
+import org.springframework.web.client.AsyncRestTemplate;
 import victor.training.performance.spring.metrics.MonitorQueueWaitingTime;
 
 import javax.servlet.AsyncContext;
@@ -41,9 +40,8 @@ public class BarService {
       log.debug("Requesting drinks...");
       long t0 = System.currentTimeMillis();
 
-      CompletableFuture<Beer> beerPromise = supplyAsync(() -> barman.pourBeer(), barPool);
+      CompletableFuture<Beer> beerPromise = barman.pourBeer();
       CompletableFuture<Vodka> vodkaPromise = supplyAsync(() -> barman.pourVodka(), barPool);
-
 //      CompletableFuture<Beer> beerPromise = null; // feels like a normal method call. But it's not !!!
 //      try {
 //         beerPromise = barman.pourBeer();
@@ -51,12 +49,12 @@ public class BarService {
 //         throw new RuntimeException("HANDLE"+ e); // never runs!!!
 //      }
 //      CompletableFuture<Vodka> vodkaPromise = barman.pourVodka(); // feels like a normal method call. But it's not !!!
-
       CompletableFuture<DillyDilly> futureDilly = beerPromise.thenCombine(vodkaPromise,
               (b, v) -> {
-         log.info("Now combining drinks"); // http
+                  log.info("Now combining drinks"); // http
                  return new DillyDilly(b, v);
               });
+//      DataX data = restTemplate.get();// blocked for the REST
 
       long t1 = System.currentTimeMillis();
       log.debug("Got my order in {} ms", t1 - t0);
@@ -104,13 +102,19 @@ class Barman {
 
 //   @Async("barPool")
 //   public CompletableFuture<Beer> pourBeer() {
-   public Beer pourBeer() {
+   public CompletableFuture<Beer> pourBeer() {
       log.debug("Pouring Beer...");
 //      if (true) {
 //         throw new IllegalStateException("no beer omg!");
 //      }
 
-      Beer beer = new RestTemplate().getForObject("http://localhost:9999/api/beer", Beer.class);
+      CompletableFuture<Beer> beer = new AsyncRestTemplate().getForEntity("http://localhost:9999/api/beer", Beer.class).completable()
+              .thenApply(e->e.getBody())
+              ; // blocking I still kill threads
+
+//      CompletableFuture<Beer> futureBeer = WebClient.create().get()........toFuture();
+      // the above line is able to call rest without blocking this thread
+
 //      sleepMillis(1000); // imagine slow REST call
       log.debug("Beer done");
       return beer;
