@@ -31,7 +31,7 @@ public class EnrichTest {
     @Mock
     Dependency dependency;
     @InjectMocks
-    EnrichSolved workshop;
+    Enrich workshop;
     private static final A a = new A("a");
     private static final B b = new B("b");
     private static final C c = new C("c");

@@ -31,7 +31,7 @@ class CombiningTest {
     @Mock
     Dependency dependency;
     @InjectMocks
-    CombiningSolved workshop;
+    Combining workshop;
 
     @Test
     void p01_transform() throws ExecutionException, InterruptedException {
