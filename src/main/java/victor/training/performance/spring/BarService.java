@@ -18,11 +18,10 @@ import victor.training.performance.spring.metrics.MonitorQueueWaitingTime;
 
 import javax.servlet.AsyncContext;
 import javax.servlet.http.HttpServletRequest;
-import java.util.List;
 import java.util.concurrent.*;
 
 import static java.lang.System.currentTimeMillis;
-import static java.util.Arrays.asList;
+import static java.util.concurrent.CompletableFuture.supplyAsync;
 import static victor.training.performance.util.PerformanceUtil.sleepMillis;
 
 @RestController
@@ -36,21 +35,22 @@ public class BarService {
    ThreadPoolTaskExecutor barPool;
 
    @GetMapping("drink")
-   public List<Object> orderDrinks() throws ExecutionException, InterruptedException {
+   public CompletableFuture<DillyDilly> orderDrinks() throws ExecutionException, InterruptedException {
       log.debug("Requesting drinks...");
       long t0 = System.currentTimeMillis();
 
-      Future<Beer> futureBeer = barPool.submit(() -> barman.pourBeer());
-      Future<Vodka> futureVodka = barPool.submit(() -> barman.pourVodka());
+      CompletableFuture<Beer> beerPromise = supplyAsync(() -> barman.pourBeer(), barPool);
+      CompletableFuture<Vodka> vodkaPromise = supplyAsync(() -> barman.pourVodka(), barPool);
 
-      Beer beer = futureBeer.get();
-      Vodka vodka = futureVodka.get();
-
+      CompletableFuture<DillyDilly> futureDilly = beerPromise.thenCombine(vodkaPromise,
+              (b, v) -> {
+         log.info("Now combining drinks"); // http
+                 return new DillyDilly(b, v);
+              });
 
       long t1 = System.currentTimeMillis();
-      List<Object> drinks = asList(beer, vodka);
-      log.debug("Got my order in {} ms : {}", t1 - t0, drinks);
-      return drinks;
+      log.debug("Got my order in {} ms", t1 - t0);
+      return futureDilly;
    }
 
    //<editor-fold desc="History Lesson: Async Servlets">
@@ -60,7 +60,7 @@ public class BarService {
       AsyncContext asyncContext = request.startAsync(); // I will write the response async
 
       //var futureDrinks = orderDrinks();
-      var futureDrinks = CompletableFuture.supplyAsync(() -> {
+      var futureDrinks = supplyAsync(() -> {
          sleepMillis(2000);
          return new Beer("blond");
       });
@@ -107,6 +107,11 @@ class Barman {
    }
 }
 
+@lombok.Value
+class DillyDilly {
+   Beer beer;
+   Vodka vodka;
+}
 @Data
 class Beer {
    private final String type;
