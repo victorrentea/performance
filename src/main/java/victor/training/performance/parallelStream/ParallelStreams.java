@@ -19,6 +19,9 @@ public class ParallelStreams {
 
       List<Integer> list = IntStream.range(1,100).boxed().collect(toList());
 
+     // moral of the story : don't use parallelStream UNLESS FOR PURELY CPU WORK
+      // because doing IO in a shared pool with unknown flows blocks OTHERS/you.
+
       // parallelStream by default runs your tasks on a special ThreadPool global per JVM
       // called ForkJoinPool.commonPool that has exactly Ncpu-1 threads.
       // in my case: 10 cpu => pool size = 9 => 5 sec / 10 (main+9) = 0.6 s
