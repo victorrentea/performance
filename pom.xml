@@ -24,6 +24,7 @@
         <module>wiremock</module>
         <module>jpa</module>
         <module>completable</module>
+        <module>gatling</module>
     </modules>
 
     <dependencyManagement>
