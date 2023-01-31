@@ -2,6 +2,7 @@ package victor.training.performance.spring;
 
 import lombok.Value;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -11,6 +12,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.Executor;
+import java.util.concurrent.ForkJoinTask;
 import java.util.stream.IntStream;
 
 import static java.util.UUID.randomUUID;
@@ -33,6 +36,7 @@ public class Leak6_TemporaryGlobal {
       throw new IllegalArgumentException("Inactive user: action not allowed");
     }
     CompletableFuture.runAsync(() -> longProcessingAsync(id, currentUser));
+
     return "Realistic leak: no more obvious huge int[] => only happens under stress test <br>" +
            "Btw, it occurs only <a href='?id=-1'>conditionally</a>. <br>"+
            "Temporary profiles count: " + userProfiles.size();
@@ -49,7 +53,7 @@ public class Leak6_TemporaryGlobal {
 
   private void anApiCall(Long orderId) {
     if (orderId < 0) {
-      throw new RuntimeException("Method not implemented");
+      throw new RuntimeException("Cam you find me in the log?😨");
     }
   }
 

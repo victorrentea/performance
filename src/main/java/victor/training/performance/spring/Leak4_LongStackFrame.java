@@ -16,6 +16,7 @@ public class Leak4_LongStackFrame {
 	public String longRunningFunction() {
 		BigObject80MB big = new BigObject80MB();
 		String useful = big.getInterestingPart();
+		// memory inefficiency, not Leak
 
 		sleepMillis(10_000); // start a long-running process (eg 20 minutes)
 		if (useful != null) {

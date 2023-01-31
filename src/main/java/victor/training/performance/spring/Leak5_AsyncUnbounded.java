@@ -16,7 +16,7 @@ import static victor.training.performance.util.PerformanceUtil.sleepMillis;
 
 @RestController
 @RequestMapping("leak5")
-public class Leak5_Async {
+public class Leak5_AsyncUnbounded {
 	@Autowired
 	private Worker worker;
 
