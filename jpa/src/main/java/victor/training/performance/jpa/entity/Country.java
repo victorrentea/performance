@@ -1,8 +1,6 @@
-package victor.training.performance.jpa;
+package victor.training.performance.jpa.entity;
 
 import lombok.Data;
-import org.hibernate.annotations.Cache;
-import org.hibernate.annotations.CacheConcurrencyStrategy;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;

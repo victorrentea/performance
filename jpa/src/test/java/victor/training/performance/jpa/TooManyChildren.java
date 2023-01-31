@@ -11,6 +11,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.test.annotation.Rollback;
 import org.springframework.test.context.jdbc.Sql;
 import org.springframework.transaction.annotation.Transactional;
+import victor.training.performance.util.PerformanceUtil;
 
 import javax.persistence.*;
 import java.util.ArrayList;
@@ -33,10 +34,10 @@ public class TooManyChildren {
        "INSERT INTO DEVICE(ID, NAME, TAG_ID) SELECT X, 'Device ' || X, 1 FROM SYSTEM_RANGE(1, "+ DEVICES_FOR_DEFAULT+ ")" //all are DEFAULT
    })
    void test() {
-      printUsedHeap("Start");
+      PerformanceUtil.printUsedHeap("Start");
       Tag defaultTag = tagRepo.findById(1L).get();
       defaultTag.getDevices().size(); // trigger lazy load
-      printUsedHeap("With Tag loaded with HUGE children list");
+      PerformanceUtil.printUsedHeap("With Tag loaded with HUGE children list");
       System.out.println(defaultTag);
    }
 }

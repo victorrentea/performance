@@ -1,6 +1,5 @@
 package victor.training.performance.jpa;
 
-import lombok.Data;
 import lombok.Value;
 import lombok.extern.slf4j.Slf4j;
 import org.jetbrains.annotations.NotNull;
@@ -17,6 +16,8 @@ import org.springframework.test.context.transaction.TestTransaction;
 import org.springframework.transaction.annotation.Transactional;
 import victor.training.performance.jpa.NPlusOneTest.ParentProjected;
 import victor.training.performance.jpa.NPlusOneTest.ParentProjected.ChildProjected;
+import victor.training.performance.jpa.entity.Child;
+import victor.training.performance.jpa.entity.Country;
 
 import javax.persistence.EntityManager;
 import java.util.List;

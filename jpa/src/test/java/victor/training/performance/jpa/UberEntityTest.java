@@ -16,6 +16,8 @@ import org.springframework.test.annotation.Rollback;
 import org.springframework.test.context.transaction.TestTransaction;
 import org.springframework.transaction.annotation.Transactional;
 import victor.training.performance.jpa.UberEntity.Status;
+import victor.training.performance.jpa.entity.Country;
+import victor.training.performance.jpa.entity.CountryRegion;
 
 import javax.persistence.EntityManager;
 import java.util.HashMap;

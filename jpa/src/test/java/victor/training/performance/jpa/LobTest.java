@@ -57,7 +57,7 @@ public class LobTest {
       File tempFile = new File("glowroot.jar"); // 10 MB
       System.out.println("File size: " + PerformanceUtil.formatSize(tempFile.length()));
 
-      printUsedHeap("Initial");
+      PerformanceUtil.printUsedHeap("Initial");
 
       // ============= WRITING ==================
       Session hibernateSession = (Session) entityManager.getDelegate();
@@ -71,11 +71,11 @@ public class LobTest {
           .setName("Tavi")
           .setCvPdf(blob);
       Long profId = profRepo.save(prof).getId();
-      printUsedHeap("Before Commit");
+      PerformanceUtil.printUsedHeap("Before Commit");
       TestTransaction.end();
       fileInputStream.close();
 
-      printUsedHeap("After Commit");
+      PerformanceUtil.printUsedHeap("After Commit");
 
       // ============= READING ==================
       TestTransaction.start();
@@ -83,12 +83,12 @@ public class LobTest {
       Prof profLoaded = profRepo.findById(profId).get();
 
       log.info("Loaded prof name = " + profLoaded.getName());
-      printUsedHeap("After loaded entity");
+      PerformanceUtil.printUsedHeap("After loaded entity");
 
       // usually profLoaded.getCvPdf().getBinaryStream is copied on disk / http response
       byte[] bytes = IOUtils.toByteArray(profLoaded.getCvPdf().getBinaryStream());
       System.out.println("blob size: " + PerformanceUtil.formatSize(bytes.length));
-      printUsedHeap("With byte[] in memory");
+      PerformanceUtil.printUsedHeap("With byte[] in memory");
    }
 
 }
