@@ -13,18 +13,18 @@ import java.util.List;
 @Slf4j
 @RequiredArgsConstructor
 @RestController
-@RequestMapping("leak10")
-public class Leak10_SubList {
+@RequestMapping("leak3")
+public class Leak3_SubList {
 
    private List<BigObject20MB> lastTenObjects = new ArrayList<>();
 
    @GetMapping
-   public synchronized int test() {
+   public synchronized String test() {
       lastTenObjects.add(new BigObject20MB());
       if (lastTenObjects.size() > 10) {
          lastTenObjects = lastTenObjects.subList(1, lastTenObjects.size());
       }
-      return lastTenObjects.size();
+      return "The current window size is " + lastTenObjects.size();
    }
 }
 

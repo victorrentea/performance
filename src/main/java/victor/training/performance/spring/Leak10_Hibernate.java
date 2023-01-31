@@ -31,8 +31,8 @@ import static java.util.stream.Collectors.toList;
 @Slf4j
 @RequiredArgsConstructor
 @RestController
-@RequestMapping("leak9")
-public class Leak9_Hibernate {
+@RequestMapping("leak10")
+public class Leak10_Hibernate {
    private final BigEntityRepo repo;
    private final EntityManager entityManager;
    private final FastInserter persister;
@@ -44,13 +44,13 @@ public class Leak9_Hibernate {
 
    @GetMapping
    public String test() {
-      return "First <a href=\"/leak9/persist\">persist the data</a>, then <a href=\"/leak9/export\"> export it to a file</a>.<br> Note that after each restart the database is cleared";
+      return "First <a href=\"/leak10/persist\">persist the data</a>, then <a href=\"/leak10/export\"> export it to a file</a>.<br> Note that after each restart the database is cleared";
    }
 
    @GetMapping("persist")
    public String persist() {
       persister.insert(500);
-      return "Inserted 500MB of data. Now <a href=\"/leak9/export\">export</a> the file 'big-entity.txt' and check the logs";
+      return "Inserted 500MB of data. Now <a href=\"/leak10/export\">export</a> the file 'big-entity.txt' and check the logs";
    }
 
    @GetMapping("export")

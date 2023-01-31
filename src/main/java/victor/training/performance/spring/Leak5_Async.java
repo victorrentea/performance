@@ -15,8 +15,8 @@ import java.util.function.Function;
 import static victor.training.performance.util.PerformanceUtil.sleepMillis;
 
 @RestController
-@RequestMapping("leak6")
-public class Leak6_Async {
+@RequestMapping("leak5")
+public class Leak5_Async {
 	@Autowired
 	private Worker worker;
 
@@ -26,6 +26,7 @@ public class Leak6_Async {
 		worker.workHard(new Random().nextInt(100), big::lookup);
 		return "Keep calling this 20 times within 10 seconds";
 	}
+
 }
 
 @Slf4j

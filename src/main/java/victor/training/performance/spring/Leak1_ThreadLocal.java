@@ -8,7 +8,7 @@ import victor.training.performance.util.BigObject20MB;
 @RestController
 @RequestMapping("leak1")
 public class Leak1_ThreadLocal {
-   public static ThreadLocal<BigObject20MB> threadLocalMetadata = new ThreadLocal<>();
+   private static final ThreadLocal<BigObject20MB> threadLocalMetadata = new ThreadLocal<>();
 
    @GetMapping
    public String test() {

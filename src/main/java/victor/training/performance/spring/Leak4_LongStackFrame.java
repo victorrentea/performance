@@ -10,8 +10,8 @@ import static victor.training.performance.util.PerformanceUtil.sleepMillis;
 
 @Slf4j
 @RestController
-@RequestMapping("leak5")
-public class Leak5_LongStackFrame {
+@RequestMapping("leak4")
+public class Leak4_LongStackFrame {
 	@GetMapping
 	public String longRunningFunction() {
 		BigObject80MB big = new BigObject80MB();

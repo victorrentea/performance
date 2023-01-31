@@ -12,17 +12,17 @@ import java.util.Map;
 import java.util.function.Supplier;
 
 @RestController
-@RequestMapping("leak3")
-public class Leak3_Inner {
+@RequestMapping("leak2")
+public class Leak2_Inner {
 
 	@GetMapping
 	public String home() {
-		return "Do you know Java? <br>If you think you do:<br>" +
-			   "<li>Start here: <a href='/leak3/puzzle'>puzzle</a> (pauses 20 sec to get a heap dump)" +
-			   "<li><a href='/leak3/anon'>anon</a>" +
-			   "<li><a href='/leak3/map'>map</a> ";
+		return "Do you know Java?<br>" +
+			   "<li><a href='/leak2/inner'>Inner class</a>" +
+			   "<li><a href='/leak2/anon'>Lambdas vs anonymous class</a>" +
+			   "<li><a href='/leak2/map'>Map{{</a> ";
 	}
-	@GetMapping("puzzle")
+	@GetMapping("inner")
 	public String puzzle() {
 		UserRightsCalculator calculator = new CachingMethodObject().createRightsCalculator();
 		bizLogicUsingCalculator(calculator);

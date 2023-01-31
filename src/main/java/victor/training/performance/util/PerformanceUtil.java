@@ -1,5 +1,7 @@
 package victor.training.performance.util;
 
+import org.apache.commons.lang.RandomStringUtils;
+
 import java.lang.management.ManagementFactory;
 import java.lang.management.RuntimeMXBean;
 import java.text.SimpleDateFormat;
@@ -27,6 +29,10 @@ public class PerformanceUtil {
             return min;
         }
         return min + random.nextInt(max - min);
+    }
+
+    public static String randomString(int size) {
+        return RandomStringUtils.randomAlphabetic(size);
     }
 
     public static void printJfrFile() {

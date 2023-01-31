@@ -3,13 +3,14 @@ package victor.training.performance.spring;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
 import victor.training.performance.util.BigObject20MB;
 
+
+// WORK IN PROGRESS
 @Slf4j
-@RestController
-@RequestMapping("leak14")
-public class Leak14_ClassLoader {
+//@RestController
+@RequestMapping("leak99")
+public class Leak99_ClassLoader {
 
 	@GetMapping
 	public String root() {
@@ -17,7 +18,7 @@ public class Leak14_ClassLoader {
 		new Thread(() -> {
 			try {
 				Class<?> c = Thread.currentThread().getContextClassLoader()
-					.loadClass("victor.training.performance.spring.Leak14_Suspect");
+					.loadClass("victor.training.performance.spring.Leak99_Suspect");
 				System.out.println("CLass: " + c + " in heap: "+ System.identityHashCode(c));
 				Object obj = c
 					.newInstance();
@@ -33,12 +34,12 @@ public class Leak14_ClassLoader {
 	}
 }
 
-class Leak14_Suspect {
+class Leak99_Suspect {
 	private BigObject20MB staticField = new BigObject20MB();
 
-	private static ThreadLocal<Leak14_Suspect> threadLocal = new ThreadLocal<>();
+	private static ThreadLocal<Leak99_Suspect> threadLocal = new ThreadLocal<>();
 
-	public Leak14_Suspect() {
+	public Leak99_Suspect() {
 		threadLocal.set(this);
 	}
 

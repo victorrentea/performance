@@ -21,10 +21,9 @@ import static java.util.stream.Collectors.joining;
 
 @Slf4j
 @RestController
-@RequestMapping("leak4")
+@RequestMapping("leak9")
 @RequiredArgsConstructor
-// Suffocated heap example
-public class Leak4_Session {
+public class Leak9_Session {
 	private final UserSession userSession;
 
 	@GetMapping
