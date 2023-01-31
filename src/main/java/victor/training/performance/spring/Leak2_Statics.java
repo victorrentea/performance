@@ -2,6 +2,7 @@ package victor.training.performance.spring;
 
 import lombok.Value;
 import lombok.extern.slf4j.Slf4j;
+import org.bouncycastle.jcajce.provider.symmetric.AES.CFB;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -9,6 +10,7 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
+import java.util.concurrent.CompletableFuture;
 
 @RestController
 @RequestMapping("leak2")
@@ -20,8 +22,15 @@ public class Leak2_Statics {
    @GetMapping
    public String test() { // TODO load test with jmeter
       ALittleObject obj = new ALittleObject("Some name", "email@example.com", 23);
-      anInnocentMap.put(UUID.randomUUID().toString(), obj);
+      String id = UUID.randomUUID().toString();
+      anInnocentMap.put(id, obj);
+      CompletableFuture.runAsync(() -> longJob(id));
       return "More realistic: no more obvious 20MB int[] + only happens under stress test";
+   }
+
+   private void longJob(String id) {
+      System.out.println("networkCall");
+      ALittleObject data = anInnocentMap.remove(id);
    }
 }
 @Value

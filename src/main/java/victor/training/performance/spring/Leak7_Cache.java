@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.RestController;
 import victor.training.performance.util.BigObject20MB;
 import victor.training.performance.util.PerformanceUtil;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.UUID;
@@ -25,7 +26,7 @@ public class Leak7_Cache {
    public String test() {
       String currentUsername = RandomStringUtils.random(8);
       // TODO pass this as param
-      BigObject20MB data = stuff.returnCachedDataForDay(LocalDateTime.now());
+      BigObject20MB data = stuff.returnCachedDataForDay(LocalDate.now());
       return "Tools won't always shield you from mistakes: data=" + data + ", " + PerformanceUtil.getUsedHeap();
    }
 }
@@ -34,7 +35,7 @@ public class Leak7_Cache {
 @Slf4j
 class Stuff {
    @Cacheable("missed-cache") // = a proxy intercepts the method call and returns the cached value for that parameter
-   public BigObject20MB returnCachedDataForDay(LocalDateTime date) {
+   public BigObject20MB returnCachedDataForDay(LocalDate date) {
       log.debug("Fetch data for date: {}", date.format(DateTimeFormatter.ISO_DATE));
       return new BigObject20MB();
    }

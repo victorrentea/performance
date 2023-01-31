@@ -15,9 +15,13 @@ public class Leak1_ThreadLocal {
       BigObject20MB bigObject = new BigObject20MB();
       bigObject.someString = "john.doe"; // username
       threadLocalMetadata.set(bigObject);
+      try {
+         businessMethod1();
 
-      businessMethod1();
-      return "Magic can do harm.";
+         return "Magic can do harm.";
+      } finally {
+         threadLocalMetadata.remove(); // RULE!!
+      }
    }
 
    private void businessMethod1() { // no username in the signature

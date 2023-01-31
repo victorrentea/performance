@@ -11,6 +11,8 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Supplier;
 
+import static java.util.Map.ofEntries;
+
 @RestController
 @RequestMapping("leak3")
 public class Leak3_Inner {
@@ -54,9 +56,10 @@ public class Leak3_Inner {
 
 
 class CachingMethodObject {
-	public class UserRightsCalculator { // an instance of this is kept on current thread
+	// inner class (non-static nested classes) keeps a hard ref to the outer class
+	public static class UserRightsCalculator { // an instance of this is kept on current thread
 		public boolean hasRight(String task) {
-			System.out.println("Stupid Code");
+			System.out.println("Stupid Code ce $!#&$%!^$%!^& am scris aici ");
 			// what's the connection between this instance and the 'bigMac' field ?
 			return true;
 		}
@@ -72,17 +75,25 @@ class CachingMethodObject {
 
 	//<editor-fold desc="Lambdas vs Anonymous implementation">
 	public Supplier<String> anonymousVsLambdas() {
-		return new Supplier<String>() {
-			@Override
-			public String get() {
-				return "Happy";
-			}
-		};
+		return () -> "Happy";
+
+//		return new Supplier<String>() { // anonymous class keeps a hard ref to the outer class
+//			@Override
+//			public String get() {
+//				return "Happy";
+//			}
+//		};
 	}
 	//</editor-fold>
 
 	//<editor-fold desc="Map init in Java <= 8">
 	public Map<String, Integer> mapInit() {
+//		HashMap<String, Integer> map = new HashMap<>();
+//		map.put("one", 1);
+//		map.put("two", 2);
+//		return map;
+		// anonymous subclass of HashMap with an instance
+		// initializer block inside (a kinda constructor)
 		return new HashMap<>() {{ // obviously, pre-java 10
 			put("one", 1);
 			put("two", 2);

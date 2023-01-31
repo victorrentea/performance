@@ -20,6 +20,8 @@ public class JFREventsPlay {
       getStock("AMZN");
       getStock("AMZN");
       getStock("GOOGLe");
+
+      // publishinbg custom JFR events
    }
 
    private static void getStock(String symbol) throws IOException, InterruptedException {
