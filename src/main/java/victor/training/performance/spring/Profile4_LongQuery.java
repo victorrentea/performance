@@ -16,8 +16,6 @@ import java.util.Random;
 @RequiredArgsConstructor
 public class Profile4_LongQuery implements CommandLineRunner {
    private final JdbcTemplate jdbc;
-
-
    @Override
    public void run(String... args) throws Exception {
       log.warn("INSERTING huge data...");
@@ -30,7 +28,7 @@ public class Profile4_LongQuery implements CommandLineRunner {
    }
 
    @GetMapping
-   public List<Long> indexMiss() {
+   public List<Long> missingIndex() {
       return jdbc.queryForList("select txid from test where account=? AND txid<9999999 order by account, txid desc limit 25", Long.class, new Random().nextInt(100));
    }
 }

@@ -33,7 +33,6 @@ performance/jaxb-parsed.xml
 /data.xml
 /recording.jfr
 data-output*.txt
-*.jfr
 /config.json
 /admin.json
 /tmp/
