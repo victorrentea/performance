@@ -4,7 +4,10 @@ import lombok.extern.slf4j.Slf4j;
 import org.assertj.core.api.AutoCloseableSoftAssertions;
 import org.awaitility.Awaitility;
 import org.junit.jupiter.api.Test;
-import victor.training.performance.primitives.probes.Probes.ValueAndDelay;
+import victor.training.performance.concurrency.primitives.probes.MonitoringSystem;
+import victor.training.performance.concurrency.primitives.probes.Plotter;
+import victor.training.performance.concurrency.primitives.probes.Probes;
+import victor.training.performance.concurrency.primitives.probes.Probes.ValueAndDelay;
 
 import java.time.Duration;
 import java.util.ArrayList;

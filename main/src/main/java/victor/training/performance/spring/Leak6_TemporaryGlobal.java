@@ -2,7 +2,6 @@ package victor.training.performance.spring;
 
 import lombok.Value;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -12,8 +11,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.Executor;
-import java.util.concurrent.ForkJoinTask;
 import java.util.stream.IntStream;
 
 import static java.util.UUID.randomUUID;
@@ -45,13 +42,13 @@ public class Leak6_TemporaryGlobal {
   private void longProcessingAsync(Long id, String username) {
     UserProfile userProfile = userProfiles.get(username);
     log.info("Job id={} START", id);
-    log.trace("More logic involves " + userProfile);
-    anApiCall(id);
+    anApiCall(id, userProfile.jurisdictions);
     userProfiles.remove(username);
-    log.info("Job id={} DONE", id);
+    log.info("Job id={} END", id);
   }
 
-  private void anApiCall(Long orderId) {
+  private void anApiCall(Long orderId, Map<String, List<String>> jurisdictions) {
+    log.info("Network call for "+ orderId);
     if (orderId < 0) {
       throw new RuntimeException("Cam you find me in the log?😨");
     }

@@ -12,11 +12,12 @@ public class Leak1_ThreadLocal {
 
    @GetMapping
    public String test() {
-      BigObject20MB bigObject = new BigObject20MB();
-      bigObject.someString = "john.doe"; // username
-      threadLocalMetadata.set(bigObject);
+      BigObject20MB bigObject = new BigObject20MB().setSomeString("john.doe"); // retrived from a network call
+
+      threadLocalMetadata.set(bigObject);  // 🛑 remember to .remove() any ThreadLocal you have
 
       businessMethod1();
+
       return "Magic can do harm.";
    }
 

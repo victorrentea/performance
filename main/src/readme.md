@@ -1,1 +1,0 @@
-Troubleshoot starting on macos : open -a visualvm --args --jdkhome `/usr/libexec/java_home -v 17`

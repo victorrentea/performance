@@ -18,6 +18,7 @@ public class PropagateThreadScope implements TaskDecorator {
 
 	public Runnable decorate(Runnable runnable) {
 		log.debug("Decorating from thread with user id = " + requestContext.getCurrentUser());
+		// propagates data in a @Scope("thread") bean (Spring magic on top of ThreadLocal)
 		String callerUser = requestContext.getCurrentUser();
 		String requestId = requestContext.getRequestId(); // runs in the submitter thread
 		return () -> {

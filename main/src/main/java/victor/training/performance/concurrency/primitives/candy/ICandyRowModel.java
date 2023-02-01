@@ -1,0 +1,17 @@
+package victor.training.performance.concurrency.primitives.candy;
+
+/**
+ * TODO - Insert class documentation here
+ */
+public class ICandyRowModel {
+
+	/**
+	 * @return the candy
+	 */
+	public Candy getCandy() {
+
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+}

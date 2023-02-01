@@ -24,7 +24,7 @@ public class Leak5_AsyncUnbounded {
 	public String test() {
 		BigObject20MB big = new BigObject20MB();
 		worker.workHard(new Random().nextInt(100), big::lookup);
-		return "Keep calling this 20 times within 10 seconds";
+		return "Keep calling this 20 times within 10 seconds, then heap dump";
 	}
 
 }

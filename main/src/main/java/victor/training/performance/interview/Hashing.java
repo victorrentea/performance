@@ -21,10 +21,11 @@ public class Hashing {
       System.out.println("Calling in a loop the same code, until ENTER pressed");
       PerformanceUtil.onEnterExit();
       while (true) {
+         System.out.println("\nIteration");
          intersectCollections();
       }
    }
-   private static Collection<String> generate(int n) {
+   private static List<String> generate(int n) {
       System.out.printf("Generating shuffled sequence of %,d elements...%n", n);
       List<String> result = IntStream.rangeClosed(1, n)
               .mapToObj(i -> "A" + i)
@@ -34,37 +35,23 @@ public class Hashing {
    }
 
    // -----------------
+   public static final List<String> IDS_IN_A_FILE = generate(51_000);
+   public static final List<String> IDS_ALREADY_IN_DB = generate(50_000);
+   // TODO one day, imported.size() < all.size()
 
    public static void intersectCollections() {
-      System.out.println("\nIteration");
-      Collection<String> importedIds = generate(20_000);
-      Collection<String> allIds = generate(18_000);
-
-      countIntersection(importedIds, allIds); // TODO #1 optimize
-//      countNew(importedIds, allIds); // TODO #3 one day, imported.size() < all.size()
-   }
-
-   private static void countIntersection(Collection<?> importedIds, Collection<?> allIds) {
       System.out.println("Intersecting...");
       long t0 = System.currentTimeMillis();
-      int n = 0;
-      for (Object a : importedIds) {
-         if (allIds.contains(a)) {
-            n++;
-         }
-      }
+      int n = countNew(IDS_IN_A_FILE, IDS_ALREADY_IN_DB);
       long t1 = System.currentTimeMillis();
-      System.out.printf("Intersected: n=" + n + ", took = %,d%n", t1 - t0);
+      System.out.printf("Counted new elements: n=" + n + ", took = %,d%n", t1 - t0);
    }
 
-   private static <T> void countNew(Collection<T> importedIds, Collection<T> allIds) {
-      System.out.println("Intersecting...");
-      long t0 = System.currentTimeMillis();
-      List<T> copy = new ArrayList<>(importedIds); // TODO #2 optimize
+   private static <T> int countNew(Collection<T> importedIds, Collection<T> allIds) {
+      Set<T> copy = new HashSet<>(importedIds);
+      // Optimized: created a hashSet to find elements to remove faster
       copy.removeAll(allIds);
-      int n = copy.size();
-      long t1 = System.currentTimeMillis();
-      System.out.printf("New: n=" + n + ", took = %,d%n", t1 - t0);
+      return copy.size();
    }
 
 

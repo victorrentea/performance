@@ -58,6 +58,7 @@ class CachingMethodObject {
 		public boolean hasRight(String task) {
 			System.out.println("Stupid Code");
 			// what's the connection between this instance and the 'bigMac' field ?
+			// 🛑 careful with hidden links
 			return true;
 		}
 	}
