@@ -47,3 +47,5 @@ open -a visualvm --args --jdkhome `/usr/libexec/java_home -v 17`
 # TODO 
 - zipkin tracing 1->main->2 si 1->2
 - un apel http POST din main in altul -> inlocuit cu mq
+- +service2 + redis pe el 
+- pus errori prin cod.
