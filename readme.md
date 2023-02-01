@@ -40,3 +40,10 @@ To query, display and monitor the metrics from Prometheus
 # Troubleshooting
 ### Troubleshoot starting visualvm on macos if JDK collision
 open -a visualvm --args --jdkhome `/usr/libexec/java_home -v 17`
+
+
+
+
+# TODO 
+- zipkin tracing 1->main->2 si 1->2
+- un apel http POST din main in altul -> inlocuit cu mq

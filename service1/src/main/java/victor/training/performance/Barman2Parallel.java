@@ -1,7 +1,9 @@
 package victor.training.performance;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import io.micrometer.core.instrument.MeterRegistry;
 import lombok.extern.slf4j.Slf4j;
+import org.jooq.lambda.Unchecked;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
@@ -14,6 +16,9 @@ import victor.training.performance.drinks.Beer;
 import victor.training.performance.drinks.DillyDilly;
 import victor.training.performance.drinks.Vodka;
 
+import javax.servlet.AsyncContext;
+import javax.servlet.http.HttpServletRequest;
+import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 
@@ -40,6 +45,23 @@ public class Barman2Parallel {
     log.debug("HTTP thread blocked for millis: " + (t1 - t0));
     return new DillyDilly(beer, vodka);
   }
+
+  //<editor-fold desc="History Lesson: Async Servlets">
+  @GetMapping("/drink-raw")
+  public void underTheHood_asyncServlets(HttpServletRequest request) throws ExecutionException, InterruptedException {
+    long t0 = currentTimeMillis();
+    AsyncContext asyncContext = request.startAsync(); // I will write the response async
+
+//    var futureDrinks = orderDrinks();
+    var futureDrinks = new CompletableFuture<>();
+    futureDrinks.thenAccept(Unchecked.consumer(dilly -> {
+      String json = new ObjectMapper().writeValueAsString(dilly);
+      asyncContext.getResponse().getWriter().write(json);// the connection was kept open
+      asyncContext.complete(); // close the connection to the client
+    }));
+    log.info("Tomcat's thread is free in {} ms", currentTimeMillis() - t0);
+  }
+  //</editor-fold>
 
   @GetMapping("buy")
   public void acceptMoneyFromClient() {

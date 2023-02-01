@@ -10,6 +10,7 @@ import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.event.EventListener;
 import org.springframework.scheduling.annotation.EnableAsync;
+import org.springframework.web.client.RestTemplate;
 
 @Slf4j
 @EnableAsync
@@ -17,6 +18,13 @@ import org.springframework.scheduling.annotation.EnableAsync;
 @SpringBootApplication
 public class PerformanceApp {
     private static final long t0 = System.currentTimeMillis();
+
+    @Bean
+    public RestTemplate rest() {
+        return new RestTemplate();
+        // it is critical to define RestTemplate as a @Bean rather than instantiating it
+        // at usage point, to allow Apache Sleuth to hack it to add request headers to propagate its Trace ID
+    }
 
     @Bean // enables the use of @Timed on methods
     public TimedAspect timedAspect(MeterRegistry meterRegistry) {

@@ -38,6 +38,7 @@ public class Profile8_DatabaseLockContention {
   // TODO fire 10 parallel requests on the same id and study the flamegraph: where is the bottleneck?
   public BPMTicket getAndUpdateTicketStatus(@PathVariable Long ticketId) {
     Ticket dbTicket = ticketRepo.findById(ticketId).orElseThrow();
+    //  🛑 Lock contention ~> reduce the size of the protected critical section
     entityManager.lock(dbTicket, LockModeType.PESSIMISTIC_WRITE);
     BPMTicket bpmTicket = restGetFromBPM(ticketId);
 
@@ -64,6 +65,8 @@ class Ticket {
   @Id
   private Long id;
   private String status = "active";
+  private Long creatorUserId;
+  private Long assignedUserId;
 }
 
 interface TicketRepo extends JpaRepository<Ticket, Long> {

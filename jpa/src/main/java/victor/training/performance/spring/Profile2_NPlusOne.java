@@ -35,6 +35,7 @@ public class Profile2_NPlusOne implements CommandLineRunner {
    @GetMapping
    @Transactional
    public Page<Parent> query() {
+      // 🛑 SELECTing full entities for search with ORM ~> "select new Dto"
       Page<Parent> parentPage = repo.findByNameLike("%ar%", PageRequest.of(0, 20));
       log.info("Returning data");
       return parentPage;
