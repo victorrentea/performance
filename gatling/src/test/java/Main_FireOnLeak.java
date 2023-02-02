@@ -7,7 +7,11 @@ import static io.gatling.javaapi.core.CoreDsl.scenario;
 import static io.gatling.javaapi.http.HttpDsl.http;
 import static java.time.Duration.ofSeconds;
 
-public class FireOnLeak extends Simulation {
+public class Main_FireOnLeak extends Simulation {
+  public static void main(String[] args) {
+    GatlingEngine.startClass(Main_FireOnLeak.class);
+  }
+
   {
     HttpProtocolBuilder httpProtocol = http
       .baseUrl("http://localhost:8080")

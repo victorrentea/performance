@@ -6,6 +6,10 @@ import static io.gatling.javaapi.http.HttpDsl.http;
 import static java.time.Duration.ofSeconds;
 
 public class Service4_LockGatling extends Simulation {
+  public static void main(String[] args) {
+    GatlingEngine.startClass(Service4_LockGatling.class);
+  }
+
   {
 
     String host = "http://localhost:8084";

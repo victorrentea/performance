@@ -5,7 +5,11 @@ import static io.gatling.javaapi.core.CoreDsl.scenario;
 import static io.gatling.javaapi.http.HttpDsl.http;
 import static java.time.Duration.ofSeconds;
 
-public class Service2_CreateGatling extends Simulation {
+public class Main_CreateGatling extends Simulation {
+  public static void main(String[] args) {
+    GatlingEngine.startClass(Main_CreateGatling.class);
+  }
+
   {
     String host = "http://localhost:8082";
 

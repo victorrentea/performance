@@ -1,9 +1,10 @@
 package victor.training.performance;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import io.micrometer.core.instrument.MeterRegistry;
+//import io.micrometer.core.instrument.MeterRegistry;
 import lombok.extern.slf4j.Slf4j;
-import org.jooq.lambda.Unchecked;
+//import org.jooq.lambda.Unchecked;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
@@ -18,6 +19,7 @@ import victor.training.performance.drinks.Vodka;
 
 import javax.servlet.AsyncContext;
 import javax.servlet.http.HttpServletRequest;
+import java.io.IOException;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
@@ -54,11 +56,15 @@ public class Barman2Parallel {
 
 //    var futureDrinks = orderDrinks();
     var futureDrinks = new CompletableFuture<>();
-    futureDrinks.thenAccept(Unchecked.consumer(dilly -> {
-      String json = new ObjectMapper().writeValueAsString(dilly);
-      asyncContext.getResponse().getWriter().write(json);// the connection was kept open
-      asyncContext.complete(); // close the connection to the client
-    }));
+    futureDrinks.thenAccept(dilly -> {
+      try {
+        String json = new ObjectMapper().writeValueAsString(dilly);
+        asyncContext.getResponse().getWriter().write(json);// the connection was kept open
+        asyncContext.complete(); // close the connection to the client
+      } catch (IOException e) {
+        throw new RuntimeException(e);
+      }
+    });
     log.info("Tomcat's thread is free in {} ms", currentTimeMillis() - t0);
   }
   //</editor-fold>
@@ -72,13 +78,13 @@ public class Barman2Parallel {
   @Configuration
   public static class BarPoolConfig {
     @Bean
-    public ThreadPoolTaskExecutor barPool(MeterRegistry meterRegistry, @Value("${bar.pool.size}") int barPoolSize) {
+    public ThreadPoolTaskExecutor barPool(/*MeterRegistry meterRegistry,*/ @Value("${bar.pool.size}") int barPoolSize) {
       ThreadPoolTaskExecutor executor = new ThreadPoolTaskExecutor();
       executor.setCorePoolSize(barPoolSize);
       executor.setMaxPoolSize(barPoolSize);
       executor.setQueueCapacity(500);
       executor.setThreadNamePrefix("bar-");
-      executor.setTaskDecorator(new MonitorQueueWaitingTime(meterRegistry.timer("barman-queue-time")));
+//      executor.setTaskDecorator(new MonitorQueueWaitingTime(meterRegistry.timer("barman-queue-time")));
       executor.initialize();
       return executor;
     }

@@ -1,13 +1,33 @@
-package gatling;
+import io.gatling.app.Gatling;
+import io.gatling.core.config.GatlingPropertiesBuilder;
 
 import java.net.URISyntaxException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
-public class IDEPathHelperJava {
+public class GatlingEngine {
+  public static void main(String[] args) {
+    GatlingPropertiesBuilder props = new GatlingPropertiesBuilder()
+            .resourcesDirectory(mavenResourcesDirectory().toString())
+            .resultsDirectory(resultsDirectory().toString())
+            .binariesDirectory(mavenBinariesDirectory().toString());
+    Gatling.fromMap(props.build());
+
+  }
+
+  protected static void startClass(Class<?> clazz) {
+    GatlingPropertiesBuilder props = new GatlingPropertiesBuilder()
+            .resourcesDirectory(mavenResourcesDirectory().toString())
+            .resultsDirectory(resultsDirectory().toString())
+            .binariesDirectory(mavenBinariesDirectory().toString())
+            .simulationClass(clazz.getCanonicalName());
+    Gatling.fromMap(props.build());
+  }
+
+
   public static Path projectRootDir() {
     try {
-      return Paths.get(IDEPathHelperJava.class.getClassLoader().getResource("gatling.conf").toURI())
+      return Paths.get(GatlingEngine.class.getClassLoader().getResource("gatling.conf").toURI())
               .getParent().getParent().getParent();
     } catch (URISyntaxException e) {
       throw new RuntimeException(e);

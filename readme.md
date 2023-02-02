@@ -49,3 +49,64 @@ open -a visualvm --args --jdkhome `/usr/libexec/java_home -v 17`
 - un apel http POST din main in altul -> inlocuit cu mq
 - +service2 + redis pe el 
 - pus errori prin cod.
+
+
+
+
+
+
+- clone performance-microservices git from the mail yesterday + import in IntelliJ
+- install Docker Desktop
+- start this docker/docker-compose.yml (a lot of instances, god help RAM)
+- start StartWireMock.java
+
+
+---- an endpoint is slow even when load tested alone with Gatling in local environmet
+- go to glowroot.org and download and unzip
+- copy the full path to glowroot.jar
+- in IntelliJ open the run configuration of Service2App and add to the VM arguments: -javaagent:<path_to_glowroot_jar>
+- start Service2App
+- go to localhost:8082/1 -> it 200
+- Run EngineJava in IntelliJ and select the simulation "Service2_GetByIdSimulation" (type the number and ENTER +  ENTER (empty desr))
+- Click the link to the Gatling report -> response time 100ms mean with normal distribution
+- go to localhost:4000
+  in the left side click /1
+  go to "Thread Profile" tab > click flame graph
+
+- the bottleneck was the findById because there were only 20 onnections by default in the Hikari conenction pool
+  spring.datasource.hikari.maximum-pool-size=60
+- restart the app (for glowroot to wipe its database)
+- run the simulation -> open the report = 80ms mean
+
+
+
+=== Java-level deadlocks ===
+Deadlock = two parallel flows wait for a resource owned by the other () indefinetly
+* Database Table LOCK TABLE(table-lock); SELECT FOR UPDATE (row-lock)
+* java-lock: syncronized < really in 2023 the year of the Lord NEVER
+! do not pass lambdas to synchronized methods eg. list.removeIf map.computeIfAbsent
+* Redis lock
+
+Exercise #1 - main():
+- download https://visualvm.github.io/ (as standalone) and start it
+- Run Deadlock.java -> the execution hangs
+- in visualvm connect to the blocked process, and go to "Threads" tab -> "Deadlock Detected"
+
+Note: Flamegraph will NOT point out the problem, as time waiting for 'synchronized' happens outside of Java (in C code)
+
+Exercise #2 - JFR on a running API:
+- Download Java Mission Control https://jdk.java.net/jmc/8/ and open it
+- Start Service2
+- In JMC, click on Service 2 in VM browser > "Start flight recording"
+- Start Search simulation and wait for it to complete
+- END the recording in Java Mission Control
+  => in JMC, the automatic analysis (first screen) points out Java-Lock Contention were a problem pointing at the instance on which the threads synchronized() on, and showint what threads were blocked and for how long
+
+
+
+JFR Inside the JVM : ->.jfr
+a) records stack traces -> flame graphs
+b) records events -> JVM internals
+Mission Control -> load and analyze a .jfr output
+Gatling
+VisualVM deadlocks
