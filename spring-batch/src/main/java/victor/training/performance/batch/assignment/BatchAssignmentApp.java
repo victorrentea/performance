@@ -1,4 +1,4 @@
-package victor.training.performance.assignment.batch;
+package victor.training.performance.batch.assignment;
 
 import org.springframework.batch.core.Job;
 import org.springframework.batch.core.Step;

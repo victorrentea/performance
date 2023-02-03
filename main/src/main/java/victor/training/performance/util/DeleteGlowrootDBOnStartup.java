@@ -1,4 +1,4 @@
-package victor.training.performance.spring.util;
+package victor.training.performance.util;
 
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.FileUtils;

@@ -13,6 +13,7 @@ import org.springframework.test.annotation.DirtiesContext.ClassMode;
 import org.springframework.test.context.jdbc.Sql;
 import org.springframework.transaction.annotation.Transactional;
 import victor.training.performance.jpa.entity.Country;
+import victor.training.performance.jpa.repo.CountryRepo;
 import victor.training.performance.util.PerformanceUtil;
 
 import javax.persistence.EntityManager;

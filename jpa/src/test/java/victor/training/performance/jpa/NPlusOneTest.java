@@ -18,6 +18,7 @@ import victor.training.performance.jpa.NPlusOneTest.ParentProjected;
 import victor.training.performance.jpa.NPlusOneTest.ParentProjected.ChildProjected;
 import victor.training.performance.jpa.entity.Child;
 import victor.training.performance.jpa.entity.Country;
+import victor.training.performance.jpa.repo.CountryRepo;
 
 import javax.persistence.EntityManager;
 import java.util.List;

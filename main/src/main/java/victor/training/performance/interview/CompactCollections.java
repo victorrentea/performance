@@ -1,6 +1,5 @@
 package victor.training.performance.interview;
 
-import io.vavr.collection.Stream;
 import victor.training.performance.util.PerformanceUtil;
 
 import java.util.LinkedList;
@@ -17,22 +16,22 @@ public class CompactCollections {
       // Use-case: you have to keep a large number of IDs throughout a long memory-intensive batch
       long heap0 = PerformanceUtil.getUsedHeapBytes();
 
-      // HashSet ..  MB because
+      // HashSet =  MB because
       Set<Long> x = LongStream.range(0, 1_000_000).boxed().collect(Collectors.toSet());
 
-      // ArrayList .. MB because
+      // ArrayList =  MB because
 //      List<Long> x = LongStream.range(0, 1_000_000).boxed().collect(toList());
 
-      // Long[] .. MB because
+      // Long[] =  MB because
 //      Long[] x = LongStream.range(0, 1_000_000).boxed().toArray(Long[]::new);
 
-      // long[] .. MB because
+      // long[] =  MB because
 //      long[] x = LongStream.range(0, 1_000_000).toArray();
 
-      // int[] .. MB because
+      // int[] =  MB because
 //      int[] x = IntStream.range(0, 1_000_000).toArray();
 
-      // LinkedList .. MB because
+      // LinkedList =  MB because
 //      LinkedList<Long> x = LongStream.range(0, 1_000_000).boxed().collect(toCollection(LinkedList::new));
 
       long heap1 = PerformanceUtil.getUsedHeapBytes();

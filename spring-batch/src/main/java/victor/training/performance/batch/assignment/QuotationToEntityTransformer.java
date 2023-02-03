@@ -1,4 +1,4 @@
-package victor.training.performance.assignment.batch;
+package victor.training.performance.batch.assignment;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.batch.item.ItemProcessor;

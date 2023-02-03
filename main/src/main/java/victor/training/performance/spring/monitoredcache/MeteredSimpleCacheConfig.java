@@ -1,4 +1,4 @@
-package victor.training.performance.spring.metrics;
+package victor.training.performance.spring.monitoredcache;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;

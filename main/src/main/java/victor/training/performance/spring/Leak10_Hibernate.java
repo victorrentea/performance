@@ -35,7 +35,7 @@ import static java.util.stream.Collectors.toList;
 public class Leak10_Hibernate {
    private final BigEntityRepo repo;
    private final EntityManager entityManager;
-   private final FastInserter persister;
+   private final FastInserter fastInserter;
 
    @PostConstruct
    public void clearDB() {
@@ -49,7 +49,7 @@ public class Leak10_Hibernate {
 
    @GetMapping("persist")
    public String persist() {
-      persister.insert(500);
+      fastInserter.insert(500);
       return "Inserted 500MB of data. Now <a href=\"/leak10/export\">export</a> the file 'big-entity.txt' and check the logs";
    }
 

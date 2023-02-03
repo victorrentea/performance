@@ -1,4 +1,4 @@
-package victor.training.performance.spring.metrics;
+package victor.training.performance.spring.monitoredcache;
 
 import org.springframework.cache.concurrent.ConcurrentMapCache;
 

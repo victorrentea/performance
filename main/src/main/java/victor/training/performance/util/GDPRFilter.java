@@ -1,4 +1,4 @@
-package victor.training.performance.spring;
+package victor.training.performance.util;
 
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;

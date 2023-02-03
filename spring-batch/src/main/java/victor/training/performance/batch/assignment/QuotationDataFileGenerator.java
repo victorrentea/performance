@@ -1,4 +1,4 @@
-package victor.training.performance.assignment.batch;
+package victor.training.performance.batch.assignment;
 
 import java.io.BufferedWriter;
 import java.io.FileWriter;

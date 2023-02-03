@@ -23,7 +23,7 @@ import static java.util.stream.Collectors.joining;
 @RestController
 @RequestMapping("leak9")
 @RequiredArgsConstructor
-public class Leak9_Session {
+public class Leak9_HttpSession {
 	private final UserSession userSession;
 
 	@GetMapping

@@ -18,6 +18,9 @@ import org.springframework.transaction.annotation.Transactional;
 import victor.training.performance.jpa.UberEntity.Status;
 import victor.training.performance.jpa.entity.Country;
 import victor.training.performance.jpa.entity.CountryRegion;
+import victor.training.performance.jpa.repo.CountryRepo;
+import victor.training.performance.jpa.repo.ScopeRepo;
+import victor.training.performance.jpa.repo.UserRepo;
 
 import javax.persistence.EntityManager;
 import java.util.HashMap;

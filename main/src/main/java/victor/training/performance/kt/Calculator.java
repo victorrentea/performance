@@ -1,4 +1,4 @@
-package victor.training.performance.spring.kt;
+package victor.training.performance.kt;
 
 import java.util.HashSet;
 import java.util.Set;

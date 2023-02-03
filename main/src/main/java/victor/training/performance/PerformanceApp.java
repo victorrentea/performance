@@ -1,4 +1,4 @@
-package victor.training.performance.spring;
+package victor.training.performance;
 
 import io.micrometer.core.aop.TimedAspect;
 import io.micrometer.core.instrument.MeterRegistry;

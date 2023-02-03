@@ -37,11 +37,6 @@ To query, display and monitor the metrics from Prometheus
   `sum by ()(rate(shepard_seconds_sum[5m])) / sum by ()(rate(shepard_seconds_count[5m]))`
 
 
-# Troubleshooting
-### Troubleshoot starting visualvm on macos if JDK collision
-open -a visualvm --args --jdkhome `/usr/libexec/java_home -v 17`
-
-
 
 
 # TODO 
@@ -110,3 +105,10 @@ b) records events -> JVM internals
 Mission Control -> load and analyze a .jfr output
 Gatling
 VisualVM deadlocks
+
+
+
+# Troubleshooting
+### Troubleshoot starting visualvm on macos if JDK collision
+open -a visualvm --args --jdkhome `/usr/libexec/java_home -v 17`
+

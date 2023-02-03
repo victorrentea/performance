@@ -1,8 +1,8 @@
 package victor.training.performance;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 //import io.micrometer.core.instrument.MeterRegistry;
+import io.micrometer.core.instrument.MeterRegistry;
 import lombok.extern.slf4j.Slf4j;
 //import org.jooq.lambda.Unchecked;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -77,14 +77,17 @@ public class Barman2Parallel {
 
   @Configuration
   public static class BarPoolConfig {
+    @Autowired
+    MeterRegistry meterRegistry;
+
     @Bean
-    public ThreadPoolTaskExecutor barPool(/*MeterRegistry meterRegistry,*/ @Value("${bar.pool.size}") int barPoolSize) {
+    public ThreadPoolTaskExecutor barPool(@Value("${bar.pool.size}") int barPoolSize) {
       ThreadPoolTaskExecutor executor = new ThreadPoolTaskExecutor();
       executor.setCorePoolSize(barPoolSize);
       executor.setMaxPoolSize(barPoolSize);
       executor.setQueueCapacity(500);
+      executor.setTaskDecorator(new MonitorQueueWaitingTimeTaskDecorator(meterRegistry.timer("barman-queue-time")));
       executor.setThreadNamePrefix("bar-");
-//      executor.setTaskDecorator(new MonitorQueueWaitingTime(meterRegistry.timer("barman-queue-time")));
       executor.initialize();
       return executor;
     }

@@ -1,4 +1,4 @@
-package victor.training.performance.spring.metrics;
+package victor.training.performance.spring.monitoredcache;
 
 import io.micrometer.core.instrument.MeterRegistry;
 import io.micrometer.core.instrument.Tag;
