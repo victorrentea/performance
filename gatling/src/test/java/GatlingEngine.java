@@ -1,7 +1,13 @@
 import io.gatling.app.Gatling;
 import io.gatling.core.config.GatlingPropertiesBuilder;
 
+import java.io.IOException;
+import java.net.URI;
 import java.net.URISyntaxException;
+import java.net.http.HttpClient;
+import java.net.http.HttpRequest;
+import java.net.http.HttpRequest.BodyPublishers;
+import java.net.http.HttpResponse.BodyHandlers;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
@@ -21,7 +27,20 @@ public class GatlingEngine {
             .resultsDirectory(resultsDirectory().toString())
             .binariesDirectory(mavenBinariesDirectory().toString())
             .simulationClass(clazz.getCanonicalName());
+
+    clearGlowrootData();
     Gatling.fromMap(props.build());
+  }
+
+  private static void clearGlowrootData()  {
+    try {
+      URI uri = URI.create("http://localhost:4000/backend/admin/delete-all-stored-data");
+      HttpRequest postRequest = HttpRequest.newBuilder().POST(BodyPublishers.ofString("{}")).uri(uri).build();
+      HttpClient.newHttpClient().send(postRequest, BodyHandlers.discarding());
+      System.out.println("Cleared Glowroot data!");
+    } catch (IOException | InterruptedException e) {
+      System.out.println("WARN: Could not clear Glowroot data. not started on :4000?");
+    }
   }
 
 

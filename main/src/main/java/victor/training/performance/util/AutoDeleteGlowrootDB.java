@@ -1,19 +1,26 @@
 package victor.training.performance.util;
 
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.io.FileUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.context.event.ApplicationStartedEvent;
 import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Component;
+import org.springframework.web.client.RestTemplate;
 
+import javax.annotation.PreDestroy;
 import java.io.File;
 import java.io.IOException;
 import java.lang.management.ManagementFactory;
+import java.util.Map;
 
 @Slf4j
 @Component
-public class DeleteGlowrootDBOnStartup {
-  @EventListener(ApplicationStartedEvent.class)
+public class AutoDeleteGlowrootDB {
+  @Autowired
+  private RestTemplate rest;
+
+//  @EventListener(ApplicationStartedEvent.class)
+  @PreDestroy
   public void onStartup() throws IOException {
     // otherwise Glowroot preserves its data over a restart
     String glowrootPath = ManagementFactory.getRuntimeMXBean().getInputArguments().stream()
@@ -28,8 +35,10 @@ public class DeleteGlowrootDBOnStartup {
     log.debug("Glowroot agent found running from path: " + glowrootPath);
     File dataDir = new File(glowrootPath + "data");
     if (dataDir.isDirectory()) {
-      FileUtils.deleteDirectory(dataDir);
-      log.info("Glowroot DB successfully deleted");
+
+//      FileUtils.deleteDirectory(dataDir);
+      rest.postForObject("http://localhost:4000/backend/admin/delete-all-stored-data", Map.of(), String.class);
+      log.info("Glowroot DB successfully cleared");
     }
   }
 }

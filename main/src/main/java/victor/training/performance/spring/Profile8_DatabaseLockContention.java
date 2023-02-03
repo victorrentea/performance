@@ -30,7 +30,7 @@ public class Profile8_DatabaseLockContention {
 
   @EventListener(ApplicationStartedEvent.class)
   public void insert100Tickets() {
-    ticketRepo.saveAll(IntStream.range(0,100).mapToObj(id -> new Ticket().setId((long) id)).collect(toList()));
+    ticketRepo.saveAll(IntStream.rangeClosed(1,10).mapToObj(id -> new Ticket().setId((long) id)).collect(toList()));
   }
 
   @GetMapping("{ticketId}")
