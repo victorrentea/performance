@@ -30,6 +30,7 @@ public class GatlingEngine {
 
     clearGlowrootData();
     Gatling.fromMap(props.build());
+
   }
 
   private static void clearGlowrootData()  {
@@ -37,7 +38,7 @@ public class GatlingEngine {
       URI uri = URI.create("http://localhost:4000/backend/admin/delete-all-stored-data");
       HttpRequest postRequest = HttpRequest.newBuilder().POST(BodyPublishers.ofString("{}")).uri(uri).build();
       HttpClient.newHttpClient().send(postRequest, BodyHandlers.discarding());
-      System.out.println("Cleared Glowroot data!");
+      System.out.println("Cleared Glowroot data at localhost:4000!");
     } catch (IOException | InterruptedException e) {
       System.out.println("WARN: Could not clear Glowroot data. not started on :4000?");
     }
