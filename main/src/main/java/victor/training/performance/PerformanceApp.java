@@ -24,8 +24,8 @@ public class PerformanceApp {
     @Bean
     public RestTemplate rest() {
         return new RestTemplate();
-        // it is critical to define RestTemplate as a @Bean rather than instantiating it
-        // at usage point, to allow Apache Sleuth to hack it to add request headers to propagate its Trace ID
+        // it is critical to define RestTemplate as a @Bean rather than instantiating it at usage point,
+        // to allow Apache Sleuth to hack it to send its TraceID over HTTP request headers
     }
 
     @Bean // enables the use of @Timed on methods

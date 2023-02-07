@@ -15,7 +15,7 @@ public class Main_ProfileShowcaseGatling extends Simulation {
 
     setUp(scenario(getClass().getSimpleName()).exec(http("")
                     .get("/profile/showcase/1"))
-            .injectClosed(constantConcurrentUsers(23).during(ofSeconds(5))))
+            .injectClosed(constantConcurrentUsers(23).during(ofSeconds(8))))
 
             .protocols(http.baseUrl(host));
   }
