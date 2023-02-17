@@ -39,3 +39,5 @@ data-output*.txt
 /data/
 /jaxb-parsed.xml
 /lib
+
+capture/
