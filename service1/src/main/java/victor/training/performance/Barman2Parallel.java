@@ -86,6 +86,7 @@ public class Barman2Parallel {
       executor.setCorePoolSize(barPoolSize);
       executor.setMaxPoolSize(barPoolSize);
       executor.setQueueCapacity(500);
+      // TODO experiment       ExecutorServiceMetrics.monitor(registry, ForkJoinPool.commonPool(), "commonPool");
       executor.setTaskDecorator(new MonitorQueueWaitingTimeTaskDecorator(meterRegistry.timer("barman-queue-time")));
       executor.setThreadNamePrefix("bar-");
       executor.initialize();

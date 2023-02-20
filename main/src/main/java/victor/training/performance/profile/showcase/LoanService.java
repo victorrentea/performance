@@ -1,6 +1,7 @@
 package victor.training.performance.profile.showcase;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.context.event.ApplicationStartedEvent;
 import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Service;
@@ -10,6 +11,7 @@ import victor.training.performance.profile.showcase.LoanApplication.Status;
 
 import java.util.List;
 
+@Slf4j
 @Service
 @Transactional
 @RequiredArgsConstructor
@@ -21,7 +23,9 @@ public class LoanService {
   public LoanApplicationDto getLoanApplication(Long id) {
     LoanApplication loanApplication = repo.findById(id).orElseThrow();
     List<CommentDto> comments = commentsApiClient.getCommentsForLoanApplication(id); // takes ±40ms
-    return new LoanApplicationDto(loanApplication, comments);
+    LoanApplicationDto dto = new LoanApplicationDto(loanApplication, comments);
+    log.trace("Loan app: " + loanApplication);
+    return dto;
   }
 
   @EventListener(ApplicationStartedEvent.class)

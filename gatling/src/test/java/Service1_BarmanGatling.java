@@ -11,13 +11,13 @@ public class Service1_BarmanGatling extends Simulation {
   }
 
   {
-    String host = "http://localhost:8080";
-//    String host = "http://localhost:8081";
+//    String host = "http://localhost:8080";
+    String host = "http://localhost:8081";
 
     setUp(scenario(getClass().getSimpleName()).exec(http("")
 //                    .get("/drink/sequential")
 //                    .get("/loom")
-                            .get("/delay")
+                            .get("/drink")
             )
             .injectClosed(constantConcurrentUsers(300).during(ofSeconds(5))))
 

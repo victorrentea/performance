@@ -37,15 +37,15 @@ public class Profile7_JavaLockContention {
   }
 
   private BPMTicket fetchRandomTicketFromBPM() {
-    sleepMillis(50); // reasonable response time for a REST call
+    sleepMillis(50); // reasonable response time for a pretend REST call
     return new BPMTicket((long) new Random().nextInt(100), "active");
   }
 }
-
 @Value
 class BPMTicket {
   Long id;
   String status;
 }
+
 
 

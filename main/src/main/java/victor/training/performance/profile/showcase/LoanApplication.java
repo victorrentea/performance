@@ -4,17 +4,13 @@ import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
 
-import javax.persistence.ElementCollection;
-import javax.persistence.Embeddable;
-import javax.persistence.Entity;
-import javax.persistence.Id;
+import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
 
 import static java.util.stream.Collectors.toList;
 
-@Getter
-@Setter
+@Data
 @Entity
 public class LoanApplication {
   enum Status {NOT_STARTED, PENDING, APPROVED, DECLINED}
@@ -24,6 +20,8 @@ public class LoanApplication {
   private String title;
   @ElementCollection
   private List<ApprovalStep> steps = new ArrayList<>();
+  @ManyToMany
+  private List<LoanClient> beneficiaries = new ArrayList<>();
 
   public Status getCurrentStatus() {
     return getLastStep().getStatus();
