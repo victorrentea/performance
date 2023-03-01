@@ -9,7 +9,9 @@ import org.springframework.transaction.annotation.Transactional;
 import victor.training.performance.profile.showcase.LoanApplication.ApprovalStep;
 import victor.training.performance.profile.showcase.LoanApplication.Status;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Supplier;
 
 @Slf4j
 @Service
@@ -18,6 +20,8 @@ import java.util.List;
 public class LoanService {
   private final LoanApplicationRepo repo;
   private final CommentsApiClient commentsApiClient;
+  private final List<Long> recentLoanStatusQueried = new ArrayList<>();
+
   // other methods that require @Transactional
 
   public LoanApplicationDto getLoanApplication(Long id) {
@@ -26,6 +30,18 @@ public class LoanService {
     LoanApplicationDto dto = new LoanApplicationDto(loanApplication, comments);
     log.trace("Loan app: " + loanApplication);
     return dto;
+  }
+
+  public synchronized Status getLoanApplicationStatusForClient(Long id) {
+    LoanApplication loanApplication = repo.findById(id).orElseThrow();
+    recentLoanStatusQueried.remove(id); // BUG#7235 - avoid duplicates in list
+    recentLoanStatusQueried.add(id);
+    while (recentLoanStatusQueried.size() > 10) recentLoanStatusQueried.remove(0);
+    return loanApplication.getCurrentStatus();
+  }
+
+  public List<Long> getRecentLoanStatusQueried() {
+    return new ArrayList<>(recentLoanStatusQueried);
   }
 
   @EventListener(ApplicationStartedEvent.class)

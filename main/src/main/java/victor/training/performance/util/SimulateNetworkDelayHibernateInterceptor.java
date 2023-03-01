@@ -1,11 +1,29 @@
 package victor.training.performance.util;
 
 import org.hibernate.EmptyInterceptor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.boot.context.event.ApplicationStartedEvent;
+import org.springframework.context.event.EventListener;
+import org.springframework.core.annotation.Order;
+import org.springframework.stereotype.Component;
 
+@Component
 public class SimulateNetworkDelayHibernateInterceptor extends EmptyInterceptor {
-    @Override
-    public String onPrepareStatement(String sql) {
-        PerformanceUtil.sleepMillis(5);
-        return sql;
-    }
+
+  private static final Logger log = LoggerFactory.getLogger(SimulateNetworkDelayHibernateInterceptor.class);
+  public static int MILLIS = 0;
+
+  @EventListener(ApplicationStartedEvent.class)
+  public void setNetworkDelay() {
+    log.info("Adding 5ms delay/sql, to simulate real life");
+    MILLIS = 5;
+  }
+
+  @Override
+  public String onPrepareStatement(String sql) {
+    if (MILLIS != 0)
+      PerformanceUtil.sleepMillis(MILLIS);
+    return sql;
+  }
 }

@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.util.*;
 import java.util.stream.IntStream;
+import java.util.stream.LongStream;
 
 import static java.lang.System.currentTimeMillis;
 import static java.util.stream.Collectors.toList;
@@ -18,13 +19,11 @@ import static java.util.stream.Collectors.toList;
 @RequiredArgsConstructor
 public class Profile3_Complexities {
 
-   public final List<String> SMALLER_LIST = generate(19_000);
-   public final List<String> LARGER_LIST = generate(20_000);
-   private static List<String> generate(int n) {
+   public final List<Long> SMALLER_LIST = generate(29_999);
+   public final List<Long> LARGER_LIST = generate(30_000);
+   private static List<Long> generate(int n) {
       System.out.printf("Generating shuffled sequence of %,d elements...%n", n);
-      List<String> result = IntStream.rangeClosed(1, n)
-              .mapToObj(i -> "A" + i)
-              .collect(toList());
+      List<Long> result = LongStream.rangeClosed(1, n).boxed().collect(toList());
       Collections.shuffle(result);
       System.out.println("DONE");
       return result;
@@ -39,7 +38,7 @@ public class Profile3_Complexities {
    }
 
    private  int countNew() {
-      Set<String> copy = new HashSet<>(SMALLER_LIST); // Optimized: created a hashSet to find elements to remove faster
+      Set<Long> copy = new HashSet<>(SMALLER_LIST); // Optimized: created a hashSet to find elements to remove faster
       copy.removeAll(LARGER_LIST);
       return copy.size();
    }
