@@ -13,7 +13,8 @@ public interface ParentRepo extends JpaRepository<Parent, Long> {
 
 
       @Query("SELECT DISTINCT p FROM Parent p" +
-             " LEFT JOIN FETCH p.children")
+             " LEFT JOIN FETCH p.children" +
+             " JOIN FETCH p.country")
       List<Parent> findAllFetchChildren();
 
 
