@@ -76,7 +76,7 @@ public class NPlusOne {
     @Transactional
     public void selectFullEntity() {
 //        List<Parent> parents = repo.findAll(); // N + 1 queries problem : fetching the children parent by parent: repeated queries
-        Set<Parent> parents = repo.findAllFetchChildren();
+        List<Parent> parents = repo.findAllFetchChildren();
         // i tell hibernate for this usecase to preload children in one single query
 
         log.info("Loaded {} parents: {}", parents.size(), parents);
