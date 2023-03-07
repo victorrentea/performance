@@ -25,6 +25,8 @@ public interface ParentRepo extends JpaRepository<Parent, Long> {
     Set<ParentProjected> findAllProjected();
 
 
+//  @Query("SELECT p FROM Parent p LEFT JOIN FETCH p.children WHERE p.name LIKE ?1") // ILLEGAL to paginate and fetch children
+  // startup fails
   @Query("SELECT p FROM Parent p WHERE p.name LIKE ?1")
   Page<Parent> findByNameLike(String namePart, Pageable page);
 

@@ -15,28 +15,38 @@ import victor.training.performance.jpa.ParentRepo;
 
 
 @Slf4j
-//@RestController // TODO uncomment and study
-@RequestMapping("profile/nplus1")
+@RestController // TODO uncomment and study
+@RequestMapping("parent/search")
 @RequiredArgsConstructor
 public class ParentSearchController implements CommandLineRunner {
    private final ParentRepo repo;
    private final JdbcTemplate jdbc;
 
    @GetMapping
-   @Transactional
-   public Page<Parent> query() {
+   public Page<Parent> query() {// VERY BAD ARCH DECISION: exposing out the most sacred class you have: your DOMAIN MODEL
       // 🛑 SELECTing full entities for search with ORM ~> "select new Dto"
       Page<Parent> parentPage = repo.findByNameLike("%ar%", PageRequest.of(0, 20));
-      log.info("Returning data");
+      log.info("Returning data: ");
+      //      restcallof1secwiththeconenctionBLOCKEWD!
       return parentPage;
+      // since Spring Boot 2.0 the connection is not released at the end of the transaction
+      // but kept until the HTTP response is sent out. WHY?
+      // to enable LAZY LOADING to happen while serialization as JSON of the object you returned.
+
+      // because JR developers had problems when returning @Entity from @RestController methods!!!
+      // and Spring didn't want to tell them how stupid decision they took, but wanted to play along = MARKETING
+   }
+
+
+
+
+
 
 //      Page<Long> idPage = repo.findByNameLike("%ar%", PageRequest.of(0, 10));
 //      List<Long> parentIds = idPage.getContent();
 
 //      Map<Long, Parent> parents = repo.findParentsWithChildren(parentIds).stream().collect(toMap(Parent::getId, identity()));
 //      return idPage.map(parents::get);
-   }
-
 
 
    @Override

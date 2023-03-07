@@ -34,7 +34,7 @@ public class Parent {
    // tells hibernate to load the children of parents in pages of 10
    private Set<Child> children = new HashSet<>();
 
-   @ManyToOne(fetch = FetchType.LAZY) //
+   @ManyToOne// (fetch = FetchType.LAZY) //
    private Country country; // surprise : it's a proxy created around the ID by Hibernate.
    // the first time you acces any getter (except getId()) a SELECT is executed
 
