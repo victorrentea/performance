@@ -8,6 +8,7 @@ import static javax.persistence.EnumType.STRING;
 
 @Entity
 @Data
+//@ForeignKey("") // keep the FK
 public class UberEntity {
     @Id
     @GeneratedValue
@@ -20,8 +21,11 @@ public class UberEntity {
     private String ssn;
     private String passportNumber;
 
-    @ManyToOne
-    private Country originCountry;
+//    @ManyToOne
+//    private Country originCountry;
+    // or, more efficient:
+    private Long originCountryId;
+
     @ManyToOne
     private Country nationality;
     @ManyToOne

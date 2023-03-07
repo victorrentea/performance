@@ -60,7 +60,7 @@ public class UberEntityTest {
         UberEntity uber = new UberEntity()
                 .setName("::uberName::")
                 .setStatus(Status.SUBMITTED)
-                .setOriginCountry(belgium)
+                .setOriginCountryId(belgium.getId())
                 .setFiscalCountry(romania)
                 .setInvoicingCountry(france)
                 .setNationality(serbia)
@@ -116,8 +116,10 @@ public class UberEntityTest {
 //        String jpql = "SELECT u FROM UberEntity u WHERE 1 = 1 "; // NEVER select full entities to display in a search result grid
 //        String jpql = "SELECT u.id, u.name, u.originCountry.name" + // returns a List<Object[]> that you have to guess the type/meaning
 //        String jpql = "SELECT u.id as id, u.name as name, u.originCountry.name as originCountry " +
-        String jpql = "SELECT new victor.training.performance.jpa.UberSearchResultDto(u.id, u.name, u.originCountry.name)" +
-                      " FROM UberEntity u WHERE 1 = 1 "; // NEVER select full entities to display in a search result grid
+        String jpql = "SELECT new victor.training.performance.jpa.UberSearchResultDto(u.id, u.name, oc.name)" +
+                      " FROM UberEntity u" +
+                      " LEFT JOIN Country oc ON oc.id = u.originCountryId " + // in JPQL you can traverse a link between two entities even if there to @OneToMany//... link in the mode
+                      " WHERE 1 = 1 "; // NEVER select full entities to display in a search result grid
         // alternative implementation: CriteriaAPI, Criteria+Metamodel, QueryDSL, Spring Specifications
         Map<String, Object> params = new HashMap<>();
         if (criteria.name != null) {
