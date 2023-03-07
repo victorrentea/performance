@@ -40,8 +40,9 @@ public class NPlusOne {
 
     @BeforeEach
     void persistData() {
+        Country romania = new Country(1L, "Romania");
         repo.save(new Parent("Victor")
-                .setCountry(countryRepo.save(new Country(1L, "Romania")))
+                .setCountry(countryRepo.save(romania))
                 .setAge(36)
                 .addChild(new Child("Emma"))
                 .addChild(new Child("Vlad"))
@@ -50,7 +51,7 @@ public class NPlusOne {
                 .setAge(42));
         repo.save(new Parent("Peter")
                 .setAge(41)
-                .setCountry(countryRepo.save(new Country(2L,"Moldavia")))
+                .setCountry(countryRepo.save(romania))
                 .addChild(new Child("Maria"))
                 .addChild(new Child("Paul"))
                 .addChild(new Child("Stephan"))

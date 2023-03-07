@@ -12,7 +12,8 @@ import java.util.Set;
 public interface ParentRepo extends JpaRepository<Parent, Long> {
 
 
-      @Query("SELECT DISTINCT p FROM Parent p LEFT JOIN FETCH p.children")
+      @Query("SELECT DISTINCT p FROM Parent p" +
+             " LEFT JOIN FETCH p.children")
       List<Parent> findAllFetchChildren();
 
 
