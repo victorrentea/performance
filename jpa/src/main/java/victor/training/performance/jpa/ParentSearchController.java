@@ -1,6 +1,7 @@
 package victor.training.performance.jpa;
 
 import lombok.RequiredArgsConstructor;
+import lombok.Value;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.data.domain.Page;
@@ -13,6 +14,9 @@ import org.springframework.web.bind.annotation.RestController;
 import victor.training.performance.jpa.Parent;
 import victor.training.performance.jpa.ParentRepo;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 
 @Slf4j
 @RestController // TODO uncomment and study
@@ -21,14 +25,20 @@ import victor.training.performance.jpa.ParentRepo;
 public class ParentSearchController implements CommandLineRunner {
    private final ParentRepo repo;
    private final JdbcTemplate jdbc;
-
+@Value
+   public static class ParentDto {
+   Long id;
+   String name;
+   List<String> childrenNames;
+}
    @GetMapping
-   public Page<Parent> query() {// VERY BAD ARCH DECISION: exposing out the most sacred class you have: your DOMAIN MODEL
+   public Page<ParentDto> query() {// VERY BAD ARCH DECISION: exposing out the most sacred class you have: your DOMAIN MODEL
       // 🛑 SELECTing full entities for search with ORM ~> "select new Dto"
       Page<Parent> parentPage = repo.findByNameLike("%ar%", PageRequest.of(0, 20));
       log.info("Returning data: ");
       //      restcallof1secwiththeconenctionBLOCKEWD!
-      return parentPage;
+      return parentPage
+              .map(e-> toDto(e));
       // since Spring Boot 2.0 the connection is not released at the end of the transaction
       // but kept until the HTTP response is sent out. WHY?
       // to enable LAZY LOADING to happen while serialization as JSON of the object you returned.
@@ -37,12 +47,13 @@ public class ParentSearchController implements CommandLineRunner {
       // and Spring didn't want to tell them how stupid decision they took, but wanted to play along = MARKETING
    }
 
+   private ParentDto toDto(Parent parent) {
+      List<String> names = parent.getChildren().stream().map(Child::getName).collect(Collectors.toList());
+      return new ParentDto(parent.getId(), parent.getName(), names);
+   }
 
 
-
-
-
-//      Page<Long> idPage = repo.findByNameLike("%ar%", PageRequest.of(0, 10));
+   //      Page<Long> idPage = repo.findByNameLike("%ar%", PageRequest.of(0, 10));
 //      List<Long> parentIds = idPage.getContent();
 
 //      Map<Long, Parent> parents = repo.findParentsWithChildren(parentIds).stream().collect(toMap(Parent::getId, identity()));
