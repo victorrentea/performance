@@ -2,6 +2,8 @@ package victor.training.performance.jpa;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.Value;
+import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
@@ -28,13 +30,12 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.tuple;
 import static org.springframework.test.annotation.DirtiesContext.ClassMode.BEFORE_EACH_TEST_METHOD;
 
+@Slf4j
 @SpringBootTest
 @Transactional
-@Rollback(false) // don't wipe the data
+@Rollback(false) // don't wipe the data after each test (for debugging)
 @DirtiesContext(classMode = BEFORE_EACH_TEST_METHOD) // recreate DB schema before each test
 public class UberEntityTest {
-    private static final Logger log = LoggerFactory.getLogger(UberEntityTest.class);
-
     @Autowired
     private CountryRepo countryRepo;
     @Autowired
@@ -74,6 +75,15 @@ public class UberEntityTest {
     }
 
     @Test
+    public void jpql() {
+        log.info("SELECTING a 'very OOP' @Entity with JPQL ...");
+         List<UberEntity> list = uberRepo.findAll();
+//        List<UberEntity> list = uberRepo.findAllWithQuery();// EQUIVALENT
+//        List<UberEntity> list = uberRepo.findByName("::uberName::");
+        log.info("Loaded using JPQL (see how many queries are above):\n" + list);
+    }
+
+    @Test
     public void findById() {
         log.info("Loading a 'very OOP' @Entity by id...");
         UberEntity uber = uberRepo.findById(uberId).orElseThrow(); // or em.find(UberEntity.class, id); in plain JPA
@@ -84,15 +94,6 @@ public class UberEntityTest {
             throw new IllegalArgumentException("Not submitted yet");
         }
         // more logic
-    }
-
-    @Test
-    public void jpql() {
-        log.info("SELECTING a 'very OOP' @Entity with JPQL ...");
-         List<UberEntity> list = uberRepo.findAll();
-//        List<UberEntity> list = uberRepo.findAllWithQuery();// EQUIVALENT
-//        List<UberEntity> list = uberRepo.findByName("::uberName::");
-        log.info("Loaded using JPQL (see how many queries are above):\n" + list);
     }
 
     @Test
@@ -130,35 +131,24 @@ public class UberEntityTest {
 
         return entities.stream().map(UberSearchResultDto::new).collect(toList());
     }
-}
 
-interface UberEntityRepo extends JpaRepository<UberEntity, Long> {
-    @Query("SELECT u FROM UberEntity u")
-    List<UberEntity> findAllWithQuery();
+    @Data
+    static class UberSearchCriteria { // received as JSON
+        public String name;
+        public Status status;
+        // etc
+    }
+    @Value
+    static class UberSearchResultDto { // sent as JSON
+        Long id;
+        String name;
+        String originCountry;
 
-    @Query("SELECT u FROM UberEntity u " +
-           "WHERE (:name is null OR UPPER(u.name) LIKE UPPER('%' || :name || '%'))")
-    List<UberEntity> searchFixedJqpl(@Nullable String name);
-
-
-    List<UberEntity> findByName(String name);
-}
-@Data
-class UberSearchCriteria { // received as JSON
-    public String name;
-    public Status status;
-    // etc
-}
-@Data
-@AllArgsConstructor
-class UberSearchResultDto { //sent as JSON
-    private final Long id;
-    private final String name;
-    private final String originCountry;
-
-    public UberSearchResultDto(UberEntity entity) {
-        id = entity.getId();
-        name = entity.getName();
-        originCountry = entity.getOriginCountry().getName();
+        public UberSearchResultDto(UberEntity entity) {
+            id = entity.getId();
+            name = entity.getName();
+            originCountry = entity.getOriginCountry().getName();
+        }
     }
 }
+

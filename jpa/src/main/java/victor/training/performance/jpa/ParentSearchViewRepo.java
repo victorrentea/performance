@@ -16,13 +16,14 @@ public interface ParentSearchViewRepo extends JpaRepository<ParentSearchView, Lo
           " P.NAME as name, " +
           " nvl(STRING_AGG(c.NAME, ',') within group (order by c.name asc), '') as childrenNames " +
           " from PARENT P" +
-          " left join CHILD C on P.ID = C.PARENT_ID" + // TODO eat a " "
+          " left join CHILD C on P.ID = C.PARENT_ID" + // TODO typo: eat a " "
           " group by p.ID, P.NAME")
-  List<ParentSearchProjection> nativeQueryEquivalentOfView();
+  List<ParentSearchProjection> nativeQueryForProjections();
 
 
   @Query("SELECT psv FROM ParentSearchView psv " +
          "JOIN Parent p ON p.id = psv.id " +
          "WHERE p.age > 40")
     // we can traverse and filter on any property of our main JPA model
-  ParentSearchView selectFromView_butFilterOnEntityModel();}
+  ParentSearchView selectFromView_butFilterOnEntityModel();
+}

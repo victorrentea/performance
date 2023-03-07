@@ -8,16 +8,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.annotation.Rollback;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.context.transaction.TestTransaction;
 import org.springframework.transaction.annotation.Transactional;
 import victor.training.performance.jpa.ParentSearchViewRepo.ParentSearchProjection;
-import victor.training.performance.jpa.projections.ChildProjected;
-import victor.training.performance.jpa.projections.ParentProjected;
 
 import javax.persistence.EntityManager;
 import java.util.List;
-import java.util.Set;
 
 import static java.util.stream.Collectors.joining;
 import static java.util.stream.Collectors.toList;
@@ -27,6 +25,7 @@ import static org.springframework.test.annotation.DirtiesContext.ClassMode.BEFOR
 
 @Slf4j
 @SpringBootTest
+@ActiveProfiles("test")
 @Transactional
 @Rollback(false) // at the end of each @Test, don't rollback the @Transaction, to be able to inspect the DB contents
 @DirtiesContext(classMode = BEFORE_EACH_TEST_METHOD) // nuke Spring + re-init DB with Hibernate
@@ -46,7 +45,7 @@ public class NPlusOne {
                 .addChild(new Child("Emma"))
                 .addChild(new Child("Vlad"))
         );
-        repo.save(new Parent("Trofim") // bachelor :)
+        repo.save(new Parent("Trofim") // bachelor, no children
                 .setAge(42));
         repo.save(new Parent("Peter")
                 .setAge(41)
@@ -58,6 +57,18 @@ public class NPlusOne {
         TestTransaction.end();
 
         TestTransaction.start();
+    }
+
+    @Value
+    static class ParentSearchResult {
+        Long id;
+        String name;
+        String childrenNames;
+        public ParentSearchResult(Parent parent) {
+            id = parent.getId();
+            name = parent.getName();
+            childrenNames = parent.getChildren().stream().map(Child::getName).sorted().collect(joining(","));
+        }
     }
 
     // This is what is displayed in the UI:
@@ -75,7 +86,7 @@ public class NPlusOne {
     @Test
     public void selectFullEntity() {
         List<Parent> parents = repo.findAll();
-        // TODO +pagination PageRequest.of(0, 10)
+
         log.info("Loaded {} parents: {}", parents.size(), parents);
 
         List<ParentSearchResult> results = toSearchResults(parents);
@@ -83,39 +94,20 @@ public class NPlusOne {
         assertResultsInUIGrid(results);
     }
 
-    @Value
-    static class ParentSearchResult {
-        Long id;
-        String name;
-        String childrenNames;
-        public ParentSearchResult(Parent parent) {
-            id = parent.getId();
-            name = parent.getName();
-            childrenNames = parent.getChildren().stream().map(Child::getName).sorted().collect(joining(","));
-        }
-        public ParentSearchResult(ParentProjected parent) {
-            id = parent.getId();
-            name = parent.getName();
-            childrenNames = parent.getChildren() != null ?
-                    parent.getChildren().stream().map(ChildProjected::getName).sorted().collect(joining(","))
-                    : "";
-        }
-    }
-
-    private List<ParentSearchResult> toSearchResults(List<Parent> parents) {
-        log.debug("Start converting");
+    private List<ParentSearchResult> toSearchResults(List<Parent> parents) { // eg, in a Mapper
+        log.debug("Converting-->Dto START");
         List<ParentSearchResult> results = parents.stream().map(ParentSearchResult::new).collect(toList());
-        log.debug("Converting DONE");
+        log.debug("Converting-->Dto DONE");
         return results;
     }
 
+
+    // ======================= STAGE 2: native SQL query selecting projections ==============
     @Autowired
     ParentSearchViewRepo searchRepo;
-    // ======================= STAGE 2: native SQL query =============================
-
     @Test
     public void nativeQuery() {
-        List<ParentSearchProjection> results = searchRepo.nativeQueryEquivalentOfView();
+        List<ParentSearchProjection> results = searchRepo.nativeQueryForProjections();
         assertResultsInUIGrid(results);
     }
 
@@ -126,20 +118,6 @@ public class NPlusOne {
         List<ParentSearchView> results = searchRepo.findAll();
         assertResultsInUIGrid(results);
     }
-
-
-    // ======================= STAGE -: Spring Projections [⚠️NOT WORKING] =============================
-    @Test
-    public void springProjections() {
-        Set<ParentProjected> parents = repo.findAllProjected(); // SELECTS ALL columns ! [FAIL]
-
-        String parentNames = parents.stream().map(ParentProjected::getName).collect(joining(","));
-        log.info("Loaded {} parents with names: {}", parents.size(), parentNames);
-
-        List<ParentSearchResult> results = parents.stream().map(ParentSearchResult::new).collect(toList());
-        assertResultsInUIGrid(results);
-    }
-
 
 }
 
