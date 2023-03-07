@@ -20,7 +20,9 @@ public class Country {
    private String iso3Code;
    private String continent;
 
-   private Country() {
+   // protected allows Hibernate to subclass your Country to (a proxy)
+   // and then put this proxy into the field of the Parent.
+   protected Country() {
    }
 
    public Country(Long id, String name) {

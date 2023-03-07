@@ -93,6 +93,10 @@ public class NPlusOne {
         List<ParentSearchResult> results = parents.stream()
                 .map(ParentSearchResult::new)
                 .collect(toList());
+        for (Parent parent : parents) {
+            System.out.println("The country is a proxy: " + parent.getCountry().getClass());
+            System.out.println("From " + parent.getCountry().getName());
+        }
         log.debug("Converting DONE");
         return results;
     }
