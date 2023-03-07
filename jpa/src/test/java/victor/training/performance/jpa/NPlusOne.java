@@ -74,7 +74,6 @@ public class NPlusOne {
     @Test
     public void selectFullEntity() {
         List<Parent> parents = repo.findAll(); // N + 1 queries problem : fetching the children parent by parent: repeated queries
-//        List<Parent> parents = repo.findAll();
 
         log.info("Loaded {} parents: {}", parents.size(), parents);
 
