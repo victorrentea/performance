@@ -11,9 +11,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort.Direction;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import victor.training.performance.jpa.Parent;
 import victor.training.performance.jpa.ParentRepo;
 
@@ -32,11 +30,22 @@ import static org.springframework.data.domain.Sort.Direction.ASC;
 public class ParentSearchController {
    private final ParentRepo repo;
 
+   public static class ParentDto {
+//       TODO children csv.
+   }
+
    @GetMapping("parent/search")
    @Transactional
-   public Page<Parent> searchPaginated() {
-      PageRequest pageRequest = PageRequest.of(0, 20, ASC, "name");
-      Page<Parent> parentPage = repo.findByNameLike("%ar%", pageRequest);
+   public Page<Parent> searchPaginated(
+           @RequestParam(defaultValue = "ar") String q,
+           @RequestParam(defaultValue = "0") int pageIndex,
+           @RequestParam(defaultValue = "20") int pageSize,
+           @RequestParam(defaultValue = "name") String order,
+           @RequestParam(defaultValue = "ASC") String dir
+           ) {
+//      PageRequest pageRequest = PageRequest.of(0, 20, ASC, "name");
+      PageRequest pageRequest = PageRequest.of(pageIndex, pageSize, Direction.fromString(dir), order);
+      Page<Parent> parentPage = repo.findByNameLike("%"+q+"%", pageRequest);
       log.info("Returning data");
       return parentPage;
    }
@@ -64,7 +73,7 @@ public class ParentSearchController {
    public void insertInitialData() {
       log.warn("INSERTING data ...");
       jdbc.update("INSERT INTO COUNTRY(ID, NAME) SELECT X, 'Country ' || X  FROM SYSTEM_RANGE(1, 20)");
-      jdbc.update("INSERT INTO PARENT(ID, NAME, COUNTRY_ID) SELECT X, 'Parent' || X, 1 + MOD(X,20)  FROM SYSTEM_RANGE(1, 1000)");
+      jdbc.update("INSERT INTO PARENT(ID, NAME, COUNTRY_ID, AGE) SELECT X, 'Parent' || X, 1 + MOD(X,20),  20 + MOD(X*17,40),   FROM SYSTEM_RANGE(1, 1000)");
 
       // jdbc.update("INSERT INTO PARENT(ID, NAME) SELECT X, 'Parent ' || X FROM SYSTEM_RANGE(1, 1000)");
       jdbc.update("INSERT INTO CHILD(ID, NAME, PARENT_ID) SELECT X, 'Child' || X || '-1',X FROM SYSTEM_RANGE(1, 1000)");
