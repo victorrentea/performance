@@ -2,7 +2,6 @@ package victor.training.performance.jpa;
 
 import lombok.Value;
 import lombok.extern.slf4j.Slf4j;
-import org.jetbrains.annotations.NotNull;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -101,7 +100,6 @@ public class NPlusOneTest {
         }
     }
 
-    @NotNull
     private List<ParentSearchResult> toSearchResults(List<Parent> parents) {
         log.debug("Start converting");
         List<ParentSearchResult> results = parents.stream().map(ParentSearchResult::new).collect(toList());
