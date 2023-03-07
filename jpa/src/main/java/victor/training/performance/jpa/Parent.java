@@ -2,6 +2,7 @@ package victor.training.performance.jpa;
 
 import lombok.Getter;
 import lombok.Setter;
+import org.hibernate.annotations.BatchSize;
 
 import javax.persistence.*;
 import java.util.HashSet;
@@ -19,7 +20,7 @@ public class Parent {
    private Integer age;
 
    @OneToMany(mappedBy = "parent",
-           fetch = FetchType.EAGER, // tells hibernate
+           //fetch = FetchType.EAGER, // tells hibernate
            // to only ever give the app instances of Parent @Entity
            // with filled children.
            // 1) But those are still (surprise!)
@@ -29,7 +30,8 @@ public class Parent {
            // [best practice]: only use if PARENT DOES NOT HAVE ANY
            // MEANING WITHOUT ITS CHILDREN
            cascade = CascadeType.PERSIST)
-   // @BatchSize(size=10) // too much magic
+   @BatchSize(size=100) // too much magic
+   // tells hibernate to load the children of parents in pages of 10
    private Set<Child> children = new HashSet<>();
 
    @ManyToOne
