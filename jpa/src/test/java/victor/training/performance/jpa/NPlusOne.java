@@ -59,6 +59,7 @@ public class NPlusOne {
         TestTransaction.start();
     }
 
+    // This is what is displayed in the UI:
     private static void assertResultsInUIGrid(List<?> results) {
         assertThat(results)
                 .extracting("name", "childrenNames")
