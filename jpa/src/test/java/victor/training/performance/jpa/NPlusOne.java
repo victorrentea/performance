@@ -73,14 +73,26 @@ public class NPlusOne {
     // ======================= STAGE 1: SELECT full @Entity =============================
     @Test
     public void selectFullEntity() {
-        List<Parent> parents = repo.findAll();
-        // TODO +pagination PageRequest.of(0, 10)
+        List<Parent> parents = repo.findAll(); // N + 1 queries problem : fetching the children parent by parent: repeated queries
+//        List<Parent> parents = repo.findAll();
+
         log.info("Loaded {} parents: {}", parents.size(), parents);
 
         List<ParentSearchResult> results = toSearchResults(parents);
 
         assertResultsInUIGrid(results);
     }
+
+    private List<ParentSearchResult> toSearchResults(List<Parent> parents) {
+        log.debug("Start converting");
+        List<ParentSearchResult> results = parents.stream()
+                .map(ParentSearchResult::new)
+                .collect(toList());
+        log.debug("Converting DONE");
+        return results;
+    }
+
+
 
     @Value
     static class ParentSearchResult {
@@ -99,13 +111,7 @@ public class NPlusOne {
                     parent.getChildren().stream().map(ChildProjected::getName).sorted().collect(joining(","))
                     : "";
         }
-    }
 
-    private List<ParentSearchResult> toSearchResults(List<Parent> parents) {
-        log.debug("Start converting");
-        List<ParentSearchResult> results = parents.stream().map(ParentSearchResult::new).collect(toList());
-        log.debug("Converting DONE");
-        return results;
     }
 
     // ======================= STAGE 2: @Entity on VIEW =============================
