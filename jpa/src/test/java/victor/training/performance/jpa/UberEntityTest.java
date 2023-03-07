@@ -2,6 +2,7 @@ package victor.training.performance.jpa;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.Value;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
@@ -23,7 +24,6 @@ import java.util.List;
 import java.util.Map;
 
 import static java.util.stream.Collectors.joining;
-import static java.util.stream.Collectors.toList;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.tuple;
 import static org.springframework.test.annotation.DirtiesContext.ClassMode.BEFORE_EACH_TEST_METHOD;
@@ -74,8 +74,18 @@ public class UberEntityTest {
     }
 
     @Test
+    public void jpql() {
+        log.info("SELECTING a 'very OOP' @Entity with JPQL ...");
+//         List<UberEntity> list = uberRepo.findAll(); // 7 SELECT queries !!!
+//        List<UberEntity> list = uberRepo.findAllWithQuery();// EQUIVALENT @Query
+        List<UberEntity> list = uberRepo.findByName("::uberName::");
+        log.info("Loaded using JPQL (see how many queries are above):\n" + list);
+    }
+
+    @Test
     public void findById() {
         log.info("Loading a 'very OOP' @Entity by id...");
+        // 55 lines of query 7 JOINs just to get the status
         UberEntity uber = uberRepo.findById(uberId).orElseThrow(); // or em.find(UberEntity.class, id); in plain JPA
         log.info("Loaded using findById (inspect the above query):\n" + uber);
 
@@ -84,15 +94,6 @@ public class UberEntityTest {
             throw new IllegalArgumentException("Not submitted yet");
         }
         // more logic
-    }
-
-    @Test
-    public void jpql() {
-        log.info("SELECTING a 'very OOP' @Entity with JPQL ...");
-         List<UberEntity> list = uberRepo.findAll();
-//        List<UberEntity> list = uberRepo.findAllWithQuery();// EQUIVALENT
-//        List<UberEntity> list = uberRepo.findByName("::uberName::");
-        log.info("Loaded using JPQL (see how many queries are above):\n" + list);
     }
 
     @Test
@@ -112,23 +113,27 @@ public class UberEntityTest {
     }
 
     private List<UberSearchResultDto> classicSearch(UberSearchCriteria criteria) {
-        String jpql = "SELECT u FROM UberEntity u WHERE 1 = 1 ";
+//        String jpql = "SELECT u FROM UberEntity u WHERE 1 = 1 "; // NEVER select full entities to display in a search result grid
+//        String jpql = "SELECT u.id, u.name, u.originCountry.name" + // returns a List<Object[]> that you have to guess the type/meaning
+//        String jpql = "SELECT u.id as id, u.name as name, u.originCountry.name as originCountry " +
+        String jpql = "SELECT new victor.training.performance.jpa.UberSearchResultDto(u.id, u.name, u.originCountry.name)" +
+                      " FROM UberEntity u WHERE 1 = 1 "; // NEVER select full entities to display in a search result grid
         // alternative implementation: CriteriaAPI, Criteria+Metamodel, QueryDSL, Spring Specifications
         Map<String, Object> params = new HashMap<>();
         if (criteria.name != null) {
             jpql += " AND u.name = :name ";
             params.put("name", criteria.name);
         }
-        var query = em.createQuery(jpql, UberEntity.class);
+        var query = em.createQuery(jpql, UberSearchResultDto.class);
         for (String key : params.keySet()) {
             query.setParameter(key, params.get(key));
         }
-        var entities = query.getResultList();
+        var dtos = query.getResultList();
 
         // OR: Spring Data Repo @Query with a fixed JPQL
         //entities = uberRepo.searchFixedJqpl(criteria.name);
 
-        return entities.stream().map(UberSearchResultDto::new).collect(toList());
+        return dtos;//.stream().map(UberSearchResultDto::new).collect(toList());
     }
 }
 
@@ -149,16 +154,21 @@ class UberSearchCriteria { // received as JSON
     public Status status;
     // etc
 }
-@Data
-@AllArgsConstructor
-class UberSearchResultDto { //sent as JSON
-    private final Long id;
-    private final String name;
-    private final String originCountry;
+// Hibernate creates a proxy implementing this interface returning you the data you need
+//interface UberSearchResultDto { //sent as JSON
+//     Long getId();
+//     String getName();
+//     String getOriginCountry();
+//}
 
-    public UberSearchResultDto(UberEntity entity) {
-        id = entity.getId();
-        name = entity.getName();
-        originCountry = entity.getOriginCountry().getName();
-    }
+@Value
+class UberSearchResultDto { //sent as JSON
+    Long id;
+    String name;
+    String originCountry;
 }
+// java 17
+//record UberSearchResultDto(
+//    Long id,
+//    String name,
+//    String originCountry) {}
