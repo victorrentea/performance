@@ -1,7 +1,6 @@
 package victor.training.performance.jpa;
 
 import lombok.Data;
-import victor.training.performance.jpa.entity.Country;
 
 import javax.persistence.*;
 

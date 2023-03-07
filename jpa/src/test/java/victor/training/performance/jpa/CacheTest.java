@@ -12,8 +12,6 @@ import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.annotation.DirtiesContext.ClassMode;
 import org.springframework.test.context.jdbc.Sql;
 import org.springframework.transaction.annotation.Transactional;
-import victor.training.performance.jpa.entity.Country;
-import victor.training.performance.jpa.repo.CountryRepo;
 import victor.training.performance.util.PerformanceUtil;
 
 import javax.persistence.EntityManager;
@@ -70,7 +68,7 @@ public class CacheTest {
 
       assertThat(session().getSessionFactory().getCache().containsEntity(Country.class, 1L)).isTrue();
       long hitCount = session().getSessionFactory().getStatistics()
-          .getDomainDataRegionStatistics("victor.training.performance.jpa.entity.Country")
+          .getDomainDataRegionStatistics("victor.training.performance.jpa.Country")
           .getHitCount();
       assertThat(hitCount).isEqualTo(1);
    }
@@ -100,6 +98,6 @@ public class CacheTest {
       assertThat(cache.containsEntity(Country.class, 2L)).isTrue();
 
       System.out.println(cacheManager.getCacheNames());
-      System.out.println(cacheManager.getCache("victor.training.performance.jpa.entity.Country").getNativeCache());
+      System.out.println(cacheManager.getCache("victor.training.performance.jpa.Country").getNativeCache());
    }
 }

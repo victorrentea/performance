@@ -1,34 +1,24 @@
-package victor.training.performance.spring;
+package victor.training.performance.jpa;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.hibernate.EmptyInterceptor;
-import org.hibernate.Interceptor;
-import org.hibernate.SessionFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.data.jpa.repository.Query;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import victor.training.performance.jpa.Parent;
-
-import javax.annotation.PostConstruct;
-import javax.persistence.EntityManager;
-
+import victor.training.performance.jpa.ParentRepo;
 
 
 @Slf4j
 @RestController // TODO uncomment and study
 @RequestMapping("profile/nplus1")
 @RequiredArgsConstructor
-public class Profile2_NPlusOne implements CommandLineRunner {
+public class ParentSearchController implements CommandLineRunner {
    private final ParentRepo repo;
    private final JdbcTemplate jdbc;
 
@@ -60,16 +50,5 @@ public class Profile2_NPlusOne implements CommandLineRunner {
       jdbc.update("INSERT INTO CHILD(ID, NAME, PARENT_ID) SELECT X + 1000, 'Child' || X || '-2', X FROM SYSTEM_RANGE(1, 1000)");
       log.info("DONE");
    }
-}
-
-interface ParentRepo extends JpaRepository<Parent, Long> {
-   @Query("SELECT p FROM Parent p WHERE p.name LIKE ?1")
-   Page<Parent> findByNameLike(String namePart, Pageable page);
-
-//   @Query("SELECT p.id FROM Parent p WHERE p.name LIKE ?1")
-//   Page<Long> findByNameLike(String namePart, Pageable page);
-
-//   @Query("SELECT p FROM Parent p LEFT JOIN FETCH p.children WHERE p.id IN ?1")
-//   Set<Parent> findParentsWithChildren(List<Long> parentIds);
 }
 

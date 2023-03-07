@@ -7,18 +7,13 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.data.jpa.repository.Query;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.annotation.Rollback;
 import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.context.transaction.TestTransaction;
 import org.springframework.transaction.annotation.Transactional;
-import victor.training.performance.jpa.NPlusOneTest.ParentProjected;
-import victor.training.performance.jpa.NPlusOneTest.ParentProjected.ChildProjected;
-import victor.training.performance.jpa.entity.Child;
-import victor.training.performance.jpa.entity.Country;
-import victor.training.performance.jpa.repo.CountryRepo;
+import victor.training.performance.jpa.projections.ChildProjected;
+import victor.training.performance.jpa.projections.ParentProjected;
 
 import javax.persistence.EntityManager;
 import java.util.List;
@@ -34,7 +29,7 @@ import static org.springframework.test.annotation.DirtiesContext.ClassMode.BEFOR
 @SpringBootTest
 @Transactional
 @Rollback(false) // at the end of each @Test, don't rollback the @Transaction, to be able to inspect the DB contents
-@DirtiesContext(classMode = BEFORE_EACH_TEST_METHOD) // nuke Spring + DB
+@DirtiesContext(classMode = BEFORE_EACH_TEST_METHOD) // nuke Spring + re-init DB with Hibernate
 public class NPlusOneTest {
     @Autowired
     EntityManager entityManager;
@@ -133,27 +128,6 @@ public class NPlusOneTest {
         assertResultsInUIGrid(results);
     }
 
-    interface ParentProjected {
-        Long getId();
-        String getName();
-        List<ChildProjected> getChildren();
-        interface  ChildProjected {
-            String getName();
-        }
-    }
 
 }
 
-interface ParentRepo extends JpaRepository<Parent, Long> {
-    //    @Query("FROM Parent p LEFT JOIN FETCH p.children")
-//    List<Parent> findAllFetchChildren();
-
-    @Query("FROM Parent p") // Spring Projections do NOT work as intended: they fetch all the fields
-    Set<ParentProjected> findAllProjected();
-
-}
-
-interface ParentSearchViewRepo extends JpaRepository<ParentSearchView, Long> {
-    @Query("SELECT psv FROM ParentSearchView psv JOIN Parent p ON p.id = psv.id WHERE p.age > 40")
-    ParentSearchView selectFromAggregatedView_butQueryOnEntityModel();
-}

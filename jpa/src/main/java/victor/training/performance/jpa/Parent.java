@@ -2,8 +2,6 @@ package victor.training.performance.jpa;
 
 import lombok.Getter;
 import lombok.Setter;
-import victor.training.performance.jpa.entity.Child;
-import victor.training.performance.jpa.entity.Country;
 
 import javax.persistence.*;
 import java.util.HashSet;

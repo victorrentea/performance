@@ -1,4 +1,4 @@
-package victor.training.performance.jpa.entity;
+package victor.training.performance.jpa;
 
 import victor.training.performance.jpa.Parent;
 
