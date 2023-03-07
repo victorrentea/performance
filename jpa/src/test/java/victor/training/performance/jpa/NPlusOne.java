@@ -15,6 +15,7 @@ import victor.training.performance.jpa.projections.ChildProjected;
 import victor.training.performance.jpa.projections.ParentProjected;
 
 import javax.persistence.EntityManager;
+import java.util.Collection;
 import java.util.List;
 import java.util.Set;
 
@@ -72,8 +73,11 @@ public class NPlusOne {
 
     // ======================= STAGE 1: SELECT full @Entity =============================
     @Test
+    @Transactional
     public void selectFullEntity() {
-        List<Parent> parents = repo.findAll(); // N + 1 queries problem : fetching the children parent by parent: repeated queries
+//        List<Parent> parents = repo.findAll(); // N + 1 queries problem : fetching the children parent by parent: repeated queries
+        Set<Parent> parents = repo.findAllFetchChildren();
+        // i tell hibernate for this usecase to preload children in one single query
 
         log.info("Loaded {} parents: {}", parents.size(), parents);
 
@@ -82,7 +86,7 @@ public class NPlusOne {
         assertResultsInUIGrid(results);
     }
 
-    private List<ParentSearchResult> toSearchResults(List<Parent> parents) {
+    private List<ParentSearchResult> toSearchResults(Collection<Parent> parents) {
         log.debug("Start converting");
         List<ParentSearchResult> results = parents.stream()
                 .map(ParentSearchResult::new)

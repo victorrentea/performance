@@ -30,7 +30,7 @@ public class Parent {
            // [best practice]: only use if PARENT DOES NOT HAVE ANY
            // MEANING WITHOUT ITS CHILDREN
            cascade = CascadeType.PERSIST)
-   @BatchSize(size=100) // too much magic
+//   @BatchSize(size=100) // too much magic
    // tells hibernate to load the children of parents in pages of 10
    private Set<Child> children = new HashSet<>();
 
