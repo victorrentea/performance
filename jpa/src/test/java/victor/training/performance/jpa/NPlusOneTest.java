@@ -95,7 +95,9 @@ public class NPlusOneTest {
         public ParentSearchResult(ParentProjected parent) {
             id = parent.getId();
             name = parent.getName();
-            childrenNames = parent.getChildren().stream().map(ChildProjected::getName).sorted().collect(joining(","));
+            childrenNames = parent.getChildren() != null ?
+                    parent.getChildren().stream().map(ChildProjected::getName).sorted().collect(joining(","))
+                    : "";
         }
     }
 
@@ -122,7 +124,9 @@ public class NPlusOneTest {
     @Test
     public void springProjections() {
         Set<ParentProjected> parents = repo.findAllProjected(); // SELECTS ALL columns ! [FAIL]
-        log.info("Loaded {} parents: {}", parents.size(), parents);
+
+        String parentNames = parents.stream().map(ParentProjected::getName).collect(joining(","));
+        log.info("Loaded {} parents with names: {}", parents.size(), parentNames);
 
         List<ParentSearchResult> results = parents.stream().map(ParentSearchResult::new).collect(toList());
         assertResultsInUIGrid(results);

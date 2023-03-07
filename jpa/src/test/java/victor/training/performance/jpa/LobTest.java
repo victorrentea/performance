@@ -13,7 +13,6 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.test.annotation.Rollback;
 import org.springframework.test.context.transaction.TestTransaction;
 import org.springframework.transaction.annotation.Transactional;
-import victor.training.performance.util.PerformanceUtil;
 
 import javax.persistence.*;
 import java.io.File;
@@ -22,8 +21,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.sql.Blob;
 import java.sql.SQLException;
-
-import static victor.training.performance.util.PerformanceUtil.printUsedHeap;
 
 @Slf4j
 @SpringBootTest
@@ -55,9 +52,9 @@ public class LobTest {
    @Test
    void streamFromFileInOutDb() throws IOException, SQLException {
       File tempFile = new File("glowroot.jar"); // 10 MB
-      System.out.println("File size: " + PerformanceUtil.formatSize(tempFile.length()));
+      System.out.println("File size: " + Util.formatSize(tempFile.length()));
 
-      PerformanceUtil.printUsedHeap("Initial");
+      Util.printUsedHeap("Initial");
 
       // ============= WRITING ==================
       Session hibernateSession = (Session) entityManager.getDelegate();
@@ -71,11 +68,11 @@ public class LobTest {
           .setName("Tavi")
           .setCvPdf(blob);
       Long profId = profRepo.save(prof).getId();
-      PerformanceUtil.printUsedHeap("Before Commit");
+      Util.printUsedHeap("Before Commit");
       TestTransaction.end();
       fileInputStream.close();
 
-      PerformanceUtil.printUsedHeap("After Commit");
+      Util.printUsedHeap("After Commit");
 
       // ============= READING ==================
       TestTransaction.start();
@@ -83,12 +80,12 @@ public class LobTest {
       Prof profLoaded = profRepo.findById(profId).get();
 
       log.info("Loaded prof name = " + profLoaded.getName());
-      PerformanceUtil.printUsedHeap("After loaded entity");
+      Util.printUsedHeap("After loaded entity");
 
       // usually profLoaded.getCvPdf().getBinaryStream is copied on disk / http response
       byte[] bytes = IOUtils.toByteArray(profLoaded.getCvPdf().getBinaryStream());
-      System.out.println("blob size: " + PerformanceUtil.formatSize(bytes.length));
-      PerformanceUtil.printUsedHeap("With byte[] in memory");
+      System.out.println("blob size: " + Util.formatSize(bytes.length));
+      Util.printUsedHeap("With byte[] in memory");
    }
 
 }

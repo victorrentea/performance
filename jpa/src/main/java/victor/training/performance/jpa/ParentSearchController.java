@@ -15,7 +15,7 @@ import victor.training.performance.jpa.ParentRepo;
 
 
 @Slf4j
-@RestController // TODO uncomment and study
+//@RestController // TODO uncomment and study
 @RequestMapping("profile/nplus1")
 @RequiredArgsConstructor
 public class ParentSearchController implements CommandLineRunner {

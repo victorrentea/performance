@@ -11,14 +11,12 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.test.annotation.Rollback;
 import org.springframework.test.context.jdbc.Sql;
 import org.springframework.transaction.annotation.Transactional;
-import victor.training.performance.util.PerformanceUtil;
 
 import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
 
 import static lombok.AccessLevel.PRIVATE;
-import static victor.training.performance.util.PerformanceUtil.printUsedHeap;
 
 @Slf4j
 @SpringBootTest
@@ -31,13 +29,13 @@ public class TooManyChildren {
    @Test
    @Sql(statements = {
        "INSERT INTO TAG(ID, NAME) VALUES (1, 'DEFAULT'), (2, 'SMART_PHONE'), (3, 'SMART_TV')",
-       "INSERT INTO DEVICE(ID, NAME, TAG_ID) SELECT X, 'Device ' || X, 1 FROM SYSTEM_RANGE(1, "+ DEVICES_FOR_DEFAULT+ ")" //all are DEFAULT
+       "INSERT INTO DEVICE(ID, NAME, TAG_ID) SELECT X, 'Device ' || X, 1 FROM SYSTEM_RANGE(1, "+ DEVICES_FOR_DEFAULT+ ")" //findAllWithQuery are DEFAULT
    })
    void test() {
-      PerformanceUtil.printUsedHeap("Start");
+      Util.printUsedHeap("Start");
       Tag defaultTag = tagRepo.findById(1L).get();
       defaultTag.getDevices().size(); // trigger lazy load
-      PerformanceUtil.printUsedHeap("With Tag loaded with HUGE children list");
+      Util.printUsedHeap("With Tag loaded with HUGE children list");
       System.out.println(defaultTag);
    }
 }

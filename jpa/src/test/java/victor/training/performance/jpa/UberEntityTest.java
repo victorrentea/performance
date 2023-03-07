@@ -31,7 +31,7 @@ import static org.springframework.test.annotation.DirtiesContext.ClassMode.BEFOR
 @SpringBootTest
 @Transactional
 @Rollback(false) // don't wipe the data
-@DirtiesContext(classMode = BEFORE_EACH_TEST_METHOD)
+@DirtiesContext(classMode = BEFORE_EACH_TEST_METHOD) // recreate DB schema before each test
 public class UberEntityTest {
     private static final Logger log = LoggerFactory.getLogger(UberEntityTest.class);
 
@@ -89,8 +89,8 @@ public class UberEntityTest {
     @Test
     public void jpql() {
         log.info("SELECTING a 'very OOP' @Entity with JPQL ...");
-         List<UberEntity> list = uberRepo.all();
-//        List<UberEntity> list = uberRepo.findAll();// EQUIVALENT
+         List<UberEntity> list = uberRepo.findAll();
+//        List<UberEntity> list = uberRepo.findAllWithQuery();// EQUIVALENT
 //        List<UberEntity> list = uberRepo.findByName("::uberName::");
         log.info("Loaded using JPQL (see how many queries are above):\n" + list);
     }
@@ -125,7 +125,7 @@ public class UberEntityTest {
         }
         var entities = query.getResultList();
 
-        // OR: fixed JPQL
+        // OR: Spring Data Repo @Query with a fixed JPQL
         //entities = uberRepo.searchFixedJqpl(criteria.name);
 
         return entities.stream().map(UberSearchResultDto::new).collect(toList());
@@ -134,7 +134,7 @@ public class UberEntityTest {
 
 interface UberEntityRepo extends JpaRepository<UberEntity, Long> {
     @Query("SELECT u FROM UberEntity u")
-    List<UberEntity> all();
+    List<UberEntity> findAllWithQuery();
 
     @Query("SELECT u FROM UberEntity u " +
            "WHERE (:name is null OR UPPER(u.name) LIKE UPPER('%' || :name || '%'))")

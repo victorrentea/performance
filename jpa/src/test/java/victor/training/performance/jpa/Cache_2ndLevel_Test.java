@@ -12,7 +12,6 @@ import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.annotation.DirtiesContext.ClassMode;
 import org.springframework.test.context.jdbc.Sql;
 import org.springframework.transaction.annotation.Transactional;
-import victor.training.performance.util.PerformanceUtil;
 
 import javax.persistence.EntityManager;
 
@@ -26,7 +25,7 @@ import static org.assertj.core.api.Assertions.assertThat;
     "INSERT INTO COUNTRY(ID, NAME) VALUES (2, 'Belgium')"
 })
 @DirtiesContext(classMode = ClassMode.BEFORE_EACH_TEST_METHOD)
-public class CacheTest {
+public class Cache_2ndLevel_Test {
 
    @Autowired
    CountryRepo countryRepo;
@@ -49,8 +48,8 @@ public class CacheTest {
    @Test
    @Transactional
    void test1stLevelCache_transactionScoped() {
-      int t1 = PerformanceUtil.measureCall(() -> countryRepo.findById(1L).get());
-      int t1bis = PerformanceUtil.measureCall(() -> countryRepo.findById(1L).get());
+      int t1 = Util.measureCall(() -> countryRepo.findById(1L).get());
+      int t1bis = Util.measureCall(() -> countryRepo.findById(1L).get());
 
       log.info("time={}, time again={}", t1, t1bis);
 
@@ -61,8 +60,8 @@ public class CacheTest {
    void test2ndLevelCache_byId() {
       assertThat(session().getSessionFactory().getCache().containsEntity(Country.class, 1L)).isFalse();
 
-      int t1 = PerformanceUtil.measureCall(() -> System.out.println(countryRepo.findById(1L).get()));
-      int t1bis = PerformanceUtil.measureCall(() -> System.out.println(countryRepo.findById(1L).get()));
+      int t1 = Util.measureCall(() -> System.out.println(countryRepo.findById(1L).get()));
+      int t1bis = Util.measureCall(() -> System.out.println(countryRepo.findById(1L).get()));
 
       log.info("time={}, time again={}", t1, t1bis);
 
@@ -77,8 +76,8 @@ public class CacheTest {
    void test2ndLevelCache_findAll() {
       assertThat(session().getSessionFactory().getCache().containsQuery("allCountries")).isFalse();
 
-      int t1 = PerformanceUtil.measureCall(() -> System.out.println(countryRepo.findAll()));
-      int t1bis = PerformanceUtil.measureCall(() -> System.out.println(countryRepo.findAll()));
+      int t1 = Util.measureCall(() -> System.out.println(countryRepo.findAll()));
+      int t1bis = Util.measureCall(() -> System.out.println(countryRepo.findAll()));
 
       log.info("time={}, time again={}", t1, t1bis);
 
