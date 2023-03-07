@@ -32,6 +32,7 @@ public class ParentSearchController implements CommandLineRunner {
    List<String> childrenNames;
 }
    @GetMapping
+   @Transactional(readOnly = true)
    public Page<ParentDto> query() {// VERY BAD ARCH DECISION: exposing out the most sacred class you have: your DOMAIN MODEL
       // 🛑 SELECTing full entities for search with ORM ~> "select new Dto"
       Page<Parent> parentPage = repo.findByNameLike("%ar%", PageRequest.of(0, 20));
