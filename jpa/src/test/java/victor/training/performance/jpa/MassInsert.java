@@ -39,7 +39,9 @@ public class MassInsert {
 
   @BeforeEach
   final void before() {
-    List<DocumentType> docTypes = IntStream.range(1, 20).mapToObj(i -> "DocType" + i).map(DocumentType::new).collect(toList());
+    List<DocumentType> docTypes = IntStream.range(1, 20)
+            .mapToObj(i -> "DocType" + i)
+            .map(DocumentType::new).collect(toList());
     docTypeIds = documentTypeRepo.saveAll(docTypes).stream().map(DocumentType::getId).collect(toList());
     TestTransaction.end(); // flush and close the Persistence Context
   }
@@ -53,7 +55,13 @@ public class MassInsert {
       for (int i = 0; i < 100; i++) {
         Document document = new Document();
         Long docTypeId = docTypeIds.get(i % docTypeIds.size());
-        document.setType(documentTypeRepo.findById(docTypeId).orElseThrow());
+//        document.setType(documentTypeRepo.findById(docTypeId).orElseThrow());
+//        document.setType(documentTypeRepo.getReferenceById(docTypeId)); // returns a proxy but requires access to a repo
+        document.setType(new DocumentType().setId(docTypeId)
+                .setLabel("oups")// ignored
+        ); // can be executed in a non-spring managed bean (w/o access to a repo)
+
+        // = you promise that ID exists in  Document_type table. If it doesnt -> it will FK violation at insert
         documentRepo.save(document);
       }
       TestTransaction.end(); // flush and close the Persistence Context
