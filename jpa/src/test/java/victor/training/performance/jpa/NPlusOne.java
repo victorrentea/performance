@@ -11,6 +11,7 @@ import org.springframework.test.annotation.Rollback;
 import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.context.transaction.TestTransaction;
 import org.springframework.transaction.annotation.Transactional;
+import victor.training.performance.jpa.ParentSearchViewRepo.ParentSearchProjection;
 import victor.training.performance.jpa.projections.ChildProjected;
 import victor.training.performance.jpa.projections.ParentProjected;
 
@@ -123,10 +124,17 @@ public class NPlusOne {
 
     }
 
-    // ======================= STAGE 2: @Entity on VIEW =============================
-
     @Autowired
     ParentSearchViewRepo searchRepo;
+    // ======================= STAGE 2: native SQL query =============================
+
+    @Test
+    public void nativeQuery() {
+        List<ParentSearchProjection> results = searchRepo.nativeQueryEquivalentOfView();
+        assertResultsInUIGrid(results);
+    }
+
+    // ======================= STAGE 3: @Entity on VIEW =============================
     @Test
     @Sql("/create-view.sql")
     public void searchOnView() {
@@ -145,7 +153,5 @@ public class NPlusOne {
         List<ParentSearchResult> results = parents.stream().map(ParentSearchResult::new).collect(toList());
         assertResultsInUIGrid(results);
     }
-
-
 }
 
