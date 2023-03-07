@@ -28,8 +28,8 @@ import static java.util.stream.Collectors.toList;
 @Transactional
 @Rollback(false)
 @DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_EACH_TEST_METHOD)
-public class MassInsertTest {
-  private static final Logger log = LoggerFactory.getLogger(MassInsertTest.class);
+public class MassInsert {
+  private static final Logger log = LoggerFactory.getLogger(MassInsert.class);
 
   @Autowired
   private DocumentRepo documentRepo;

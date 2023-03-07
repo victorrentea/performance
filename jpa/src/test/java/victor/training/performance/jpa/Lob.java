@@ -26,7 +26,7 @@ import java.sql.SQLException;
 @SpringBootTest
 @Transactional
 @Rollback(false) // don't wipe the data
-public class LobTest {
+public class Lob {
    @Autowired
    ProfRepo profRepo;
    @Autowired
@@ -107,10 +107,10 @@ class Prof {
    private String name;
 
    @Basic(fetch = FetchType.LAZY)
-   @Lob // CLOB
+   @javax.persistence.Lob // CLOB
    private String cvMarkdown; // BIG and dangerous, TODO move away
 
-   @Lob // BLOB
+   @javax.persistence.Lob // BLOB
    private Blob cvPdf;
 }
 
@@ -125,10 +125,10 @@ class ProfData {
    // TODO @MapsId // shared PK with Prof https://vladmihalcea.com/the-best-way-to-map-a-onetoone-relationship-with-jpa-and-hibernate/
    private Prof prof;
 
-   @Lob
+   @javax.persistence.Lob
    private byte[] cvPdf; // BLOB
 
-   @Lob
+   @javax.persistence.Lob
    private String cvMarkdown; // CLOB
 }
 

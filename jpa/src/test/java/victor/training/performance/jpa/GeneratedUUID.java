@@ -11,7 +11,7 @@ import javax.persistence.EntityManager;
 //@Transactional
 //@Rollback(false)
 //@DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_EACH_TEST_METHOD)
-public class GeneratedUUIDTest {
+public class GeneratedUUID {
     @Autowired
     private EntityManager em;
     @Autowired

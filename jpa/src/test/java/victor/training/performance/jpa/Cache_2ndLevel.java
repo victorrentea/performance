@@ -25,7 +25,7 @@ import static org.assertj.core.api.Assertions.assertThat;
     "INSERT INTO COUNTRY(ID, NAME) VALUES (2, 'Belgium')"
 })
 @DirtiesContext(classMode = ClassMode.BEFORE_EACH_TEST_METHOD)
-public class Cache_2ndLevel_Test {
+public class Cache_2ndLevel {
 
    @Autowired
    CountryRepo countryRepo;

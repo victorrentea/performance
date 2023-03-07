@@ -29,7 +29,7 @@ import static org.springframework.test.annotation.DirtiesContext.ClassMode.BEFOR
 @Transactional
 @Rollback(false) // at the end of each @Test, don't rollback the @Transaction, to be able to inspect the DB contents
 @DirtiesContext(classMode = BEFORE_EACH_TEST_METHOD) // nuke Spring + re-init DB with Hibernate
-public class NPlusOneTest {
+public class NPlusOne {
     @Autowired
     EntityManager entityManager;
     @Autowired
