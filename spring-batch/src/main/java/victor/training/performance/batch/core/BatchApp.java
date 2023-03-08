@@ -90,7 +90,7 @@ public class BatchApp {
       writer.setEntityManagerFactory(emf);
       return writer;
    }
-
+// select * from banks as of scn = 'this morning'
    @Bean
    @StepScope
    public ItemStreamReader<PersonXml> xmlReader(
