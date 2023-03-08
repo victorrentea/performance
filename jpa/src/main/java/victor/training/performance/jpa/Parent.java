@@ -20,7 +20,7 @@ public class Parent {
    private Integer age;
 
    @OneToMany(mappedBy = "parent",
-           fetch = FetchType.EAGER, // tells hibernate
+//           fetch = FetchType.EAGER, // tells hibernate
            // to only ever give the app instances of Parent @Entity
            // with filled children.
            // 1) But those are still (surprise!)
