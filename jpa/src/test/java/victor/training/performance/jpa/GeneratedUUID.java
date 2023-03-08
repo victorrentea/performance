@@ -21,7 +21,10 @@ public class GeneratedUUID {
     @CaptureSystemOutput
     public void assignIdentifiers(OutputCapture capture) {
         UUIDEntity entity = new UUIDEntity();
-        repo.save(entity);
+
+        repo.save(entity); // in the SQL you will se a
+        // preliminary SELECT< hibernate checking that the ID the @Entity has is NOT YET in the DB
+        // if it were in DB already, the save() would have to do a .merge (UPDATE) of that row, not insert
 
         System.out.println("Generated id: " + entity.getId());
         // uncomment bellow and move to option 2 in prod code to fix
