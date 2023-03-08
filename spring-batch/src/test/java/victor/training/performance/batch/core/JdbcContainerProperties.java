@@ -1,4 +1,4 @@
-package victor.training.performance.util;
+package victor.training.performance.batch.core;
 
 import eu.rekawek.toxiproxy.model.ToxicDirection;
 import lombok.SneakyThrows;

@@ -3,7 +3,7 @@ package victor.training.performance.batch.paritem;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.batch.item.ItemProcessor;
 
-import static victor.training.performance.util.PerformanceUtil.sleepMillis;
+import static victor.training.performance.batch.PerformanceUtil.sleepMillis;
 
 @Slf4j
 public class StringProcessor implements ItemProcessor<String, String> {

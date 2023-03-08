@@ -31,10 +31,4 @@ public interface ParentRepo extends JpaRepository<Parent, Long> {
   Page<Parent> findByNameLike(String namePart, Pageable page);
 
 
-  //   @Query("SELECT p.id FROM Parent p WHERE p.name LIKE ?1")
-  //   Page<Long> findByNameLike(String namePart, Pageable page);
-
-  //   @Query("SELECT p FROM Parent p LEFT JOIN FETCH p.children WHERE p.id IN ?1")
-  //   Set<Parent> findParentsWithChildren(List<Long> parentIds)
-
 }

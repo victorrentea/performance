@@ -5,7 +5,7 @@ import org.springframework.batch.item.ItemWriter;
 
 import java.util.List;
 
-import static victor.training.performance.util.PerformanceUtil.sleepMillis;
+import static victor.training.performance.batch.PerformanceUtil.sleepMillis;
 
 @Slf4j
 public class StringConsoleWriter implements ItemWriter<String> {

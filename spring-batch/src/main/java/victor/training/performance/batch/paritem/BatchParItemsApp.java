@@ -13,7 +13,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.core.task.SimpleAsyncTaskExecutor;
 import org.springframework.core.task.TaskExecutor;
 
-import static victor.training.performance.util.PerformanceUtil.measureCall;
+import static victor.training.performance.batch.PerformanceUtil.measureCall;
 
 
 @SpringBootApplication

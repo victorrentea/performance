@@ -27,7 +27,7 @@ import javax.persistence.EntityManagerFactory;
 import java.io.File;
 import java.io.IOException;
 
-import static victor.training.performance.util.PerformanceUtil.measureCall;
+import static victor.training.performance.batch.PerformanceUtil.measureCall;
 
 @Slf4j
 @SpringBootApplication

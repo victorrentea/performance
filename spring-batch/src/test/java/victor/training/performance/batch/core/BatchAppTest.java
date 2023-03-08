@@ -12,10 +12,10 @@ import java.io.File;
 import java.util.Map;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static victor.training.performance.util.PerformanceUtil.sleepMillis;
+import static victor.training.performance.batch.PerformanceUtil.sleepMillis;
 
 @SpringBootTest(properties = "spring.batch.job.enabled=false")
-public class BatchAppTest extends AbstractTestcontainersTestBase{
+public class BatchAppTest extends AbstractTestcontainersTestBase {
    @Autowired
    Job job;
    @Autowired
