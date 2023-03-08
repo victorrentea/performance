@@ -32,8 +32,8 @@ public class LogFirstChunkListener implements ChunkListener {
       ch.qos.logback.classic.Logger p6spyLogger = (ch.qos.logback.classic.Logger) org.slf4j.LoggerFactory.getLogger("p6spy");
       p6spyLogger.setLevel(level);
 
-      ch.qos.logback.classic.Logger hibernateSqlLogger = (ch.qos.logback.classic.Logger) org.slf4j.LoggerFactory.getLogger("org.hibernate.SQL");
-      hibernateSqlLogger.setLevel(level);
+//      ch.qos.logback.classic.Logger hibernateSqlLogger = (ch.qos.logback.classic.Logger) org.slf4j.LoggerFactory.getLogger("org.hibernate.SQL");
+//      hibernateSqlLogger.setLevel(level);
    }
    @Override
    public void afterChunkError(ChunkContext context) {

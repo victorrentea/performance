@@ -52,7 +52,7 @@ public class BatchApp {
    @Bean
    public Step basicChunkStep() {
       return stepBuilder.get("basicChunkStep")
-          .<PersonXml, Person>chunk(5)
+          .<PersonXml, Person>chunk(20)
           .reader(xmlReader(null))
           .processor(personProcessor())
           .writer(jpaWriter(null))
