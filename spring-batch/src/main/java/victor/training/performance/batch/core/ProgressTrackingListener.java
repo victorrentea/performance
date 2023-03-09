@@ -12,7 +12,7 @@ import static java.time.LocalDateTime.now;
 import static java.time.temporal.ChronoUnit.SECONDS;
 
 @Slf4j
-public class ProgressTrackingChunkListener implements ChunkListener {
+public class ProgressTrackingListener implements ChunkListener {
     @Value("#{stepExecutionContext['TOTAL_ITEM_COUNT']}")
     private int totalItems;
     private int lastPercent = -1;
@@ -34,8 +34,10 @@ public class ProgressTrackingChunkListener implements ChunkListener {
         if (passedEnoughTime && newPercent != lastPercent || lastChunk) {
             lastDisplayTime = now();
             lastPercent = newPercent;
-            int speed = (int) (totalRead / startTime.until(now(), SECONDS));
-            log.info("Progress: {}% done. Speed = {} items/s", newPercent, speed);
+            long elapsedSeconds = startTime.until(now(), SECONDS);
+            int speed = (int) (totalRead / elapsedSeconds);
+            int estimatedTotalTime = (int) (1.0 * totalItems / totalRead * elapsedSeconds);
+            log.info("Progress: {}% done. Speed = {} items/s. Est. total time = {} s", newPercent, speed, estimatedTotalTime);
         }
     }
 

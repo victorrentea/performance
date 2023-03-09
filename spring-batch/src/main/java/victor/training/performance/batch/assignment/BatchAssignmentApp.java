@@ -40,7 +40,7 @@ public class BatchAssignmentApp {
 
     public Step basicChunkStep() {
         // TODO optimize: tune chunk size
-        return stepBuilderFactory.get("basicChunkStep")
+        return stepBuilderFactory.get("importPersonsInChunks")
                 .<QuotationRecord, Quotation>chunk(5)
                 .reader(xmlReader())
                 .processor(processor())

@@ -7,6 +7,8 @@ import org.springframework.batch.core.launch.JobLauncher;
 import org.springframework.batch.core.repository.JobRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import victor.training.performance.batch.core.domain.CityRepo;
+import victor.training.performance.batch.core.domain.PersonRepo;
 
 import java.io.File;
 import java.util.Map;

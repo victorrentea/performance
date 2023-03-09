@@ -29,7 +29,8 @@ public class CountingTotalItemsStepListener implements StepExecutionListener {
       log.debug("Job exec context: " + stepExecution.getJobExecution().getExecutionContext());
 
       int count = countTagsInFile(new File(filePath), "/personList/person");
-      log.info("Found {} items", count);
+      log.info("Counted {} items in the file", count);
+      log.info(" -- Starting data MAIN import -- ");
       stepExecution.getExecutionContext().put("TOTAL_ITEM_COUNT", count);
    }
 

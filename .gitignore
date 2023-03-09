@@ -41,3 +41,4 @@ data-output*.txt
 /lib
 
 capture/
+/spring-batch/data.xml

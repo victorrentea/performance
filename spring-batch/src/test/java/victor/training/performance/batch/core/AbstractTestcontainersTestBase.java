@@ -29,7 +29,7 @@ public class AbstractTestcontainersTestBase {
        .withNetwork(network);
 
    @Container
-   static public ToxiproxyContainer toxiproxy = new ToxiproxyContainer("shopify/toxiproxy:2.1.0")
+   static public ToxiproxyContainer toxiproxy = new ToxiproxyContainer("ghcr.io/shopify/toxiproxy:2.5.0")
 //   static public ToxiproxyContainer toxiproxy = new ToxiproxyContainer( // for Mac M1 chips
 //           DockerImageName.parse("ghcr.io/shopify/toxiproxy:2.5.0-armv6")
 //               .asCompatibleSubstituteFor("shopify/toxiproxy"))

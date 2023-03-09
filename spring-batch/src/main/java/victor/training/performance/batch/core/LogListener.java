@@ -10,7 +10,7 @@ import org.springframework.batch.core.scope.context.ChunkContext;
  * After that, we disable it to minimize the impact of logging on measurements;
  */
 @Slf4j
-public class LogFirstChunkListener implements ChunkListener {
+public class LogListener implements ChunkListener {
    private int chunksLeft = 2;
    @Override
    public void beforeChunk(ChunkContext context) {

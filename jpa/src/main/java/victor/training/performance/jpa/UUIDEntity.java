@@ -19,7 +19,6 @@ public class UUIDEntity {
 //   @GeneratedValue(generator = "uuid") // without this, h
 //   private String id;
 
-
    private String name;
 }
 

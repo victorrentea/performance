@@ -8,12 +8,7 @@ import victor.training.performance.jpa.CaptureSystemOutput.OutputCapture;
 import javax.persistence.EntityManager;
 
 @SpringBootTest
-//@Transactional
-//@Rollback(false)
-//@DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_EACH_TEST_METHOD)
 public class GeneratedUUID {
-    @Autowired
-    private EntityManager em;
     @Autowired
     private UUIDEntityRepo repo;
 

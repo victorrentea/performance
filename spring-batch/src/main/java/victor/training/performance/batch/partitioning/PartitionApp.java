@@ -23,7 +23,7 @@ import org.springframework.boot.autoconfigure.domain.EntityScan;
 import org.springframework.context.annotation.Bean;
 import org.springframework.core.io.FileSystemResource;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
-import victor.training.performance.batch.core.MyJobListener;
+import victor.training.performance.batch.core.StartListener;
 import victor.training.performance.batch.core.PersonXml;
 import victor.training.performance.batch.core.domain.Person;
 
@@ -128,7 +128,7 @@ public class PartitionApp  {
           .listener(persistData())
           .incrementer(new RunIdIncrementer())
           .start(partitionedStep())
-          .listener(new MyJobListener())
+          .listener(new StartListener())
           .build();
 
    }
