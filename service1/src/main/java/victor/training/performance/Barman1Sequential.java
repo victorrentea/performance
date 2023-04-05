@@ -13,11 +13,15 @@ import victor.training.performance.drinks.Beer;
 import victor.training.performance.drinks.DillyDilly;
 import victor.training.performance.drinks.Vodka;
 
+import javax.servlet.AsyncContext;
+import javax.servlet.http.HttpServletRequest;
+import java.io.IOException;
+import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
-import java.util.concurrent.Future;
 import java.util.concurrent.ThreadPoolExecutor;
 
 import static java.lang.System.currentTimeMillis;
+import static java.util.concurrent.CompletableFuture.supplyAsync;
 
 @RestController
 @Slf4j
@@ -30,19 +34,33 @@ public class Barman1Sequential {
 
   //  private static final ExecutorService pool = Executors.newFixedThreadPool(25);
   @GetMapping({"/drink/sequential","/drink"})
-  public DillyDilly drink() throws ExecutionException, InterruptedException {
+  public CompletableFuture<DillyDilly> drink() throws ExecutionException, InterruptedException {
     long t0 = currentTimeMillis();
 
-    Future<Beer> futureBeer = pool.submit(() -> pourBeer());
-    Future<Vodka> futureVodka = pool.submit(() -> pourVodka());
+    CompletableFuture<Beer> beerPromise = supplyAsync(() -> pourBeer());
+    CompletableFuture<Vodka> vodkaPromise = supplyAsync(() -> pourVodka());
 
-    Beer beer = futureBeer.get(); // aici sta threadul http 1 secunda
-    Vodka vodka = futureVodka.get(); // aici sta threadul http 0 sec
+    CompletableFuture<DillyDilly> dillyPromise = beerPromise.thenCombine(vodkaPromise, (b, v) -> new DillyDilly(b, v));
+    // best practice, orice ...Async method tre sa ia param un thread pool manangeuit de Spring
 
-    long t1 = currentTimeMillis();
-    log.info("HTTP thread blocked for millis: " + (t1 - t0));
-    return new DillyDilly(beer,vodka);
+    log.info("HTTP thread blocked for millis: " + (currentTimeMillis() - t0));
+    return dillyPromise;
   }
+
+
+  public void springuInSpate(HttpServletRequest request) throws ExecutionException, InterruptedException {
+    AsyncContext asyncContext = request.startAsync();
+    CompletableFuture<DillyDilly> dillyPromise = drink();
+    dillyPromise.thenAccept(dilly -> {
+      try {
+        asyncContext.getResponse().getWriter().write(dilly.toString());
+      } catch (IOException e) {
+        throw new RuntimeException(e);
+      }
+      asyncContext.complete();
+    });
+  }
+
   // new Thread()
   // Executor
   // CompletableFuture
