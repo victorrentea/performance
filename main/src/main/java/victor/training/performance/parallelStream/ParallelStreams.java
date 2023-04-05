@@ -18,7 +18,7 @@ public class ParallelStreams {
 
       List<Integer> list = IntStream.range(1,100).boxed().collect(toList());
 
-      List<Integer> result = list.stream()
+      List<Integer> result = list.parallelStream()
           .filter(i -> {
              log.debug("Filter " + i);
              return i % 2 == 0;
@@ -26,6 +26,7 @@ public class ParallelStreams {
           .map(i -> {
              log.debug("Map " + i);
              sleepMillis(100); // do some 'paralellizable' I/O work (DB, REST, SOAP)
+            // ai blocat timp de 100ms 1 / 9 (nCPU-1) threaduri din commonPool global pe JVM
              return i * 2;
           })
           .collect(toList());
