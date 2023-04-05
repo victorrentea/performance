@@ -9,6 +9,11 @@ import victor.training.performance.drinks.Beer;
 import victor.training.performance.drinks.DillyDilly;
 import victor.training.performance.drinks.Vodka;
 
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
+
 import static java.lang.System.currentTimeMillis;
 
 @RestController
@@ -18,13 +23,33 @@ public class Barman1Sequential {
   private RestTemplate rest;
 
   @GetMapping({"/drink/sequential","/drink"})
-  public DillyDilly drink() {
+  public DillyDilly drink() throws ExecutionException, InterruptedException {
     long t0 = currentTimeMillis();
-    //  🛑 independent GET executed sequentially ~> parallelize
-    Beer beer = rest.getForObject("http://localhost:9999/beer", Beer.class);
-    Vodka vodka = rest.getForObject("http://localhost:9999/vodka", Vodka.class);
+
+    ExecutorService pool = Executors.newFixedThreadPool(2);
+    Future<Beer> futureBeer = pool.submit(() -> pourBeer());
+    Future<Vodka> futureVodka = pool.submit(() -> pourVodka());
+
+    Beer beer = futureBeer.get();
+    Vodka vodka = futureVodka.get();
+
     long t1 = currentTimeMillis();
     log.debug("HTTP thread blocked for millis: " + (t1 - t0));
     return new DillyDilly(beer,vodka);
+  }
+  // new Thread()
+  // CompletableFuture
+  // Executor
+  // @Async
+  // JoinFork
+
+  private Vodka pourVodka() {
+    log.info("Torn vodka");
+    return rest.getForObject("http://localhost:9999/vodka", Vodka.class);
+  }
+
+  private Beer pourBeer() {
+    log.info("Torn bere");
+    return rest.getForObject("http://localhost:9999/beer", Beer.class);
   }
 }
