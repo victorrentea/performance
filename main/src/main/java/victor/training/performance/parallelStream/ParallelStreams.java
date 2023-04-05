@@ -12,13 +12,13 @@ import static victor.training.performance.util.PerformanceUtil.sleepMillis;
 @Slf4j
 public class ParallelStreams {
    public static void main(String[] args) {
-//      Enemy.parallelRequest(); // demonstrates starvation of the shared commonPool
+      Enemy.parallelRequest(); // demonstrates starvation of the shared commonPool
 
       long t0 = System.currentTimeMillis();
 
       List<Integer> list = IntStream.range(1,100).boxed().collect(toList());
 
-      List<Integer> result = list.parallelStream()
+      List<Integer> result = list.parallelStream() // se poarta single thread, ca altu a fost mai BMW ca tine
           .filter(i -> {
              log.debug("Filter " + i);
              return i % 2 == 0;
