@@ -2,6 +2,8 @@ package victor.training.performance.concurrency;
 
 import lombok.extern.slf4j.Slf4j;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.*;
 import java.util.stream.IntStream;
@@ -15,6 +17,9 @@ public class RaceBugsIntro {
    private static int id = 0;
    private static final Object lock = new Object();
 
+   private static final List<Integer> ints =
+           Collections.synchronizedList(new ArrayList<>());
+
    // 2 parallel threads run this:
    private static void doCountAlive(List<Integer> idsChunk) {
       for (Integer i : idsChunk) { // .size() = 10k
@@ -23,6 +28,7 @@ public class RaceBugsIntro {
             // cu conditia ca toata lumea sa se sync pe
             // aceeasi instanta ! eg lock
             id++;
+            ints.add(i);
          }
       }
    }
