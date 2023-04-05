@@ -22,11 +22,11 @@ public class Barman1Sequential {
   @Autowired
   private RestTemplate rest;
 
+  private static final ExecutorService pool = Executors.newFixedThreadPool(2);
   @GetMapping({"/drink/sequential","/drink"})
   public DillyDilly drink() throws ExecutionException, InterruptedException {
     long t0 = currentTimeMillis();
 
-    ExecutorService pool = Executors.newFixedThreadPool(2);
     Future<Beer> futureBeer = pool.submit(() -> pourBeer());
     Future<Vodka> futureVodka = pool.submit(() -> pourVodka());
 
