@@ -2,6 +2,10 @@ package victor.training.performance;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.client.RestTemplate;
@@ -10,8 +14,6 @@ import victor.training.performance.drinks.DillyDilly;
 import victor.training.performance.drinks.Vodka;
 
 import java.util.concurrent.ExecutionException;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 
 import static java.lang.System.currentTimeMillis;
@@ -22,7 +24,10 @@ public class Barman1Sequential {
   @Autowired
   private RestTemplate rest;
 
-  private static final ExecutorService pool = Executors.newFixedThreadPool(2);
+  @Autowired
+  private ThreadPoolTaskExecutor pool ;
+
+  //  private static final ExecutorService pool = Executors.newFixedThreadPool(25);
   @GetMapping({"/drink/sequential","/drink"})
   public DillyDilly drink() throws ExecutionException, InterruptedException {
     long t0 = currentTimeMillis();
@@ -51,5 +56,22 @@ public class Barman1Sequential {
   private Beer pourBeer() {
     log.info("Torn bere");
     return rest.getForObject("http://localhost:9999/beer", Beer.class);
+  }
+}
+
+
+@Configuration
+class MyConfig {
+  @Bean
+  public ThreadPoolTaskExecutor pool(@Value("${pool.size}") int barPoolSize) {
+    // spring's thread pool
+    ThreadPoolTaskExecutor pool = new ThreadPoolTaskExecutor();
+    pool.setCorePoolSize(barPoolSize);
+    pool.setMaxPoolSize(barPoolSize);
+    pool.setQueueCapacity(100);
+    pool.setWaitForTasksToCompleteOnShutdown(true);
+    pool.setAwaitTerminationSeconds(10);
+    pool.initialize();
+    return pool;
   }
 }
