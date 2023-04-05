@@ -15,6 +15,7 @@ import victor.training.performance.drinks.Vodka;
 
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
+import java.util.concurrent.ThreadPoolExecutor;
 
 import static java.lang.System.currentTimeMillis;
 
@@ -35,16 +36,16 @@ public class Barman1Sequential {
     Future<Beer> futureBeer = pool.submit(() -> pourBeer());
     Future<Vodka> futureVodka = pool.submit(() -> pourVodka());
 
-    Beer beer = futureBeer.get();
-    Vodka vodka = futureVodka.get();
+    Beer beer = futureBeer.get(); // aici sta threadul http 1 secunda
+    Vodka vodka = futureVodka.get(); // aici sta threadul http 0 sec
 
     long t1 = currentTimeMillis();
-    log.debug("HTTP thread blocked for millis: " + (t1 - t0));
+    log.info("HTTP thread blocked for millis: " + (t1 - t0));
     return new DillyDilly(beer,vodka);
   }
   // new Thread()
-  // CompletableFuture
   // Executor
+  // CompletableFuture
   // @Async
   // JoinFork
 
@@ -71,6 +72,7 @@ class MyConfig {
     pool.setQueueCapacity(100);
     pool.setWaitForTasksToCompleteOnShutdown(true);
     pool.setAwaitTerminationSeconds(10);
+    pool.setRejectedExecutionHandler(new ThreadPoolExecutor.CallerRunsPolicy());
     pool.initialize();
     return pool;
   }
