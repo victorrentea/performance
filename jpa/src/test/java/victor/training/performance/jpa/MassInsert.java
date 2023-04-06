@@ -41,8 +41,15 @@ public class MassInsert {
             .map(DocumentType::new)
             .collect(toList());
 
-    docTypeIds = documentTypeRepo.saveAll(docTypes)
-            .stream().map(DocumentType::getId).collect(toList());
+//    docTypeIds = documentTypeRepo.saveAll(docTypes)
+//            .stream().map(DocumentType::getId)
+//            .collect(toList());
+
+    docTypeIds = docTypes.stream()
+            .map(documentTypeRepo::save)
+            .map(DocumentType::getId)
+        .collect(toList());
+
     TestTransaction.end(); // flush and close the Persistence Context
   }
 
