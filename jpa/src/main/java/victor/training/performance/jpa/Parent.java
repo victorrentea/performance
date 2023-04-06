@@ -20,9 +20,9 @@ public class Parent {
    private Integer age;
 
    @OneToMany(mappedBy = "parent",
-           cascade = CascadeType.PERSIST,
-           fetch = FetchType.EAGER) // hibernatule, adu mereu si copiii oriunde mergi
-    @BatchSize(size=10) // too much magic face cu IN
+           cascade = CascadeType.PERSIST
+          /*    fetch = FetchType.EAGER*/) // hibernatule, adu mereu si copiii oriunde mergi
+    @BatchSize(size=100) // too much magic face cu IN
    private Set<Child> children = new HashSet<>();
 
    @ManyToOne
