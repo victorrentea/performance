@@ -53,14 +53,21 @@ public class Leak10_Hibernate {
       return "Inserted 500MB of data. Now <a href=\"/leak10/export\">export</a> the file 'big-entity.txt' and check the logs";
    }
 
+   @Transactional(readOnly = true) // 500 MB
    @GetMapping("export")
-   @Transactional
    public void export() throws IOException {
       log.debug("Exporting....");
 
       try (Writer writer = new FileWriter("big-entity.txt")) {
-         repo.streamAll()
-             .map(BigEntity::getDescription)
+         repo.streamAll() // sute de milioane de randuri. daca incarci tot in mem OOME 20GB
+           .peek(entityManager::detach) // FIXED
+           .map(BigEntity::getDescription)
+
+           // daca ai de redus datele de exportat cu > 10% o faci in  WHERE din SQL
+                 // daca sunt volume mari de date
+           // daca ai in total 1000 randuri in DB, le ie pe toate , si dai cu .filter
+
+
              .forEach(Unchecked.consumer(writer::write));
       }
 
@@ -81,8 +88,8 @@ class BigEntity {
 }
 
 interface BigEntityRepo extends JpaRepository<BigEntity, Long> {
-   @Query("FROM BigEntity")
-   Stream<BigEntity> streamAll();
+   @Query("SELECT e FROM BigEntity e")
+   Stream<BigEntity> streamAll(); // ResultSet    while(rs.next()) { SQLException
 }
 
 @Service

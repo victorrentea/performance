@@ -22,6 +22,7 @@ public class Leak2_Inner {
 			   "<li><a href='/leak2/anon'>Lambdas vs anonymous class</a>" +
 			   "<li><a href='/leak2/map'>Map{{</a> ";
 	}
+
 	@GetMapping("inner")
 	public String puzzle() {
 		UserRightsCalculator calculator = new CachingMethodObject().createRightsCalculator();
@@ -36,6 +37,7 @@ public class Leak2_Inner {
 		PerformanceUtil.sleepMillis(20_000); // some long workflow
 		return supplier.get();
 	}
+
 	@GetMapping("map")
 	public Map<String, Integer> map() {
 		Map<String, Integer> map = new CachingMethodObject().mapInit();
@@ -53,15 +55,22 @@ public class Leak2_Inner {
 }
 
 
-class CachingMethodObject {
-	public class UserRightsCalculator { // an instance of this is kept on current thread
+class CachingMethodObject { // asta credeam ca se GC
+//	public  class UserRightsCalculator { // inner RAU
+//	public static class UserRightsCalculator { // nested
+
+	public static class UserRightsCalculator { // an instance of this is kept on current thread
 		public boolean hasRight(String task) {
-			System.out.println("Stupid Code");
+			System.out.println("Stupid Code " );
 			// what's the connection between this instance and the 'bigMac' field ?
 			// 🛑 careful with hidden links
 			return true;
 		}
 	}
+
+//	{
+//		System.out.println("asta?");
+//	}
 
 	private BigObject20MB bigMac = new BigObject20MB();
 
@@ -73,21 +82,29 @@ class CachingMethodObject {
 
 	//<editor-fold desc="Lambdas vs Anonymous implementation">
 	public Supplier<String> anonymousVsLambdas() {
-		return new Supplier<String>() {
-			@Override
-			public String get() {
-				return "Happy";
-			}
-		};
+		return () -> "Happy"; // nu tine ref la clasa din jur decat daca javac te vede
+		// ca folosesti efectiv ceva din jur
+
+//		return new Supplier<String>() { // anonymous class implem an interface
+//			@Override
+//			public String get() {
+//				return "Sad";
+//			}
+//		};
 	}
 	//</editor-fold>
 
 	//<editor-fold desc="Map init in Java <= 8">
 	public Map<String, Integer> mapInit() {
-		return new HashMap<>() {{ // obviously, pre-java 10
-			put("one", 1);
-			put("two", 2);
-		}};
+
+		 // rau, facea lumea de LENE, ca sanu repete map.put ci doar put < dobitoci
+//		return new HashMap<>() { // subclasa tine ref la instanta din jur
+//			{ // ~ constructor
+//				// obviously, pre-java 10
+//			put("one", 1);
+//			put("two", 2);
+//		}};
+		return Map.of("one", 1, "two", 2);
 	}
 	//</editor-fold>
 }
