@@ -33,6 +33,9 @@ public class Leak7_Cache {
 @Slf4j
 class Stuff {
    @Cacheable("missed-cache") // = a proxy intercepts the method call and returns the cached value for that parameter
+   // daca doar pui cacheable datele se tin intr-un hashMap in memorie,
+   // fara limite de memorie sau expirare
+
    public BigObject20MB returnCachedDataForDay(LocalDate date) {
       log.debug("Fetch data for date: {}", date.format(DateTimeFormatter.ISO_DATE));
       return new BigObject20MB();
