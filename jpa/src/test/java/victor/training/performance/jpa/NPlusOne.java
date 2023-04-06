@@ -67,7 +67,8 @@ public class NPlusOne {
         public ParentSearchResult(Parent parent) {
             id = parent.getId();
             name = parent.getName();
-            childrenNames = parent.getChildren().stream().map(Child::getName).sorted().collect(joining(","));
+            childrenNames = parent.getChildren().stream()
+                    .map(Child::getName).sorted().collect(joining(","));
         }
     }
 
@@ -85,7 +86,7 @@ public class NPlusOne {
     // ======================= STAGE 1: SELECT full @Entity =============================
     @Test
     public void selectFullEntity() {
-        List<Parent> parents = repo.findAll();
+        List<Parent> parents = repo.findAll(); // pana iti da lista, face N+1 query
 
         log.info("Loaded {} parents: {}", parents.size(), parents);
 
@@ -96,7 +97,9 @@ public class NPlusOne {
 
     private List<ParentSearchResult> toSearchResults(List<Parent> parents) { // eg, in a Mapper
         log.debug("Converting-->Dto START");
-        List<ParentSearchResult> results = parents.stream().map(ParentSearchResult::new).collect(toList());
+        List<ParentSearchResult> results = parents.stream()
+                .map(ParentSearchResult::new)
+                .collect(toList());
         log.debug("Converting-->Dto DONE");
         return results;
     }

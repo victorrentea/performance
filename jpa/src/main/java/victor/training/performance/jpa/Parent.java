@@ -2,6 +2,7 @@ package victor.training.performance.jpa;
 
 import lombok.Getter;
 import lombok.Setter;
+import org.hibernate.annotations.BatchSize;
 
 import javax.persistence.*;
 import java.util.HashSet;
@@ -18,8 +19,10 @@ public class Parent {
    private String name;
    private Integer age;
 
-   @OneToMany(mappedBy = "parent", cascade = CascadeType.PERSIST)
-   // @BatchSize(size=10) // too much magic
+   @OneToMany(mappedBy = "parent",
+           cascade = CascadeType.PERSIST,
+           fetch = FetchType.EAGER) // hibernatule, adu mereu si copiii oriunde mergi
+    @BatchSize(size=10) // too much magic face cu IN
    private Set<Child> children = new HashSet<>();
 
    @ManyToOne
