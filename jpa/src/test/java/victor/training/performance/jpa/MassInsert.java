@@ -39,8 +39,13 @@ public class MassInsert {
 
   @BeforeEach
   final void before() {
-    List<DocumentType> docTypes = IntStream.range(1, 20).mapToObj(i -> "DocType" + i).map(DocumentType::new).collect(toList());
-    docTypeIds = documentTypeRepo.saveAll(docTypes).stream().map(DocumentType::getId).collect(toList());
+    List<DocumentType> docTypes = IntStream.range(1, 20)
+            .mapToObj(i -> "DocType" + i)
+            .map(DocumentType::new)
+            .collect(toList());
+
+    docTypeIds = documentTypeRepo.saveAll(docTypes)
+            .stream().map(DocumentType::getId).collect(toList());
     TestTransaction.end(); // flush and close the Persistence Context
   }
 
