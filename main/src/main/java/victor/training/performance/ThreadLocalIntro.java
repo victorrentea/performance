@@ -22,13 +22,13 @@ public class ThreadLocalIntro {
 
     private final AController controller = new AController(new AService(new ARepo()));
 
-    public static String staticCurrentUser;
+    public static ThreadLocal<String> staticCurrentUser = new ThreadLocal<>();
     // TODO ThreadLocal<String>
 
     // inside Spring, JavaEE,..
     public void httpRequest(String currentUser, String data) {
         log.info("Current user is " + currentUser);
-        staticCurrentUser = currentUser;
+        staticCurrentUser.set(currentUser);
         // TODO pass the current user down to the repo WITHOUT polluting all signatures
         controller.create(data);
     }
@@ -64,7 +64,7 @@ class AService {
 class ARepo {
     public void save(String data) {
 //        SecurityContextHolder.getContext().getAuthentication().getName();
-        String currentUser = ThreadLocalIntro.staticCurrentUser;
+        String currentUser = ThreadLocalIntro.staticCurrentUser.get();
         log.info("INSERT INTO A(data, created_by) VALUES ({}, {})", data, currentUser);
     }
 }
