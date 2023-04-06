@@ -23,7 +23,7 @@ public class RaceBugsIntro {
    // 2 parallel threads run this:
    private static int doCountAlive(List<Integer> idsChunk) {
       int count = 0;
-      for (Integer i : idsChunk) { // .size() = 10k
+         for (Integer i : idsChunk) { // .size() = 10k
 //         synchronized (lock) {
 //            // in acest bloc nu poate intra decat 1 thread odata,
 //            // cu conditia ca toata lumea sa se sync pe
