@@ -20,6 +20,7 @@ public class UberEntity {
     private String ssn;
     private String passportNumber;
 
+    // Modelare de persistence model facuta un un idealist OOPist
     @ManyToOne
     private Country originCountry;
     @ManyToOne

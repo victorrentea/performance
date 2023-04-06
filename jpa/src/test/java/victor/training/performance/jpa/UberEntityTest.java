@@ -2,6 +2,7 @@ package victor.training.performance.jpa;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.RequiredArgsConstructor;
 import lombok.Value;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.BeforeEach;
@@ -77,10 +78,12 @@ public class UberEntityTest {
     @Test
     public void jpql() {
         log.info("SELECTING a 'very OOP' @Entity with JPQL ...");
-         List<UberEntity> list = uberRepo.findAll();
-//        List<UberEntity> list = uberRepo.findAllWithQuery();// EQUIVALENT
+//         List<UberEntity> list = uberRepo.findAll();
+        List<UberEntity> list = uberRepo.findAllWithQuery();// EQUIVALENT
 //        List<UberEntity> list = uberRepo.findByName("::uberName::");
         log.info("Loaded using JPQL (see how many queries are above):\n" + list);
+        // am vazut 7 SELECTURI!! WTF
+        // @ManyToOne pe @Entity aduse cu JPQL => N SELECT-uri, cate 1 pt fiecare @ManyToOne
     }
 
     @Test
@@ -93,7 +96,7 @@ public class UberEntityTest {
         if (uber.getStatus() == Status.DRAFT) {
             throw new IllegalArgumentException("Not submitted yet");
         }
-        // more logic
+        // cand faci findById, Hib JOINEAZA TOATE @ManyToOne
     }
 
     @Test
@@ -113,23 +116,27 @@ public class UberEntityTest {
     }
 
     private List<UberSearchResultDto> classicSearch(UberSearchCriteria criteria) {
-        String jpql = "SELECT u FROM UberEntity u WHERE 1 = 1 ";
+        // ANTI PATTERN: sa aduci la search/dashboard @Entity intregi
+        // ==> aduci proiectii!!
         // alternative implementation: CriteriaAPI, Criteria+Metamodel, QueryDSL, Spring Specifications
+//        String jpql = "SELECT u FROM UberEntity u WHERE 1 = 1 ";
+        String jpql = "SELECT new victor.training.performance.jpa.UberSearchResultDto(" +
+                      "u.id, u.name, u.originCountry.name) FROM UberEntity u WHERE 1 = 1 ";
         Map<String, Object> params = new HashMap<>();
         if (criteria.name != null) {
             jpql += " AND u.name = :name ";
             params.put("name", criteria.name);
         }
-        var query = em.createQuery(jpql, UberEntity.class);
+        var query = em.createQuery(jpql, UberSearchResultDto.class);
         for (String key : params.keySet()) {
             query.setParameter(key, params.get(key));
         }
-        var entities = query.getResultList();
+        List<UberSearchResultDto> dtos = query.getResultList();
 
         // OR: Spring Data Repo @Query with a fixed JPQL
         //entities = uberRepo.searchFixedJqpl(criteria.name);
 
-        return entities.stream().map(UberSearchResultDto::new).collect(toList());
+        return dtos;
     }
 
     @Data
@@ -138,17 +145,21 @@ public class UberEntityTest {
         public Status status;
         // etc
     }
-    @Value
-    static class UberSearchResultDto { // sent as JSON
-        Long id;
-        String name;
-        String originCountry;
 
-        public UberSearchResultDto(UberEntity entity) {
-            id = entity.getId();
-            name = entity.getName();
-            originCountry = entity.getOriginCountry().getName();
-        }
-    }
 }
 
+
+@Value // e mai bun ca @Data ca e imutabil
+    @RequiredArgsConstructor
+class UberSearchResultDto { // sent as JSON
+    Long id;
+    String name;
+    String originCountry;
+
+
+    public UberSearchResultDto(UberEntity entity) {
+        id = entity.getId();
+        name = entity.getName();
+        originCountry = entity.getOriginCountry().getName();
+    }
+}
