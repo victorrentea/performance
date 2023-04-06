@@ -1,11 +1,14 @@
 package victor.training.performance;
 
+import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
+import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.client.RestTemplate;
@@ -21,6 +24,7 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ThreadPoolExecutor;
 
 import static java.lang.System.currentTimeMillis;
+import static java.util.concurrent.CompletableFuture.completedFuture;
 import static java.util.concurrent.CompletableFuture.supplyAsync;
 
 @RestController
@@ -30,15 +34,16 @@ public class Barman1Sequential {
   private RestTemplate rest;
 
   @Autowired
-  private ThreadPoolTaskExecutor pool ;
+  private ThreadPoolTaskExecutor pool;
 
   //  private static final ExecutorService pool = Executors.newFixedThreadPool(25);
-  @GetMapping({"/drink/sequential","/drink"})
+  @GetMapping({"/drink/sequential", "/drink"})
   public CompletableFuture<DillyDilly> drink() throws ExecutionException, InterruptedException {
     long t0 = currentTimeMillis();
 
-    CompletableFuture<Beer> beerPromise = supplyAsync(() -> pourBeer());
-    CompletableFuture<Vodka> vodkaPromise = supplyAsync(() -> pourVodka());
+    CompletableFuture<Beer> beerPromise = supplyAsync(() -> altServiciu.pourBeer(), pool)
+            .exceptionally(e -> new Beer().setType("draft"));
+    CompletableFuture<Vodka> vodkaPromise = altServiciu.pourVodka();
 
     CompletableFuture<DillyDilly> dillyPromise = beerPromise.thenCombine(vodkaPromise, (b, v) -> new DillyDilly(b, v));
     // best practice, orice ...Async method tre sa ia param un thread pool manangeuit de Spring
@@ -46,7 +51,6 @@ public class Barman1Sequential {
     log.info("HTTP thread blocked for millis: " + (currentTimeMillis() - t0));
     return dillyPromise;
   }
-
 
   public void springuInSpate(HttpServletRequest request) throws ExecutionException, InterruptedException {
     AsyncContext asyncContext = request.startAsync();
@@ -61,18 +65,22 @@ public class Barman1Sequential {
     });
   }
 
-  // new Thread()
-  // Executor
-  // CompletableFuture
-  // @Async
-  // JoinFork
+  @Autowired
+  private AltServiciu altServiciu;
+}
+@Service
+@Slf4j
+class AltServiciu {
+  @Autowired
+  private RestTemplate rest;
 
-  private Vodka pourVodka() {
+  @Async("pool")
+  public CompletableFuture<Vodka> pourVodka() {
     log.info("Torn vodka");
-    return rest.getForObject("http://localhost:9999/vodka", Vodka.class);
+    return completedFuture(rest.getForObject("http://localhost:9999/vodka", Vodka.class));
   }
 
-  private Beer pourBeer() {
+  public Beer pourBeer() {
     log.info("Torn bere");
     return rest.getForObject("http://localhost:9999/beer", Beer.class);
   }

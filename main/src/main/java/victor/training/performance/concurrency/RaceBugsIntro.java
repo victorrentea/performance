@@ -21,16 +21,19 @@ public class RaceBugsIntro {
            Collections.synchronizedList(new ArrayList<>());
 
    // 2 parallel threads run this:
-   private static void doCountAlive(List<Integer> idsChunk) {
+   private static int doCountAlive(List<Integer> idsChunk) {
+      int count = 0;
       for (Integer i : idsChunk) { // .size() = 10k
-         synchronized (lock) {
-            // in acest bloc nu poate intra decat 1 thread odata,
-            // cu conditia ca toata lumea sa se sync pe
-            // aceeasi instanta ! eg lock
-            id++;
-            ints.add(i);
-         }
+//         synchronized (lock) {
+//            // in acest bloc nu poate intra decat 1 thread odata,
+//            // cu conditia ca toata lumea sa se sync pe
+//            // aceeasi instanta ! eg lock
+//            id++;
+//            ints.add(i);
+//         }
+         count++;
       }
+      return count;
    }
 
    public static void main(String[] args) throws ExecutionException, InterruptedException {
@@ -42,13 +45,15 @@ public class RaceBugsIntro {
 
       // submit the 2 tasks
       ExecutorService pool = Executors.newCachedThreadPool();
-      Future<?> future1 = pool.submit(() -> doCountAlive(firstHalf));
-      Future<?> future2 = pool.submit(() -> doCountAlive(secondHalf));
+      Future<Integer> future1 = pool.submit(() -> doCountAlive(firstHalf));
+      Future<Integer> future2 = pool.submit(() -> doCountAlive(secondHalf));
       log.debug("Tasks launched...");
 
       // wait for the tasks to complete
-      future1.get();
-      future2.get();
+      Integer suma1 = future1.get();
+      Integer suma2 = future2.get();
+
+      id = suma1 + suma2;
 
       log.debug("Counted: " + id);
    }
