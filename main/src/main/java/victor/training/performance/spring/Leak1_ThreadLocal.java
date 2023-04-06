@@ -16,9 +16,20 @@ public class Leak1_ThreadLocal {
 
       threadLocalMetadata.set(bigObject);  // 🛑 remember to .remove() any ThreadLocal you have
 
-      businessMethod1();
+      try {
+         businessMethod1();
+      } finally {
+         // daca vreodata te mananca sa te bagi la dark magic (ThreadLocal),
+         // nu uita sa faci .remove() dupa ce ai terminat in finally{
+         threadLocalMetadata.remove();
+      }
+
 
       return "Magic can do harm.";
+      // threadul care a executat metoda asta (al tomcatului) se intoarce in poolul de max 200 th
+      // cu 20 MB legate de picior
+
+      // ThreadLocal + ThreadPool = LEAK daca nu cureti manual thread localu
    }
 
    private void businessMethod1() { // no username in the signature
