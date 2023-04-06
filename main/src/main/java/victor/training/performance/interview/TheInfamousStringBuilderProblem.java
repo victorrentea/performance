@@ -4,6 +4,7 @@ import org.apache.commons.io.FileUtils;
 import victor.training.performance.util.PerformanceUtil;
 
 import java.io.File;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.util.List;
@@ -23,11 +24,18 @@ public class TheInfamousStringBuilderProblem {
       System.out.println("Start writing contents!");
       long t0 = System.currentTimeMillis();
 
-      String s = "";
-      for (String element : elements) {
-         s += element;
+      // StringBuilder este pentru String
+      // ce e ArrayList pentru []
+//      StringBuilder s = new StringBuilder();
+//      for (String element : elements) {
+//         s.append(element);
+//      }
+//      FileUtils.writeStringToFile(new File("out.txt"), s.toString(), UTF_8);
+      try (FileWriter fw = new FileWriter("out.txt")) {
+         for (String element : elements) { // steamlinezi datele
+               fw.write(element);
+         }
       }
-      FileUtils.writeStringToFile(new File("out.txt"), s, UTF_8);
 
       System.out.println("Done. Took " + (System.currentTimeMillis() - t0));
       PerformanceUtil.waitForEnter();
