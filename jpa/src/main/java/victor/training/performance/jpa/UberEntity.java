@@ -21,8 +21,9 @@ public class UberEntity {
     private String passportNumber;
 
     // Modelare de persistence model facuta un un idealist OOPist
-    @ManyToOne
-    private Country originCountry;
+//    @ManyToOne
+//    private Country originCountry; // OPP
+    private Long originCountryId; // pastreaza FK-ul !!
     @ManyToOne
     private Country nationality;
     @ManyToOne

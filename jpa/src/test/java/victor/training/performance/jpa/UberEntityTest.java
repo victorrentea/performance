@@ -62,7 +62,7 @@ public class UberEntityTest {
         UberEntity uber = new UberEntity()
                 .setName("::uberName::")
                 .setStatus(Status.SUBMITTED)
-                .setOriginCountry(belgium)
+                .setOriginCountryId(belgium.getId())
                 .setFiscalCountry(romania)
                 .setInvoicingCountry(france)
                 .setNationality(serbia)
@@ -121,7 +121,10 @@ public class UberEntityTest {
         // alternative implementation: CriteriaAPI, Criteria+Metamodel, QueryDSL, Spring Specifications
 //        String jpql = "SELECT u FROM UberEntity u WHERE 1 = 1 ";
         String jpql = "SELECT new victor.training.performance.jpa.UberSearchResultDto(" +
-                      "u.id, u.name, u.originCountry.name) FROM UberEntity u WHERE 1 = 1 ";
+                      "u.id, u.name, oc.name) " +
+                      "FROM UberEntity u " +
+                      " JOIN Country oc ON oc.id = u.originCountryId " +
+                      "WHERE 1 = 1 ";
         Map<String, Object> params = new HashMap<>();
         if (criteria.name != null) {
             jpql += " AND u.name = :name ";
@@ -155,11 +158,4 @@ class UberSearchResultDto { // sent as JSON
     Long id;
     String name;
     String originCountry;
-
-
-    public UberSearchResultDto(UberEntity entity) {
-        id = entity.getId();
-        name = entity.getName();
-        originCountry = entity.getOriginCountry().getName();
-    }
 }
