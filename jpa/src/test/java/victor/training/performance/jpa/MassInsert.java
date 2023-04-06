@@ -14,10 +14,7 @@ import org.springframework.test.annotation.Rollback;
 import org.springframework.test.context.transaction.TestTransaction;
 import org.springframework.transaction.annotation.Transactional;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
-import javax.persistence.ManyToOne;
+import javax.persistence.*;
 import java.util.List;
 import java.util.stream.IntStream;
 
@@ -90,9 +87,11 @@ interface DocumentRepo extends JpaRepository<Document, Long> {
 @Entity
 @Getter
 @Setter
+@SequenceGenerator(name = "mySeqGen")
  class DocumentType {
   @Id
-  @GeneratedValue
+@GeneratedValue(generator = "mySeqGen")
+//  @GeneratedValue // by default iti aduce ID cu ID
   private Long id;
   private String label;
   public DocumentType() {}
