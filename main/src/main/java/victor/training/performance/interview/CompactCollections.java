@@ -2,44 +2,41 @@ package victor.training.performance.interview;
 
 import victor.training.performance.util.PerformanceUtil;
 
-import java.util.LinkedList;
 import java.util.Set;
 import java.util.stream.Collectors;
-import java.util.stream.IntStream;
 import java.util.stream.LongStream;
-
-import static java.util.stream.Collectors.toCollection;
 
 public class CompactCollections {
 
-   public static void main(String[] args) {
-      // Use-case: you have to keep a large number of IDs throughout a long memory-intensive batch
-      long heap0 = PerformanceUtil.getUsedHeapBytes();
+  public static void main(String[] args) {
+    long heap0 = PerformanceUtil.getUsedHeapBytes();
 
-      // HashSet =  MB because
-      Set<Long> x = LongStream.range(0, 1_000_000).boxed().collect(Collectors.toSet());
+    // === ORDER THE FOLLOWING ASCENDING BY EXPECTED SIZE
 
-      // ArrayList =  MB because
-//      List<Long> x = LongStream.range(0, 1_000_000).boxed().collect(toList());
+    //   MB because:
+    Set<Long> x = LongStream.range(0, 1_000_000).boxed().collect(Collectors.toSet());
 
-      // Long[] =  MB because
-//      Long[] x = LongStream.range(0, 1_000_000).boxed().toArray(Long[]::new);
+    //   MB because ArrayList:
+    // List<Long> x = LongStream.range(0, 1_000_000).boxed().collect(toList());
 
-      // long[] =  MB because
-//      long[] x = LongStream.range(0, 1_000_000).toArray();
+    //  MB because:
+    // Long[] x = LongStream.range(0, 1_000_000).boxed().toArray(Long[]::new);
 
-      // int[] =  MB because
-//      int[] x = IntStream.range(0, 1_000_000).toArray();
+    //  MB because:
+    // long[] x = LongStream.range(0, 1_000_000).toArray();
 
-      // LinkedList =  MB because
-//      LinkedList<Long> x = LongStream.range(0, 1_000_000).boxed().collect(toCollection(LinkedList::new));
+    //  MB because:
+    // int[] x = IntStream.range(0, 1_000_000).toArray();
 
-      long heap1 = PerformanceUtil.getUsedHeapBytes();
-      System.out.println("Object " + objectToString(x) + " occupies: " + (heap1-heap0)/1024/1024 + " MB");
-   }
+    //  MB because:
+    // LinkedList<Long> x = LongStream.range(0, 1_000_000).boxed().collect(toCollection(LinkedList::new));
 
-   private static String objectToString(Object x) {
-      return x.getClass().getName() + "@" + Integer.toHexString(System.identityHashCode(x));
-   }
+    long heap1 = PerformanceUtil.getUsedHeapBytes();
+    System.out.println((heap1 - heap0) / 1024 / 1024 + " MB for " + objectToString(x));
+  }
 
+  private static String objectToString(Object x) {
+    return x.getClass().getName() + "@" + Integer.toHexString(System.identityHashCode(x));
+  }
+  // Use-case: you have to keep a large number of IDs throughout a long memory-intensive batch
 }
