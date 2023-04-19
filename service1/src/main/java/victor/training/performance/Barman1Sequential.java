@@ -74,6 +74,9 @@ class OtherService {
   public void fireAndForget()  {
     log.info("Processing the file uploaded by user, sending emails to 10k email addresses, cleanup, etc.");
     Thread.sleep(3000);
+    if (true) {
+        throw new IllegalArgumentException("BUUM"); // never logged!! OMG
+    }
     log.info("DONE!");
   }
 }
