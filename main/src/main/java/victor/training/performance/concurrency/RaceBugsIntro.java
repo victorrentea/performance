@@ -2,8 +2,14 @@ package victor.training.performance.concurrency;
 
 import lombok.extern.slf4j.Slf4j;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
-import java.util.concurrent.*;
+import java.util.concurrent.Callable;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 import java.util.stream.IntStream;
 
 import static java.util.stream.Collectors.toList;
@@ -11,37 +17,52 @@ import static java.util.stream.Collectors.toList;
 
 @Slf4j
 public class RaceBugsIntro {
+  private static List<Integer> evenNumbers = new ArrayList<>();
 
-   private static Integer total = 0;
+  private static Integer total = 0;
 
-   // 2 parallel threads run this:
-   private static void countEven(List<Integer> numbers) {
-      for (Integer n : numbers) { // .size() = 10k
-         if (n % 2 == 0) {
-            total++;
-         }
+  // many parallel threads run this method:
+  private static void countEven(List<Integer> numbers) {
+    log.info("Start");
+    for (Integer n : numbers) {
+      if (n % 2 == 0) {
+        total++;
       }
-   }
+    }
+    log.info("end");
 
-   public static void main(String[] args) throws ExecutionException, InterruptedException {
-      List<Integer> ids = IntStream.range(0, 20_000).boxed().collect(toList());
+  }
 
-      // split the work in two
-      List<Integer> firstHalf = ids.subList(0, ids.size() / 2);
-      List<Integer> secondHalf = ids.subList(ids.size() / 2, ids.size());
+  public static void main(String[] args) throws ExecutionException, InterruptedException {
+    List<Integer> ids = IntStream.range(0, 10_000).boxed().collect(toList());
 
-      // submit the 2 tasks
-      ExecutorService pool = Executors.newCachedThreadPool();
-      Future<?> future1 = pool.submit(() -> countEven(firstHalf));
-      Future<?> future2 = pool.submit(() -> countEven(secondHalf));
-      log.debug("Tasks launched...");
+    List<List<Integer>> lists = splitList(ids, 2);
+    List<Callable<Void>> tasks = lists.stream().map(numbers -> (Callable<Void>) () -> {
+      countEven(numbers);
+      return null;
+    }).collect(toList());
 
-      // wait for the tasks to complete
-      future1.get();
-      future2.get();
+    ExecutorService pool = Executors.newCachedThreadPool();
+    pool.invokeAll(tasks);
+    pool.shutdown();
 
-      log.debug("Counted: " + total);
-   }
+    log.debug("Counted: " + total);
+//    log.debug("Counted: " + evenNumbers.size());
+  }
+
+  //<editor-fold desc="splitList utility function">
+  private static List<List<Integer>> splitList(List<Integer> all, int parts) {
+    Collections.shuffle(all);
+    List<List<Integer>> lists = new ArrayList<>();
+    for (int i = 0; i < parts; i++) {
+      lists.add(new ArrayList<>());
+    }
+    for (int i = 0; i < all.size(); i++) {
+      lists.get(i % parts).add(all.get(i));
+    }
+    return lists;
+  }
+  //</editor-fold>
 
 
 }
