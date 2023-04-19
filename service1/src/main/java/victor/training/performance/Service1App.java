@@ -1,21 +1,13 @@
 package victor.training.performance;
 
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.boot.autoconfigure.task.TaskExecutionAutoConfiguration;
-import org.springframework.boot.web.embedded.tomcat.TomcatProtocolHandlerCustomizer;
 import org.springframework.context.annotation.Bean;
-import org.springframework.core.task.AsyncTaskExecutor;
-import org.springframework.core.task.support.TaskExecutorAdapter;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.client.RestTemplate;
-
-import java.util.concurrent.Executors;
 
 
 @Slf4j
@@ -32,10 +24,10 @@ public class Service1App {
   }
 
   @Bean
-  public ThreadPoolTaskExecutor barPool() {
+  public ThreadPoolTaskExecutor barPool(@Value("${bar.pool.size}") int barPoolSize) {
     ThreadPoolTaskExecutor executor = new ThreadPoolTaskExecutor();
-    executor.setCorePoolSize(2);
-    executor.setMaxPoolSize(2);
+    executor.setCorePoolSize(barPoolSize);
+    executor.setMaxPoolSize(barPoolSize);
     executor.setQueueCapacity(100);
     executor.setThreadNamePrefix("bar-");
     executor.initialize();
