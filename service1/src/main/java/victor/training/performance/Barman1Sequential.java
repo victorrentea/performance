@@ -2,6 +2,7 @@ package victor.training.performance;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -45,7 +46,7 @@ public class Barman1Sequential {
     CompletableFuture<DillyDilly> dillyPromise = beerPromise.thenCombine(vodkaPromise, DillyDilly::new);
 
     long t1 = currentTimeMillis();
-
+    fireAndForget();
     log.info("HTTP thread usedx for millis: " + (t1 - t0));
     return dillyPromise;
   }
@@ -59,4 +60,14 @@ public class Barman1Sequential {
     if (true) throw new IllegalArgumentException("out of beer!");
     return rest.getForObject("http://localhost:9999/beer", Beer.class);
   }
+
+  @Async // pitfall, the annotation is ignored because
+  // proxies do not work if you call the method from the same class
+  public void fireAndForget() throws InterruptedException {
+    log.info("Processing the file uploaded by user, sending emails to 10k email addresses, cleanup, etc.");
+    Thread.sleep(1000);
+    log.info("DONE!");
+  }
 }
+
+
