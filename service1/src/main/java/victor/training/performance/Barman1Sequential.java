@@ -46,7 +46,7 @@ public class Barman1Sequential {
 
     CompletableFuture<DillyDilly> dillyPromise = beerPromise.thenCombine(vodkaPromise, DillyDilly::new);
 
-//    CompletableFuture.runAsync(()->otherService.fireAndForget(),barPool);
+//    CompletableFuture.runAsync(()->otherService.fireAndForget(),barPool);//.exceptionally(e->{log.error("ERROR:"+e);throw new ExEe;});
     otherService.fireAndForget();
     long t1 = currentTimeMillis();
     log.info("HTTP thread usedx for millis: " + (t1 - t0));
