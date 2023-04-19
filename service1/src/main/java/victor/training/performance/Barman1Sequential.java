@@ -1,5 +1,6 @@
 package victor.training.performance;
 
+import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Async;
@@ -45,7 +46,7 @@ public class Barman1Sequential {
 
     CompletableFuture<DillyDilly> dillyPromise = beerPromise.thenCombine(vodkaPromise, DillyDilly::new);
 
-    otherService.fireAndForget();
+    CompletableFuture.runAsync(()->otherService.fireAndForget(),barPool);
     long t1 = currentTimeMillis();
     log.info("HTTP thread usedx for millis: " + (t1 - t0));
     return dillyPromise;
@@ -67,9 +68,10 @@ public class Barman1Sequential {
 @Service
 @Slf4j
 class OtherService {
-  @Async // pitfall, the annotation is ignored because
+//  @Async // pitfall, the annotation is ignored because
   // proxies do not work if you call the method from the same class
-  public void fireAndForget() throws InterruptedException {
+  @SneakyThrows
+  public void fireAndForget()  {
     log.info("Processing the file uploaded by user, sending emails to 10k email addresses, cleanup, etc.");
     Thread.sleep(3000);
     log.info("DONE!");
