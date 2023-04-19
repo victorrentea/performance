@@ -29,7 +29,7 @@ public class Service1App {
     executor.setCorePoolSize(barPoolSize);
     executor.setMaxPoolSize(barPoolSize); // equal to avoid pushing too hard on remote systems in times of trouble
 
-    executor.setQueueCapacity(100_000);
+    executor.setQueueCapacity(200);
     // factors:
     // - # of workers
     // - avg duration of a task => how much are you willing to wait
