@@ -10,12 +10,10 @@ import victor.training.performance.drinks.Beer;
 import victor.training.performance.drinks.DillyDilly;
 import victor.training.performance.drinks.Vodka;
 
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.Future;
+import java.util.concurrent.*;
 
 import static java.lang.System.currentTimeMillis;
+import static java.util.concurrent.CompletableFuture.supplyAsync;
 
 @RestController
 @Slf4j
@@ -28,20 +26,23 @@ public class Barman1Sequential {
   ThreadPoolTaskExecutor barPool;
 
   @GetMapping({"/drink/sequential","/drink"})
-  public DillyDilly drink() throws ExecutionException, InterruptedException {
+  public CompletableFuture<DillyDilly> drink() throws ExecutionException, InterruptedException {
     long t0 = currentTimeMillis();
 
-    Future<Beer> futureBeer = barPool.submit(() -> pourBeer());
-    Future<Vodka> futureVodka = barPool.submit(() -> pourVodka());
+//    CompletableFuture<Beer> beerPromise = CompletableFuture.supplyAsync(() -> pourBeer()); // looses the Spring magic
+    CompletableFuture<Beer> beerPromise = supplyAsync(this::pourBeer, barPool); // <- always do this
+    CompletableFuture<Vodka> vodkaPromise = supplyAsync(this::pourVodka, barPool); // <- always do this
+
     // ordered both
     // this method is invoked in a thred from the server's thread pool (Tomcat's size = 200 default)
-    Beer beer = futureBeer.get(); // blocked here? 1s
-    Vodka vodka = futureVodka.get(); // blocked here? 0s
+//    Beer beer = beerPromise.get(); // NEVER BLOCK on CompletableFuture.get() !!!
+
+    CompletableFuture<DillyDilly> dillyPromise = beerPromise.thenCombine(vodkaPromise, DillyDilly::new);
 
     long t1 = currentTimeMillis();
 
-    log.info("HTTP thread blocked for millis: " + (t1 - t0));
-    return new DillyDilly(beer,vodka);
+    log.info("HTTP thread usedx for millis: " + (t1 - t0));
+    return dillyPromise;
   }
 
   private Vodka pourVodka() {
