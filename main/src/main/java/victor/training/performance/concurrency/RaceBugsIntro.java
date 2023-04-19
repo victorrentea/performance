@@ -12,12 +12,15 @@ import static java.util.stream.Collectors.toList;
 @Slf4j
 public class RaceBugsIntro {
 
-   private static Integer id = 0;
+   private static Integer total = 0;
+   private static final Object mutex = new Object();
 
    // 2 parallel threads run this:
    private static void doCountAlive(List<Integer> idsChunk) {
       for (Integer i : idsChunk) { // .size() = 10k
-         id++;
+         synchronized (RaceBugsIntro.class) { // syncronized blocks are entered by ONE thread at a time if all threads use the same instance
+            total += 1;
+         }
       }
    }
 
@@ -38,7 +41,7 @@ public class RaceBugsIntro {
       future1.get();
       future2.get();
 
-      log.debug("Counted: " + id);
+      log.debug("Counted: " + total);
    }
 
 
