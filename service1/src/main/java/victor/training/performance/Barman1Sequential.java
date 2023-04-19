@@ -46,7 +46,8 @@ public class Barman1Sequential {
 
     CompletableFuture<DillyDilly> dillyPromise = beerPromise.thenCombine(vodkaPromise, DillyDilly::new);
 
-    CompletableFuture.runAsync(()->otherService.fireAndForget(),barPool);
+//    CompletableFuture.runAsync(()->otherService.fireAndForget(),barPool);
+    otherService.fireAndForget();
     long t1 = currentTimeMillis();
     log.info("HTTP thread usedx for millis: " + (t1 - t0));
     return dillyPromise;
@@ -68,7 +69,7 @@ public class Barman1Sequential {
 @Service
 @Slf4j
 class OtherService {
-//  @Async // pitfall, the annotation is ignored because
+  @Async // pitfall, the annotation is ignored because
   // proxies do not work if you call the method from the same class
   @SneakyThrows
   public void fireAndForget()  {
