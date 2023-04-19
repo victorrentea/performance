@@ -28,7 +28,6 @@ public class Barman1Sequential {
   public DillyDilly drink() throws ExecutionException, InterruptedException {
     long t0 = currentTimeMillis();
 
-
     Future<Beer> futureBeer = threadPool.submit(() -> pourBeer());
     Future<Vodka> futureVodka = threadPool.submit(() -> pourVodka());
     // ordered both
@@ -43,7 +42,7 @@ public class Barman1Sequential {
   }
 
   private Vodka pourVodka() {
-
+    log.info("Requesting vodka... ");
     return rest.getForObject("http://localhost:9999/vodka", Vodka.class);
   }
 
