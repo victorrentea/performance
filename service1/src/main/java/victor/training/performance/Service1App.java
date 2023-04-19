@@ -27,8 +27,14 @@ public class Service1App {
   public ThreadPoolTaskExecutor barPool(@Value("${bar.pool.size}") int barPoolSize) {
     ThreadPoolTaskExecutor executor = new ThreadPoolTaskExecutor();
     executor.setCorePoolSize(barPoolSize);
-    executor.setMaxPoolSize(barPoolSize);
-    executor.setQueueCapacity(100);
+    executor.setMaxPoolSize(barPoolSize); // equal to avoid pushing too hard on remote systems in times of trouble
+
+    executor.setQueueCapacity(100_000);
+    // factors:
+    // - # of workers
+    // - avg duration of a task => how much are you willing to wait
+    // - memory available for the queue
+
     executor.setThreadNamePrefix("bar-");
     executor.initialize();
     return executor;
