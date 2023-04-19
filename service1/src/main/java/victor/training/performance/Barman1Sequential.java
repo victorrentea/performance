@@ -2,6 +2,7 @@ package victor.training.performance;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.client.RestTemplate;
@@ -22,14 +23,16 @@ public class Barman1Sequential {
   @Autowired
   private RestTemplate rest;
 
-  private static final ExecutorService threadPool = Executors.newFixedThreadPool(2);
+//  private static final ExecutorService threadPool = Executors.newFixedThreadPool(2);
+  @Autowired
+  ThreadPoolTaskExecutor barPool;
 
   @GetMapping({"/drink/sequential","/drink"})
   public DillyDilly drink() throws ExecutionException, InterruptedException {
     long t0 = currentTimeMillis();
 
-    Future<Beer> futureBeer = threadPool.submit(() -> pourBeer());
-    Future<Vodka> futureVodka = threadPool.submit(() -> pourVodka());
+    Future<Beer> futureBeer = barPool.submit(() -> pourBeer());
+    Future<Vodka> futureVodka = barPool.submit(() -> pourVodka());
     // ordered both
     // this method is invoked in a thred from the server's thread pool (Tomcat's size = 200 default)
     Beer beer = futureBeer.get(); // blocked here? 1s

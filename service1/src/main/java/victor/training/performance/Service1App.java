@@ -9,6 +9,7 @@ import org.springframework.boot.web.embedded.tomcat.TomcatProtocolHandlerCustomi
 import org.springframework.context.annotation.Bean;
 import org.springframework.core.task.AsyncTaskExecutor;
 import org.springframework.core.task.support.TaskExecutorAdapter;
+import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RestController;
@@ -28,6 +29,17 @@ public class Service1App {
   @Bean
   public RestTemplate rest() {
     return new RestTemplate();
+  }
+
+  @Bean
+  public ThreadPoolTaskExecutor barPool() {
+    ThreadPoolTaskExecutor executor = new ThreadPoolTaskExecutor();
+    executor.setCorePoolSize(2);
+    executor.setMaxPoolSize(2);
+    executor.setQueueCapacity(100);
+    executor.setThreadNamePrefix("bar-");
+    executor.initialize();
+    return executor;
   }
 }
 
