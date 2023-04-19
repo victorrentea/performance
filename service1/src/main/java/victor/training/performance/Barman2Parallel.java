@@ -75,25 +75,6 @@ public class Barman2Parallel {
   }
 
 
-  @Configuration
-  public static class BarPoolConfig {
-    @Autowired
-    MeterRegistry meterRegistry;
-
-    @Bean
-    public ThreadPoolTaskExecutor barPool(@Value("${bar.pool.size}") int barPoolSize) {
-      ThreadPoolTaskExecutor executor = new ThreadPoolTaskExecutor();
-      executor.setCorePoolSize(barPoolSize);
-      executor.setMaxPoolSize(barPoolSize);
-      executor.setQueueCapacity(500);
-      // TODO experiment       ExecutorServiceMetrics.monitor(registry, ForkJoinPool.commonPool(), "commonPool");
-      executor.setTaskDecorator(new MonitorQueueWaitingTimeTaskDecorator(meterRegistry.timer("barman-queue-time")));
-      executor.setThreadNamePrefix("bar-");
-      executor.initialize();
-      return executor;
-    }
-  }
 
 }
-
 
