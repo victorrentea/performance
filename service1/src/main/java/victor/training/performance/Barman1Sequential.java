@@ -30,7 +30,12 @@ public class Barman1Sequential {
     long t0 = currentTimeMillis();
 
 //    CompletableFuture<Beer> beerPromise = CompletableFuture.supplyAsync(() -> pourBeer()); // looses the Spring magic
-    CompletableFuture<Beer> beerPromise = supplyAsync(this::pourBeer, barPool); // <- always do this
+    CompletableFuture<Beer> beerPromise = supplyAsync(this::pourBeer, barPool)
+            .exceptionally(e -> {
+              log.error("Error in beer", e);
+              return null;
+            })
+            ; // <- always do this
     CompletableFuture<Vodka> vodkaPromise = supplyAsync(this::pourVodka, barPool); // <- always do this
 
     // ordered both
@@ -51,6 +56,7 @@ public class Barman1Sequential {
   }
 
   private Beer pourBeer() {
+    if (true) throw new IllegalArgumentException("out of beer!");
     return rest.getForObject("http://localhost:9999/beer", Beer.class);
   }
 }
