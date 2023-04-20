@@ -1,5 +1,7 @@
 package victor.training.performance;
 
+import brave.baggage.BaggagePropagation;
+import brave.propagation.ExtraFieldPropagation;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,6 +29,9 @@ public class BarmanReactive {
   @GetMapping("/drink")
   public CompletableFuture<DillyDilly> drink() throws ExecutionException, InterruptedException {
     long t0 = currentTimeMillis();
+//    BaggagePropagation
+//    ExtraFieldPropagation.set(initialSpan.context(), "foo", "bar");
+
 
     CompletableFuture<Beer> beerPromise = pourBeer();
     CompletableFuture<Vodka> vodkaPromise = pourVodka();
