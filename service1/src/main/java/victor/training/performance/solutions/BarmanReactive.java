@@ -1,4 +1,4 @@
-//package victor.training.performance.bar;
+//package victor.training.performance.solutions;
 //
 //import lombok.extern.slf4j.Slf4j;
 //import org.springframework.beans.factory.annotation.Autowired;
@@ -17,7 +17,7 @@
 //
 //@RestController
 //@Slf4j
-//public class Barman3Reactive {
+//public class BarmanReactive {
 //  @Autowired
 //  private WebClient webClient;
 //

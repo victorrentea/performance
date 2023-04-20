@@ -13,7 +13,7 @@ import static java.lang.System.currentTimeMillis;
 
 @RestController
 @Slf4j
-public class Barman1Sequential {
+public class Barman {
   @Autowired
   private RestTemplate rest;
 

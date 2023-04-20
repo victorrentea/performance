@@ -1,14 +1,10 @@
-package victor.training.performance;
+package victor.training.performance.solutions;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 //import io.micrometer.core.instrument.MeterRegistry;
-import io.micrometer.core.instrument.MeterRegistry;
 import lombok.extern.slf4j.Slf4j;
 //import org.jooq.lambda.Unchecked;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -28,7 +24,7 @@ import static java.lang.System.currentTimeMillis;
 
 @RestController
 @Slf4j
-public class Barman2Parallel {
+public class BarmanParallel {
   @Autowired
   private RestTemplate rest;
   @Autowired
