@@ -9,6 +9,6 @@ public class DillyDilly {
   Beer beer;
   Vodka vodka;
   {
-    log.info("Mixing Dilly (in what thread?)");
+//    log.info("Mixing Dilly (in what thread?)");
   }
 }

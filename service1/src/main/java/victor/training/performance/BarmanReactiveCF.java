@@ -1,12 +1,7 @@
 package victor.training.performance;
 
-import brave.baggage.BaggagePropagation;
-import brave.propagation.ExtraFieldPropagation;
-import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.scheduling.annotation.Async;
-import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.reactive.function.client.WebClient;
@@ -22,29 +17,24 @@ import static java.util.concurrent.CompletableFuture.supplyAsync;
 
 @RestController
 @Slf4j
-public class BarmanReactive {
+public class BarmanReactiveCF {
   @Autowired
   private WebClient webClient;
 
   @GetMapping("/drink")
   public CompletableFuture<DillyDilly> drink() throws ExecutionException, InterruptedException {
-    long t0 = currentTimeMillis();
-//    BaggagePropagation
-//    ExtraFieldPropagation.set(initialSpan.context(), "foo", "bar");
-
 
     CompletableFuture<Beer> beerPromise = pourBeer();
     CompletableFuture<Vodka> vodkaPromise = pourVodka();
 
     CompletableFuture<DillyDilly> dillyPromise = beerPromise
             .thenCombine(vodkaPromise, DillyDilly::new);
-    long t1 = currentTimeMillis();
-    log.info("HTTP thread usedx for millis: " + (t1 - t0));
+
     return dillyPromise;
   }
 
   private CompletableFuture<Vodka> pourVodka() {
-    log.info("Requesting vodka... ");
+//    log.info("Requesting vodka... ");
     return webClient.get() // Non-blocking HTTP requests
             .uri("http://localhost:9999/vodka")
             .retrieve()
@@ -53,6 +43,7 @@ public class BarmanReactive {
   }
 
   private CompletableFuture<Beer> pourBeer() {
+
     return webClient.get()
             .uri("http://localhost:9999/beer")
             .retrieve()

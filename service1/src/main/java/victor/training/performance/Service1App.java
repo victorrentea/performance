@@ -5,11 +5,14 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
+import org.springframework.http.client.reactive.ReactorClientHttpConnector;
 import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.reactive.function.client.WebClient;
+import reactor.netty.http.client.HttpClient;
+import reactor.netty.resources.ConnectionProvider;
 
 
 @Slf4j
@@ -25,12 +28,22 @@ public class Service1App {
   public RestTemplate rest() {
     return new RestTemplate();
   }
+//  @Bean
+//  public WebClient webClient() {
+//    return WebClient.create();
+//  }
+
   @Bean
   public WebClient webClient() {
-    return WebClient.create();
+    HttpClient httpClient = HttpClient.create(ConnectionProvider
+            .create("httpClient", 1000));
+    return WebClient.builder()
+            .clientConnector(new ReactorClientHttpConnector(httpClient))
+            .build();
   }
 
-//  @Bean
+
+  //  @Bean
 //  public ThreadPoolTaskExecutor barPool(@Value("${bar.pool.size}") int barPoolSize) {
 //    ThreadPoolTaskExecutor executor = new ThreadPoolTaskExecutor();
 //    executor.setCorePoolSize(barPoolSize);

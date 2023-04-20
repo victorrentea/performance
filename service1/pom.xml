@@ -33,12 +33,12 @@
             <groupId>org.springframework.cloud</groupId>
             <artifactId>spring-cloud-sleuth-zipkin</artifactId>
         </dependency>-->
-            <dependency>
-                <!-- distributed request tracing -->
+           <!-- <dependency>
+                &lt;!&ndash; distributed request tracing &ndash;&gt;
                 <groupId>org.springframework.cloud</groupId>
                 <artifactId>spring-cloud-starter-sleuth</artifactId>
             </dependency>
-
+-->
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-devtools</artifactId>
