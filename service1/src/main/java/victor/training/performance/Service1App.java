@@ -1,5 +1,7 @@
 package victor.training.performance;
 
+import io.micrometer.core.aop.TimedAspect;
+import io.micrometer.core.instrument.MeterRegistry;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.SpringApplication;
@@ -23,6 +25,11 @@ public class Service1App {
   public static void main(String[] args) {
     SpringApplication.run(Service1App.class, args);
   }
+
+//  @Bean // enables the use of @Timed on methods
+//  public TimedAspect timedAspect(MeterRegistry meterRegistry) {
+//    return new TimedAspect(meterRegistry);
+//  }
 
   @Bean
   public RestTemplate rest() {
