@@ -34,9 +34,9 @@ public class RaceBugsIntro {
   }
 
   public static void main(String[] args) throws ExecutionException, InterruptedException {
-    List<Integer> ids = IntStream.range(0, 10_000).boxed().collect(toList());
+    List<Integer> fullList = IntStream.range(0, 10_000).boxed().collect(toList());
 
-    List<List<Integer>> lists = splitList(ids, 2);
+    List<List<Integer>> lists = splitList(fullList, 2);
     List<Callable<Void>> tasks = lists.stream().map(numbers -> (Callable<Void>) () -> {
       countEven(numbers);
       return null;
