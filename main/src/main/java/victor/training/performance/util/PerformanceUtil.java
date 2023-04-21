@@ -146,6 +146,7 @@ public class PerformanceUtil {
     }
 
     public static long getUsedHeapBytes() {
+        System.gc(); // to free the intermediary allocated [] when ArrayList grows
         return ManagementFactory.getMemoryMXBean().getHeapMemoryUsage().getUsed();
     }
 

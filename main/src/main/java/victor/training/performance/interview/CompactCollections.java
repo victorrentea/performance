@@ -20,19 +20,19 @@ public class CompactCollections {
       Set<Long> x = LongStream.range(0, 1_000_000).boxed().collect(Collectors.toSet());
 
       // ArrayList =  MB because
-//      List<Long> x = LongStream.range(0, 1_000_000).boxed().collect(toList());
+//      List<Long> x = LongStream.range(0, 1_000_000).boxed().collect(Collectors.toList());
 
       // Long[] =  MB because
 //      Long[] x = LongStream.range(0, 1_000_000).boxed().toArray(Long[]::new);
+
+      // LinkedList =  MB because
+//      LinkedList<Long> x = LongStream.range(0, 1_000_000).boxed().collect(Collectors.toCollection(LinkedList::new));
 
       // long[] =  MB because
 //      long[] x = LongStream.range(0, 1_000_000).toArray();
 
       // int[] =  MB because
 //      int[] x = IntStream.range(0, 1_000_000).toArray();
-
-      // LinkedList =  MB because
-//      LinkedList<Long> x = LongStream.range(0, 1_000_000).boxed().collect(toCollection(LinkedList::new));
 
       long heap1 = PerformanceUtil.getUsedHeapBytes();
       System.out.println("Object " + objectToString(x) + " occupies: " + (heap1-heap0)/1024/1024 + " MB");
