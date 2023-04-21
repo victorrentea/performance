@@ -7,10 +7,10 @@ import java.util.stream.IntStream;
 
 // =========== far away, in a distant Package ...... =============
 @Slf4j
-public class Enemy {
+public class SomeOtherUseCaseRunning {
   @SneakyThrows
   public static void parallelRequest() {
-    Thread thread = new Thread(Enemy::optimized);
+    Thread thread = new Thread(SomeOtherUseCaseRunning::optimized);
     thread.setDaemon(true); // to exit program
     thread.start();
     Thread.sleep(100);
@@ -19,7 +19,7 @@ public class Enemy {
   public static void optimized() {
     int result = IntStream.range(1, 1000)
             .parallel()
-            .map(Enemy::callNetworkOrDB)
+            .map(SomeOtherUseCaseRunning::callNetworkOrDB)
             .sum();
     System.out.println(result);
   }

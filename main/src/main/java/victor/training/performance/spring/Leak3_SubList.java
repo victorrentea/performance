@@ -20,6 +20,12 @@ public class Leak3_SubList {
 
    @GetMapping
    public synchronized String test() {
+
+
+
+//      Runtime.getRuntime().addShutdownHook(); clear files at JVM exit
+
+
       lastTenObjects.add(new BigObject20MB());
       if (lastTenObjects.size() > 10) {
          lastTenObjects = lastTenObjects.subList(1, lastTenObjects.size());

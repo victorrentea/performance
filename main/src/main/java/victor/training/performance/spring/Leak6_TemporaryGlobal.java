@@ -32,6 +32,7 @@ public class Leak6_TemporaryGlobal {
     if (!userProfile.isActive()) {
       throw new IllegalArgumentException("Inactive user: action not allowed");
     }
+
     CompletableFuture.runAsync(() -> longProcessingAsync(id, currentUser));
 
     return "Realistic leak: no more obvious huge int[] => only happens under stress test <br>" +
