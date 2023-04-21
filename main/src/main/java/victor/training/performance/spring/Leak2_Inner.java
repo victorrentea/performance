@@ -91,7 +91,7 @@ class CachingMethodObject {
 
   //<editor-fold desc="Map init in Java <= 8">
   public Map<String, Integer> mapInit() {
-    return new HashMap<>() {{ // obviously, pre-java 10
+    return new HashMap<>() {{
       put("one", 1);
       put("two", 2);
     }};
