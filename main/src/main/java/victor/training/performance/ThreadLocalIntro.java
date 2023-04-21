@@ -20,13 +20,24 @@ public class ThreadLocalIntro {
 
     private final AController controller = new AController(new AService(new ARepo()));
 
-    public static String staticCurrentUser;
-    // TODO ThreadLocal<String>b
+    public static ThreadLocal<String> staticCurrentUser = new ThreadLocal<>();
+    // thread locals are magic variables that have different values for each thread
+    // if one thread SETs it , when it will .get later it will see the same value => NO RACE BUGS
+    // used to carry metadata shared by ~all requests
+    // Examples:
+    // - SecurityContextHolder
+    // - Hibernate Session
+    // - @Scope("request")
+    // - CurrentHttp Request
+    // - MDC -> %X{stuff}
+    // - @Transactional
+    // - Sleuth TraceID moving along the request chain
 
     // inside Spring, JavaEE,..
     public void httpRequest(String currentUser, String data) {
         log.info("Current user is " + currentUser);
-        staticCurrentUser = currentUser;
+
+        staticCurrentUser.set(currentUser);
         // TODO pass the current user down to the repo WITHOUT polluting all signatures
         controller.create(data);
     }
@@ -62,6 +73,7 @@ class AService {
 class ARepo {
     public void save(String data) {
         String currentUser = "TODO"; // TODO Where to get this from?
-        log.info("INSERT INTO A(data, created_by) VALUES ({}, {})", data, ThreadLocalIntro.staticCurrentUser);
+        log.info("INSERT INTO A(data, created_by) VALUES ({}, {})", data, ThreadLocalIntro.staticCurrentUser.get());
     }
 }
+// Thread Local
