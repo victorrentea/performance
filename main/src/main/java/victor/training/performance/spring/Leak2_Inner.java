@@ -75,7 +75,7 @@ class CachingMethodObject {
     return new UserRightsCalculator();
   }
 
-  // then, some more (amazing) leaks .....
+  // more amazing leaks:
 
   //<editor-fold desc="Lambdas vs Anonymous implementation">
   public Stream<String> anonymousVsLambdas(List<String> input) {
