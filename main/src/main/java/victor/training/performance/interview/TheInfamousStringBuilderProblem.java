@@ -1,6 +1,7 @@
 package victor.training.performance.interview;
 
 import org.apache.commons.io.FileUtils;
+import org.jooq.lambda.Unchecked;
 import victor.training.performance.util.PerformanceUtil;
 
 import java.io.File;
@@ -9,16 +10,18 @@ import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.util.List;
 import java.util.stream.IntStream;
+import java.util.stream.Stream;
 
 import static java.nio.charset.StandardCharsets.UTF_8;
 import static java.util.stream.Collectors.toList;
+import static org.jooq.lambda.Unchecked.consumer;
 
 public class TheInfamousStringBuilderProblem {
    public static void main(String[] args) throws IOException {
       PerformanceUtil.printJfrFile();
-      List<String> elements = IntStream.range(1, 200_000) // see TLAB
+      Stream<String> elements = IntStream.range(1, 200_000) // see TLAB
           .mapToObj(n -> "hahaha")
-          .collect(toList());
+          ;
 
       PerformanceUtil.waitForEnter();
       System.out.println("Start writing contents!");
@@ -26,12 +29,7 @@ public class TheInfamousStringBuilderProblem {
 
       // ---- start: optimize below:
       try (FileWriter writer = new FileWriter(new File("out.txt"))) {
-
-         StringBuilder s = new StringBuilder();
-         for (String element : elements) {
-            //         s.append(element);
-            writer.write(element);
-         }
+         elements.forEach(consumer(writer::write));
       }
 
       //      FileUtils.writeStringToFile(new File("out.txt"), s.toString(), UTF_8);
