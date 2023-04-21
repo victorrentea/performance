@@ -13,19 +13,20 @@ public class ThreadLocalIntro {
     public static void main(String[] args) {
         System.out.println("Here come 2 parallel HTTP requests");
         ThreadLocalIntro app = new ThreadLocalIntro();
-        app.httpRequest("alice", "Alice's data");
+        new Thread(()->app.httpRequest("alice", "Alice's data")).start();
+        new Thread(()->app.httpRequest("bob", "Bob's data")).start();
 //        app.frameworkReceivesRequest("bob", "Bob's data");
     }
 
     private final AController controller = new AController(new AService(new ARepo()));
 
     public static String staticCurrentUser;
-    // TODO ThreadLocal<String>
+    // TODO ThreadLocal<String>b
 
     // inside Spring, JavaEE,..
     public void httpRequest(String currentUser, String data) {
         log.info("Current user is " + currentUser);
-//        staticCurrentUser = currentUser;
+        staticCurrentUser = currentUser;
         // TODO pass the current user down to the repo WITHOUT polluting all signatures
         controller.create(data);
     }
@@ -61,6 +62,6 @@ class AService {
 class ARepo {
     public void save(String data) {
         String currentUser = "TODO"; // TODO Where to get this from?
-        log.info("INSERT INTO A(data, created_by) VALUES ({}, {})", data, currentUser);
+        log.info("INSERT INTO A(data, created_by) VALUES ({}, {})", data, ThreadLocalIntro.staticCurrentUser);
     }
 }
