@@ -12,27 +12,29 @@ import static java.util.stream.Collectors.toCollection;
 
 public class CompactCollections {
 
+   public static final int ONE_MILLION = 1_000_000;
+
    public static void main(String[] args) {
       // Use-case: you have to keep a large number of IDs throughout a long memory-intensive batch
       long heap0 = PerformanceUtil.getUsedHeapBytes();
 
       // HashSet =  MB because
-      Set<Long> x = LongStream.range(0, 1_000_000).boxed().collect(Collectors.toSet());
+      Set<Long> x = LongStream.range(0, ONE_MILLION).boxed().collect(Collectors.toSet());
 
       // ArrayList =  MB because
-//      List<Long> x = LongStream.range(0, 1_000_000).boxed().collect(Collectors.toList());
+//      List<Long> x = LongStream.range(0, ONE_MILLION).boxed().collect(Collectors.toList());
 
       // Long[] =  MB because
-//      Long[] x = LongStream.range(0, 1_000_000).boxed().toArray(Long[]::new);
+//      Long[] x = LongStream.range(0, ONE_MILLION).boxed().toArray(Long[]::new);
 
       // LinkedList =  MB because
-//      LinkedList<Long> x = LongStream.range(0, 1_000_000).boxed().collect(Collectors.toCollection(LinkedList::new));
+//      LinkedList<Long> x = LongStream.range(0, ONE_MILLION).boxed().collect(Collectors.toCollection(LinkedList::new));
 
       // long[] =  MB because
-//      long[] x = LongStream.range(0, 1_000_000).toArray();
+//      long[] x = LongStream.range(0, ONE_MILLION).toArray();
 
       // int[] =  MB because
-//      int[] x = IntStream.range(0, 1_000_000).toArray();
+//      int[] x = IntStream.range(0, ONE_MILLION).toArray();
 
       long heap1 = PerformanceUtil.getUsedHeapBytes();
       System.out.println("Object " + objectToString(x) + " occupies: " + (heap1-heap0)/1024/1024 + " MB");

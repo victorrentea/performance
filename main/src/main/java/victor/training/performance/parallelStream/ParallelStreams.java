@@ -19,10 +19,7 @@ public class ParallelStreams {
       List<Integer> list = IntStream.range(1,100).boxed().collect(toList());
 
       List<Integer> result = list.stream()
-          .filter(i -> {
-             log.debug("Filter " + i);
-             return i % 2 == 0;
-          })
+          .filter(i -> i % 2 == 0)
           .map(i -> {
              log.debug("Map " + i);
              sleepMillis(100); // do some 'paralellizable' I/O work (DB, REST, SOAP)
