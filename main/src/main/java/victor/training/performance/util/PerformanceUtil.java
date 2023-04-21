@@ -157,4 +157,8 @@ public class PerformanceUtil {
             System.exit(0);
         }).start();
     }
+
+    public static String objectToString(Object x) {
+       return x.getClass().getName() + "@" + Integer.toHexString(System.identityHashCode(x));
+    }
 }

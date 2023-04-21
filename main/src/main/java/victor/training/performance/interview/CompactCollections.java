@@ -2,13 +2,9 @@ package victor.training.performance.interview;
 
 import victor.training.performance.util.PerformanceUtil;
 
-import java.util.LinkedList;
 import java.util.Set;
 import java.util.stream.Collectors;
-import java.util.stream.IntStream;
 import java.util.stream.LongStream;
-
-import static java.util.stream.Collectors.toCollection;
 
 public class CompactCollections {
 
@@ -37,11 +33,7 @@ public class CompactCollections {
 //      int[] x = IntStream.range(0, ONE_MILLION).toArray();
 
       long heap1 = PerformanceUtil.getUsedHeapBytes();
-      System.out.println("Object " + objectToString(x) + " occupies: " + (heap1-heap0)/1024/1024 + " MB");
-   }
-
-   private static String objectToString(Object x) {
-      return x.getClass().getName() + "@" + Integer.toHexString(System.identityHashCode(x));
+      System.out.println("Object " + PerformanceUtil.objectToString(x) + " occupies: " + (heap1 - heap0) / 1024 / 1024 + " MB");
    }
 
 }
