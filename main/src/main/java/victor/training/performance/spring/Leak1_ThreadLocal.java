@@ -1,9 +1,12 @@
 package victor.training.performance.spring;
 
+import org.springframework.context.annotation.Scope;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import victor.training.performance.util.BigObject20MB;
+
+
 
 @RestController
 @RequestMapping("leak1")
@@ -14,9 +17,17 @@ public class Leak1_ThreadLocal {
    public String test() {
       BigObject20MB bigObject = new BigObject20MB().setSomeString("john.doe"); // retrived from a network call
 
-      threadLocalMetadata.set(bigObject);  // 🛑 remember to .remove() any ThreadLocal you have
 
-      businessMethod1();
+      threadLocalMetadata.set(bigObject);  // 🛑 remember to .remove() any ThreadLocal you have
+      try {
+         businessMethod1();
+      } finally {
+         threadLocalMetadata.remove();
+      }
+
+      // NEVER EVER EVER USER THREAD LOCALS (alone): prefer existing framework-managed abstractions
+      // like : @Scope("request"),
+      // like : adding user details to the security Principal that you can get from SecurityContextHolder
 
       return "Magic can do harm.";
    }
