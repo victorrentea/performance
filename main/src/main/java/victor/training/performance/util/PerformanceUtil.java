@@ -146,6 +146,7 @@ public class PerformanceUtil {
     }
 
     public static long getUsedHeapBytes() {
+        System.gc();
         return ManagementFactory.getMemoryMXBean().getHeapMemoryUsage().getUsed();
     }
 

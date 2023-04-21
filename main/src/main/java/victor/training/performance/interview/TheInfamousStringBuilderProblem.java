@@ -5,12 +5,15 @@ import org.jooq.lambda.Unchecked;
 import victor.training.performance.util.PerformanceUtil;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.util.List;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
+import java.util.zip.GZIPInputStream;
+import java.util.zip.GZIPOutputStream;
 
 import static java.nio.charset.StandardCharsets.UTF_8;
 import static java.util.stream.Collectors.toList;
@@ -26,7 +29,7 @@ public class TheInfamousStringBuilderProblem {
       PerformanceUtil.waitForEnter();
       System.out.println("Start writing contents!");
       long t0 = System.currentTimeMillis();
-
+//      GZIPInputStream s = new GZIPInputStream(new FileInputStream("the.zip"));
       // ---- start: optimize below:
       try (FileWriter writer = new FileWriter(new File("out.txt"))) {
          elements.forEach(consumer(writer::write));
