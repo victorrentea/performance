@@ -1,7 +1,7 @@
 package victor.training.performance.concurrency.primitives.waitnotify;
 
-import static victor.training.performance.util.PerformanceUtil.log;
-import static victor.training.performance.util.PerformanceUtil.sleepMillis;
+import static victor.training.spring.batch.util.PerformanceUtil.log;
+import static victor.training.spring.batch.util.PerformanceUtil.sleepMillis;
 
 public class PingPong {
     public static final int PING = 1;

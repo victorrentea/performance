@@ -4,7 +4,7 @@ package victor.training.performance.assignment.leak4;
 import lombok.SneakyThrows;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
-import victor.training.performance.util.PerformanceUtil;
+import victor.training.spring.batch.util.PerformanceUtil;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;

@@ -7,7 +7,7 @@ import java.util.Queue;
 import java.util.concurrent.TimeUnit;
 
 import static java.util.concurrent.Executors.newScheduledThreadPool;
-import static victor.training.performance.util.PerformanceUtil.printJfrFile;
+import static victor.training.spring.batch.util.PerformanceUtil.printJfrFile;
 
 public class BoundedQueuePlay {
 

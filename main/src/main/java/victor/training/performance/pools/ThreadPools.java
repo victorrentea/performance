@@ -4,8 +4,8 @@ import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.atomic.AtomicInteger;
 
-import static victor.training.performance.util.PerformanceUtil.log;
-import static victor.training.performance.util.PerformanceUtil.sleepSomeTime;
+import static victor.training.spring.batch.util.PerformanceUtil.log;
+import static victor.training.spring.batch.util.PerformanceUtil.sleepSomeTime;
 
 public class ThreadPools {
 

@@ -3,7 +3,7 @@ package victor.training.performance.spring;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
-import victor.training.performance.util.BigObject20MB;
+import victor.training.spring.batch.util.BigObject20MB;
 
 
 // WORK IN PROGRESS

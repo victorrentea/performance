@@ -1,6 +1,6 @@
 package victor.training.performance.pools.throttling;
 
-import victor.training.performance.util.PerformanceUtil;
+import victor.training.spring.batch.util.PerformanceUtil;
 import victor.training.performance.pools.tasks.FragileEndpointTask;
 
 import java.util.concurrent.ExecutorService;

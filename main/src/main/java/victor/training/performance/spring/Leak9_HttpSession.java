@@ -9,7 +9,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import victor.training.performance.util.BigObject1KB;
+import victor.training.spring.batch.util.BigObject1KB;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;

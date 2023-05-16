@@ -1,11 +1,10 @@
 package victor.training.performance.interview;
 
 import org.apache.commons.io.FileUtils;
-import victor.training.performance.util.PerformanceUtil;
+import victor.training.spring.batch.util.PerformanceUtil;
 
 import java.io.File;
 import java.io.IOException;
-import java.nio.charset.StandardCharsets;
 import java.util.List;
 import java.util.stream.IntStream;
 

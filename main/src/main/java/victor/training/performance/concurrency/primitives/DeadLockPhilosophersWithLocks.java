@@ -3,8 +3,6 @@ package victor.training.performance.concurrency.primitives;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
-import static victor.training.performance.util.PerformanceUtil.*;
-
 
 public class DeadLockPhilosophersWithLocks {
 	static class ForkWithLock {

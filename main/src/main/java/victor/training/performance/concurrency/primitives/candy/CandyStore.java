@@ -1,6 +1,6 @@
 package victor.training.performance.concurrency.primitives.candy;
 
-import victor.training.performance.util.PerformanceUtil;
+import victor.training.spring.batch.util.PerformanceUtil;
 
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;

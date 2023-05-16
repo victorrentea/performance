@@ -2,10 +2,9 @@ package victor.training.performance.concurrency;
 
 import lombok.Value;
 import lombok.extern.slf4j.Slf4j;
-import victor.training.performance.util.PerformanceUtil;
 
-import static victor.training.performance.util.PerformanceUtil.log;
-import static victor.training.performance.util.PerformanceUtil.sleepNanos;
+import static victor.training.spring.batch.util.PerformanceUtil.log;
+import static victor.training.spring.batch.util.PerformanceUtil.sleepNanos;
 
 @Slf4j
 public class DeadLocks {

@@ -1,6 +1,6 @@
 package victor.training.performance.concurrency.primitives.waitnotify;
 
-import victor.training.performance.util.PerformanceUtil;
+import victor.training.spring.batch.util.PerformanceUtil;
 
 public class OddEvenIncrementer {
 	static int n = 0; 

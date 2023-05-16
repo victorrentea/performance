@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.client.RestTemplate;
-import victor.training.performance.util.GDPRFilter.VisibleFor;
+import victor.training.spring.batch.util.GDPRFilter.VisibleFor;
 
 import java.util.List;
 import java.util.Objects;

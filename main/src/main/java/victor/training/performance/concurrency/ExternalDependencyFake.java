@@ -1,6 +1,6 @@
 package victor.training.performance.concurrency;
 
-import victor.training.performance.util.PerformanceUtil;
+import victor.training.spring.batch.util.PerformanceUtil;
 
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.regex.Matcher;

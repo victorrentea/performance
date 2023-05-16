@@ -15,7 +15,7 @@ import java.util.stream.IntStream;
 
 import static java.util.UUID.randomUUID;
 import static java.util.stream.Collectors.toList;
-import static victor.training.performance.util.PerformanceUtil.randomString;
+import static victor.training.spring.batch.util.PerformanceUtil.randomString;
 
 @Slf4j
 @RestController

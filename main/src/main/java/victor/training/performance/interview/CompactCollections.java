@@ -1,6 +1,6 @@
 package victor.training.performance.interview;
 
-import victor.training.performance.util.PerformanceUtil;
+import victor.training.spring.batch.util.PerformanceUtil;
 
 import java.util.Set;
 import java.util.stream.Collectors;

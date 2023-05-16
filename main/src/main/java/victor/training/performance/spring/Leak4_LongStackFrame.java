@@ -4,9 +4,9 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import victor.training.performance.util.BigObject80MB;
+import victor.training.spring.batch.util.BigObject80MB;
 
-import static victor.training.performance.util.PerformanceUtil.sleepMillis;
+import static victor.training.spring.batch.util.PerformanceUtil.sleepMillis;
 
 @Slf4j
 @RestController

@@ -1,7 +1,7 @@
 package victor.training.performance.assignment.leak2;
 
-import victor.training.performance.util.PerformanceUtil;
-import victor.training.performance.util.BigObject80MB;
+import victor.training.spring.batch.util.PerformanceUtil;
+import victor.training.spring.batch.util.BigObject80MB;
 
 import java.util.concurrent.CompletableFuture;
 import java.util.function.Supplier;

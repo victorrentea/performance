@@ -2,8 +2,8 @@ package victor.training.performance.concurrency.primitives;
 
 import java.util.concurrent.Phaser;
 
-import static victor.training.performance.util.PerformanceUtil.log;
-import static victor.training.performance.util.PerformanceUtil.sleepSomeTime;
+import static victor.training.spring.batch.util.PerformanceUtil.log;
+import static victor.training.spring.batch.util.PerformanceUtil.sleepSomeTime;
 
 public class PhaserBarrier {
 	static Phaser phaser = new Phaser();

@@ -1,13 +1,12 @@
 package victor.training.performance.parallelStream;
 
-import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 
 import java.util.List;
 import java.util.stream.IntStream;
 
 import static java.util.stream.Collectors.toList;
-import static victor.training.performance.util.PerformanceUtil.sleepMillis;
+import static victor.training.spring.batch.util.PerformanceUtil.sleepMillis;
 
 @Slf4j
 public class ParallelStreams {
