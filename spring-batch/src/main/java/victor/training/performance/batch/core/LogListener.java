@@ -19,7 +19,7 @@ public class LogListener implements ChunkListener {
          log.info(" ---------------- CHUNK -----------------");
          setLoggingLevel(Level.DEBUG);
       } else {
-         log.info(" ---------------- CHUNK -----------------");
+         log.trace(" ---------------- CHUNK -----------------");
          setLoggingLevel(Level.OFF);
       }
    }

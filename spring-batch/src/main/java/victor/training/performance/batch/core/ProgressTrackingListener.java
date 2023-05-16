@@ -16,6 +16,7 @@ public class ProgressTrackingListener implements ChunkListener {
     @Value("#{stepExecutionContext['TOTAL_ITEM_COUNT']}")
     private int totalItems;
     private int lastPercent = -1;
+    private int chunksCount;
     private LocalDateTime startTime = now().minusSeconds(1); // at step creation time (StepScoped)
     private LocalDateTime lastDisplayTime = now().minusHours(1);
     private static final int percentDisplayDeltaSeconds = 5;
@@ -26,6 +27,7 @@ public class ProgressTrackingListener implements ChunkListener {
 
     @Override
     public void afterChunk(ChunkContext context) {
+        chunksCount++;
         StepExecution stepExecution = context.getStepContext().getStepExecution();
         int totalRead = stepExecution.getReadCount() + stepExecution.getReadSkipCount();
         int newPercent = (int) Math.round(totalRead * 100d / totalItems);
@@ -37,7 +39,8 @@ public class ProgressTrackingListener implements ChunkListener {
             long elapsedSeconds = startTime.until(now(), SECONDS);
             int speed = (int) (totalRead / elapsedSeconds);
             int estimatedTotalTime = (int) (1.0 * totalItems / totalRead * elapsedSeconds);
-            log.info("Progress: {}% done. Speed = {} items/s. Est. total time = {} s", newPercent, speed, estimatedTotalTime);
+            log.info("Progress: {}% done. Speed = {} items/s. Est. total time = {} s. {} chunks/transactions",
+                newPercent, speed, estimatedTotalTime, chunksCount);
         }
     }
 
