@@ -15,13 +15,16 @@ public class LogListener implements ChunkListener {
    @Override
    public void beforeChunk(ChunkContext context) {
       if (chunksLeft > 0) {
-         chunksLeft--;
          log.info(" ---------------- CHUNK -----------------");
-         setLoggingLevel(Level.DEBUG);
+         setP6spyLogging(Level.DEBUG);
       } else {
+         if (chunksLeft == 0) {
+            log.warn("Suspending logging of SQL as logging itself might influence the performance");
+         }
          log.trace(" ---------------- CHUNK -----------------");
-         setLoggingLevel(Level.OFF);
+         setP6spyLogging(Level.OFF);
       }
+      chunksLeft--;
    }
 
    @Override
@@ -29,7 +32,7 @@ public class LogListener implements ChunkListener {
 
    }
 
-   public static void setLoggingLevel(Level level) {
+   public static void setP6spyLogging(Level level) {
       ch.qos.logback.classic.Logger p6spyLogger = (ch.qos.logback.classic.Logger) org.slf4j.LoggerFactory.getLogger(
           "p6spy");
       p6spyLogger.setLevel(level);
