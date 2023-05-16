@@ -12,7 +12,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
 import org.springframework.core.task.SimpleAsyncTaskExecutor;
 import org.springframework.core.task.TaskExecutor;
-import victor.training.performance.util.PerformanceUtil;
+import victor.training.spring.batch.util.PerformanceUtil;
 
 
 @SpringBootApplication

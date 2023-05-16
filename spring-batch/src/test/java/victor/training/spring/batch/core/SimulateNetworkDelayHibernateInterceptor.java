@@ -6,7 +6,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.boot.context.event.ApplicationStartedEvent;
 import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Component;
-import victor.training.performance.util.PerformanceUtil;
+import victor.training.spring.batch.util.PerformanceUtil;
 
 @Component
 public class SimulateNetworkDelayHibernateInterceptor extends EmptyInterceptor {

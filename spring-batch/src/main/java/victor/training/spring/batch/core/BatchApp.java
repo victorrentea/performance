@@ -21,7 +21,7 @@ import org.springframework.oxm.jaxb.Jaxb2Marshaller;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 import victor.training.spring.batch.core.domain.City;
 import victor.training.spring.batch.core.domain.Person;
-import victor.training.performance.util.PerformanceUtil;
+import victor.training.spring.batch.util.PerformanceUtil;
 
 import javax.persistence.EntityManagerFactory;
 import java.io.File;

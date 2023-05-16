@@ -1,4 +1,4 @@
-package victor.training.performance.util;
+package victor.training.spring.batch.util;
 
 import org.apache.commons.lang.RandomStringUtils;
 
