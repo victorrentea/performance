@@ -1,4 +1,4 @@
-package victor.training.spring.batch.util;
+package victor.training.performance.util;
 
 import org.hibernate.EmptyInterceptor;
 import org.slf4j.Logger;

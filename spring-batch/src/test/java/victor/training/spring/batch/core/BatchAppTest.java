@@ -9,7 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import victor.training.spring.batch.core.domain.CityRepo;
 import victor.training.spring.batch.core.domain.PersonRepo;
-import victor.training.spring.batch.util.PerformanceUtil;
+import victor.training.performance.util.PerformanceUtil;
 
 import java.io.File;
 import java.util.Map;

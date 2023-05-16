@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package victor.training.spring.batch.util;
+package victor.training.performance.util;
 
 import org.hamcrest.Matcher;
 import org.junit.jupiter.api.extension.*;

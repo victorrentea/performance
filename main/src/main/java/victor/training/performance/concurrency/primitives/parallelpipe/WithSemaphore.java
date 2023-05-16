@@ -1,7 +1,7 @@
 package victor.training.performance.concurrency.primitives.parallelpipe;
 
-import static victor.training.spring.batch.util.PerformanceUtil.log;
-import static victor.training.spring.batch.util.PerformanceUtil.sleepSomeTime;
+import static victor.training.performance.util.PerformanceUtil.log;
+import static victor.training.performance.util.PerformanceUtil.sleepSomeTime;
 
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.ExecutorService;

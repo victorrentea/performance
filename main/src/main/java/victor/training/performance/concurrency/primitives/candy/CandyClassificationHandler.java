@@ -1,6 +1,6 @@
 package victor.training.performance.concurrency.primitives.candy;
 
-import victor.training.spring.batch.util.PerformanceUtil;
+import victor.training.performance.util.PerformanceUtil;
 
 import java.util.List;
 import java.util.concurrent.CompletableFuture;

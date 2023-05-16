@@ -1,7 +1,7 @@
 package victor.training.performance.concurrency.primitives.candy;
 
 import lombok.extern.slf4j.Slf4j;
-import victor.training.spring.batch.util.PerformanceUtil;
+import victor.training.performance.util.PerformanceUtil;
 
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;

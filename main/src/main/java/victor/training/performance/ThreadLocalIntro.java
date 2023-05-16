@@ -6,7 +6,7 @@ import org.springframework.stereotype.Repository;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.RestController;
 
-import static victor.training.spring.batch.util.PerformanceUtil.sleepMillis;
+import static victor.training.performance.util.PerformanceUtil.sleepMillis;
 
 @Slf4j
 public class ThreadLocalIntro {

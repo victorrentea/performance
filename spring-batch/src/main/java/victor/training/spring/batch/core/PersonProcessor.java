@@ -15,13 +15,6 @@ import java.util.stream.Collectors;
 public class PersonProcessor implements ItemProcessor<PersonXml, Person> {
     @Autowired
     private CityRepo cityRepo;
-    
-//    private Map<String, Long> cityIdByName;
-    @PostConstruct
-    public void method() {
-        log.info("Loading cities from DB (merged in pass #1)...");
-//        cityIdByName = cityRepo.findAll().stream().collect(Collectors.toMap(City::getName, City::getId));
-    }
 
     @Override
     public Person process(PersonXml xml) {
@@ -29,8 +22,6 @@ public class PersonProcessor implements ItemProcessor<PersonXml, Person> {
         entity.setName(xml.getName());
         City city = cityRepo.findByName(xml.getCity())
             .orElseGet(() -> cityRepo.save(new City(xml.getCity())));
-
-//        City city = cityRepo.getReferenceById(cityIdByName.get(xml.getCity()));
 
         entity.setCity(city);
         return entity;

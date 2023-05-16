@@ -1,7 +1,7 @@
 package victor.training.performance.assignment.leak3;
 
-import victor.training.spring.batch.util.PerformanceUtil;
-import victor.training.spring.batch.util.BigObject20MB;
+import victor.training.performance.util.PerformanceUtil;
+import victor.training.performance.util.BigObject20MB;
 
 import java.util.HashMap;
 import java.util.Map;

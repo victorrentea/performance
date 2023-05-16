@@ -2,7 +2,7 @@ package victor.training.spring.batch.paritem;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.batch.item.ItemProcessor;
-import victor.training.spring.batch.util.PerformanceUtil;
+import victor.training.performance.util.PerformanceUtil;
 
 @Slf4j
 public class StringProcessor implements ItemProcessor<String, String> {

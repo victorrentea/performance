@@ -9,7 +9,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
-import static victor.training.spring.batch.util.PerformanceUtil.sleepMillis;
+import static victor.training.performance.util.PerformanceUtil.sleepMillis;
 
 @RestController
 @RequestMapping("leak13")

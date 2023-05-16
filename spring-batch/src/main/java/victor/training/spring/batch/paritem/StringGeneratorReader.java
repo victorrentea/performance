@@ -3,7 +3,7 @@ package victor.training.spring.batch.paritem;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.RandomStringUtils;
 import org.springframework.batch.item.ItemReader;
-import victor.training.spring.batch.util.PerformanceUtil;
+import victor.training.performance.util.PerformanceUtil;
 
 @Slf4j
 public class StringGeneratorReader implements ItemReader<String> {

@@ -2,7 +2,7 @@ package victor.training.spring.batch.paritem;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.batch.item.ItemWriter;
-import victor.training.spring.batch.util.PerformanceUtil;
+import victor.training.performance.util.PerformanceUtil;
 
 import java.util.List;
 

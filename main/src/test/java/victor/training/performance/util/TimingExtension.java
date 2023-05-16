@@ -1,4 +1,4 @@
-package victor.training.spring.batch.util;
+package victor.training.performance.util;
 
 import org.junit.jupiter.api.extension.AfterTestExecutionCallback;
 import org.junit.jupiter.api.extension.BeforeTestExecutionCallback;

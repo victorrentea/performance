@@ -6,7 +6,7 @@ import java.util.List;
 import java.util.stream.IntStream;
 
 import static java.util.stream.Collectors.toList;
-import static victor.training.spring.batch.util.PerformanceUtil.sleepMillis;
+import static victor.training.performance.util.PerformanceUtil.sleepMillis;
 
 @Slf4j
 public class ParallelStreams {

@@ -2,7 +2,7 @@ package victor.training.performance.pools.tasks;
 
 import java.util.concurrent.atomic.AtomicInteger;
 
-import static victor.training.spring.batch.util.PerformanceUtil.sleepMillis;
+import static victor.training.performance.util.PerformanceUtil.sleepMillis;
 
 public class DegradingTask implements Runnable {
     private AtomicInteger concurrentCalls = new AtomicInteger(0);

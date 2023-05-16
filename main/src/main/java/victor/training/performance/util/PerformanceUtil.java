@@ -1,4 +1,4 @@
-package victor.training.spring.batch.util;
+package victor.training.performance.util;
 
 import org.apache.commons.lang.RandomStringUtils;
 
@@ -15,6 +15,10 @@ import static java.lang.System.currentTimeMillis;
 public class PerformanceUtil {
     static Random random = new Random();
     static List<String> position = new ArrayList<>();
+
+    public static void sleepSomeTime() {
+        sleepSomeTime(10, 100);
+    }
 
     public static void sleepSomeTime(int min, int max) {
         sleepMillis(randomInt(min, max));
@@ -142,6 +146,7 @@ public class PerformanceUtil {
     }
 
     public static long getUsedHeapBytes() {
+        System.gc(); // to free the intermediary allocated [] when ArrayList grows
         return ManagementFactory.getMemoryMXBean().getHeapMemoryUsage().getUsed();
     }
 
@@ -151,5 +156,9 @@ public class PerformanceUtil {
             System.out.println("ENTER detected. System.exit(0);");
             System.exit(0);
         }).start();
+    }
+
+    public static String objectToString(Object x) {
+       return x.getClass().getName() + "@" + Integer.toHexString(System.identityHashCode(x));
     }
 }

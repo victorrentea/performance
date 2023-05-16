@@ -6,7 +6,7 @@ import jdk.jfr.Event;
 import jdk.jfr.Label;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import victor.training.spring.batch.util.PerformanceUtil;
+import victor.training.performance.util.PerformanceUtil;
 
 import java.io.IOException;
 import java.net.URI;

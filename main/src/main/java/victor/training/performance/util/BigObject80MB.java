@@ -1,4 +1,4 @@
-package victor.training.spring.batch.util;
+package victor.training.performance.util;
 
 import java.io.Serializable;
 import java.util.Date;

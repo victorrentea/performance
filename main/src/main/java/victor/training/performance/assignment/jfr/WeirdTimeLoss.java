@@ -8,7 +8,7 @@ import java.util.stream.IntStream;
 
 import static java.util.stream.Collectors.toList;
 import static java.util.stream.Collectors.toSet;
-import static victor.training.spring.batch.util.PerformanceUtil.measureCall;
+import static victor.training.performance.util.PerformanceUtil.measureCall;
 
 public class WeirdTimeLoss {
 

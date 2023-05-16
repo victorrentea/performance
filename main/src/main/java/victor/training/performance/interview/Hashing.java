@@ -1,6 +1,6 @@
 package victor.training.performance.interview;
 
-import victor.training.spring.batch.util.PerformanceUtil;
+import victor.training.performance.util.PerformanceUtil;
 
 import java.time.LocalDate;
 import java.util.*;

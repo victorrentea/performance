@@ -4,8 +4,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 
-import static victor.training.spring.batch.util.PerformanceUtil.log;
-import static victor.training.spring.batch.util.PerformanceUtil.sleepSomeTime;
+import static victor.training.performance.util.PerformanceUtil.log;
+import static victor.training.performance.util.PerformanceUtil.sleepSomeTime;
 
 public class MonitorWaitNotifyCondition {
 	static Drop drop = new Drop();

@@ -5,7 +5,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import victor.training.spring.batch.util.BigObject20MB;
+import victor.training.performance.util.BigObject20MB;
 
 import java.util.ArrayList;
 import java.util.List;

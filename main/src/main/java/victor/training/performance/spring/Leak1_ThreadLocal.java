@@ -3,7 +3,7 @@ package victor.training.performance.spring;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import victor.training.spring.batch.util.BigObject20MB;
+import victor.training.performance.util.BigObject20MB;
 
 @RestController
 @RequestMapping("leak1")
