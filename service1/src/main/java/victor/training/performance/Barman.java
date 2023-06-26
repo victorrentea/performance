@@ -36,6 +36,7 @@ public class Barman {
     Vodka vodka = futureVodka.get(); // blochez threadul Tomcat 0 sec, ca deja e gata vodka cand berea e turnata
 
     threadPool.shutdown();
+    // acum ai max 200 + 400 th total pornite (memory issue)
 
     long t1 = currentTimeMillis();
     log.info("HTTP thread blocked for millis: " + (t1 - t0));
