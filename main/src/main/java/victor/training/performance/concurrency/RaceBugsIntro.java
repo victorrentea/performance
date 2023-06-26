@@ -27,7 +27,7 @@ public class RaceBugsIntro {
     log.info("Start");
     for (Integer n : numbers) {
       if (n % 2 == 0) {
-        synchronized (total) {
+        synchronized (RaceBugsIntro.class) {
           total++;
         }
       }
