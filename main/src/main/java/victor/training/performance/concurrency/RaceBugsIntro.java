@@ -6,10 +6,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
-import java.util.concurrent.Callable;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
+import java.util.concurrent.*;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.IntStream;
 
@@ -21,36 +18,41 @@ public class RaceBugsIntro {
   private static List<Integer> evenNumbers = new ArrayList<>();
 
   // AtomicInteger
-  private static AtomicInteger total = new AtomicInteger(0);
+//  private static AtomicInteger total = new AtomicInteger(0);
 
   // many parallel threads run this method:
-  private static void countEven(List<Integer> numbers) {
+  private static int countEven(List<Integer> numbers) {
     log.info("Start");
+    int total = 0; // Map-reduce: executi separat cat de mult poti fara sa mutezi date comune!
     for (Integer n : numbers) {
       if (n % 2 == 0) {
 //        synchronized (RaceBugsIntro.class) {
 //          total++;
 //        }
-        total.incrementAndGet();
+//        total.incrementAndGet();
+        total++;
       }
     }
     log.info("end");
-
+    return total;
   }
 
   public static void main(String[] args) throws ExecutionException, InterruptedException {
     List<Integer> fullList = IntStream.range(0, 10_000).boxed().collect(toList());
 
     List<List<Integer>> lists = splitList(fullList, 2);
-    List<Callable<Void>> tasks = lists.stream().map(numbers -> (Callable<Void>) () -> {
-      countEven(numbers);
-      return null;
-    }).collect(toList());
+    List<Callable<Integer>> tasks = lists.stream()
+        .map(numbers -> (Callable<Integer>) () -> countEven(numbers))
+        .collect(toList());
 
     ExecutorService pool = Executors.newCachedThreadPool();
-    pool.invokeAll(tasks);
+//    List<Future<Integer>> futures = pool.invokeAll(tasks);
+    Future<Integer> t1 = pool.submit(tasks.get(0));
+    Future<Integer> t2 = pool.submit(tasks.get(1));
     pool.shutdown();
 
+//    futures.stream().map(Future::get).ct
+    int total = t1.get() + t2.get();
     log.debug("Counted: " + total);
 //    log.debug("Counted: " + evenNumbers.size());
   }
