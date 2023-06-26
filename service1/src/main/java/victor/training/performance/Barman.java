@@ -55,6 +55,9 @@ public class Barman {
   }
 
   private Beer fetchBeer() {
+    if (true) {
+      throw new IllegalArgumentException("Nu mai e bere");
+    }
     log.info("Pouring beer...");
     return rest.getForObject("http://localhost:9999/beer", Beer.class);
   }
