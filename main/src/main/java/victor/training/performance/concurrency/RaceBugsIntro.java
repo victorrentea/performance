@@ -10,6 +10,7 @@ import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.IntStream;
 
 import static java.util.stream.Collectors.toList;
@@ -20,16 +21,17 @@ public class RaceBugsIntro {
   private static List<Integer> evenNumbers = new ArrayList<>();
 
   // AtomicInteger
-  private static Integer total = 0;
+  private static AtomicInteger total = new AtomicInteger(0);
 
   // many parallel threads run this method:
   private static void countEven(List<Integer> numbers) {
     log.info("Start");
     for (Integer n : numbers) {
       if (n % 2 == 0) {
-        synchronized (RaceBugsIntro.class) {
-          total++;
-        }
+//        synchronized (RaceBugsIntro.class) {
+//          total++;
+//        }
+        total.incrementAndGet();
       }
     }
     log.info("end");
