@@ -19,6 +19,7 @@ import static java.util.stream.Collectors.toList;
 public class RaceBugsIntro {
   private static List<Integer> evenNumbers = new ArrayList<>();
 
+  // AtomicInteger
   private static Integer total = 0;
 
   // many parallel threads run this method:
@@ -26,7 +27,9 @@ public class RaceBugsIntro {
     log.info("Start");
     for (Integer n : numbers) {
       if (n % 2 == 0) {
-        total++;
+        synchronized (total) {
+          total++;
+        }
       }
     }
     log.info("end");
@@ -34,7 +37,7 @@ public class RaceBugsIntro {
   }
 
   public static void main(String[] args) throws ExecutionException, InterruptedException {
-    List<Integer> fullList = IntStream.range(0, 100).boxed().collect(toList());
+    List<Integer> fullList = IntStream.range(0, 10_000).boxed().collect(toList());
 
     List<List<Integer>> lists = splitList(fullList, 2);
     List<Callable<Void>> tasks = lists.stream().map(numbers -> (Callable<Void>) () -> {
