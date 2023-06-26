@@ -8,7 +8,7 @@
         <version>1.0</version>
     </parent>
     <artifactId>main</artifactId>
-    
+
     <dependencies>
         <dependency>
             <groupId>org.springframework.boot</groupId>
