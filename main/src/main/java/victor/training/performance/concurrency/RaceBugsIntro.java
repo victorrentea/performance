@@ -34,7 +34,7 @@ public class RaceBugsIntro {
   }
 
   public static void main(String[] args) throws ExecutionException, InterruptedException {
-    List<Integer> fullList = IntStream.range(0, 10_000).boxed().collect(toList());
+    List<Integer> fullList = IntStream.range(0, 100).boxed().collect(toList());
 
     List<List<Integer>> lists = splitList(fullList, 2);
     List<Callable<Void>> tasks = lists.stream().map(numbers -> (Callable<Void>) () -> {
