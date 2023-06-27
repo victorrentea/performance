@@ -28,14 +28,22 @@ public class ParallelStreams {
             // SA FACA CE?
             // A) CPU
             // B) I/O (db,api,soap,rmi,tcp)
+
+            // NU face I/O in parallelStream, ci doar CPU work
+            // asta e motivul pt care ForkJoinPool.commonPool are N-1 threaduri: sa faci CPU work
+
              sleepMillis(100); // do some 'paralellizable' I/O work (DB, REST, SOAP)
              return i * 2;
           })
           .collect(toList());
       log.debug("Got result: " + result);
 
+
+
       long t1 = System.currentTimeMillis();
       log.debug("Took {} ms", t1 - t0);
    }
+
+
 }
 
