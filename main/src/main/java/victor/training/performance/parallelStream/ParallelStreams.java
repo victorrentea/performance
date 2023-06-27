@@ -17,10 +17,17 @@ public class ParallelStreams {
 
       List<Integer> list = IntStream.range(1,100).boxed().collect(toList());
 
-      List<Integer> result = list.stream()
+      List<Integer> result = list.parallelStream()
+          // trimite elementele in executie in plus pe langa threadul caller
+          // pe un threadpool GLOBAL☠️☠️☠️ in JVM ('ForkJoinPool.commonPool') care are exact
+          // #CPU-1 theaduri in el (la mine = 9)
           .filter(i -> i % 2 == 0)
           .map(i -> {
              log.debug("Map " + i);
+             // procesarea unui element in parte dureaza timp.
+            // SA FACA CE?
+            // A) CPU
+            // B) I/O (db,api,soap,rmi,tcp)
              sleepMillis(100); // do some 'paralellizable' I/O work (DB, REST, SOAP)
              return i * 2;
           })
