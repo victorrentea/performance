@@ -2,6 +2,7 @@ package victor.training.performance.jpa;
 
 import lombok.Getter;
 import lombok.Setter;
+import org.hibernate.annotations.BatchSize;
 
 import javax.persistence.*;
 import java.util.HashSet;
@@ -19,7 +20,8 @@ public class Parent {
    private Integer age;
 
    @OneToMany(mappedBy = "parent", cascade = CascadeType.PERSIST, fetch = FetchType.EAGER)
-   // @BatchSize(size=10) // too much magic
+   @BatchSize(size=10) // Hibernate magic care-i spune sa incarce copiii a max 10 parinti odata
+   // pt caz de optimizat app legacy cu minim risc, atunci e bun asta
    private Set<Child> children = new HashSet<>(); // hibernate pune PersistentSet/Bag care lazy-loadeaza colectia
 
    @ManyToOne
