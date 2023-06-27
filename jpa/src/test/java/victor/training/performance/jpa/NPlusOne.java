@@ -40,17 +40,19 @@ public class NPlusOne {
 
     @BeforeEach
     void persistData() {
+        Country romania = countryRepo.save(new Country(1L, "Romania"));
         repo.save(new Parent("Victor")
-                .setCountry(countryRepo.save(new Country(1L, "Romania")))
+                .setCountry(romania)
                 .setAge(36)
                 .addChild(new Child("Emma"))
                 .addChild(new Child("Vlad"))
         );
         repo.save(new Parent("Trofim") // bachelor, no children but 4 cats
                 .setAge(42));
+        Country moldavia = countryRepo.save(new Country(2L, "Moldavia"));
         repo.save(new Parent("Peter")
                 .setAge(41)
-                .setCountry(countryRepo.save(new Country(2L,"Moldavia")))
+                .setCountry(romania)
                 .addChild(new Child("Maria"))
                 .addChild(new Child("Paul"))
                 .addChild(new Child("Stephan"))
@@ -90,6 +92,12 @@ public class NPlusOne {
     @Test
     public void selectFullEntity() {
         List<Parent> parents = repo.findAllCuCopii();
+        // acum vad 1 singur query dupa tara, pentru ca ambii parinti au aceeasi tara.
+        // Hibernate dupa ce a adus tara primului parinte,
+        // o tine in 1st level cache (transaction-scoped) = Persistence COntext
+        System.out.println(countryRepo.findById(1L).orElseThrow());
+
+        // - "Cum tunezi second level cacheul Hibernatului"
 
         log.info("Loaded {} parents: {}", parents.size(), parents);
 

@@ -23,7 +23,7 @@ public class Parent {
    private Set<Child> children = new HashSet<>(); // hibernate pune PersistentSet/Bag care lazy-loadeaza colectia
 
    @ManyToOne
-   private Country country; // surprise !
+   private Country country; // surprise ! Hibernate face +1 query sa aduca tara
 
    private Parent() {
    }
