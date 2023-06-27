@@ -38,6 +38,7 @@ public class UberEntity {
 //    private Country originCountry;
     // +pastreaza FK UBER.origin_country_id ->Country
     private Long originCountryId;
+
     @ManyToOne
     private Country nationality;
     @ManyToOne

@@ -86,10 +86,22 @@ public class UberEntityTest {
     @Test
     public void findById() {
         log.info("Loading a 'very OOP' @Entity by id...");
-        UberEntity uber = uberRepo.findById(uberId).orElseThrow(); // or em.find(UberEntity.class, id); in plain JPA
+        UberEntity uber = uberRepo.findById(uberId).orElseThrow();
+        //              or em.find(UberEntity.class, id); in plain JPA
+        // -1 join/select
         log.info("Loaded using findById (inspect the above query):\n" + uber);
 
-        // Use-case: I only loaded UberEntity to get its status
+
+        // CQRS = Command Query Responsiblity Segregation
+        // readu nu-i ca writeu
+        // nu folosesti aceleasi tehnici pe fluxurile de read ca pe cele de WRITE
+        // pt ca au ALTE CHALLENGEURI
+        // READ < performanta🔥 => poate trisa si scaote din query Dto, proiectii
+        // WRITE < consistenta datelor => scoti mereu @Entity intreaga,
+        //      pt acea entitate poate vrea
+        //      sa faca INCAPSULARE, sa-si protejeze consistenta datelor.
+
+       // Use-case: I only loaded UberEntity to get its status
         if (uber.getStatus() == Status.DRAFT) {
             throw new IllegalArgumentException("Not submitted yet");
         }
