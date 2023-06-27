@@ -47,8 +47,8 @@ public class UberEntity {
     private Country invoicingCountry;
     @ManyToOne
     private Scope scope;
-//    @Convert(converter = ScopeEnumConverter.class)
-//    private ScopeEnum scopeEnum;
+    @Convert(converter = ScopeEnumConverter.class)
+    private ScopeEnum scopeEnum;
     @ManyToOne
     private User createdBy;
     @Enumerated(STRING)

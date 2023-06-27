@@ -102,6 +102,7 @@ public class UberEntityTest {
         //      sa faca INCAPSULARE, sa-si protejeze consistenta datelor.
 
        // Use-case: I only loaded UberEntity to get its status
+//        if (uber.getStatusId() == DBConstatns.STATUS_DRAFT) {
         if (uber.getStatus() == Status.DRAFT) {
             throw new IllegalArgumentException("Not submitted yet");
         }
