@@ -1,6 +1,7 @@
 package victor.training.performance.jpa;
 
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -12,6 +13,11 @@ public interface ParentRepo extends JpaRepository<Parent, Long> {
 //  @Query("SELECT DISTINCT p FROM Parent p LEFT JOIN FETCH p.children LEFT JOIN FETCH p.country")
   @Query("SELECT p FROM Parent p LEFT JOIN FETCH p.children LEFT JOIN FETCH p.country")
   Set<Parent> findAllCuCopii();
+
+
+  // daca returnezi o pagina de rezultate nu poti sa facci LEFT JOIN FETCH copii (..TOMany
+//  @Query("SELECT p FROM Parent p LEFT JOIN FETCH p.children LEFT JOIN FETCH p.country")
+//  Page<Parent> findAllCuCopiiCuPaginare(PageRequest pageRequest);
 
   @Query(value = "select p.ID, P.NAME, nvl(STRING_AGG(c.NAME, ',') within group (order by c.name asc), '') children_names\n" +
       "from PARENT P\n" +

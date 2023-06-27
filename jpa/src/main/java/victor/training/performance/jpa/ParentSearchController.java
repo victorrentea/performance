@@ -55,6 +55,10 @@ public class ParentSearchController {
    public Page<Parent> drivingQuery() {
       PageRequest pageRequest = PageRequest.of(0, 20, ASC, "name");
       Page<Long> parentIdsPage = repo.findIdsByNameLike("%ar%", pageRequest);
+
+//      parentIdsPage.getTotalElements() ==> +1 query date= SELECT * WHERE ....  total= SELECT COUNT(*) WHERE ....
+
+
       List<Long> parentIds = parentIdsPage.getContent();
       log.info("Matched parents: {}", parentIds);
       Map<Long, Parent> parentDataById = repo.findParentsWithChildren(parentIds)

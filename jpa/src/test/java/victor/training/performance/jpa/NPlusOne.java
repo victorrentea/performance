@@ -6,6 +6,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.annotation.Rollback;
 import org.springframework.test.context.ActiveProfiles;
@@ -94,11 +95,12 @@ public class NPlusOne {
     // ======================= STAGE 1: SELECT full @Entity =============================
     @Test
     public void selectFullEntity() {
-//        Set<Parent> parents = repo.findAllCuCopii();
-        TypedQuery<Parent> q = entityManager.createNamedQuery("Parent.cuCopii", Parent.class); // crapa de la startup daca JPQL e invalid ❤️
+        Set<Parent> parents = repo.findAllCuCopii();
+//        Set<Parent> parents = repo.findAllCuCopiiCuPaginare(PageRequest.of(0, 2)).toSet();
+//        TypedQuery<Parent> q = entityManager.createNamedQuery("Parent.cuCopii", Parent.class); // crapa de la startup daca JPQL e invalid ❤️
 //        TypedQuery<Parent> q = entityManager.createQuery("SELECT p FROM Parent p LEFT JOIN FETCH p.children LEFT JOIN FETCH p.country", Parent.class); // crapa doar la runtime
 //        q.setParameter("param", "1")
-        Set<Parent> parents = new HashSet<>(q.getResultList());
+//        Set<Parent> parents = new HashSet<>(q.getResultList());
 //        List<Parent> parents = repo.findAll();
         // acum vad 1 singur query dupa tara, pentru ca ambii parinti au aceeasi tara.
         // Hibernate dupa ce a adus tara primului parinte,
