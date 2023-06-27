@@ -15,6 +15,7 @@ import org.springframework.transaction.annotation.Transactional;
 import victor.training.performance.jpa.ParentSearchViewRepo.ParentSearchProjection;
 
 import javax.persistence.EntityManager;
+import java.util.ArrayList;
 import java.util.List;
 
 import static java.util.stream.Collectors.joining;
@@ -45,7 +46,7 @@ public class NPlusOne {
                 .addChild(new Child("Emma"))
                 .addChild(new Child("Vlad"))
         );
-        repo.save(new Parent("Trofim") // bachelor, no children
+        repo.save(new Parent("Trofim") // bachelor, no children but 4 cats
                 .setAge(42));
         repo.save(new Parent("Peter")
                 .setAge(41)
