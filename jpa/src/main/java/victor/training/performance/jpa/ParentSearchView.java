@@ -8,7 +8,7 @@ import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
-@Table(name = "PARENT_SEARCH")
+@Table(name = "PARENT_SEARCH") // @Entity mapat pe VIEW. RUPE
 @Entity
 @Data
 @NoArgsConstructor

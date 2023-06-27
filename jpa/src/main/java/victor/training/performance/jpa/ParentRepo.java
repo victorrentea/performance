@@ -13,6 +13,13 @@ public interface ParentRepo extends JpaRepository<Parent, Long> {
   @Query("SELECT p FROM Parent p LEFT JOIN FETCH p.children LEFT JOIN FETCH p.country")
   Set<Parent> findAllCuCopii();
 
+  @Query(value = "select p.ID, P.NAME, nvl(STRING_AGG(c.NAME, ',') within group (order by c.name asc), '') children_names\n" +
+      "from PARENT P\n" +
+      "         left join CHILD C on P.ID = C.PARENT_ID\n" +
+      "group by p.ID, P.NAME" ,nativeQuery = true)
+  List<Object[]> querySQLNativ();
+
+
 
   // *** Paginated Search #1) fetch parents and lazy-load children
   @Query("SELECT p FROM Parent p WHERE p.name LIKE ?1")
