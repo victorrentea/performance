@@ -9,7 +9,7 @@ import java.util.List;
 import java.util.Set;
 
 public interface ParentRepo extends JpaRepository<Parent, Long> {
-  @Query("SELECT p FROM Parent p LEFT JOIN FETCH p.children LEFT JOIN FETCH p.country")
+  @Query("SELECT DISTINCT p FROM Parent p LEFT JOIN FETCH p.children LEFT JOIN FETCH p.country")
   List<Parent> findAllCuCopii();
 
 

@@ -79,7 +79,7 @@ public class NPlusOne {
 
     // This is what is displayed in the UI:
     private static void assertResultsInUIGrid(List<?> results) {
-        assertThat(results)
+        assertThat(results) // nimeni nu s-a intors la assertEquals dupa ce a gustat AssertJ
                 .extracting("name", "childrenNames")
                 .containsExactlyInAnyOrder(
                         tuple("Trofim", ""),
