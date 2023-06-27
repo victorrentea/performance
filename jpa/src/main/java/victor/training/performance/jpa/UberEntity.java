@@ -1,16 +1,9 @@
 package victor.training.performance.jpa;
 
-import lombok.Data;
-import lombok.Getter;
-import lombok.Setter;
-import lombok.ToString;
-import org.hibernate.annotations.Fetch;
-import org.hibernate.annotations.FetchMode;
+import lombok.*;
 
 import javax.persistence.*;
-import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Pattern;
 
 import static javax.persistence.EnumType.STRING;
 
@@ -81,12 +74,39 @@ public class UberEntity {
     @ManyToOne
     private User createdBy;
     @Enumerated(STRING)
-    private Status status;
+    @Setter(AccessLevel.NONE) // unii setteri pot fi evitati pt a proteja niste reguli de consistenta a domeniului
+    private Status status = Status.DRAFT;
+    @Setter(AccessLevel.NONE)
+    private String submittedByUser; // daca ai ajuns in SUBMIT tre sa fie nenul
+
+    boolean isDraft() { // derivi mici date
+        return status == Status.DRAFT;
+    }
 
     public enum Status {
         DRAFT, SUBMITTED, DELETED
     }
 
+    // Problema: in domainul meu, un Uber trece din DRAFT->SUBMITTED->DELETED.
+    // NU ARE VOIE sa treaca din DELETED->SUBMITTED (state machine)
+    // cum implem regula asta? cu un if intr-un Service pierdut prin cod
+//    public void setStatus(Status status) {
+//        this.status = status;
+//    }
+    public void submit(String user) {
+        if (status != Status.DRAFT) {
+            throw new IllegalStateException("Illegal state must come from DRAFT");
+        }
+        status = Status.SUBMITTED;
+        submittedByUser = user;
+    }
+
+    public void delete() {
+        if (status != Status.SUBMITTED) {
+            throw new IllegalStateException();
+        }
+        status = Status.DELETED;
+    }
 
 }
 

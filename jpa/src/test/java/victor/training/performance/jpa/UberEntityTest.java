@@ -1,18 +1,12 @@
 package victor.training.performance.jpa;
 
-import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.Value;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.data.jpa.repository.Query;
-import org.springframework.lang.Nullable;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.annotation.Rollback;
 import org.springframework.test.context.transaction.TestTransaction;
@@ -25,7 +19,6 @@ import java.util.List;
 import java.util.Map;
 
 import static java.util.stream.Collectors.joining;
-import static java.util.stream.Collectors.toList;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.tuple;
 import static org.springframework.test.annotation.DirtiesContext.ClassMode.BEFORE_EACH_TEST_METHOD;
@@ -60,7 +53,6 @@ public class UberEntityTest {
 
         UberEntity uber = new UberEntity()
                 .setName("::uberName::")
-                .setStatus(Status.SUBMITTED)
                 .setOriginCountryId(belgium.getId())
                 .setFiscalCountry(romania)
                 .setInvoicingCountry(france)
@@ -75,6 +67,11 @@ public class UberEntityTest {
     }
 
 
+    // in prod code
+    public void method() {
+        UberEntity uberEntity = uberRepo.findById(uberId).orElseThrow();
+        uberEntity.submit("SecurityUser....Principal...");
+    }
 
     @Test
     public void jpql() {
@@ -105,11 +102,12 @@ public class UberEntityTest {
 
        // Use-case: I only loaded UberEntity to get its status
 //        if (uber.getStatusId() == DBConstatns.STATUS_DRAFT) {
-        if (uber.getStatus() == Status.DRAFT) {
+        if (uber.isDraft()) {
             throw new IllegalArgumentException("Not submitted yet");
         }
         // more logic
     }
+
     @Test
     void read_nu() {
         em.createNativeQuery("alter table UBER_ENTITY alter column NAME set null").executeUpdate();
