@@ -3,6 +3,9 @@ package victor.training.performance.jpa;
 import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
+import lombok.ToString;
+import org.hibernate.annotations.Fetch;
+import org.hibernate.annotations.FetchMode;
 
 import javax.persistence.*;
 
@@ -17,7 +20,7 @@ import static javax.persistence.EnumType.STRING;
 @Setter
 // singurul motiv sa faci un Builder (anti-pattern) este daca ai o structura imutabila prea pare,
 // si ti-e scarba de constructor
-
+@ToString
 //un @Entity e mereu mutable, ca asa cere ORM
 public class UberEntity {
     @Id

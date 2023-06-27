@@ -7,7 +7,7 @@ import org.springframework.lang.Nullable;
 import java.util.List;
 
 public interface UberEntityRepo extends JpaRepository<UberEntity, Long> {
-  @Query("SELECT u FROM UberEntity u")
+  @Query("SELECT u FROM UberEntity u") // JPQL explicit
   List<UberEntity> findAllWithQuery();
 
   @Query("SELECT u FROM UberEntity u " +
@@ -15,5 +15,5 @@ public interface UberEntityRepo extends JpaRepository<UberEntity, Long> {
   List<UberEntity> searchFixedJqpl(@Nullable String name);
 
 
-  List<UberEntity> findByName(String name);
+  List<UberEntity> findByName(String name); // query generat implicit
 }

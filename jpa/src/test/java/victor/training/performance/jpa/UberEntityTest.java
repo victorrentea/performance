@@ -77,9 +77,9 @@ public class UberEntityTest {
     @Test
     public void jpql() {
         log.info("SELECTING a 'very OOP' @Entity with JPQL ...");
-         List<UberEntity> list = uberRepo.findAll();
+//         List<UberEntity> list = uberRepo.findAll(); // => cate query-uri ? 1+1/@ManyToOne
 //        List<UberEntity> list = uberRepo.findAllWithQuery();// EQUIVALENT
-//        List<UberEntity> list = uberRepo.findByName("::uberName::");
+        List<UberEntity> list = uberRepo.findByName("::uberName::");
         log.info("Loaded using JPQL (see how many queries are above):\n" + list);
     }
 
@@ -113,14 +113,19 @@ public class UberEntityTest {
     }
 
     private List<UberSearchResultDto> classicSearch(UberSearchCriteria criteria) {
-        String jpql = "SELECT u FROM UberEntity u WHERE 1 = 1 ";
+        String jpql = "SELECT new victor.training.performance.jpa.UberSearchResultDto(u.id, u.name, u.originCountry.name)" +
+            " FROM UberEntity u WHERE 1 = 1 ";
+        // niciodata la search nu scoti entitati intregi daca arati un set mic fixat de date
+        // to timpul cu new sau cu proiectii
+        // ceea ce scoti din query NU MAI E @Entity atasat la trazactia curenta -> orice modificare faci in structura, nu se scrie inapoi in DB.
+
         // alternative implementation: CriteriaAPI, Criteria+Metamodel, QueryDSL, Spring Specifications
         Map<String, Object> params = new HashMap<>();
         if (criteria.name != null) {
             jpql += " AND u.name = :name ";
             params.put("name", criteria.name);
         }
-        var query = em.createQuery(jpql, UberEntity.class);
+        var query = em.createQuery(jpql, UberSearchResultDto.class);
         for (String key : params.keySet()) {
             query.setParameter(key, params.get(key));
         }
@@ -129,7 +134,8 @@ public class UberEntityTest {
         // OR: Spring Data Repo @Query with a fixed JPQL
         //entities = uberRepo.searchFixedJqpl(criteria.name);
 
-        return entities.stream().map(UberSearchResultDto::new).collect(toList());
+//        return entities.stream().map(UberSearchResultDto::new).collect(toList());
+        return entities;
     }
 
     @Data
@@ -138,17 +144,17 @@ public class UberEntityTest {
         public Status status;
         // etc
     }
-    @Value
-    static class UberSearchResultDto { // sent as JSON
-        Long id;
-        String name;
-        String originCountry;
+}
+@Value // ❤️ doar getter si constructor !! + campuri final
+ class UberSearchResultDto { // sent as JSON
+    Long id;
+    String name;
+    String originCountry;
 
-        public UberSearchResultDto(UberEntity entity) {
-            id = entity.getId();
-            name = entity.getName();
-            originCountry = entity.getOriginCountry().getName();
-        }
-    }
+//    public UberSearchResultDto(UberEntity entity) {
+//        id = entity.getId();
+//        name = entity.getName();
+//        originCountry = entity.getOriginCountry().getName();
+//    }
 }
 
