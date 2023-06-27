@@ -20,7 +20,7 @@ public class Parent {
 
    @OneToMany(mappedBy = "parent", cascade = CascadeType.PERSIST)
    // @BatchSize(size=10) // too much magic
-   private Set<Child> children = new HashSet<>();
+   private Set<Child> children = new HashSet<>(); // hibernate pune PersistentSet/Bag care lazy-loadeaza colectia
 
    @ManyToOne
    private Country country; // surprise !

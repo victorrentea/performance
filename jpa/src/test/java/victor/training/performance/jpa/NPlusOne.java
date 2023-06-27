@@ -68,7 +68,10 @@ public class NPlusOne {
         public ParentSearchResult(Parent parent) {
             id = parent.getId();
             name = parent.getName();
-            childrenNames = parent.getChildren().stream().map(Child::getName).sorted().collect(joining(","));
+            childrenNames = parent.getChildren().stream() // asta cauzeaza un Lazy Loading daca esti in trazactia activa.
+                //  by default esti daca vii de pe REST in Spring, dar NU esti daca vii de pe:
+                //!!  MQ listener, @Scheduled, @Async
+                .map(Child::getName).sorted().collect(joining(","));
         }
     }
 
@@ -86,7 +89,7 @@ public class NPlusOne {
     // ======================= STAGE 1: SELECT full @Entity =============================
     @Test
     public void selectFullEntity() {
-        List<Parent> parents = repo.findAll();
+        List<Parent> parents = repo.findAllCuCopii();
 
         log.info("Loaded {} parents: {}", parents.size(), parents);
 
