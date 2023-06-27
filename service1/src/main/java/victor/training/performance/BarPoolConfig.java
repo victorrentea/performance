@@ -16,8 +16,10 @@ public class BarPoolConfig {
   public ThreadPoolTaskExecutor barPool(@Value("${bar.pool.size}") int barPoolSize) {
     ThreadPoolTaskExecutor executor = new ThreadPoolTaskExecutor();
     executor.setCorePoolSize(barPoolSize);
-    executor.setMaxPoolSize(barPoolSize);
-    executor.setQueueCapacity(500);
+    executor.setMaxPoolSize(barPoolSize); // how to decide ?
+
+    executor.setQueueCapacity(500); // how to decide?
+
     executor.setTaskDecorator(new MonitorQueueWaitingTimeTaskDecorator(meterRegistry.timer("barman-queue-time")));
     executor.setThreadNamePrefix("bar-");
     executor.initialize();
