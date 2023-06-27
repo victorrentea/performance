@@ -74,6 +74,8 @@ public class UberEntityTest {
         TestTransaction.start();
     }
 
+
+
     @Test
     public void jpql() {
         log.info("SELECTING a 'very OOP' @Entity with JPQL ...");
@@ -107,6 +109,28 @@ public class UberEntityTest {
             throw new IllegalArgumentException("Not submitted yet");
         }
         // more logic
+    }
+    @Test
+    void read_nu() {
+        em.createNativeQuery("alter table UBER_ENTITY alter column NAME set null").executeUpdate();
+        em.createNativeQuery("UPDATE UBER_ENTITY SET NAME = null").executeUpdate();
+
+        UberEntity u = uberRepo.findById(uberId).orElseThrow(); // pot sa-mi scriun un aspect
+        System.out.println("Am citit: " + u);
+    }
+
+    @Test
+    void saveNew() {
+        UberEntity u = new UberEntity();
+        uberRepo.save(u);
+    }
+    @Test
+    @Transactional
+    void updateOld() {
+        UberEntity u = uberRepo.findById(uberId).orElseThrow();
+        u.setName(null);
+        // DA - cred ca imi salveaza schibmarea in DB cata vreme erai intr-o @Tranzactie
+        // auto-flush dirty entities la final de @Tranzactie
     }
 
     @Test

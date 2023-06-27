@@ -7,11 +7,16 @@ import javax.persistence.Converter;
 public class ScopeEnumConverter implements AttributeConverter<ScopeEnum, String> {
    @Override
    public String convertToDatabaseColumn(ScopeEnum attribute) {
+      if (attribute == null) return null;
       return attribute.dbCode;
    }
 
    @Override
-   public ScopeEnum convertToEntityAttribute(String dbCode) {
+   public ScopeEnum convertToEntityAttribute(String dbCode)
+   {
+      if (dbCode == null) {
+         return null;
+      }
       return ScopeEnum.fromDbCode(dbCode);
    }
 }
