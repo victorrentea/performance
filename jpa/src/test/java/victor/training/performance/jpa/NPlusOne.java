@@ -91,7 +91,8 @@ public class NPlusOne {
     // ======================= STAGE 1: SELECT full @Entity =============================
     @Test
     public void selectFullEntity() {
-        List<Parent> parents = repo.findAllCuCopii();
+//        List<Parent> parents = repo.findAllCuCopii();
+        List<Parent> parents = repo.findAll();
         // acum vad 1 singur query dupa tara, pentru ca ambii parinti au aceeasi tara.
         // Hibernate dupa ce a adus tara primului parinte,
         // o tine in 1st level cache (transaction-scoped) = Persistence COntext
