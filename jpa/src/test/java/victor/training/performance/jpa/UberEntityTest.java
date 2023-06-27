@@ -60,6 +60,8 @@ public class UberEntityTest {
                 .setScope(globalScope)
 //                .setScopeEnum(ScopeEnum.GLOBAL) // TODO enum
                 .setCreatedBy(testUser);
+        uber.getPhone().add("unu");
+        uber.getPhone().add("doi");
         uberId = uberRepo.save(uber).getId();
 
         TestTransaction.end();
@@ -126,7 +128,8 @@ public class UberEntityTest {
     @Transactional
     void updateOld() {
         UberEntity u = uberRepo.findById(uberId).orElseThrow();
-        u.setName(null);
+        u.getPhone().add("trei"); //
+//        u.setName(null);
         // DA - cred ca imi salveaza schibmarea in DB cata vreme erai intr-o @Tranzactie
         // auto-flush dirty entities la final de @Tranzactie
     }

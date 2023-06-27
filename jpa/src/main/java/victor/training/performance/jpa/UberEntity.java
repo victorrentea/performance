@@ -5,6 +5,9 @@ import lombok.*;
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import static javax.persistence.EnumType.STRING;
 
 @Entity
@@ -71,6 +74,11 @@ public class UberEntity {
     private Scope scope;
     @Convert(converter = ScopeEnumConverter.class)
     private ScopeEnum scopeEnum;
+
+    @ElementCollection // max 5-10 elem ca le DELETE/INSERT pe toate odata
+    private List<String> phone = new ArrayList<>(); // daca modific orice telefon din lista=> DELETE ALL by uberId, INSERT ALL pt uberId
+//    private List<EmbedableMic> phone = new ArrayList<>();
+
     @ManyToOne
     private User createdBy;
     @Enumerated(STRING)
