@@ -1,11 +1,14 @@
 package victor.training.performance.jpa;
 
+import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.annotations.BatchSize;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.*;
 import java.util.HashSet;
+import java.util.Objects;
 import java.util.Set;
 
 @Getter
@@ -44,4 +47,40 @@ public class Parent {
       child.setParent(this);
       return this;
    }
+
+   // VIctor niciodata nu implementeaza hash/equals pe entity, si asata nu strica nimic !!
+   // cum puii mei ?!
+   // daca nu implementez hashCode/equals pe un Object, cand vor fi 2 elem elminate dintrun HashSet<Parent>
+   // in acest set nu vor putea exista 2 Parent == unul cu altul
+
+   // cata vreme sunt in aceeasi tranzactie, Hiberante imi va da EXACT ACEEASI REFERINTA la un Parent cu acelasi ID
+   // (thanks to 1st level cache)
+   // Parent{id:5} == Parent{id:5}
+
+
+//   @Override
+//   public boolean equals(Object o) {
+//      if (this == o) return true;
+//      if (o == null || getClass() != o.getClass()) return false;
+//      Parent parent = (Parent) o;
+//      return Objects.equals(id, parent.id) && Objects.equals(name, parent.name) && Objects.equals(age, parent.age) && Objects.equals(children, parent.children) && Objects.equals(country, parent.country);
+//   }
+//   @Override
+//   public int hashCode() {
+//      return Objects.hash(id, name, age, children, country); // GRESIT pt ca
+//      // usecaseu lui cu bug in pre-prod:
+//   }
+
+   // exista
+//   @Transactional
+//   static {
+//      Parent p = new Parent(); // id = null
+//      Set<Parent> set = new HashSet<>();
+//      set.add(p);
+//      repo.save(p); // acum ID-ul e diferit => hashCode da alt raspuns
+//      set.add(p); // poti adauga de 2 ori acelasi parinte
+//   }
+   // Clash of Titans:  Vlad vs Thorben
+   // Vlad: fa hashCode pe natural key, daca ai Eg CNP, CUI,
+   // Thorben: nu fa hashCode/equals pe @Entity ca n-are sens
 }

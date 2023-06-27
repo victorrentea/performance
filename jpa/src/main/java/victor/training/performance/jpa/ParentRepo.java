@@ -9,8 +9,9 @@ import java.util.List;
 import java.util.Set;
 
 public interface ParentRepo extends JpaRepository<Parent, Long> {
-  @Query("SELECT DISTINCT p FROM Parent p LEFT JOIN FETCH p.children LEFT JOIN FETCH p.country")
-  List<Parent> findAllCuCopii();
+//  @Query("SELECT DISTINCT p FROM Parent p LEFT JOIN FETCH p.children LEFT JOIN FETCH p.country")
+  @Query("SELECT p FROM Parent p LEFT JOIN FETCH p.children LEFT JOIN FETCH p.country")
+  Set<Parent> findAllCuCopii();
 
 
   // *** Paginated Search #1) fetch parents and lazy-load children

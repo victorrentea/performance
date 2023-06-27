@@ -17,6 +17,7 @@ import victor.training.performance.jpa.ParentSearchViewRepo.ParentSearchProjecti
 import javax.persistence.EntityManager;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 import static java.util.stream.Collectors.joining;
 import static java.util.stream.Collectors.toList;
@@ -91,7 +92,7 @@ public class NPlusOne {
     // ======================= STAGE 1: SELECT full @Entity =============================
     @Test
     public void selectFullEntity() {
-        List<Parent> parents = repo.findAllCuCopii();
+        Set<Parent> parents = repo.findAllCuCopii();
 //        List<Parent> parents = repo.findAll();
         // acum vad 1 singur query dupa tara, pentru ca ambii parinti au aceeasi tara.
         // Hibernate dupa ce a adus tara primului parinte,
@@ -107,7 +108,7 @@ public class NPlusOne {
         assertResultsInUIGrid(results);
     }
 
-    private List<ParentSearchResult> toSearchResults(List<Parent> parents) { // eg, in a Mapper
+    private List<ParentSearchResult> toSearchResults(Set<Parent> parents) { // eg, in a Mapper
         log.debug("Converting-->Dto START");
         List<ParentSearchResult> results = parents.stream().map(ParentSearchResult::new).collect(toList());
         log.debug("Converting-->Dto DONE");
