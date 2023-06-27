@@ -15,7 +15,9 @@ import org.springframework.transaction.annotation.Transactional;
 import victor.training.performance.jpa.ParentSearchViewRepo.ParentSearchProjection;
 
 import javax.persistence.EntityManager;
+import javax.persistence.TypedQuery;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -92,7 +94,11 @@ public class NPlusOne {
     // ======================= STAGE 1: SELECT full @Entity =============================
     @Test
     public void selectFullEntity() {
-        Set<Parent> parents = repo.findAllCuCopii();
+//        Set<Parent> parents = repo.findAllCuCopii();
+        TypedQuery<Parent> q = entityManager.createNamedQuery("Parent.cuCopii", Parent.class); // crapa de la startup daca JPQL e invalid ❤️
+//        TypedQuery<Parent> q = entityManager.createQuery("SELECT p FROM Parent p LEFT JOIN FETCH p.children LEFT JOIN FETCH p.country", Parent.class); // crapa doar la runtime
+//        q.setParameter("param", "1")
+        Set<Parent> parents = new HashSet<>(q.getResultList());
 //        List<Parent> parents = repo.findAll();
         // acum vad 1 singur query dupa tara, pentru ca ambii parinti au aceeasi tara.
         // Hibernate dupa ce a adus tara primului parinte,
@@ -121,6 +127,11 @@ public class NPlusOne {
     ParentSearchViewRepo searchRepo;
     @Test
     public void nativeQuery() {
+//        entityManager.createNativeQuery("sql WHERE name LIKE " + httpRequest.getParam("aa")) < bad practice
+            // 1) permite SQL injection
+            //
+//        entityManager.createNamedQuery("ParentSearchView.q1")
+
         List<ParentSearchProjection> results = searchRepo.nativeQueryForProjections();
         assertResultsInUIGrid(results);
     }
@@ -130,6 +141,7 @@ public class NPlusOne {
     @Sql("/create-view.sql")
     public void searchOnView() {
         List<ParentSearchView> results = searchRepo.findAll();
+//        entityManager.createQuery("jpql") < bad practice
         assertResultsInUIGrid(results);
     }
 

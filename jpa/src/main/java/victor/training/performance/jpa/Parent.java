@@ -14,6 +14,8 @@ import java.util.Set;
 @Getter
 @Setter
 @Entity
+@NamedQuery(name= "Parent.cuCopii",
+   query = "SELECT p FROM Parent p LEFT JOIN FETCH p.children LEFT JOIN FETCH p.country")
 public class Parent {
    @Id
    @GeneratedValue
