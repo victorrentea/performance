@@ -11,7 +11,7 @@ import static victor.training.performance.util.PerformanceUtil.sleepMillis;
 @Slf4j
 public class ParallelStreams {
    public static void main(String[] args) {
-//      Enemy.parallelRequest(); // demonstrates starvation of the shared commonPool
+      Enemy.parallelRequest(); // demonstrates starvation of the shared commonPool
 
       long t0 = System.currentTimeMillis();
 
