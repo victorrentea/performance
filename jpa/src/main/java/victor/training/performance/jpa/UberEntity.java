@@ -1,13 +1,24 @@
 package victor.training.performance.jpa;
 
 import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 
 import javax.persistence.*;
 
 import static javax.persistence.EnumType.STRING;
 
 @Entity
-@Data
+//@Data // ca de ce nu:
+//- hash/equals + id = horror
+//- toString care face lazy load
+//- @Setter: anemic domain model
+@Getter
+@Setter
+// singurul motiv sa faci un Builder (anti-pattern) este daca ai o structura imutabila prea pare,
+// si ti-e scarba de constructor
+
+//un @Entity e mereu mutable, ca asa cere ORM
 public class UberEntity {
     @Id
     @GeneratedValue
