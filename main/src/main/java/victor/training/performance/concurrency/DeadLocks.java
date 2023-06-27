@@ -24,8 +24,8 @@ public class DeadLocks {
       }
 
       public void run() {
-         Fork firstFork = leftFork;
-         Fork secondFork = rightFork;
+         Fork firstFork = leftFork.id < rightFork.id ? leftFork : rightFork;
+         Fork secondFork = leftFork.id > rightFork.id ? leftFork : rightFork;
 
          for (int i = 0; i < 5000; i++) {
             log("I'm hungry");
@@ -33,10 +33,11 @@ public class DeadLocks {
             log("Waiting for first fork (id=" + firstFork.id + ")...");
             synchronized (firstFork) {
                log("Took the first fork");
+                   sleepNanos(10);
                log("Waiting for the second fork (id=" + secondFork.id + ")...");
                synchronized (secondFork) {
                   log("Took both forks. Eating 🌟🌟🌟 ...");
-                  // sleepNanos(10);
+                   sleepNanos(10);
                   log("Done eating. Releasing forks");
                }
             }

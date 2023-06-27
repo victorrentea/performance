@@ -15,7 +15,9 @@ import static java.util.stream.Collectors.toList;
 
 @Slf4j
 public class RaceBugsIntro {
-  private static List<Integer> evenNumbers = new ArrayList<>();
+  private static List<Integer> evenNumbers =
+      Collections.synchronizedList(new ArrayList<>()); // ramai aici, ca e sigur
+
 
   // AtomicInteger
 //  private static AtomicInteger total = new AtomicInteger(0);
@@ -31,6 +33,7 @@ public class RaceBugsIntro {
 //        }
 //        total.incrementAndGet();
         total++;
+        evenNumbers.add(n);
       }
     }
     log.info("end");
@@ -54,7 +57,7 @@ public class RaceBugsIntro {
 //    futures.stream().map(Future::get).ct
     int total = t1.get() + t2.get();
     log.debug("Counted: " + total);
-//    log.debug("Counted: " + evenNumbers.size());
+    log.debug("Counted: " + evenNumbers.size());
   }
 
   //<editor-fold desc="splitList utility function">
