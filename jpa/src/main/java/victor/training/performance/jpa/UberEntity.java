@@ -34,8 +34,10 @@ public class UberEntity {
     private String ssn;
     private String passportNumber;
 
-    @ManyToOne
-    private Country originCountry;
+//    @ManyToOne
+//    private Country originCountry;
+    // +pastreaza FK UBER.origin_country_id ->Country
+    private Long originCountryId;
     @ManyToOne
     private Country nationality;
     @ManyToOne

@@ -61,7 +61,7 @@ public class UberEntityTest {
         UberEntity uber = new UberEntity()
                 .setName("::uberName::")
                 .setStatus(Status.SUBMITTED)
-                .setOriginCountry(belgium)
+                .setOriginCountryId(belgium.getId())
                 .setFiscalCountry(romania)
                 .setInvoicingCountry(france)
                 .setNationality(serbia)
@@ -113,8 +113,11 @@ public class UberEntityTest {
     }
 
     private List<UberSearchResultDto> classicSearch(UberSearchCriteria criteria) {
-        String jpql = "SELECT new victor.training.performance.jpa.UberSearchResultDto(u.id, u.name, u.originCountry.name)" +
-            " FROM UberEntity u WHERE 1 = 1 ";
+        String jpql = "SELECT new victor.training.performance.jpa.UberSearchResultDto(" +
+            "u.id, u.name, c.name)" + // in search / export
+            " FROM UberEntity u " +
+            " JOIN Country c ON c.id = u.originCountryId " +
+            " WHERE 1 = 1 ";
         // niciodata la search nu scoti entitati intregi daca arati un set mic fixat de date
         // to timpul cu new sau cu proiectii
         // ceea ce scoti din query NU MAI E @Entity atasat la trazactia curenta -> orice modificare faci in structura, nu se scrie inapoi in DB.
