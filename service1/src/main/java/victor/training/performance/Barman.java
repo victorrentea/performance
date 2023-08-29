@@ -6,6 +6,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
+import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.client.RestTemplate;
@@ -61,7 +62,7 @@ public class Barman {
     CompletableFuture<DillyDilly> dillyPromise = beerPromise.thenCombineAsync(vodkaPromise,
         (beer, vodka) -> new DillyDilly(beer, vodka));
 
-    CompletableFuture.runAsync(() -> fireAndForget(),barPool); // E NASPA
+    altaClasa.fireAndForget();
 
     long t1 = currentTimeMillis();
     log.info("HTTP thread blocked for millis: " + (t1 - t0));
@@ -75,19 +76,28 @@ public class Barman {
 //      asyncContext.complete();
 //    });
 //  }
+  @Autowired
+  private AltaClasa altaClasa;
 
-//  @Async("barPool")
+  private Beer fetchBeer() {
+    log.info("Cer bere!");
+//    if (true) {
+//      throw new IllegalArgumentException("NU MAI E BERE");
+//    }
+    return rest.getForObject("http://localhost:9999/beer", Beer.class);
+  }
+}
+
+@Service
+@Slf4j
+class AltaClasa {
+  // logeaza automat erorile aparute.
+  @Async("barPool") // nu merg proxyurile pe apelurile locale in aceeasi clasa
   @SneakyThrows
-  private void fireAndForget() {
+  public void fireAndForget() {
     log.info("Start processing a file (takes long)");
     Thread.sleep(2000);
     if (true) throw new IllegalArgumentException("EROARE");
     log.info("Done FILE");
-
-  }
-
-  private Beer fetchBeer() {
-    log.info("Cer bere!");
-    return rest.getForObject("http://localhost:9999/beer", Beer.class);
   }
 }
