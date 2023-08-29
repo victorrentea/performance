@@ -7,6 +7,8 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 
+import java.util.concurrent.ThreadPoolExecutor;
+
 @Configuration
 public class BarPoolConfig {
   @Autowired
@@ -28,6 +30,8 @@ public class BarPoolConfig {
     executor.setMaxPoolSize(barPoolSize);
 
     executor.setQueueCapacity(500); //? cat tolereaza clientul sa astepte. cat ocupa MEMORIE coada? fct de durata medie a procesarii si de nr de
+
+    executor.setRejectedExecutionHandler(new ThreadPoolExecutor.CallerRunsPolicy()); // toarna-ti tu bere, daca nu e nici un th liber.
 
     executor.setTaskDecorator(new MonitorQueueWaitingTimeTaskDecorator(meterRegistry.timer("barman-queue-time")));
     executor.setThreadNamePrefix("bar-");

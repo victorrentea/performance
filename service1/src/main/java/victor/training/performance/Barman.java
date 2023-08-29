@@ -1,5 +1,6 @@
 package victor.training.performance;
 
+import brave.http.HttpServerResponse;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,9 +12,12 @@ import victor.training.performance.drinks.Beer;
 import victor.training.performance.drinks.DillyDilly;
 import victor.training.performance.drinks.Vodka;
 
+import javax.servlet.AsyncContext;
+import javax.servlet.http.HttpServletRequest;
 import java.util.concurrent.*;
 
 import static java.lang.System.currentTimeMillis;
+import static java.util.concurrent.CompletableFuture.supplyAsync;
 
 @RestController
 @Slf4j
@@ -26,7 +30,7 @@ public class Barman {
   private ThreadPoolTaskExecutor barPool;
 
   @GetMapping("/drink")
-  public DillyDilly drink() throws ExecutionException, InterruptedException {
+  public CompletableFuture<DillyDilly> drink() throws ExecutionException, InterruptedException {
     long t0 = currentTimeMillis();
 
     //  🛑 independent tasks executed sequentially ~> parallelize
@@ -38,23 +42,38 @@ public class Barman {
 //    Future<Beer> futureBeer = threadPool.submit(() -> rest.getForObject("http://localhost:9999/beer", Beer.class));
 
       // 2) Spring ThreadPoolTaskExecutor
-      Future<Beer> futureBeer = barPool.submit(() -> fetchBeer());
+//      Future<Beer> futureBeer = barPool.submit(() -> fetchBeer());
+//      Vodka vodka = rest.getForObject("http://localhost:9999/vodka", Vodka.class); // BLOCK
+//      Beer beer = futureBeer.get(); // BLOCK
 
-      // 3) CompletableFuture
+      // 3) CompletableFuture === promise(JS) - non blocking async (ca sa nu starvezi th poolul Tomcatului)
+    // nu ai voie .get()
 
-//    Beer beer = rest.getForObject("http://localhost:9999/beer", Beer.class);
-    Vodka vodka = rest.getForObject("http://localhost:9999/vodka", Vodka.class);
-    Beer beer = futureBeer.get();
+    // NICIODATA in App Spring sa nu folosesti CompletableFuture.xxxAsync fara sa ii dai executor parametru
+    /// (adica sa nu rulezi niciodata pe ForkJoinPool.commonPool
+    // - il starvezi (abuzezi) are N-1 th - f putin
+    // - pierzi metadatele de pe ThreadLocal-ul original daca nu submitezi pe un Th Pool injectat de Spring
+    CompletableFuture<Beer> beerPromise = supplyAsync(() -> fetchBeer(), barPool);
+    CompletableFuture<Vodka> vodkaPromise = supplyAsync(() -> rest.getForObject("http://localhost:9999/vodka", Vodka.class)
+        ,barPool);
 
+    CompletableFuture<DillyDilly> dillyPromise = beerPromise.thenCombineAsync(vodkaPromise,
+        (beer, vodka) -> new DillyDilly(beer, vodka));
 
     barPool.submit(() -> fireAndForget());
 
-
-
     long t1 = currentTimeMillis();
     log.info("HTTP thread blocked for millis: " + (t1 - t0));
-    return new DillyDilly(beer,vodka);
+    return dillyPromise;
   }
+
+//  public void ceFaceSpringuPeSub(HttpServletRequest r) {
+//    AsyncContext asyncContext = r.startAsync();
+//    drink().thenAccept(dilly -> {
+//      asyncContext.getResponse().getWriter().write(toJson(dilly));
+//      asyncContext.complete();
+//    });
+//  }
 
   @SneakyThrows
   private void fireAndForget() {
