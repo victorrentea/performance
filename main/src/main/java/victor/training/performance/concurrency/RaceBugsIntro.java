@@ -5,6 +5,7 @@ import lombok.extern.slf4j.Slf4j;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Vector;
 import java.util.concurrent.*;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.IntStream;
@@ -20,6 +21,7 @@ public class RaceBugsIntro {
   private static final Object lock = new Object();
 
   private static final List<Integer> pare = Collections.synchronizedList(new ArrayList<>());
+//  private static final List<Integer> pare = new Vector<>(); // rau ca add la size mare costa
 
 //  private static final List<Integer> pare = new ConcurrentSkipListSet<>();
 
