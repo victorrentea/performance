@@ -11,13 +11,14 @@ import static victor.training.performance.util.PerformanceUtil.sleepMillis;
 @Slf4j
 public class ParallelStreams {
    public static void main(String[] args) {
-//      Enemy.parallelRequest(); // demonstrates starvation of the shared commonPool
+      Enemy.parallelRequest(); // demonstrates starvation of the shared commonPool
 
       long t0 = System.currentTimeMillis();
 
       List<Integer> listOfIds = IntStream.range(1,100).boxed().collect(toList());
 
-      List<Integer> result = listOfIds.parallelStream()
+      List<Integer> result = listOfIds.parallelStream() // parallelStream a fost gandit sa mearga
+          // pe CommonPool in ideea ca faci in el DOAR CPU (non-blocking work)
           .filter(i -> i % 2 == 0)
           .map(i -> {
             return fetchById(i);
