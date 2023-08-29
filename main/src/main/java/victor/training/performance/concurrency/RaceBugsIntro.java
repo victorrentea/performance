@@ -19,15 +19,17 @@ import static java.util.stream.Collectors.toList;
 public class RaceBugsIntro {
   private static List<Integer> evenNumbers = new ArrayList<>();
 
-  private static AtomicInteger total = new AtomicInteger();
+  private static Integer total = 0;
   private static final Object lock = new Object();
 
   // many parallel threads run this method:
   private static void countEven(List<Integer> numbers) {
     log.info("Start");
     for (Integer n : numbers) {
-      if (n % 2 == 0) {
-        total.incrementAndGet();
+      synchronized (total) {
+        if (n % 2 == 0) {
+          total = new Integer(total + 1);
+        }
       }
     }
     log.info("end");
