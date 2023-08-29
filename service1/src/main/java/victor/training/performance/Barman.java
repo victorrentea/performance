@@ -1,5 +1,6 @@
 package victor.training.performance;
 
+import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
@@ -46,13 +47,20 @@ public class Barman {
     Beer beer = futureBeer.get();
 
 
-//    barPool.submit(() -> fireAndForget());
+    barPool.submit(() -> fireAndForget());
 
 
 
     long t1 = currentTimeMillis();
     log.info("HTTP thread blocked for millis: " + (t1 - t0));
     return new DillyDilly(beer,vodka);
+  }
+
+  @SneakyThrows
+  private void fireAndForget() {
+    log.info("Start processing a file (takes long)");
+    Thread.sleep(2000);
+    log.info("Done FILE");
   }
 
   private Beer fetchBeer() {
