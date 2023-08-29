@@ -60,7 +60,7 @@ public class Barman {
     CompletableFuture<DillyDilly> dillyPromise = beerPromise.thenCombineAsync(vodkaPromise,
         (beer, vodka) -> new DillyDilly(beer, vodka));
 
-    barPool.submit(() -> fireAndForget());
+    CompletableFuture.runAsync(() -> fireAndForget(),barPool);
 
     long t1 = currentTimeMillis();
     log.info("HTTP thread blocked for millis: " + (t1 - t0));
