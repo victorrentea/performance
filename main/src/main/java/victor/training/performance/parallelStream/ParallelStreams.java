@@ -15,14 +15,12 @@ public class ParallelStreams {
 
       long t0 = System.currentTimeMillis();
 
-      List<Integer> list = IntStream.range(1,100).boxed().collect(toList());
+      List<Integer> listOfIds = IntStream.range(1,100).boxed().collect(toList());
 
-      List<Integer> result = list.stream()
+      List<Integer> result = listOfIds.parallelStream()
           .filter(i -> i % 2 == 0)
           .map(i -> {
-             log.debug("Map " + i);
-             sleepMillis(100); // do some 'paralellizable' I/O work (DB, REST, SOAP)
-             return i * 2;
+            return fetchById(i);
           })
           .collect(toList());
       log.debug("Got result: " + result);
@@ -30,5 +28,13 @@ public class ParallelStreams {
       long t1 = System.currentTimeMillis();
       log.debug("Took {} ms", t1 - t0);
    }
+
+
+
+  private static int fetchById(Integer id) {
+    log.debug("Fetching id=" + id);
+    sleepMillis(100); // do some 'paralellizable' I/O work (DB, REST, SOAP)
+    return id * 2;
+  }
 }
 
