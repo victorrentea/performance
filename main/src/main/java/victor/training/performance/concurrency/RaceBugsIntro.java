@@ -19,7 +19,7 @@ public class RaceBugsIntro {
   private static AtomicInteger total = new AtomicInteger();
   private static final Object lock = new Object();
 
-  private static final List<Integer> pare = new ArrayList<>();
+  private static final List<Integer> pare = Collections.synchronizedList(new ArrayList<>());
 
 //  private static final List<Integer> pare = new ConcurrentSkipListSet<>();
 
@@ -29,9 +29,7 @@ public class RaceBugsIntro {
     for (Integer n : numbers) {
       if (n % 2 == 0) {
         total.incrementAndGet();
-       synchronized (pare) {
          pare.add(n);
-       }
       }
     }
     log.info("end");
