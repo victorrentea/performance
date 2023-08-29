@@ -36,13 +36,18 @@ public class Barman {
 //    private static final ExecutorService threadPool = Executors.newFixedThreadPool(2);
 //    Future<Beer> futureBeer = threadPool.submit(() -> rest.getForObject("http://localhost:9999/beer", Beer.class));
 
-    // 2) Spring ThreadPoolTaskExecutor
+      // 2) Spring ThreadPoolTaskExecutor
       Future<Beer> futureBeer = barPool.submit(() -> fetchBeer());
-    // 3) CompletableFuture
+
+      // 3) CompletableFuture
 
 //    Beer beer = rest.getForObject("http://localhost:9999/beer", Beer.class);
     Vodka vodka = rest.getForObject("http://localhost:9999/vodka", Vodka.class);
     Beer beer = futureBeer.get();
+
+
+//    barPool.submit(() -> fireAndForget());
+
 
 
     long t1 = currentTimeMillis();

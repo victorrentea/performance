@@ -8,6 +8,7 @@ import org.jooq.lambda.Unchecked;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.ResultSetExtractor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -21,6 +22,7 @@ import javax.sql.DataSource;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.Writer;
+import java.sql.ResultSet;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.IntStream;
@@ -59,6 +61,10 @@ public class Leak10_Hibernate {
       log.debug("Exporting....");
 
       try (Writer writer = new FileWriter("big-entity.txt")) {
+//         ResultSet rs = dataSource.prepareStatement().execute();
+//         while(rs.next()) {
+//            rs.getString(1);
+//         }
          repo.streamAll()
              .map(BigEntity::getDescription)
              .forEach(Unchecked.consumer(writer::write));
@@ -81,7 +87,7 @@ class BigEntity {
 }
 
 interface BigEntityRepo extends JpaRepository<BigEntity, Long> {
-   @Query("FROM BigEntity")
+   @Query("SELECT b FROM BigEntity b")
    Stream<BigEntity> streamAll();
 }
 
