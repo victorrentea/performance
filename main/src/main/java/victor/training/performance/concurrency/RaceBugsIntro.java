@@ -3,7 +3,6 @@ package victor.training.performance.concurrency;
 import lombok.extern.slf4j.Slf4j;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.Callable;
@@ -20,21 +19,23 @@ public class RaceBugsIntro {
   private static List<Integer> evenNumbers = new ArrayList<>();
 
   private static Integer total = 0;
+  private static final Object lock = new Object();
 
   // many parallel threads run this method:
   private static void countEven(List<Integer> numbers) {
     log.info("Start");
     for (Integer n : numbers) {
-      if (n % 2 == 0) {
-        total++;
+      synchronized (lock) {
+        if (n % 2 == 0) {
+          total++;
+        }
       }
     }
     log.info("end");
-
   }
 
   public static void main(String[] args) throws ExecutionException, InterruptedException {
-    List<Integer> fullList = IntStream.range(0, 10_000).boxed().collect(toList());
+    List<Integer> fullList = IntStream.range(0, 100_000).boxed().collect(toList());
 
     List<List<Integer>> lists = splitList(fullList, 2);
     List<Callable<Void>> tasks = lists.stream().map(numbers -> (Callable<Void>) () -> {
@@ -42,7 +43,7 @@ public class RaceBugsIntro {
       return null;
     }).collect(toList());
 
-    ExecutorService pool = Executors.newCachedThreadPool();
+    ExecutorService pool = Executors.newFixedThreadPool(2);
     pool.invokeAll(tasks);
     pool.shutdown();
 
