@@ -94,8 +94,8 @@ public class NPlusOne {
     public void selectFullEntity() {
         log.info("Start!");
         // JPQL="SELECT p FROM Parent p LEFT JOIN FETCH p.country" exclude parintii fara country
-//        List<Parent> parents = repo.finduMeu();
-        List<Parent> parents = repo.findAll(); // daca intorci o pagina de 20 de parinti => N+1 = 21.. ete na...
+        List<Parent> parents = repo.finduMeu();
+//        List<Parent> parents = repo.findAll(); // daca intorci o pagina de 20 de parinti => N+1 = 21.. ete na...
         // pana cand constati ca pagina aia e homepage-ul afisat de 500 ori/min userilor tai.
         log.info("Loaded {} parents: {}", parents.size(), parents);
 //        TestTransaction.end(); // crapa lazy loading daca metoda in care erai nu este @Transactional
