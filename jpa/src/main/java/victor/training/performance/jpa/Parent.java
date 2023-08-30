@@ -22,8 +22,15 @@ public class Parent {
    // @BatchSize(size=10) // too much magic
    private Set<Child> children = new HashSet<>();
 
-   @ManyToOne // EAGER by default = JPA nu iti va da niciodata un Parent fara country
-   private Country country; // surprise !
+   @ManyToOne(fetch = FetchType.LAZY) // EAGER by default = JPA nu iti va da niciodata un Parent fara country
+   private Country country;
+//   = new Country() {
+//      @Override
+//      public String getIso2Code() {
+//         return super.getIso2Code();
+//      }
+////      orice getter chemi trigereaza query
+//   }; // surprise !
 
    private Parent() {
    }

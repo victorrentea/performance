@@ -94,7 +94,8 @@ public class NPlusOne {
     public void selectFullEntity() {
         log.info("Start!");
         // JPQL="SELECT p FROM Parent p LEFT JOIN FETCH p.country" exclude parintii fara country
-        List<Parent> parents = repo.finduMeu();
+//        List<Parent> parents = repo.finduMeu();
+        List<Parent> parents = repo.findAll();
         log.info("Loaded {} parents: {}", parents.size(), parents);
 
         List<ParentSearchResult> results = toSearchResults(parents);
