@@ -18,24 +18,73 @@ import java.time.format.DateTimeFormatter;
 @RequestMapping("leak7")
 public class Leak7_Cache {
    @Autowired
-   private Stuff stuff;
+   private CacheService cacheService;
 
    @GetMapping
-   public String test() {
-      String currentUsername = RandomStringUtils.random(8);
-      // TODO pass this as param
-      BigObject20MB data = stuff.returnCachedDataForDay(LocalDateTime.now());
-      return "Tools won't always shield you from mistakes: data=" + data + ", " + PerformanceUtil.getUsedHeap();
+   public String cacheKey() {
+      BigObject20MB data = cacheService.getCachedDataForDay(LocalDateTime.now());
+      return "Data from cache for today = " + data + ", " + PerformanceUtil.getUsedHeap();
+   }
+
+   @GetMapping("signature")
+   public String signature() {
+      String currentUsername = RandomStringUtils.random(8); // some random username
+      // TODO CR: pass username as 2nd param below
+      BigObject20MB data = cacheService.getContractById(1L /*, currentUsername*/);
+      return "Contract id:1 = " + data + ", " + PerformanceUtil.getUsedHeap();
+   }
+
+   @GetMapping("customKey")
+   public String customKey() {
+      BigObject20MB data = cacheService.getInvoiceByContractAndDate(new InvoiceByDate(13L, 2023, 10));
+      return "Invoice = " + data + ", " + PerformanceUtil.getUsedHeap();
    }
 }
 
 @Service
 @Slf4j
-class Stuff {
-   @Cacheable("missed-cache") // = a proxy intercepts the method call and returns the cached value for that parameter
-   public BigObject20MB returnCachedDataForDay(LocalDateTime date) {
+class CacheService {
+   // @Cacheable makes a proxy intercept the method call and return the cached value for that parameter (if any)
+   @Cacheable("day-cache")
+   public BigObject20MB getCachedDataForDay(LocalDateTime date) {
       log.debug("Fetch data for date: {}", date.format(DateTimeFormatter.ISO_DATE));
       return new BigObject20MB();
+   }
+
+   @Cacheable("contracts")
+   public BigObject20MB getContractById(Long contractId) {
+      log.debug("Fetch contract for id: {}", contractId);
+      return new BigObject20MB();
+   }
+
+   @Cacheable("invoices")
+   public BigObject20MB getInvoiceByContractAndDate(InvoiceByDate param) {
+      log.debug("Fetch invoice for {}", param);
+      return new BigObject20MB();
+   }
+}
+
+class InvoiceByDate {
+   private final Long contractId;
+   private final int year;
+   private final int month;
+
+   InvoiceByDate(Long contractId, int year, int month) {
+      this.contractId = contractId;
+      this.year = year;
+      this.month = month;
+   }
+
+   public int getMonth() {
+      return month;
+   }
+
+   public int getYear() {
+      return year;
+   }
+
+   public Long getContractId() {
+      return contractId;
    }
 }
 

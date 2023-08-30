@@ -12,7 +12,17 @@
         </resources>
     </cache>
 
-    <cache alias="missed-cache" >
+    <cache alias="contracts" >
+        <resources>
+            <heap unit="GB">1</heap>
+        </resources>
+    </cache>
+    <cache alias="invoices" >
+        <resources>
+            <heap unit="GB">1</heap>
+        </resources>
+    </cache>
+    <cache alias="day-cache" >
         <expiry>
             <ttl unit="minutes">30</ttl>
         </expiry>
