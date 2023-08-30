@@ -22,7 +22,7 @@ public class Parent {
    // @BatchSize(size=10) // too much magic
    private Set<Child> children = new HashSet<>();
 
-   @ManyToOne
+   @ManyToOne // EAGER by default = JPA nu iti va da niciodata un Parent fara country
    private Country country; // surprise !
 
    private Parent() {

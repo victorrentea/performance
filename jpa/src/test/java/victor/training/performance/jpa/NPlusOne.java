@@ -15,6 +15,7 @@ import org.springframework.transaction.annotation.Transactional;
 import victor.training.performance.jpa.ParentSearchViewRepo.ParentSearchProjection;
 
 import javax.persistence.EntityManager;
+import javax.sql.DataSource;
 import java.util.List;
 
 import static java.util.stream.Collectors.joining;
@@ -39,8 +40,9 @@ public class NPlusOne {
 
     @BeforeEach
     void persistData() {
+        Country romania = countryRepo.save(new Country(1L, "Romania"));
         repo.save(new Parent("Victor")
-                .setCountry(countryRepo.save(new Country(1L, "Romania")))
+                .setCountry(romania)
                 .setAge(36)
                 .addChild(new Child("Emma"))
                 .addChild(new Child("Vlad"))
@@ -49,7 +51,8 @@ public class NPlusOne {
                 .setAge(42));
         repo.save(new Parent("Peter")
                 .setAge(41)
-                .setCountry(countryRepo.save(new Country(2L,"Moldavia")))
+                .setCountry(romania)
+//                .setCountry(countryRepo.save(new Country(2L,"Moldavia")))
                 .addChild(new Child("Maria"))
                 .addChild(new Child("Paul"))
                 .addChild(new Child("Stephan"))
@@ -59,8 +62,11 @@ public class NPlusOne {
         TestTransaction.start();
     }
 
+    @Autowired
+    private DataSource dataSource;
+
     @Value
-    static class ParentSearchResult {
+    static class ParentSearchResult { // pleaca catre BRO ca JSON
         Long id;
         String name;
         String childrenNames;
@@ -85,8 +91,8 @@ public class NPlusOne {
     // ======================= STAGE 1: SELECT full @Entity =============================
     @Test
     public void selectFullEntity() {
-        List<Parent> parents = repo.findAll();
-
+        log.info("Start!");
+        List<Parent> parents = repo.findAll(); // 2 SELECT (1 pt PARENT si doar 1 pt COUNTRy multumita 1st level cache, pt ca ambii parinti au acelasi country)
         log.info("Loaded {} parents: {}", parents.size(), parents);
 
         List<ParentSearchResult> results = toSearchResults(parents);
