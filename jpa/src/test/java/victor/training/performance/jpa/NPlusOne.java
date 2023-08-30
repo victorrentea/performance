@@ -103,7 +103,7 @@ public class NPlusOne {
         // daca ai lazy load pe o relatie:
         // a) o faci LEFT JOIN FETCH < mai eficient, evita roundtrip pe retea
         // b) permiti lazy loading dar tii tranzactia deschisa
-        System.out.println(parents.get(0).getCountry().getName());
+//        System.out.println(parents.get(0).getCountry().getName());
         log.info("Dupa");
 
         List<ParentSearchResult> results = toSearchResults(parents);
@@ -112,7 +112,7 @@ public class NPlusOne {
     }
 
     private List<ParentSearchResult> toSearchResults(List<Parent> parents) { // eg, in a Mapper
-        log.debug("Converting-->Dto START");
+        log.debug("Converting-->Dto START : " + parents.get(0).getChildren().getClass());
         List<ParentSearchResult> results = parents.stream().map(ParentSearchResult::new).collect(toList());
         log.debug("Converting-->Dto DONE");
         return results;
