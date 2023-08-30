@@ -51,8 +51,8 @@ public class NPlusOne {
                 .setAge(42));
         repo.save(new Parent("Peter")
                 .setAge(41)
-                .setCountry(romania)
-//                .setCountry(countryRepo.save(new Country(2L,"Moldavia")))
+//                .setCountry(romania)
+                .setCountry(countryRepo.save(new Country(2L,"Moldavia")))
                 .addChild(new Child("Maria"))
                 .addChild(new Child("Paul"))
                 .addChild(new Child("Stephan"))
@@ -92,8 +92,8 @@ public class NPlusOne {
     @Test
     public void selectFullEntity() {
         log.info("Start!");
-        List<Parent> parents = repo.findAll(); // 2 SELECT (1 pt PARENT si doar 1 pt COUNTRy multumita 1st level cache, pt ca ambii parinti au acelasi country)
         log.info("Loaded {} parents: {}", parents.size(), parents);
+        List<Parent> parents = repo.findAll(); // 3 SELECT: 1 pt PARENT si 2 pt COUNTRy pt ca JPA trebuie sa iti dea Parent cu country setat (EAGER by default @ManyToOne)
 
         List<ParentSearchResult> results = toSearchResults(parents);
 
