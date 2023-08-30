@@ -116,14 +116,20 @@ public class UberEntityTest {
     }
 
     private List<UberSearchResultDto> classicSearch(UberSearchCriteria criteria) {
-        String jpql = "SELECT u FROM UberEntity u WHERE 1 = 1 ";
+        // THE WAY pentru searchuri care arata un subset mic de coloane <- MUST HAVE
+        String jpql = "SELECT new victor.training.performance.jpa.UberSearchResultDto(u.id, u.name, u.originCountry.name)" +
+            " FROM UberEntity u WHERE 1 = 1 ";
         // alternative implementation: CriteriaAPI, Criteria+Metamodel, QueryDSL, Spring Specifications
         Map<String, Object> params = new HashMap<>();
         if (criteria.name != null) {
             jpql += " AND u.name = :name ";
             params.put("name", criteria.name);
         }
-        var query = em.createQuery(jpql, UberEntity.class);
+        if (criteria.status != null) {
+            jpql += " AND u.status = :statusX ";
+            params.put("statusX", criteria.status);
+        }
+        var query = em.createQuery(jpql, UberSearchResultDto.class);
         for (String key : params.keySet()) {
             query.setParameter(key, params.get(key));
         }
@@ -132,7 +138,7 @@ public class UberEntityTest {
         // OR: Spring Data Repo @Query with a fixed JPQL
         //entities = uberRepo.searchFixedJqpl(criteria.name);
 
-        return entities.stream().map(UberSearchResultDto::new).collect(toList());
+        return entities;//stream().map(UberSearchResultDto::new).collect(toList());
     }
 
     @Data
@@ -141,17 +147,22 @@ public class UberEntityTest {
         public Status status;
         // etc
     }
-    @Value
-    static class UberSearchResultDto { // sent as JSON
-        Long id;
-        String name;
-        String originCountry;
+}
+@Value
+class UberSearchResultDto { // sent as JSON
+    Long id;
+    String name;
+    String originCountry;
 
-        public UberSearchResultDto(UberEntity entity) {
-            id = entity.getId();
-            name = entity.getName();
-            originCountry = entity.getOriginCountry().getName();
-        }
+    public UberSearchResultDto(Long id, String name, String originCountry) {
+        this.id = id;
+        this.name = name;
+        this.originCountry = originCountry;
     }
+    //        public UberSearchResultDto(UberEntity entity) {
+//            id = entity.getId();
+//            name = entity.getName();
+//            originCountry = entity.getOriginCountry().getName();
+//        }
 }
 
