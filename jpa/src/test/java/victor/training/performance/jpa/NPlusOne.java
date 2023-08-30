@@ -6,6 +6,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.test.annotation.DirtiesContext;
@@ -18,6 +19,7 @@ import victor.training.performance.jpa.ParentSearchViewRepo.ParentSearchProjecti
 
 import javax.persistence.EntityManager;
 import javax.sql.DataSource;
+import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -27,6 +29,7 @@ import static java.util.stream.Collectors.toList;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.tuple;
 import static org.assertj.core.api.InstanceOfAssertFactories.list;
+import static org.springframework.data.domain.Sort.Direction.ASC;
 import static org.springframework.test.annotation.DirtiesContext.ClassMode.BEFORE_EACH_TEST_METHOD;
 
 @Slf4j
@@ -96,10 +99,27 @@ public class NPlusOne {
 
     // ======================= STAGE 1: SELECT full @Entity =============================
     @Test
+    public void drivingQuery() {
+        log.info("First query (retrieving IDs in page)");
+        Page<Long> parentIdsPage = repo.findPageOfIds("r",
+            PageRequest.of(0, 3, Sort.by(ASC, "name")));
+        log.info("Parent IDs page: " + parentIdsPage + " total elements: " + parentIdsPage.getTotalElements() + " contents: " + parentIdsPage.toList());
+
+        log.info("Second query (for details of the results)");
+        Set<Parent> parentDetails = repo.loadDetailsForSearchResults(parentIdsPage.toList());
+        log.info("Loaded parent details: {}", parentDetails);
+
+        List<ParentSearchResult> results = toSearchResults(parentDetails);
+
+        assertResultsInUIGrid(results);
+    }
+
+    @Test
     public void selectFullEntity() {
         log.info("Start!");
         // JPQL="SELECT p FROM Parent p LEFT JOIN FETCH p.country" exclude parintii fara country
-        List<Parent> lista = repo.finduMeu(PageRequest.of(0, 3, Sort.by(Sort.Direction.ASC, "name"))).toList();
+        List<Parent> lista = repo.finduMeu(PageRequest.of(0, 3, Sort.by(ASC, "name"))).toList();
+
         System.out.println("Joc:"+lista);
         Set<Parent> parents = new HashSet<>(lista);
 //        List<Parent> parents = repo.findAll(); // daca intorci o pagina de 20 de parinti => N+1 = 21.. ete na...
@@ -118,7 +138,7 @@ public class NPlusOne {
         assertResultsInUIGrid(results);
     }
 
-    private List<ParentSearchResult> toSearchResults(Set<Parent> parents) { // eg, in a Mapper
+    private List<ParentSearchResult> toSearchResults(Collection<Parent> parents) { // eg, in a Mapper
         log.debug("Converting-->Dto START : ");// + parents.get(0).getChildren().getClass());
         List<ParentSearchResult> results = parents.stream().map(ParentSearchResult::new).collect(toList());
         log.debug("Converting-->Dto DONE");

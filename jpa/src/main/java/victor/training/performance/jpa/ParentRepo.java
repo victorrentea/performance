@@ -36,4 +36,13 @@ public interface ParentRepo extends JpaRepository<Parent, Long> {
   )
   Page<Parent> finduMeu(PageRequest pageRequest);
 
+  @Query("SELECT p.id FROM Parent p WHERE UPPER(p.name) LIKE UPPER('%' || ?1 || '%') ")
+  Page<Long> findPageOfIds(String namePart, PageRequest pageRequest);
+
+  @Query("SELECT p FROM Parent p" +
+      " LEFT JOIN FETCH p.country c" +
+      " LEFT JOIN FETCH c.region" +
+      " LEFT JOIN FETCH p.children" +
+      " WHERE p.id IN (?1)")
+  Set<Parent> loadDetailsForSearchResults(List<Long> ids);
 }
