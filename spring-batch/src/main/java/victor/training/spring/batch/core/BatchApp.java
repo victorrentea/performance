@@ -11,6 +11,7 @@ import org.springframework.batch.core.configuration.annotation.StepScope;
 import org.springframework.batch.core.launch.support.RunIdIncrementer;
 import org.springframework.batch.item.ItemStreamReader;
 import org.springframework.batch.item.database.JpaItemWriter;
+import org.springframework.batch.item.database.JpaPagingItemReader;
 import org.springframework.batch.item.xml.StaxEventItemReader;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.SpringApplication;
@@ -58,7 +59,7 @@ public class BatchApp {
   @Bean
   public Step importPersonsInChunks() {
     return stepBuilder.get("importPersonsInChunks")
-        .<PersonXml, Person>chunk(20)
+        .<PersonXml, Person>chunk(100)
         .reader(xmlReader(null))
         .processor(personProcessor())
         .writer(jpaWriter())
@@ -96,7 +97,6 @@ public class BatchApp {
   public PersonProcessor personProcessor() {
     return new PersonProcessor();
   }
-
   @Bean
   public <T> JpaItemWriter<T> jpaWriter() {
     JpaItemWriter<T> writer = new JpaItemWriter<>();
@@ -119,7 +119,7 @@ public class BatchApp {
   @Bean
   public Step importCitiesFirstPass() {
     return stepBuilder.get("importCitiesFirstPass")
-        .<PersonXml, City>chunk(100)
+        .<PersonXml, City>chunk(20)
         .reader(xmlReader(null))
         .processor(cityMerger())
         .writer(jpaWriter())
