@@ -97,6 +97,9 @@ public class NPlusOne {
 //        List<Parent> parents = repo.finduMeu();
         List<Parent> parents = repo.findAll();
         log.info("Loaded {} parents: {}", parents.size(), parents);
+        TestTransaction.end(); // crapa lazy loading daca metoda in care erai nu este @Transactional
+        System.out.println(parents.get(0).getCountry().getName());
+        log.info("Dupa");
 
         List<ParentSearchResult> results = toSearchResults(parents);
 
