@@ -61,10 +61,10 @@ public class UberEntityTest {
         UberEntity uber = new UberEntity()
                 .setName("::uberName::")
                 .setStatus(Status.SUBMITTED)
-                .setOriginCountry(belgium)
+                .setOriginCountryId(belgium.getId())
                 .setFiscalCountry(romania)
                 .setInvoicingCountry(france)
-                .setNationality(serbia)
+                .setNationalityId(serbia.getId())
                 .setScope(globalScope)
 //                .setScopeEnum(ScopeEnum.GLOBAL) // TODO enum
                 .setCreatedBy(testUser);
@@ -117,8 +117,11 @@ public class UberEntityTest {
 
     private List<UberSearchResultDto> classicSearch(UberSearchCriteria criteria) {
         // THE WAY pentru searchuri care arata un subset mic de coloane <- MUST HAVE
-        String jpql = "SELECT new victor.training.performance.jpa.UberSearchResultDto(u.id, u.name, u.originCountry.name)" +
-            " FROM UberEntity u WHERE 1 = 1 ";
+        String jpql = "SELECT new victor.training.performance.jpa.UberSearchResultDto(" +
+            "u.id, u.name, oc.name)" +
+            " FROM UberEntity u" +
+            " LEFT JOIN Country oc ON oc.id = u.originCountryId " +
+            "  WHERE 1 = 1 ";
         // alternative implementation: CriteriaAPI, Criteria+Metamodel, QueryDSL, Spring Specifications
         Map<String, Object> params = new HashMap<>();
         if (criteria.name != null) {

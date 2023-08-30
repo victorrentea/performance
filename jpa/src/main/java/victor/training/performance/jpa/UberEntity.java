@@ -20,10 +20,16 @@ public class UberEntity {
     private String ssn;
     private String passportNumber;
 
-    @ManyToOne//(fetch = FetchType.LAZY)
-    private Country originCountry;
-    @ManyToOne
-    private Country nationality;
+//    @ManyToOne//(fetch = FetchType.LAZY)
+//    private Country originCountry;
+
+    private Long originCountryId;
+
+//    @ManyToOne
+//    private Country nationality;
+
+    private Long nationalityId;
+
     @ManyToOne
     private Country fiscalCountry;
     @ManyToOne
