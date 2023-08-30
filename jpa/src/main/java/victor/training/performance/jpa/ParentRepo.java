@@ -27,7 +27,8 @@ public interface ParentRepo extends JpaRepository<Parent, Long> {
          "WHERE p.id IN ?1")
   Set<Parent> findParentsWithChildren(List<Long> parentIds);
 
-  @Query("SELECT distinct p FROM Parent p" +
+  // distinct e scump
+  @Query("SELECT p FROM Parent p" +
       " LEFT JOIN FETCH p.country c" +
       " LEFT JOIN FETCH c.region" +
       " LEFT JOIN FETCH p.children")

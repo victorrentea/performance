@@ -51,4 +51,9 @@ public class Parent {
       child.setParent(this);
       return this;
    }
+   //hashCode equals default din Object
+   // se bazeaza pe identificatorul obiectului clasaMea@1285798
+
+   // in aceeasi tranzactie/query 2 Parent cu acelasi ID vor fi == intre ei
+   // = 1st Level Cache
 }

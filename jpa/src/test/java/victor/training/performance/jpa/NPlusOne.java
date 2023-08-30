@@ -16,12 +16,15 @@ import victor.training.performance.jpa.ParentSearchViewRepo.ParentSearchProjecti
 
 import javax.persistence.EntityManager;
 import javax.sql.DataSource;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import static java.util.stream.Collectors.joining;
 import static java.util.stream.Collectors.toList;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.tuple;
+import static org.assertj.core.api.InstanceOfAssertFactories.list;
 import static org.springframework.test.annotation.DirtiesContext.ClassMode.BEFORE_EACH_TEST_METHOD;
 
 @Slf4j
@@ -94,7 +97,9 @@ public class NPlusOne {
     public void selectFullEntity() {
         log.info("Start!");
         // JPQL="SELECT p FROM Parent p LEFT JOIN FETCH p.country" exclude parintii fara country
-        List<Parent> parents = repo.finduMeu();
+        List<Parent> lista = repo.finduMeu();
+        System.out.println("Joc:"+lista);
+        Set<Parent> parents = new HashSet<>(lista);
 //        List<Parent> parents = repo.findAll(); // daca intorci o pagina de 20 de parinti => N+1 = 21.. ete na...
         // pana cand constati ca pagina aia e homepage-ul afisat de 500 ori/min userilor tai.
         log.info("Loaded {} parents: {}", parents.size(), parents);
@@ -111,8 +116,8 @@ public class NPlusOne {
         assertResultsInUIGrid(results);
     }
 
-    private List<ParentSearchResult> toSearchResults(List<Parent> parents) { // eg, in a Mapper
-        log.debug("Converting-->Dto START : " + parents.get(0).getChildren().getClass());
+    private List<ParentSearchResult> toSearchResults(Set<Parent> parents) { // eg, in a Mapper
+        log.debug("Converting-->Dto START : ");// + parents.get(0).getChildren().getClass());
         List<ParentSearchResult> results = parents.stream().map(ParentSearchResult::new).collect(toList());
         log.debug("Converting-->Dto DONE");
         return results;
