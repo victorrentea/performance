@@ -92,8 +92,8 @@ public class NPlusOne {
     @Test
     public void selectFullEntity() {
         log.info("Start!");
-        log.info("Loaded {} parents: {}", parents.size(), parents);
         List<Parent> parents = repo.findAll(); // 3 SELECT: 1 pt PARENT si 2 pt COUNTRy pt ca JPA trebuie sa iti dea Parent cu country setat (EAGER by default @ManyToOne)
+        log.info("Loaded {} parents: {}", parents.size(), parents);
 
         List<ParentSearchResult> results = toSearchResults(parents);
 
