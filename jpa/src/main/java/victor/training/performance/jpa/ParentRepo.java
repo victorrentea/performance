@@ -1,6 +1,7 @@
 package victor.training.performance.jpa;
 
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -28,10 +29,11 @@ public interface ParentRepo extends JpaRepository<Parent, Long> {
   Set<Parent> findParentsWithChildren(List<Long> parentIds);
 
   // distinct e scump
-  @Query("SELECT p FROM Parent p" +
+  @Query("SELECT p FROM Parent p" /*+
       " LEFT JOIN FETCH p.country c" +
       " LEFT JOIN FETCH c.region" +
-      " LEFT JOIN FETCH p.children")
-  List<Parent> finduMeu();
+      " LEFT JOIN FETCH p.children"*/
+  )
+  Page<Parent> finduMeu(PageRequest pageRequest);
 
 }

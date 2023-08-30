@@ -8,6 +8,8 @@ import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
+
+// @Entity mapat pe VIEW cand vrei sa folosesti sintaxa SQL nativa.
 @Table(name = "PARENT_SEARCH")
 @Entity
 @Data

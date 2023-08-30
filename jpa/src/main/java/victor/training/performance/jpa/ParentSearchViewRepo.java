@@ -23,8 +23,8 @@ public interface ParentSearchViewRepo extends JpaRepository<ParentSearchView, Lo
 
 
   @Query("SELECT psv FROM ParentSearchView psv " +
-         "JOIN Parent p ON p.id = psv.id " +
-         "WHERE p.age > 40")
+         "JOIN Parent p ON p.id = psv.id " + // fain: te intorci din @ENtity view in @Entity principal Parent
+         "WHERE p.age > 40") // conditii pe Parent
     // we can traverse and filter on any property of our main JPA model
   ParentSearchView selectFromView_butFilterOnEntityModel();
 }

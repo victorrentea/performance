@@ -6,6 +6,8 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.annotation.Rollback;
 import org.springframework.test.context.ActiveProfiles;
@@ -97,7 +99,7 @@ public class NPlusOne {
     public void selectFullEntity() {
         log.info("Start!");
         // JPQL="SELECT p FROM Parent p LEFT JOIN FETCH p.country" exclude parintii fara country
-        List<Parent> lista = repo.finduMeu();
+        List<Parent> lista = repo.finduMeu(PageRequest.of(0, 3, Sort.by(Sort.Direction.ASC, "name"))).toList();
         System.out.println("Joc:"+lista);
         Set<Parent> parents = new HashSet<>(lista);
 //        List<Parent> parents = repo.findAll(); // daca intorci o pagina de 20 de parinti => N+1 = 21.. ete na...
