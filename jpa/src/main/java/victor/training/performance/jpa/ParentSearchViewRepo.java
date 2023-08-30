@@ -6,6 +6,7 @@ import org.springframework.data.jpa.repository.Query;
 import java.util.List;
 
 public interface ParentSearchViewRepo extends JpaRepository<ParentSearchView, Long> {
+  // magie cam multa, dar mapezi din result set SQL nativ in 'atribute'
   interface ParentSearchProjection { // 💡 sent as JSON
     Long getId();
     String getName();
