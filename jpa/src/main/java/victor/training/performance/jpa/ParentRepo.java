@@ -27,4 +27,6 @@ public interface ParentRepo extends JpaRepository<Parent, Long> {
          "WHERE p.id IN ?1")
   Set<Parent> findParentsWithChildren(List<Long> parentIds);
 
+  @Query("SELECT p FROM Parent p LEFT JOIN FETCH p.country")
+  List<Parent> finduMeu();
 }

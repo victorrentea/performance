@@ -52,7 +52,8 @@ public class NPlusOne {
         repo.save(new Parent("Peter")
                 .setAge(41)
 //                .setCountry(romania)
-                .setCountry(countryRepo.save(new Country(1L,"Moldavia"))) // UPDATE pt ca are ID nenull si sub Id=1 exista in PersistenceContext COuntry{id=1}
+//                .setCountry(countryRepo.save(new Country(1L,"Moldavia"))) // UPDATE pt ca are ID nenull si sub Id=1 exista in PersistenceContext COuntry{id=1}
+                .setCountry(countryRepo.save(new Country(2L,"Moldavia")))
                 .addChild(new Child("Maria"))
                 .addChild(new Child("Paul"))
                 .addChild(new Child("Stephan"))
@@ -92,7 +93,8 @@ public class NPlusOne {
     @Test
     public void selectFullEntity() {
         log.info("Start!");
-        List<Parent> parents = repo.findAll();
+        // JPQL="SELECT p FROM Parent p LEFT JOIN FETCH p.country" exclude parintii fara country
+        List<Parent> parents = repo.finduMeu();
         log.info("Loaded {} parents: {}", parents.size(), parents);
 
         List<ParentSearchResult> results = toSearchResults(parents);
