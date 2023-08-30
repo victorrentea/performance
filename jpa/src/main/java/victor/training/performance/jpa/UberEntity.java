@@ -23,6 +23,7 @@ public class UberEntity {
 //    @ManyToOne//(fetch = FetchType.LAZY)
 //    private Country originCountry;
 
+    // PASTREAZA FKul din DB!
     private Long originCountryId;
 
 //    @ManyToOne
