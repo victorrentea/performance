@@ -14,6 +14,7 @@ public interface UberEntityRepo extends JpaRepository<UberEntity, Long> {
          "WHERE (:name is null OR UPPER(u.name) LIKE UPPER('%' || :name || '%'))")
   List<UberEntity> searchFixedJqpl(@Nullable String name);
 
+  boolean existsByIdAndStatus(Long id, UberEntity.Status status);
 
   List<UberEntity> findByName(String name);
 }

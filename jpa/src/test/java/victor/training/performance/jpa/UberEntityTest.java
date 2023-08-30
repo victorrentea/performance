@@ -75,18 +75,21 @@ public class UberEntityTest {
     }
 
     @Test
-    public void jpql() {
+    public void jpql() { // cand folosesti JPQL sa aduci o @Entity, toate @ManyToOne sunt aduse + 1 SELECT
         log.info("SELECTING a 'very OOP' @Entity with JPQL ...");
-         List<UberEntity> list = uberRepo.findAll();
+//         List<UberEntity> list = uberRepo.findAll();
 //        List<UberEntity> list = uberRepo.findAllWithQuery();// EQUIVALENT
-//        List<UberEntity> list = uberRepo.findByName("::uberName::");
+        List<UberEntity> list = uberRepo.findByName("::uberName::");
         log.info("Loaded using JPQL (see how many queries are above):\n" + list);
     }
 
     @Test
-    public void findById() {
+    public void findById() { // face N Joinuri, cate 1 pt fiecarfe @ManyToOne
         log.info("Loading a 'very OOP' @Entity by id...");
         UberEntity uber = uberRepo.findById(uberId).orElseThrow(); // or em.find(UberEntity.class, id); in plain JPA
+//        if (!uberRepo.existsByIdAndStatus(uberId, Status.DRAFT)) {
+//
+//        }
         log.info("Loaded using findById (inspect the above query):\n" + uber);
 
         // Use-case: I only loaded UberEntity to get its status

@@ -20,7 +20,7 @@ public class UberEntity {
     private String ssn;
     private String passportNumber;
 
-    @ManyToOne
+    @ManyToOne//(fetch = FetchType.LAZY)
     private Country originCountry;
     @ManyToOne
     private Country nationality;
