@@ -58,7 +58,7 @@ public class BatchApp {
   @Bean
   public Step importPersonsInChunks() {
     return stepBuilder.get("importPersonsInChunks")
-        .<PersonXml, Person>chunk(5)
+        .<PersonXml, Person>chunk(20)
         .reader(xmlReader(null))
         .processor(personProcessor())
         .writer(jpaWriter())
