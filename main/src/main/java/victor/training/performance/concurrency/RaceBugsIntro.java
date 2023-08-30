@@ -38,6 +38,8 @@ public class RaceBugsIntro {
   }
 
   public static void main(String[] args) throws ExecutionException, InterruptedException {
+    Object va = lock;
+    System.out.println("Obiectul " + lock);
     List<Integer> fullList = IntStream.range(0, 100_000).boxed().collect(toList());
 
     List<List<Integer>> lists = splitList(fullList, 2);

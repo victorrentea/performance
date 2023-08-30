@@ -1,5 +1,7 @@
 package victor.training.performance.spring;
 
+import brave.http.HttpServerResponse;
+import org.apache.commons.io.IOUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -9,6 +11,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.client.RestTemplate;
 
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletResponse;
+import java.sql.Clob;
+
 @RestController
 @RequestMapping("profile/httpclient")
 class Profile10_HttpClient {
@@ -16,7 +22,9 @@ class Profile10_HttpClient {
   private RestTemplate customRestTemplate;
 
   @GetMapping
-  public String method() {
+  public String method(HttpServletResponse response)  {
+//    Clob c;
+//    IOUtils.copy(c.getCharacterStream(), response.getWriter());
     String data = customRestTemplate.getForObject("http://localhost:9999/fast20ms", String.class);
     return "result: " + data;
   }

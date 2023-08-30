@@ -7,9 +7,7 @@ import victor.training.performance.spring.CachingMethodObject.UserRightsCalculat
 import victor.training.performance.util.BigObject20MB;
 import victor.training.performance.util.PerformanceUtil;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -36,7 +34,7 @@ public class Leak2_Inner {
   //<editor-fold desc="Entry points of more similar leaks">
   @GetMapping("anon")
   public String anon() {
-    Stream<String> supplier = new CachingMethodObject().anonymousVsLambdas(List.of("a"));
+    Stream<String> supplier = new CachingMethodObject().anonymousVsLambdas(List.of("a", "b"));
     PerformanceUtil.sleepMillis(20_000); // some long workflow
     return supplier.collect(Collectors.toList()).toString();
   }
@@ -59,7 +57,7 @@ public class Leak2_Inner {
 
 
 class CachingMethodObject {
-  public class UserRightsCalculator { // an instance of this is kept on current thread
+  public static class UserRightsCalculator { // an instance of this is kept on current thread
     public boolean hasRight(String task) {
       System.out.println("Stupid Code");
       // what's the connection between this instance and the 'bigMac' field ?
@@ -78,13 +76,15 @@ class CachingMethodObject {
 
   //<editor-fold desc="Lambdas vs Anonymous implementation">
   public Stream<String> anonymousVsLambdas(List<String> input) {
+    String oVarLocal = "20MB";
     return input.stream()
-            .filter(new Predicate<String>() {
-              @Override
-              public boolean test(String s) {
-                return !s.isBlank();
-              }
-            });
+//            .filter(new Predicate<String>() { // in bytecode clasa asta este numita "CachingMethodObject$1"
+//              @Override
+//              public boolean test(String s) {
+//                return !s.isBlank(); // asta se ruleaza pentru fiecare element
+//              }
+//            });
+            .filter(s -> bigMac!=null &&   !s.isBlank() /*+ bigMac +*/ /*oVarLocala*/);
   }
   //</editor-fold>
 
