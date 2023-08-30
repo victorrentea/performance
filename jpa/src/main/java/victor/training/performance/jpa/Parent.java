@@ -19,8 +19,8 @@ public class Parent {
    private String name;
    private Integer age;
 
-   @OneToMany(mappedBy = "parent", cascade = CascadeType.PERSIST,
-       fetch = FetchType.EAGER // TOT N+1 face by default
+   @OneToMany(mappedBy = "parent", cascade = CascadeType.PERSIST
+//       fetch = FetchType.EAGER // TOT N+1 face by default
    )
    @BatchSize(size=10) // too much magic
    private Set<Child> children = new HashSet<>();
