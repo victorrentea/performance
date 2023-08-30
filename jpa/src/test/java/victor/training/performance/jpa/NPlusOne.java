@@ -40,7 +40,7 @@ public class NPlusOne {
 
     @BeforeEach
     void persistData() {
-        Country romania = countryRepo.save(new Country(1L, "Romania"));
+        Country romania = countryRepo.save(new Country(1L, "Romania")); // SELECT where ID=? si pt ca nu exista ID=> INSERT pt ca in baza nu gaseste ID 1
         repo.save(new Parent("Victor")
                 .setCountry(romania)
                 .setAge(36)
@@ -52,7 +52,7 @@ public class NPlusOne {
         repo.save(new Parent("Peter")
                 .setAge(41)
 //                .setCountry(romania)
-                .setCountry(countryRepo.save(new Country(2L,"Moldavia")))
+                .setCountry(countryRepo.save(new Country(1L,"Moldavia"))) // UPDATE pt ca are ID nenull si sub Id=1 exista in PersistenceContext COuntry{id=1}
                 .addChild(new Child("Maria"))
                 .addChild(new Child("Paul"))
                 .addChild(new Child("Stephan"))
@@ -92,7 +92,7 @@ public class NPlusOne {
     @Test
     public void selectFullEntity() {
         log.info("Start!");
-        List<Parent> parents = repo.findAll(); // 3 SELECT: 1 pt PARENT si 2 pt COUNTRy pt ca JPA trebuie sa iti dea Parent cu country setat (EAGER by default @ManyToOne)
+        List<Parent> parents = repo.findAll();
         log.info("Loaded {} parents: {}", parents.size(), parents);
 
         List<ParentSearchResult> results = toSearchResults(parents);
