@@ -40,7 +40,7 @@ public class NPlusOne {
 
     @BeforeEach
     void persistData() {
-        Country romania = countryRepo.save(new Country(1L, "Romania")); // SELECT where ID=? si pt ca nu exista ID=> INSERT pt ca in baza nu gaseste ID 1
+        Country romania = countryRepo.save(new Country(1L, "Romania").setRegion(new CountryRegion().setName("Reg"))); // SELECT where ID=? si pt ca nu exista ID=> INSERT pt ca in baza nu gaseste ID 1
         repo.save(new Parent("Victor")
                 .setCountry(romania)
                 .setAge(36)
