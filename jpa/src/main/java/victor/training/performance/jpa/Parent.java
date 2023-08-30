@@ -24,12 +24,12 @@ public class Parent {
 
    @ManyToOne(fetch = FetchType.LAZY) // EAGER by default = JPA nu iti va da niciodata un Parent fara country
    private Country country;
-//   = new Country() {
+//   = new Country() { // permite asta
 //      @Override
 //      public String getIso2Code() {
 //         return super.getIso2Code();
 //      }
-////      orice getter chemi trigereaza query
+//      orice getter chemi trigereaza query
 //   }; // surprise !
 
    private Parent() {

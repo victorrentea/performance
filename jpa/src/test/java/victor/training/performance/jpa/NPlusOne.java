@@ -27,7 +27,7 @@ import static org.springframework.test.annotation.DirtiesContext.ClassMode.BEFOR
 @Slf4j
 @SpringBootTest
 @ActiveProfiles("test")
-@Transactional
+@Transactional // automat se face Rollback dupa fiecare test.
 @Rollback(false) // at the end of each @Test, don't rollback the @Transaction, to be able to inspect the DB contents
 @DirtiesContext(classMode = BEFORE_EACH_TEST_METHOD) // nuke Spring + re-init DB with Hibernate
 public class NPlusOne {
@@ -58,9 +58,9 @@ public class NPlusOne {
                 .addChild(new Child("Paul"))
                 .addChild(new Child("Stephan"))
         );
-        TestTransaction.end();
+        TestTransaction.end();// COMMIT
 
-        TestTransaction.start();
+        TestTransaction.start(); // start tx
     }
 
     @Autowired
@@ -95,9 +95,14 @@ public class NPlusOne {
         log.info("Start!");
         // JPQL="SELECT p FROM Parent p LEFT JOIN FETCH p.country" exclude parintii fara country
 //        List<Parent> parents = repo.finduMeu();
-        List<Parent> parents = repo.findAll();
+        List<Parent> parents = repo.findAll(); // daca intorci o pagina de 20 de parinti => N+1 = 21.. ete na...
+        // pana cand constati ca pagina aia e homepage-ul afisat de 500 ori/min userilor tai.
         log.info("Loaded {} parents: {}", parents.size(), parents);
-        TestTransaction.end(); // crapa lazy loading daca metoda in care erai nu este @Transactional
+//        TestTransaction.end(); // crapa lazy loading daca metoda in care erai nu este @Transactional
+
+        // daca ai lazy load pe o relatie:
+        // a) o faci LEFT JOIN FETCH < mai eficient, evita roundtrip pe retea
+        // b) permiti lazy loading dar tii tranzactia deschisa
         System.out.println(parents.get(0).getCountry().getName());
         log.info("Dupa");
 
