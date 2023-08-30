@@ -2,6 +2,7 @@ package victor.training.performance.jpa;
 
 import lombok.Getter;
 import lombok.Setter;
+import org.hibernate.annotations.BatchSize;
 
 import javax.persistence.*;
 import java.util.HashSet;
@@ -21,7 +22,7 @@ public class Parent {
    @OneToMany(mappedBy = "parent", cascade = CascadeType.PERSIST,
        fetch = FetchType.EAGER // TOT N+1 face by default
    )
-   // @BatchSize(size=10) // too much magic
+   @BatchSize(size=10) // too much magic
    private Set<Child> children = new HashSet<>();
 
    @ManyToOne(fetch = FetchType.LAZY) // EAGER by default = JPA nu iti va da niciodata un Parent fara country
