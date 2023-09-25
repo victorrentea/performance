@@ -33,7 +33,11 @@ public class CompactCollections {
 //      int[] x = IntStream.range(0, ONE_MILLION).toArray();
 
       long heap1 = PerformanceUtil.getUsedHeapBytes();
-      System.out.println("Object " + PerformanceUtil.objectToString(x) + " occupies: " + (heap1 - heap0) / 1024 / 1024 + " MB");
+      System.out.println("Collection(size="+ONE_MILLION+")" + PerformanceUtil.objectToString(x) + " occupies: " + (heap1 - heap0) / 1024 / 1024 + " MB");
+
+      x.clear();
+      long heap2 = PerformanceUtil.getUsedHeapBytes();
+      System.out.println("Collection.clear()ed) still occupies: " + (heap2 - heap0) / 1024 / 1024 + " MB");
    }
 
 }
