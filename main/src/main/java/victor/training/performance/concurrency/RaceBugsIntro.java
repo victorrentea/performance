@@ -10,6 +10,7 @@ import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.IntStream;
 
 import static java.util.stream.Collectors.toList;
@@ -17,20 +18,22 @@ import static java.util.stream.Collectors.toList;
 
 @Slf4j
 public class RaceBugsIntro {
-  private static List<Integer> evenNumbers = new ArrayList<>();
-
-  private static Integer total = 0;
+  private static AtomicInteger total = new AtomicInteger(); // counter
+  private static List<Integer> evenNumbers =
+      Collections.synchronizedList(new ArrayList<>());
 
   // many parallel threads run this method:
   private static void countEven(List<Integer> numbers) {
     log.info("Start");
     for (Integer n : numbers) {
       if (n % 2 == 0) {
-        total++;
+        total.incrementAndGet();
+        if (!evenNumbers.contains(n)) {
+          evenNumbers.add(n); // arr[size++] = n;
+        }
       }
     }
     log.info("end");
-
   }
 
   public static void main(String[] args) throws ExecutionException, InterruptedException {
@@ -47,7 +50,7 @@ public class RaceBugsIntro {
     pool.shutdown();
 
     log.debug("Counted: " + total);
-//    log.debug("Counted: " + evenNumbers.size());
+    log.debug("Counted: " + evenNumbers.size());
   }
 
   //<editor-fold desc="splitList utility function">
