@@ -54,15 +54,20 @@ public class Leak10_Hibernate {
    }
 
    @GetMapping("export")
-   @Transactional
+   @Transactional(readOnly = true) // does not help readonly=true
    public void export() throws IOException {
       log.debug("Exporting....");
-
+      // the reason for mem leak is the 1st level cache of hibernate
+//
+// keeps a DB CURSOR open over the results of the query
       try (Writer writer = new FileWriter("big-entity.txt")) {
-         repo.streamAll()
-             .map(BigEntity::getDescription)
-             .forEach(Unchecked.consumer(writer::write));
+         repo.streamAll() // doing resultSet.next() under the hood
+             // goal: avoid keeping all entities in memory
+             .peek(e -> entityManager.detach(e)) // manual remove from 1st level cache
+             .map(bigEntity -> bigEntity.getDescription())
+             .forEach(Unchecked.consumer(description -> writer.write(description)));
       }
+      // in the heap dump I saw that all the 500 MB data in DB are in memory at once = BAD.
 
       log.debug("Export completed. Sleeping 2 minutes to get a heapdump...");
       PerformanceUtil.sleepMillis(120 * 1000);
@@ -81,7 +86,7 @@ class BigEntity {
 }
 
 interface BigEntityRepo extends JpaRepository<BigEntity, Long> {
-   @Query("FROM BigEntity")
+   @Query("FROM BigEntity") // there are millions of rows
    Stream<BigEntity> streamAll();
 }
 
