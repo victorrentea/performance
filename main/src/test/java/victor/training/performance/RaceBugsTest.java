@@ -1,6 +1,7 @@
 package victor.training.performance;
 
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.Timeout;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.junit.jupiter.MockitoExtension;
 import victor.training.performance.concurrency.ExternalDependencyFake;
@@ -8,6 +9,7 @@ import victor.training.performance.concurrency.RaceBugs;
 import victor.training.performance.util.TimingExtension;
 
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 import java.util.stream.IntStream;
 
 import static java.util.stream.Collectors.toList;
