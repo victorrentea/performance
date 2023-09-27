@@ -21,12 +21,6 @@ public class Country {
    private String continent;
 
    private Country() {
-//      Runtime.getRuntime().addShutdownHook(new Thread() {
-//         @Override
-//         public void run() {
-//            System.out.println("clean some stuff");
-//         }
-//      });
    }
 
    public Country(Long id, String name) {
