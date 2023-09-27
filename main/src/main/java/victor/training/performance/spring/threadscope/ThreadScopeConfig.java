@@ -1,13 +1,9 @@
 package victor.training.performance.spring.threadscope;
 
-import org.aspectj.lang.ProceedingJoinPoint;
-import org.aspectj.lang.annotation.Around;
-import org.aspectj.lang.annotation.Aspect;
 import org.springframework.beans.factory.config.CustomScopeConfigurer;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.support.SimpleThreadScope;
-import org.springframework.stereotype.Component;
 
 @Configuration
 public class ThreadScopeConfig {
@@ -19,18 +15,3 @@ public class ThreadScopeConfig {
    }
 
 }
-
-//@Aspect
-//@Component
-//class RemoveThreadScopedObj {
-//   // dete from
-//
-//   @Around("@annotation(KafkaListener)")
-//   public Object cleanu(ProceedingJoinPoint pjp) throws Throwable {
-//      try {
-//         return pjp.proceed();
-//      } finally {
-//// remove TH local
-//      }
-//   }
-//}
