@@ -6,8 +6,6 @@ import org.springframework.stereotype.Repository;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.concurrent.CompletableFuture;
-
 import static victor.training.performance.util.PerformanceUtil.sleepMillis;
 
 @Slf4j
@@ -16,15 +14,12 @@ public class ThreadLocalIntro {
     public static void main(String[] args) {
         ThreadLocalIntro app = new ThreadLocalIntro();
         System.out.println("Imagine incoming HTTP requests...");
-        CompletableFuture.runAsync(() -> app.httpRequest("alice", "alice's data"));
-        CompletableFuture.runAsync(() -> app.httpRequest("bob", "bob's data"));
-        sleepMillis(1000);
+        app.httpRequest("alice", "alice's data");
     }
 
     public void httpRequest(String currentUser, String data) {
-        staticCurrentUser = currentUser;
         log.info("Current user is read from the HTTP Header Bearer (JWT) " + currentUser);
-        controller.create(data);
+        controller.create(data, currentUser);
     }
     public static String staticCurrentUser;
 }
@@ -36,8 +31,8 @@ public class ThreadLocalIntro {
 class AController {
     private final AService service;
 
-    public void create(String data) {
-        service.create(data);
+    public void create(String data, String username) {
+        service.create(data, username);
     }
 }
 
@@ -53,9 +48,9 @@ class AService {
     // - Logback MDC (stuff to appear on every log line, set via MDC.set("prop",value")
     // - TraceID/correlationId
     // - TenantId
-    public void create(String data) {
+    public void create(String data, String username) {
         sleepMillis(10); // some delay, to reproduce the race bug
-        repo.save(data);
+        repo.save(data, username);
     }
 }
 
@@ -63,8 +58,8 @@ class AService {
 @Repository
 @Slf4j
 class ARepo {
-    public void save(String data) {
-        String currentUser = ThreadLocalIntro.staticCurrentUser;
+    public void save(String data, String username) {
+        String currentUser = username;
         log.info("INSERT INTO A(data, created_by) VALUES ({}, {})", data, currentUser);
     }
 }
