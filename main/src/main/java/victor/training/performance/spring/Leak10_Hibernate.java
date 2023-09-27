@@ -66,8 +66,6 @@ public class Leak10_Hibernate {
              .peek(e -> entityManager.detach(e)) // manual remove from 1st level cache
              .map(bigEntity -> bigEntity.getDescription())
              .forEach(Unchecked.consumer(description -> writer.write(description)));
-
-//         alternative load in pages of 1000 elems
       }
       // in the heap dump I saw that all the 500 MB data in DB are in memory at once = BAD.
 
