@@ -3,7 +3,7 @@ package victor.training.performance.spring;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import victor.training.performance.spring.CachingMethodObject.UserRightsCalculator;
+import victor.training.performance.spring.CalculatorFactory.Calculator;
 import victor.training.performance.util.BigObject20MB;
 import victor.training.performance.util.PerformanceUtil;
 
@@ -21,14 +21,14 @@ public class Leak2_Inner {
   @GetMapping
   public String home() {
     return "Do you know Java?<br>" +
-           "<li><a href='/leak2/inner'>Inner class</a>" +
+           "<li><a href='/leak2/inner'>Hidden links</a>" +
            "<li><a href='/leak2/anon'>Lambdas vs anonymous class</a>" +
            "<li><a href='/leak2/map'>Map{{</a> ";
   }
 
   @GetMapping("inner")
   public String puzzle() {
-    UserRightsCalculator calculator = new CachingMethodObject().createRightsCalculator();
+    Calculator calculator = new CalculatorFactory().createRightsCalculator();
     bizLogicUsingCalculator(calculator);
     return "Done";
   }
@@ -36,21 +36,21 @@ public class Leak2_Inner {
   //<editor-fold desc="Entry points of more similar leaks">
   @GetMapping("anon")
   public String anon() {
-    Stream<String> supplier = new CachingMethodObject().anonymousVsLambdas(List.of("a"));
+    Stream<String> supplier = new CalculatorFactory().anonymousVsLambdas(List.of("a"));
     PerformanceUtil.sleepMillis(20_000); // some long workflow
     return supplier.collect(Collectors.toList()).toString();
   }
 
   @GetMapping("map")
   public Map<String, Integer> map() {
-    Map<String, Integer> map = new CachingMethodObject().mapInit();
+    Map<String, Integer> map = new CalculatorFactory().mapInit();
     PerformanceUtil.sleepMillis(20_000); // some long workflow
     return map;
   }
   //</editor-fold>
 
-  private void bizLogicUsingCalculator(UserRightsCalculator calculator) {
-    if (!calculator.hasRight("launch")) {
+  private void bizLogicUsingCalculator(Calculator calculator) {
+    if (!calculator.calculate("launch")) {
       return;
     }
     PerformanceUtil.sleepMillis(20_000); // long flow and/or heavy parallel load
@@ -58,10 +58,10 @@ public class Leak2_Inner {
 }
 
 
-class CachingMethodObject {
-  public class UserRightsCalculator { // an instance of this is kept on current thread
-    public boolean hasRight(String task) {
-      System.out.println("Stupid Code");
+class CalculatorFactory {
+  public class Calculator {
+    public boolean calculate(String data) {
+      System.out.println("Simple Code Code");
       // what's the connection between this instance and the 'bigMac' field ?
       // 🛑 careful with hidden links
       return true;
@@ -70,8 +70,8 @@ class CachingMethodObject {
 
   private BigObject20MB bigMac = new BigObject20MB();
 
-  public UserRightsCalculator createRightsCalculator() {
-    return new UserRightsCalculator();
+  public Calculator createRightsCalculator() {
+    return new Calculator();
   }
 
   // more amazing leaks:
