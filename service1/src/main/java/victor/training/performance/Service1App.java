@@ -14,7 +14,6 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.client.RestTemplate;
-import org.springframework.web.reactive.function.client.WebClient;
 
 import java.net.http.HttpClient;
 import java.util.concurrent.Executors;
@@ -28,14 +27,9 @@ public class Service1App {
     SpringApplication.run(Service1App.class, args);
   }
 
-//  @Bean
-//  public RestTemplate rest() {
-//    return new RestTemplate();
-//  }
-
   @Bean
-  public WebClient webClient() {
-    return WebClient.create();
+  public RestTemplate rest() {
+    return new RestTemplate();
   }
 
   // increase the connection pool of WebClient over 500 (bottleneck)
