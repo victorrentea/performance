@@ -1,18 +1,9 @@
 package victor.training.performance.spring;
 
-import org.springframework.context.annotation.Scope;
-import org.springframework.context.annotation.ScopedProxyMode;
-import org.springframework.stereotype.Component;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import victor.training.performance.util.BigObject20MB;
-
-@Scope(value = "request", proxyMode= ScopedProxyMode.TARGET_CLASS)
-@Component
-class MetaHolder {
-
-}
 
 @RestController
 @RequestMapping("leak1")
@@ -25,18 +16,7 @@ public class Leak1_ThreadLocal {
 
       threadLocalMetadata.set(bigObject);  // 🛑 remember to .remove() any ThreadLocal you have
 
-      try {
-         businessMethod1();
-      } finally { // pattern. if ever playing manually with thread locals. DON'T !!!!
-         threadLocalMetadata.remove(); // detaches data from thread that's going to be reused later
-      }
-      // more examples: you leave thread locals on threads from:
-      // - MQ listeners
-      // - @Scheduled
-      // - HTTP requests
-      // ideas:  -> @Aspect/Interceptor to clean the TLocal after the metod completes
-      // Alternative to Thread Local only for HTTP : @Scope("request", proxyMode=Class) @Component -> auto-cleaned the
-
+      businessMethod1();
 
       return "Magic can do harm.";
    }
