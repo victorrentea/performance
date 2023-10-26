@@ -45,6 +45,8 @@ public class NPlusOne {
                 .addChild(new Child("Emma"))
                 .addChild(new Child("Vlad"))
         );
+
+//        List<Country> allById = countryRepo.findAllById(List.of(1, 3, 4, 5, 6)); // WHERE ID IN (?,?,?, ... ?)
         repo.save(new Parent("Trofim") // bachelor, no children
                 .setAge(42));
         repo.save(new Parent("Peter")
