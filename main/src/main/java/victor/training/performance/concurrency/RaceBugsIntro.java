@@ -6,10 +6,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
-import java.util.concurrent.Callable;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
+import java.util.concurrent.*;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.IntStream;
 
@@ -41,21 +38,33 @@ public class RaceBugsIntro {
       }
     }
     log.info("end");
-  return localTotal; // map-reduce style
+   return localTotal; // map-reduce style; FP-style: return the data instead of changing a global one
   }
 
   public static void main(String[] args) throws ExecutionException, InterruptedException {
     List<Integer> fullList = IntStream.range(0, 10000).boxed().collect(toList());
 
-    List<List<Integer>> lists = splitList(fullList, 2);
-    List<Callable<Integer>> tasks = lists.stream().map(numbers -> (Callable<Integer>) () -> {
-      return countEven(numbers);
-    }).collect(toList());
+    List<List<Integer>> inputs = splitList(fullList, 2);
+    List<Callable<Integer>> tasks = inputs.stream()
+        .map(numbers -> (Callable<Integer>) () -> countEven(numbers))
+        .collect(toList());
 
-    ExecutorService pool = Executors.newCachedThreadPool();
-    pool.invokeAll(tasks);
-    pool.shutdown();
-//total = s1+s2
+    ExecutorService threadPool = Executors.newCachedThreadPool(); // my own thread pool
+    List<Future<Integer>> futureResults = threadPool.invokeAll(tasks);
+    threadPool.shutdown();
+
+//    Future<Integer> f = futureResults.get(0);
+//    Integer localTotal = f.get();
+
+    Thread thread = Thread.currentThread();
+    thread.interrupt();
+    total = futureResults.stream().mapToInt(f -> {
+      try {
+        return f.get();
+      } catch (InterruptedException | ExecutionException e) {
+        throw new RuntimeException(e);
+      }
+    }).sum();
     log.debug("Counted: " + total);
 //    log.debug("Counted: " + evenNumbers.size());
   }

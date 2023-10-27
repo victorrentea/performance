@@ -2,6 +2,7 @@ package victor.training.performance.spring;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
+import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.RandomStringUtils;
 import org.jooq.lambda.Unchecked;
@@ -33,84 +34,119 @@ import static java.util.stream.Collectors.toList;
 @RestController
 @RequestMapping("leak10")
 public class Leak10_Hibernate {
-   private final BigEntityRepo repo;
-   private final EntityManager entityManager;
-   private final FastInserter fastInserter;
+  private final BigEntityRepo repo;
+  private final EntityManager entityManager;
+  private final FastInserter fastInserter;
 
-   @PostConstruct
-   public void clearDB() {
-      repo.deleteAll();
-   }
+  @PostConstruct
+  public void clearDB() {
+    repo.deleteAll();
+  }
 
-   @GetMapping
-   public String test() {
-      return "First <a href=\"/leak10/persist\">persist the data</a>, then <a href=\"/leak10/export\"> export it to a file</a>.<br> Note that after each restart the database is cleared";
-   }
+  @GetMapping
+  public String test() {
+    return "First <a href=\"/leak10/persist\">persist the data</a>, then <a href=\"/leak10/export\"> export it to a file</a>.<br> Note that after each restart the database is cleared";
+  }
 
-   @GetMapping("persist")
-   public String persist() {
-      fastInserter.insert(500);
-      return "Inserted 500MB of data. Now <a href=\"/leak10/export\">export</a> the file 'big-entity.txt' and check the logs";
-   }
+  @GetMapping("persist")
+  public String persist() {
+    fastInserter.insert(500);
+    return "Inserted 500MB of data. Now <a href=\"/leak10/export\">export</a> the file 'big-entity.txt' and check the logs";
+  }
 
-   @GetMapping("export")
-   @Transactional
-   public void export() throws IOException {
-      log.debug("Exporting....");
+  @GetMapping("export")
+  @Transactional
+  public void export() throws IOException {
+    log.debug("Exporting....");
 
-      try (Writer writer = new FileWriter("big-entity.txt")) {
-         repo.streamAll()
-             .map(BigEntity::getDescription)
-             .forEach(Unchecked.consumer(writer::write));
-      }
+    try (Writer writer = new FileWriter("big-entity.txt")) {
+      repo.streamAll()
+          .map(BigEntity::getDescription)
+          .forEach(Unchecked.consumer(writer::write));
+    }
 
-      log.debug("Export completed. Sleeping 2 minutes to get a heapdump...");
-      PerformanceUtil.sleepMillis(120 * 1000);
-   }
+    log.debug("Export completed. Sleeping 2 minutes to get a heapdump...");
+    PerformanceUtil.sleepMillis(120 * 1000);
+  }
 }
 
 
 @Entity
 @Getter
 class BigEntity {
-   @Id
-   @GeneratedValue
-   private Long id;
-   @Lob
-   private String description;
+  @Id
+  @GeneratedValue
+  private Long id;
+  @Lob
+  private String description;
+}
+
+@Slf4j
+@RequiredArgsConstructor
+@Service
+class AService {
+  private final BigEntityRepo repo;
+
+  @SneakyThrows
+//  @Bulkhead() // in yaml to configure to allow only 1 concurrent calls
+  public void method() {
+//    synchronized is NOT to be used in a backend system. just think virtual threads.
+    // deadlocks
+    // @Transactional + synchronized = BAAD
+    // no metrics
+    log.info("Start the hellish job");
+    Thread.sleep(1000);
+//      List<BigEntity> huge = repo.allBigAll();
+    log.info("End the hellish job");
+  }
+}
+
+@RequiredArgsConstructor
+@RestController
+class SomeController {
+  private final AService aService;
+
+  @GetMapping
+  public void get() {
+    aService.method();
+  }
 }
 
 interface BigEntityRepo extends JpaRepository<BigEntity, Long> {
-   @Query("FROM BigEntity")
-   Stream<BigEntity> streamAll();
+  @Query("FROM BigEntity")
+  Stream<BigEntity> streamAll();
+
+  @Query("FROM BigEntity")
+  List<BigEntity> allBigAll();
 }
 
-@Service
+@org.springframework.stereotype.Service
 @RequiredArgsConstructor
 @Slf4j
 class FastInserter {
-   private final DataSource dataSource;
-   //<editor-fold desc="Fast Inserter">
-   public void insert(int mb) {
-      log.debug("Inserting...");
-      long t0 = System.currentTimeMillis();
-      AtomicInteger percent = new AtomicInteger(0);
-      JdbcTemplate jdbc = new JdbcTemplate(dataSource);
+  private final DataSource dataSource;
 
-      IntStream.range(0, 10).parallel() // bad practice in real projects = DB/REST in ForkJoinPool.commonPool
-              .forEach(x -> {
-                 List<Object[]> params = IntStream.range(0, mb / 5)
-                         .mapToObj(n -> new Object[]{RandomStringUtils.randomAlphabetic(1)})
-                         .collect(toList());
+  //<editor-fold desc="Fast Inserter">
+  public void insert(int mb) {
+    log.debug("Inserting...");
+    long t0 = System.currentTimeMillis();
+    AtomicInteger percent = new AtomicInteger(0);
+    JdbcTemplate jdbc = new JdbcTemplate(dataSource);
 
-                 jdbc.batchUpdate("INSERT INTO BIG_ENTITY(ID, DESCRIPTION) " +
-                                  "VALUES (  next value for hibernate_sequence, repeat(? ,500000))",params); // random letter repeated 500.000 times
+    IntStream.range(0, 10).parallel() // bad practice in real projects = DB/REST in ForkJoinPool.commonPool
+        .forEach(x -> {
+          List<Object[]> params = IntStream.range(0, mb / 5)
+              .mapToObj(n -> new Object[]{RandomStringUtils.randomAlphabetic(1)})
+              .collect(toList());
+
+          jdbc.batchUpdate("INSERT INTO BIG_ENTITY(ID, DESCRIPTION) " +
+              "VALUES (  next value for hibernate_sequence, repeat(? ,500000))", params); // random letter repeated 500.000 times
 //                              "VALUES ( HIBERNATE_SEQUENCE.nextval, repeat(? ,500000))",params);
-                 log.debug("Persist {}0%", percent.incrementAndGet());
-              });
-      log.debug("DONE inserting {} MB in {} ms", mb, System.currentTimeMillis() - t0);
-   }
-   //</editor-fold>
+          log.debug("Persist {}0%", percent.incrementAndGet());
+        });
+    log.debug("DONE inserting {} MB in {} ms", mb, System.currentTimeMillis() - t0);
+  }
+  //</editor-fold>
 }
 
 

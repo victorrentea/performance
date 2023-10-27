@@ -15,20 +15,23 @@ public class ParallelStreams {
 
       long t0 = System.currentTimeMillis();
 
-      List<Integer> list = IntStream.range(1,100).boxed().collect(toList());
+      List<Integer> ids = IntStream.range(1,100).boxed().collect(toList());
 
-      List<Integer> result = list.stream()
+      List<Integer> result = ids.parallelStream() // runs in
+          // global ForkJoinPool in JVM (size = NCPU-1)
           .filter(i -> i % 2 == 0)
-          .map(i -> {
-             log.debug("Map " + i);
-             sleepMillis(100); // do some 'paralellizable' I/O work (DB, REST, SOAP)
-             return i * 2;
-          })
+          .map(i -> networkFetch(i))
           .collect(toList());
       log.debug("Got result: " + result);
 
       long t1 = System.currentTimeMillis();
       log.debug("Took {} ms", t1 - t0);
    }
+
+  private static int networkFetch(Integer i) {
+    log.debug("Map " + i);
+    sleepMillis(100); // do some 'paralellizable' I/O work (DB, REST, SOAP)
+    return i * 2;
+  }
 }
 
