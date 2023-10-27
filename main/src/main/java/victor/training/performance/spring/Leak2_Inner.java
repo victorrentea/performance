@@ -59,15 +59,14 @@ public class Leak2_Inner {
 
 
 class CalculatorFactory {
-  public class Calculator {
+  public static class Calculator { // inner (non-static) class inside another one keeps a hidden ref to the outer class instacen
     public boolean calculate(String data) {
-      System.out.println("Simple Code Code");
+      System.out.println("Simple Code Code" );
       // what's the connection between this instance and the 'bigMac' field ?
       // 🛑 careful with hidden links
       return true;
     }
   }
-
   private BigObject20MB bigMac = new BigObject20MB();
 
   public Calculator createRightsCalculator() {
@@ -79,22 +78,27 @@ class CalculatorFactory {
   //<editor-fold desc="Lambdas vs Anonymous implementation">
   public Stream<String> anonymousVsLambdas(List<String> input) {
     return input.stream()
-            .filter(new Predicate<String>() {
-              @Override
-              public boolean test(String s) {
-                return !s.isBlank();
-              }
-            });
+//            .filter(new Predicate<>() { // anonymous interface implem a la Java 7
+//              @Override
+//              public boolean test(String s) {
+//                return !s.isBlank();
+//              }
+//            })
+//            .filter(s -> !s.isBlank() && bigMac!=null); // leak still here
+            .filter(s -> !s.isBlank() && bigMac!=null); // does NOT keep a hard reference to the outer class
+    // but only to those things in the method/class that are REFERECNED by the lambda
   }
   //</editor-fold>
 
-  //<editor-fold desc="Map init in Java <= 8">
+  //<editor-fold desc="Map init before Java 11's Map.of(...)">
   public Map<String, Integer> mapInit() {
-    return new HashMap<>() {{
+    return new HashMap<>() {// hash map anonymous subclass
+      {  // with an instance init block
       put("one", 1);
       put("two", 2);
     }};
   }
+
   //</editor-fold>
 }
 

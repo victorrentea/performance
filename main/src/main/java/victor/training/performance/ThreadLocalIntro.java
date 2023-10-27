@@ -26,15 +26,27 @@ public class ThreadLocalIntro {
 
     public void httpRequest(String currentUser, String data) {
         log.info("Current user is " + currentUser);
-        staticCurrentUser = currentUser;
+        staticCurrentUser.set(currentUser);
         controller.create(data);
     }
-    public static String staticCurrentUser; // OMG global mutable static variable
+    public static ThreadLocal<String> staticCurrentUser = new ThreadLocal<>(); // huh!?
+    // ThreadLocal is a magic variable that is different for each thread
+    // therefore it is safe to use it in a multi-threaded environment
+    // MDC
+    // TraceId
+    // @Transactional, JDBC connection
+    // SecurityContextHolder
+    // @Scope("request" or "session")
+    // @RequestScope = CDI
+
+    // THread locals DONT WORK In REACTIVE CHAINS. THE ONLY ALTERNATIVE is REACTOR CONTEXT + operator lifter.
+    // It is possible to move metadaata via reactor context upstream the chain and offload it on ThreadLocals
+    // by writing a form of AOP over operators = Operator Lifter see Branch: master on git: https://github.com/victorrentea/reactive.git search for "Lifter"
 }
 // ---------- end of framework -----------
 
 // ---------- Controller -----------
-@RestController
+//@RestController
 @RequiredArgsConstructor
 class AController {
     private final AService service;
@@ -45,7 +57,7 @@ class AController {
 }
 
 // ----------- Service ------------
-@Service
+//@Service
 @RequiredArgsConstructor
 class AService {
     private final ARepo repo;
@@ -57,11 +69,11 @@ class AService {
 }
 
 // ----------- Repository ------------
-@Repository
+//@Repository
 @Slf4j
 class ARepo {
     public void save(String data) {
-        String currentUser = staticCurrentUser; // TODO
+        String currentUser = staticCurrentUser.get(); // TODO
         log.info("INSERT INTO A(data, created_by) VALUES ({}, {})", data, currentUser);
     }
 }
