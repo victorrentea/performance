@@ -15,9 +15,12 @@ public class Leak14_ShutdownHook {
    @GetMapping
    public String add() {
       BigObject20MB big = new BigObject20MB();
-      Runtime.getRuntime().addShutdownHook(new Thread(()->
-              System.out.println("Clean some files: " + big)));
+      inAnOldLibraryNeverIntendedToBeUsedServerSide(big);
       return "Added";
+   }
+
+   private void inAnOldLibraryNeverIntendedToBeUsedServerSide(BigObject20MB big) {
+      Runtime.getRuntime().addShutdownHook(new Thread(()->System.out.println("Clean some files: " + big)));
    }
 
 }

@@ -14,8 +14,8 @@ import static victor.training.performance.util.PerformanceUtil.sleepMillis;
 public class Leak4_LongStackFrame {
 	@GetMapping
 	public String longRunningFunction() {
-		BigObject80MB big = new BigObject80MB();
-		String useful = big.getInterestingPart();
+		String useful = takeOnlyTheSmallPartINeed();
+
 		// 🛑 don't reference large objects longer than needed
 
 		sleepMillis(10_000); // start a long-running process (eg 20 minutes)
@@ -23,6 +23,12 @@ public class Leak4_LongStackFrame {
 			log.trace("Using useful part: " + useful);
 		}
 		return "end";
+	}
+
+	private String takeOnlyTheSmallPartINeed() {
+		BigObject80MB big = new BigObject80MB();
+		String useful = big.getInterestingPart();
+		return useful;
 	}
 }
 

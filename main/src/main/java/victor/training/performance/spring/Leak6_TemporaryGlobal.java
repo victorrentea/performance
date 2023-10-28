@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -22,7 +23,14 @@ import static victor.training.performance.util.PerformanceUtil.randomString;
 @RequestMapping("leak6")
 public class Leak6_TemporaryGlobal {
   // or 'static' - the same
-  private final Map<String, UserProfile> userProfiles = new HashMap<>();
+  private final Map<String, UserProfile> userProfiles = Collections.synchronizedMap(new HashMap<>());
+
+  /// they were adding data they got from an external system to this map,
+  // in a structure containing a LocalDateTime retrieveTimestamp;
+
+  // later they did v = map.get(key);
+  // if (v.retrieveTimestamp is recent) { use v; } else { fetch from external system; put in map;!!!! BUT FIRST REMOVE THE OLD}
+  // STUPID implem of TTL
 
   @GetMapping
   public String test(@RequestParam(defaultValue = "1") Long id) {

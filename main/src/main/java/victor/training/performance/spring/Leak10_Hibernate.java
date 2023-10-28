@@ -55,12 +55,13 @@ public class Leak10_Hibernate {
   }
 
   @GetMapping("export")
-  @Transactional
+  @Transactional(readOnly = true) // leak happens because of 1st level cache in Hibernate (Persistente Context)
   public void export() throws IOException {
     log.debug("Exporting....");
 
     try (Writer writer = new FileWriter("big-entity.txt")) {
       repo.streamAll()
+          .peek(entityManager::detach) // remove it from 1st level cache
           .map(BigEntity::getDescription)
           .forEach(Unchecked.consumer(writer::write));
     }
@@ -115,6 +116,7 @@ class SomeController {
 interface BigEntityRepo extends JpaRepository<BigEntity, Long> {
   @Query("FROM BigEntity")
   Stream<BigEntity> streamAll();
+
 
   @Query("FROM BigEntity")
   List<BigEntity> allBigAll();

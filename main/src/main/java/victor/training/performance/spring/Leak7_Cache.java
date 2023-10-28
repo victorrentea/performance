@@ -64,7 +64,7 @@ class CacheService {
    }
 }
 
-class InvoiceByDate {
+class InvoiceByDate { // TODO add hashcode/equals
    private final Long contractId;
    private final int year;
    private final int month;
@@ -74,15 +74,12 @@ class InvoiceByDate {
       this.year = year;
       this.month = month;
    }
-
    public int getMonth() {
       return month;
    }
-
    public int getYear() {
       return year;
    }
-
    public Long getContractId() {
       return contractId;
    }

@@ -8,7 +8,9 @@ import org.springframework.web.bind.annotation.RestController;
 import victor.training.performance.util.BigObject20MB;
 
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
+import java.util.Queue;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -17,9 +19,16 @@ import java.util.List;
 public class Leak3_SubList {
 
    private List<BigObject20MB> lastTenObjects = new ArrayList<>();
+   private Queue<BigObject20MB> lastTenObjectsQ = new LinkedList<>();
 
    @GetMapping
    public synchronized String test() {
+
+      lastTenObjectsQ.offer(new BigObject20MB());
+      if (lastTenObjectsQ.size() > 10) {
+         lastTenObjectsQ.poll();
+      }
+
       lastTenObjects.add(new BigObject20MB());
       if (lastTenObjects.size() > 10) {
          lastTenObjects = lastTenObjects.subList(1, lastTenObjects.size());
