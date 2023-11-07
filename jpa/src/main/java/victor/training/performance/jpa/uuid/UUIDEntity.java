@@ -9,7 +9,7 @@ import java.util.UUID;
 
 @Getter
 @Entity
-@GenericGenerator(name = "uuid", strategy = "victor.training.jpa.perf.UUIDGenerator")
+@GenericGenerator(name = "uuid", strategy = "victor.training.performance.jpa.uuid.UUIDGenerator")
 public class UUIDEntity {
    @Id
    // Option 1: hibernate sees a NON-null PK > triggers .merge() > useless SELECT before every new persist
