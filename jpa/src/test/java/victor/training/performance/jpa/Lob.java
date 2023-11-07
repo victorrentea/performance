@@ -51,7 +51,7 @@ public class Lob {
 
    @Test
    void streamFromFileInOutDb() throws IOException, SQLException {
-      File tempFile = new File("glowroot.jar"); // 10 MB
+      File tempFile = new File("pom.xml"); // imagine large
       System.out.println("File size: " + Util.formatSize(tempFile.length()));
 
       Util.printUsedHeap("Initial");

@@ -3,9 +3,8 @@ package victor.training.performance.jpa.uber;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 
-// Possible values: see ScopeEnum
 @Entity
-public class Scope {
+public class Scope { // old-school static 'referential' data - prefer enum ScopeEnum
    @Id
    private Long id;
    private String name;

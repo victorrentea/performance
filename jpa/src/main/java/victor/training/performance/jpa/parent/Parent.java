@@ -8,6 +8,8 @@ import javax.persistence.*;
 import java.util.HashSet;
 import java.util.Set;
 
+import static javax.persistence.CascadeType.PERSIST;
+
 @Getter
 @Setter
 @Entity
@@ -19,16 +21,14 @@ public class Parent {
    private String name;
    private Integer age;
 
-   @OneToMany(mappedBy = "parent", cascade = CascadeType.PERSIST)
-   // @BatchSize(size=10) // Hibernate magic that avoids N+1 using ID IN (?,?..)
+   @OneToMany(mappedBy = "parent", cascade = PERSIST)
+   // @BatchSize(size=10) // Hibernate magic that avoids N+1 using ID IN (?,?..,?10)
    private Set<Child> children = new HashSet<>();
 
    @ManyToOne
    private Country country; // surprise !
 
-   protected Parent() {
-   }
-
+   public Parent() {}
    public Parent(String name) {
       this.name = name;
    }
@@ -37,5 +37,9 @@ public class Parent {
       children.add(child);
       child.setParent(this);
       return this;
+   }
+
+   public String toString() {
+      return "Parent{id=" + id + ", name='" + name + "'}";
    }
 }

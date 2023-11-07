@@ -10,9 +10,11 @@ public enum ScopeEnum {
    CITY("Y");
 
    public final String dbCode;
+
    ScopeEnum(String dbCode) {
       this.dbCode = dbCode;
    }
+
    public static ScopeEnum fromDbCode(String dbCode) {
       return Stream.of(values()).filter(e -> e.dbCode.equals(dbCode)).findFirst()
           .orElseThrow(() -> new IllegalArgumentException("No Scope for db code: '" + dbCode + "'"));

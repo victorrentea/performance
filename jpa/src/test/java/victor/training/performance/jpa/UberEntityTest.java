@@ -1,7 +1,6 @@
 package victor.training.performance.jpa;
 
-import lombok.Data;
-import lombok.Value;
+import lombok.Builder;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -46,8 +45,10 @@ public class UberEntityTest {
 
     @BeforeEach
     final void before() {
-        Country romania = countryRepo.save(new Country(1L, "Romania").setRegion(new CountryRegion().setName("EMEA")));
-        Country belgium = countryRepo.save(new Country(2L, "Belgium"));
+        Country romania = countryRepo.save(new Country(1L, "Romania")
+            .setRegion(new CountryRegion().setName("EMEA")));
+        Country belgium = countryRepo.save(new Country(2L, "Belgium")
+            .setRegion(new CountryRegion().setName("OTHER")));
         Country france = countryRepo.save(new Country(3L, "France"));
         Country serbia = countryRepo.save(new Country(4L, "Serbia"));
         User testUser = userRepo.save(new User("test"));
@@ -63,6 +64,7 @@ public class UberEntityTest {
                 .setScope(globalScope)
 //                .setScopeEnum(ScopeEnum.GLOBAL) // TODO enum
                 .setCreatedBy(testUser);
+
         uberId = uberRepo.save(uber).getId();
 
         TestTransaction.end();
@@ -93,12 +95,12 @@ public class UberEntityTest {
 
     @Test
     public void search() {
-        log.info("Searching for 'very OOP' @Entity...");
+        log.info("Searching for a 'very OOP' @Entity...");
 
-        UberSearchCriteria criteria = new UberSearchCriteria().setName("::uberName::");
-        List<UberSearchResultDto> dtos = classicSearch(criteria);
+        UberSearchCriteria criteria = UberSearchCriteria.builder().name("::uberName::").build();
+        List<UberSearchResult> dtos = classicSearch(criteria);
 
-        System.out.println("Results: \n" + dtos.stream().map(UberSearchResultDto::toString).collect(joining("\n")));
+        System.out.println("Results: \n" + dtos.stream().map(UberSearchResult::toString).collect(joining("\n")));
         assertThat(dtos)
             .extracting("id", "name", "originCountry")
             .containsExactly(tuple(uberId, "::uberName::", "Belgium"));
@@ -107,13 +109,17 @@ public class UberEntityTest {
         // TODO [2] Select u.id AS id -> Dto
     }
 
-    private List<UberSearchResultDto> classicSearch(UberSearchCriteria criteria) {
+    private List<UberSearchResult> classicSearch(UberSearchCriteria criteria) {
         String jpql = "SELECT u FROM UberEntity u WHERE 1 = 1 ";
         // alternative implementation: CriteriaAPI, Criteria+Metamodel, QueryDSL, Spring Specifications
         Map<String, Object> params = new HashMap<>();
         if (criteria.name != null) {
             jpql += " AND u.name = :name ";
             params.put("name", criteria.name);
+        }
+        if (criteria.status != null) {
+            jpql += " AND u.status = :status ";
+            params.put("status", criteria.status);
         }
         var query = em.createQuery(jpql, UberEntity.class);
         for (String key : params.keySet()) {
@@ -122,28 +128,21 @@ public class UberEntityTest {
         var entities = query.getResultList();
 
         // OR: Spring Data Repo @Query with a fixed JPQL
-        //entities = uberRepo.searchFixedJqpl(criteria.name);
+//        entities = uberRepo.searchFixedJqpl(criteria.name, criteria.status);
 
-        return entities.stream().map(UberSearchResultDto::new).collect(toList());
+        return entities.stream().map(this::toResult).collect(toList());
     }
 
-    @Data
-    static class UberSearchCriteria { // received as JSON
-        public String name;
-        public Status status;
-        // etc
+    private UberSearchResult toResult(UberEntity entity) {
+        return new UberSearchResult(
+            entity.getId(),
+            entity.getName(),
+            entity.getOriginCountry().getName());
     }
-    @Value
-    static class UberSearchResultDto { // sent as JSON
-        Long id;
-        String name;
-        String originCountry;
 
-        public UberSearchResultDto(UberEntity entity) {
-            id = entity.getId();
-            name = entity.getName();
-            originCountry = entity.getOriginCountry().getName();
-        }
-    }
+    @Builder
+    record UberSearchCriteria(String name, Status status, boolean hasPassport) {}
+
+    record UberSearchResult(Long id, String name, String originCountry) {}
 }
 

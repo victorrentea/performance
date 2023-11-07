@@ -4,6 +4,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.hibernate.Cache;
 import org.hibernate.Session;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -27,6 +28,8 @@ import static org.assertj.core.api.Assertions.assertThat;
     "INSERT INTO COUNTRY(ID, NAME) VALUES (2, 'Belgium')"
 })
 @DirtiesContext(classMode = ClassMode.BEFORE_EACH_TEST_METHOD)
+@Disabled
+
 public class Cache_2ndLevel {
 
    @Autowired

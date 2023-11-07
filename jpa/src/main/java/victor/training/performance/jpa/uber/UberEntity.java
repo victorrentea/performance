@@ -30,7 +30,8 @@ public class UberEntity {
     private Country invoicingCountry;
     @ManyToOne
     private Scope scope;
-//    @Convert(converter = ScopeEnumConverter.class)
+//    @Convert(converter = ScopeEnumConverter.class) // store 1 letter code
+//    @Enumerated(STRING) // store enum name
 //    private ScopeEnum scopeEnum;
     @ManyToOne
     private User createdBy;

@@ -1,6 +1,5 @@
 package victor.training.performance.jpa;
 
-import lombok.Value;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -10,126 +9,122 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.annotation.Rollback;
-import org.springframework.test.context.ActiveProfiles;
-import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.context.transaction.TestTransaction;
 import org.springframework.transaction.annotation.Transactional;
 import victor.training.performance.jpa.parent.*;
-import victor.training.performance.jpa.parent.ParentSearchViewRepo.ParentSearchProjection;
+import victor.training.performance.jpa.parent.ParentRepo.ParentProjection;
 import victor.training.performance.jpa.uber.Country;
 import victor.training.performance.jpa.uber.CountryRepo;
 
 import javax.persistence.EntityManager;
+import java.util.Collection;
 import java.util.List;
+import java.util.Set;
 
 import static java.util.stream.Collectors.joining;
-import static java.util.stream.Collectors.toList;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.tuple;
+import static org.springframework.data.domain.Sort.Direction.ASC;
 import static org.springframework.test.annotation.DirtiesContext.ClassMode.BEFORE_EACH_TEST_METHOD;
 
 @Slf4j
 @SpringBootTest
-@ActiveProfiles("test")
 @Transactional
-@Rollback(false) // at the end of each @Test, don't rollback the @Transaction, to be able to inspect the DB contents
+@Rollback(false) // COMMIT at the end of each @Test, to be able to look in the DB contents
 @DirtiesContext(classMode = BEFORE_EACH_TEST_METHOD) // nuke Spring + re-init DB with Hibernate
 public class NPlusOne {
-    @Autowired
-    EntityManager entityManager;
-    @Autowired
-    ParentRepo repo;
-    @Autowired
-    private CountryRepo countryRepo;
+  @Autowired
+  EntityManager entityManager;
+  @Autowired
+  ParentRepo repo;
+  @Autowired
+  CountryRepo countryRepo;
 
-    @BeforeEach
-    void persistData() {
-        repo.save(new Parent("Victor")
-                .setCountry(countryRepo.save(new Country(1L, "Romania")))
-                .setAge(36)
-                .addChild(new Child("Emma"))
-                .addChild(new Child("Vlad"))
-        );
-        repo.save(new Parent("Trofim") // bachelor, no children
-                .setAge(42));
-        repo.save(new Parent("Peter")
-                .setAge(41)
-                .setCountry(countryRepo.save(new Country(2L,"Moldavia")))
-                .addChild(new Child("Maria"))
-                .addChild(new Child("Paul"))
-                .addChild(new Child("Stephan"))
-        );
-        TestTransaction.end();
+  @BeforeEach
+  void persistData() {
+    Country romania = countryRepo.save(new Country(1L, "Romania"));
+    Country moldavia = countryRepo.save(new Country(2L, "Moldavia"));
+    repo.save(new Parent("Victor")
+        .setCountry(romania)
+        .setAge(36)
+        .addChild(new Child("Emma"))
+        .addChild(new Child("Vlad"))
+    );
+    repo.save(new Parent("Peter")
+        .setAge(41)
+        .setCountry(romania)
+        .addChild(new Child("Maria"))
+        .addChild(new Child("Paul"))
+        .addChild(new Child("Stephan"))
+    );
+    repo.save(new Parent("Trofim") // bachelor, no children
+        .setCountry(moldavia)
+        .setAge(42));
+    TestTransaction.end(); // force a COMMIT
 
-        TestTransaction.start();
-    }
+    TestTransaction.start();
+  }
 
-    @Value
-    static class ParentSearchResult {
-        Long id;
-        String name;
-        String childrenNames;
-        public ParentSearchResult(Parent parent) {
-            id = parent.getId();
-            name = parent.getName();
-            childrenNames = parent.getChildren().stream().map(Child::getName).sorted().collect(joining(","));
-        }
-    }
+  // This is what is displayed in a UI grid:
+  private static void assertResults(Collection<?> results) {
+    assertThat(results)
+        .extracting("name", "childrenNames")
+        .containsExactlyInAnyOrder(
+            tuple("Trofim", ""),
+            tuple("Victor", "Emma,Vlad"),
+            tuple("Peter", "Maria,Paul,Stephan"));
+  }
 
-    // This is what is displayed in the UI:
-    private static void assertResultsInUIGrid(List<?> results) {
-        assertThat(results)
-                .extracting("name", "childrenNames")
-                .containsExactlyInAnyOrder(
-                        tuple("Trofim", ""),
-                        tuple("Victor", "Emma,Vlad"),
-                        tuple("Peter", "Maria,Paul,Stephan"))
-        ;
-    }
+  // ======================= SELECT full @Entity =============================
+  @Test
+  public void selectFullEntity() {
+    List<Parent> parents = repo.findAll();
+    log.info("Loaded {} parents: {}", parents.size(), parents);
 
-    // ======================= OPTION 1: SELECT full @Entity =============================
-    @Test
-    public void selectFullEntity() {
-        List<Parent> parents = repo.findAll();
+    List<ParentDto> results = toSearchResults(parents);
+    assertResults(results);
+  }
 
-        log.info("Loaded {} parents: {}", parents.size(), parents);
+  private List<ParentDto> toSearchResults(Collection<Parent> parents) { // eg, in a Mapper
+    log.debug("Converting-->Dto START");
+    List<ParentDto> results = parents.stream().map(ParentDto::fromEntity).toList();
+    log.debug("Converting-->Dto DONE");
+    return results;
+  }
 
-        List<ParentSearchResult> results = toSearchResults(parents);
+  // ======================= @Query(native sql) returning Spring projections ==============
+  @Test
+  public void nativeQuery() {
+    List<ParentProjection> results = repo.nativeQuery();
+    assertResults(results);
+  }
 
-        assertResultsInUIGrid(results);
-    }
+  // ======================= @Entity on Hibernate @Subselect(native sql) ==============
+  @Test
+  public void subselect() {
+    // TODO pagination
+    // TODO filter the original @Entity model
+    List<ParentSubselect> results = repo.subselect();
+    assertResults(results);
+  }
 
-    private List<ParentSearchResult> toSearchResults(List<Parent> parents) { // eg, in a Mapper
-        log.debug("Converting-->Dto START");
-        List<ParentSearchResult> results = parents.stream().map(ParentSearchResult::new).collect(toList());
-        log.debug("Converting-->Dto DONE");
-        return results;
-    }
+  // ======================= @Entity mapped on DB VIEW(native sql) =============================
+  @Test
+  public void view() {
+    List<ParentView> results = repo.view();
+    assertResults(results);
+  }
 
+  // ======================= Driving Query: identify data + fetch data =============================
+  @Test
+  public void drivingQuery() {
+    List<Long> parentIds = repo.findIds("%");
+    log.info("Matched parents IDs: {}", parentIds);
+    Set<Parent> fullParents = repo.fetchParentsByIds(parentIds);
 
-    // ======================= OPTION 2: native SQL query selecting projections ==============
-    @Autowired
-    ParentSearchViewRepo searchRepo;
-    @Test
-    public void nativeQuery() {
-        List<ParentSearchProjection> results = searchRepo.nativeQueryForProjections();
-        assertResultsInUIGrid(results);
-    }
-
-    // ======================= OPTION 3: Hibernate @Subselect ==============
-    @Test
-    public void subselect() {
-        Page<ParentSearchSubselect> results = repo.searchSubselect("%", PageRequest.of(0, 5));
-        assertResultsInUIGrid(results.getContent());
-    }
-
-    // ======================= OPTION 4: @Entity on VIEW =============================
-    @Test
-    @Sql("/create-view.sql")
-    public void searchOnView() {
-        List<ParentSearchView> results = searchRepo.findAll();
-        assertResultsInUIGrid(results);
-    }
+    List<ParentDto> results = toSearchResults(fullParents);
+    assertResults(results);
+  }
 
 }
 
