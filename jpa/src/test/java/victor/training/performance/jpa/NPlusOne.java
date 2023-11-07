@@ -5,6 +5,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.data.domain.*;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.annotation.Rollback;
 import org.springframework.test.context.ActiveProfiles;
@@ -17,6 +18,8 @@ import victor.training.performance.jpa.uber.CountryRepo;
 
 import javax.persistence.EntityManager;
 import java.util.Collection;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 import static java.util.stream.Collectors.joining;
@@ -89,11 +92,15 @@ public class NPlusOne {
   @Test
   public void selectFullEntity() {
 //    List<Parent> parents = repo.findAll(); // 1 SELECT
+    Pageable pageable = PageRequest.of(0, 10, Sort.Direction.ASC, "name");
+
     var parents = repo.fetchAllWithChildren();
 
     log.info("Loaded {} parents: {}", parents.size(), parents);
 
     List<ParentSearchResult> results = toSearchResults(parents);
+//    Collections.sort(results, Comparator.comparing(ParentSearchResult::childrenNames));
+    // throw multumita .toList() java 17 care intoarce lista imutabila❤️
 
     assertResultsInUIGrid(results);
   }
@@ -120,7 +127,8 @@ public class NPlusOne {
   @Test
   public void subselect() {
 //    List<ParentSearchSubselect> results = repo.findAllWithSubselect(); // equivalent cu @Query native=true ce scoate Spring Projections
-    List<ParentSearchSubselectEntity> results = repo.findAllWithSubselectCuJoinuriInPlus(); // equivalent cu @Query native=true ce scoate Spring Projections
+    Pageable pageable = PageRequest.of(0, 10, Sort.Direction.ASC, "childrenNames");
+    List<ParentSearchSubselectEntity> results = repo.findAllWithSubselectCuJoinuriInPlus(pageable); // equivalent cu @Query native=true ce scoate Spring Projections
 //    List<ParentSearchSubselect> results = repo.searchSubselect("%", PageRequest.of(0, 5)).getContent();
     assertResultsInUIGrid(results);
   }
@@ -129,8 +137,10 @@ public class NPlusOne {
   @Test
   @Sql("/create-view.sql")
   public void searchOnView() {
-    List<ParentSearchViewEntity> results = searchRepo.findAll();
-    assertResultsInUIGrid(results);
+//    List<ParentSearchViewEntity> results = searchRepo.findAll();
+    Pageable pageable = PageRequest.of(0, 10, Sort.Direction.ASC, "childrenNames");
+    Page<ParentSearchViewEntity> results = searchRepo.findAll(pageable);
+    assertResultsInUIGrid(results.getContent());
   }
 
 }

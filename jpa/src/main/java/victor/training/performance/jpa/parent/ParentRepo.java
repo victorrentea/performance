@@ -45,14 +45,15 @@ public interface ParentRepo extends JpaRepository<Parent, Long> {
     """)
   // Inner JOIN = lasa doar parintii cu copii
   // LEFT JOIN = aduce si parintii fara copii
-  Set<Parent> fetchAllWithChildren();
+  List<Parent> fetchAllWithChildren();
+//  Page<Parent> fetchAllWithChildren(Pageable pageable); // Illegal to paginate if you LEFT JOIN FETCH collections
 
   @Query("""
     SELECT pss
     FROM ParentSearchSubselectEntity pss
-    JOIN Parent p ON p.id = pss.id
 """)
+//    JOIN Parent p ON p.id = pss.id
 //    WHERE p.country.name LIKE ?1
 //    AND p.country.region.id = ?2
-  List<ParentSearchSubselectEntity> findAllWithSubselectCuJoinuriInPlus();
+  List<ParentSearchSubselectEntity> findAllWithSubselectCuJoinuriInPlus(Pageable pageable);
 }
