@@ -48,6 +48,10 @@ public interface ParentRepo extends JpaRepository<Parent, Long> {
   List<Parent> fetchAllWithChildren();
 //  Page<Parent> fetchAllWithChildren(Pageable pageable); // Illegal to paginate if you LEFT JOIN FETCH collections
 
+  // nu merge pt ca children si tag sunt UNRELATED CHILDREN
+//    LEFT JOIN FETCH p.childrenList
+//    LEFT JOIN FETCH p.tagList
+
   @Query("""
     SELECT pss
     FROM ParentSearchSubselectEntity pss
