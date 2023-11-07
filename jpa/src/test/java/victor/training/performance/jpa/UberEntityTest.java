@@ -86,7 +86,7 @@ public class UberEntityTest {
         log.info("Loaded using findById (inspect the above query):\n" + uber);
 
         // Use-case: I only loaded UberEntity to get its status
-        if (uber.getStatus() == Status.DRAFT) {
+        if (uber.status() == Status.DRAFT) {
             throw new IllegalArgumentException("Not submitted yet");
         }
         // more logic
