@@ -68,19 +68,15 @@ public class NPlusOne {
   }
 
   record ParentSearchResult(Long id, String name, String childrenNames) {
-    public ParentSearchResult(Parent parent) {
-      this(
-          parent.getId(),
-          parent.getName(),
-          joinChildrenNames(parent.getChildren()));
-      System.out.println("Proxy revealed: " + parent.getCountry().getClass());
-    }
-
-    private static String joinChildrenNames(Set<Child> children) {
-      return children.stream() // lazy loading causes 1 query / parent
-          .map(Child::getName).sorted().collect(joining(","));
+    public static ParentSearchResult fromEntity(Parent parent) {
+      String childrenNames = parent.getChildren().stream()
+          .map(Child::getName)
+          .sorted()
+          .collect(joining(","));
+      return new ParentSearchResult(parent.getId(), parent.getName(), childrenNames);
     }
   }
+
 
   // This is what is displayed in the UI:
   private static void assertResultsInUIGrid(List<?> results) {
@@ -108,7 +104,7 @@ public class NPlusOne {
 
   private List<ParentSearchResult> toSearchResults(Collection<Parent> parents) { // eg, in a Mapper
     log.debug("Converting-->Dto START");
-    List<ParentSearchResult> results = parents.stream().map(ParentSearchResult::new).toList(); // N SELECT
+    List<ParentSearchResult> results = parents.stream().map(ParentSearchResult::fromEntity).toList(); // N SELECT
     log.debug("Converting-->Dto DONE");
     return results;
   }
