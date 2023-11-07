@@ -36,9 +36,10 @@ public interface ParentRepo extends JpaRepository<Parent, Long> {
   // ii spun explicit lui Hib sa-mi preincarce copiii cu un JOIN
   // DISTINCT ii spune lui hib sa elimine din List<> intoarsa dublurile, pe langa DISTINCTul din SQL
   @Query("""
-    SELECT  p
+    SELECT p
     FROM Parent p
     LEFT JOIN FETCH p.children
+    LEFT JOIN FETCH p.country
     """)
   // Inner JOIN = lasa doar parintii cu copii
   // LEFT JOIN = aduce si parintii fara copii

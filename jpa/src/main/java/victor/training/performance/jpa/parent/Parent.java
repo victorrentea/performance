@@ -12,6 +12,7 @@ import java.util.Set;
 
 import static javax.persistence.CascadeType.PERSIST;
 import static javax.persistence.FetchType.EAGER;
+import static javax.persistence.FetchType.LAZY;
 
 @Getter
 @Setter
@@ -30,13 +31,12 @@ public class Parent {
        // defapt EAGER e folosit doar ca sa evite lazy loadingul, dar n-ai scapat de N queryuri.
        // ba mai rau, ori de cate ori primesti isntanta de Parent de la Hibernate, hib a adus si copiii, ca ai ca n-ai nevoie, sunt cu time
        cascade = PERSIST)
-
 //   @BatchSize(size=10) // Hibernate magic that avoids N+1 using ID IN (?,?..,?10)
 //   @BatchSize(size=2) // still too many network calls
 //   @BatchSize(size=1000) // memory pressure
    private Set<Child> children = new HashSet<>();
 
-   @ManyToOne
+   @ManyToOne//(fetch = LAZY)
    private Country country; // surprise !
 
    protected Parent() { // MUST HAVE no-arg constructor, devi nu pot chema constructorul
