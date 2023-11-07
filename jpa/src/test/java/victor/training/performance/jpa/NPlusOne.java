@@ -18,9 +18,7 @@ import victor.training.performance.jpa.uber.CountryRepo;
 
 import javax.persistence.EntityManager;
 import java.util.*;
-import java.util.stream.Collectors;
 
-import static java.util.function.Function.identity;
 import static java.util.stream.Collectors.joining;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.tuple;
@@ -157,6 +155,19 @@ public class NPlusOne {
     List<ParentSearchResult> results = toSearchResults(fullParents);
 
     assertResultsInUIGrid(results);
+  }
+
+  // ======================= Export: Streaming a huge result set =============================
+  @Test
+  public void exportViaStreamingQuery() {
+    // to avoid loading all data to export at once in memory
+    repo.streamAll()
+        // dar! Atentie ca orice @Entity dat tie de Hibernate este copiat in First Level Cacheul JPA
+        // pana la finalul tranzactiei
+        // TO FIX
+        .peek(e -> entityManager.detach(e)) // - Hibernate, scoate acest obiect din cache
+        .map(p -> p.toString())
+        .forEach(System.out::println);
   }
 
 

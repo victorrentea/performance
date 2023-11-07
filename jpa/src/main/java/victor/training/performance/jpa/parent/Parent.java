@@ -2,6 +2,7 @@ package victor.training.performance.jpa.parent;
 
 import lombok.Getter;
 import lombok.Setter;
+import lombok.ToString;
 import org.hibernate.annotations.BatchSize;
 import victor.training.performance.jpa.uber.Country;
 
@@ -17,6 +18,8 @@ import static javax.persistence.FetchType.LAZY;
 @Getter
 @Setter
 @Entity
+//@ToString // sau @Data = potential performance issue
+   // pt ca poate cauza lazy loading pe colectiile de copii
 public class Parent {
    @Id
    @GeneratedValue
@@ -50,5 +53,14 @@ public class Parent {
       children.add(child);
       child.setParent(this);
       return this;
+   }
+
+   @Override
+   public String toString() {
+      return "Parent{" +
+          "id=" + id +
+          ", name='" + name + '\'' +
+          ", age=" + age +
+          '}';
    }
 }

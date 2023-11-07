@@ -7,6 +7,7 @@ import org.springframework.data.jpa.repository.Query;
 
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Stream;
 
 public interface ParentRepo extends JpaRepository<Parent, Long> {
 
@@ -60,4 +61,9 @@ public interface ParentRepo extends JpaRepository<Parent, Long> {
 //    WHERE p.country.name LIKE ?1
 //    AND p.country.region.id = ?2
   List<ParentSearchSubselectEntity> findAllWithSubselectCuJoinuriInPlus(Pageable pageable);
+
+
+  @Query("SELECT p FROM Parent p") // where...
+  Stream<Parent> streamAll();
+//  Iterator<Parent> streamAll();
 }
