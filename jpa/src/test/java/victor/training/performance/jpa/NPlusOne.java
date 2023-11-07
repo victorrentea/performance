@@ -19,6 +19,7 @@ import victor.training.performance.jpa.uber.Country;
 import victor.training.performance.jpa.uber.CountryRepo;
 
 import javax.persistence.EntityManager;
+import java.util.Collection;
 import java.util.List;
 import java.util.Set;
 
@@ -94,8 +95,7 @@ public class NPlusOne {
   @Test
   public void selectFullEntity() {
 //    List<Parent> parents = repo.findAll(); // 1 SELECT
-    List<Parent> parents = repo.fetchAllWithChildren();
-
+    var parents = repo.fetchAllWithChildren();
 
     log.info("Loaded {} parents: {}", parents.size(), parents);
 
@@ -104,7 +104,7 @@ public class NPlusOne {
     assertResultsInUIGrid(results);
   }
 
-  private List<ParentSearchResult> toSearchResults(List<Parent> parents) { // eg, in a Mapper
+  private List<ParentSearchResult> toSearchResults(Collection<Parent> parents) { // eg, in a Mapper
     log.debug("Converting-->Dto START");
     List<ParentSearchResult> results = parents.stream().map(ParentSearchResult::new).toList(); // N SELECT
     log.debug("Converting-->Dto DONE");
