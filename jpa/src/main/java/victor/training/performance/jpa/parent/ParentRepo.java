@@ -30,8 +30,11 @@ public interface ParentRepo extends JpaRepository<Parent, Long> {
   Set<Parent> fetchParentsWithChildren(List<Long> parentIds);
 
   // *** @Subselect
-  @Query("SELECT pss FROM ParentSearchSubselect pss WHERE pss.name LIKE ?1")
-  Page<ParentSearchSubselect> searchSubselect(String namePart, Pageable pageable);
+  @Query("SELECT pss FROM ParentSearchSubselectEntity pss")
+  List<ParentSearchSubselectEntity> findAllWithSubselect();
+
+  @Query("SELECT pss FROM ParentSearchSubselectEntity pss WHERE pss.name LIKE ?1")
+  Page<ParentSearchSubselectEntity> searchSubselect(String namePart, Pageable pageable);
 
   // ii spun explicit lui Hib sa-mi preincarce copiii cu un JOIN
   // DISTINCT ii spune lui hib sa elimine din List<> intoarsa dublurile, pe langa DISTINCTul din SQL
@@ -43,4 +46,13 @@ public interface ParentRepo extends JpaRepository<Parent, Long> {
   // Inner JOIN = lasa doar parintii cu copii
   // LEFT JOIN = aduce si parintii fara copii
   Set<Parent> fetchAllWithChildren();
+
+  @Query("""
+    SELECT pss
+    FROM ParentSearchSubselectEntity pss
+    JOIN Parent p ON p.id = pss.id
+""")
+//    WHERE p.country.name LIKE ?1
+//    AND p.country.region.id = ?2
+  List<ParentSearchSubselectEntity> findAllWithSubselectCuJoinuriInPlus();
 }

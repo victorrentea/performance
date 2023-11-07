@@ -1,15 +1,11 @@
 package victor.training.performance.jpa.parent;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import org.hibernate.annotations.Immutable;
 import org.hibernate.annotations.Subselect;
 
 import javax.persistence.Entity;
 import javax.persistence.Id;
-import javax.persistence.Table;
 
 @Entity
 @Immutable // hibernate will never update it
@@ -23,7 +19,7 @@ import javax.persistence.Table;
               group by p.ID, P.NAME
               """)
 @Getter
-public class ParentSearchSubselect {
+public class ParentSearchSubselectEntity {
    @Id
    private Long id;
    private String name;

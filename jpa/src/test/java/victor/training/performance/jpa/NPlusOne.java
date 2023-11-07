@@ -5,8 +5,6 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.annotation.Rollback;
 import org.springframework.test.context.ActiveProfiles;
@@ -14,7 +12,6 @@ import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.context.transaction.TestTransaction;
 import org.springframework.transaction.annotation.Transactional;
 import victor.training.performance.jpa.parent.*;
-import victor.training.performance.jpa.parent.ParentSearchViewRepo.ParentSearchProjection;
 import victor.training.performance.jpa.uber.Country;
 import victor.training.performance.jpa.uber.CountryRepo;
 
@@ -119,18 +116,20 @@ public class NPlusOne {
     assertResultsInUIGrid(results);
   }
 
-  // ======================= OPTION 3: Hibernate @Subselect ==============
+  // ======================= OPTION 3: Map an @Entity to a Hibernate @Subselect ==============
   @Test
   public void subselect() {
-    Page<ParentSearchSubselect> results = repo.searchSubselect("%", PageRequest.of(0, 5));
-    assertResultsInUIGrid(results.getContent());
+//    List<ParentSearchSubselect> results = repo.findAllWithSubselect(); // equivalent cu @Query native=true ce scoate Spring Projections
+    List<ParentSearchSubselectEntity> results = repo.findAllWithSubselectCuJoinuriInPlus(); // equivalent cu @Query native=true ce scoate Spring Projections
+//    List<ParentSearchSubselect> results = repo.searchSubselect("%", PageRequest.of(0, 5)).getContent();
+    assertResultsInUIGrid(results);
   }
 
-  // ======================= OPTION 4: @Entity on VIEW =============================
+  // ======================= OPTION 4: Map an @Entity on DB VIEW =============================
   @Test
   @Sql("/create-view.sql")
   public void searchOnView() {
-    List<ParentSearchView> results = searchRepo.findAll();
+    List<ParentSearchViewEntity> results = searchRepo.findAll();
     assertResultsInUIGrid(results);
   }
 

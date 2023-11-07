@@ -8,12 +8,12 @@ import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
-@Table(name = "PARENT_SEARCH")
 @Entity
+@Table(name = "PARENT_SEARCH_VIEW")
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class ParentSearchView {
+public class ParentSearchViewEntity {
    @Id
    private Long id;
    private String name;
