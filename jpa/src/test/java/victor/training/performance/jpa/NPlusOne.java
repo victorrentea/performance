@@ -57,7 +57,7 @@ public class NPlusOne {
     Country md = countryRepo.save(new Country(2L, "Moldavia"));
     repo.save(new Parent("Peter")
         .setAge(41)
-        .setCountry(md)
+        .setCountry(ro)
         .addChild(new Child("Maria"))
         .addChild(new Child("Paul"))
         .addChild(new Child("Stephan"))
