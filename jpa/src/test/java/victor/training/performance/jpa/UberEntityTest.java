@@ -56,7 +56,7 @@ public class UberEntityTest {
         UberEntity uber = new UberEntity()
                 .setName("::uberName::")
                 .setStatus(Status.SUBMITTED)
-                .setOriginCountry(belgium)
+                .setOriginCountryId(belgium.getId())
                 .setFiscalCountry(romania)
                 .setInvoicingCountry(france)
                 .setNationality(serbia)
@@ -81,8 +81,8 @@ public class UberEntityTest {
     @Test
     public void findById() {
         log.info("Loading a 'very OOP' @Entity by id...");
-//        UberEntity uber = uberRepo.findById(uberId).orElseThrow(); // or em.find(UberEntity.class, id); in plain JPA
-        var uber = uberRepo.getProjectionById(uberId);
+        UberEntity uber = uberRepo.findById(uberId).orElseThrow(); // or em.find(UberEntity.class, id); in plain JPA
+//        var uber = uberRepo.getProjectionById(uberId);
         log.info("Loaded using findById (inspect the above query):\n" + uber);
 
         // Use-case: I only loaded UberEntity to get its status
@@ -109,23 +109,34 @@ public class UberEntityTest {
     }
 
     private List<UberSearchResultDto> classicSearch(UberSearchCriteria criteria) {
-        String jpql = "SELECT u FROM UberEntity u WHERE 1 = 1 ";
+        // este gresit dpdv perf sa intorci la searchuri entitati intregi, mai ales daca acele entitati sunt mari
+        String jpql = "SELECT new victor.training.performance.jpa.UberSearchResultDto(" +
+            "    u.id, u.name," +
+//            "    u.originCountry.name)" + nu mai merge ca uber nu mai are @ManyToOne Country originCountry;
+            "    oc.name)" +
+            " FROM UberEntity u" +
+            " LEFT JOIN Country oc ON oc.id = u.originCountryId " +
+            " WHERE 1 = 1 ";
         // alternative implementation: CriteriaAPI, Criteria+Metamodel, QueryDSL, Spring Specifications
         Map<String, Object> params = new HashMap<>();
         if (criteria.name != null) {
             jpql += " AND u.name = :name ";
             params.put("name", criteria.name);
         }
-        var query = em.createQuery(jpql, UberEntity.class);
+        if (criteria.status != null) {
+            jpql += " AND u.status = :status ";
+            params.put("status", criteria.status);
+        }
+        var query = em.createQuery(jpql, UberSearchResultDto.class);
         for (String key : params.keySet()) {
             query.setParameter(key, params.get(key));
         }
-        var entities = query.getResultList();
 
+        var entities = query.getResultList();
         // OR: Spring Data Repo @Query with a fixed JPQL
         //entities = uberRepo.searchFixedJqpl(criteria.name);
 
-        return entities.stream().map(UberSearchResultDto::new).collect(toList());
+        return entities;//.stream().map(UberSearchResultDto::new).collect(toList());
     }
 
     @Data
@@ -134,17 +145,16 @@ public class UberEntityTest {
         public Status status;
         // etc
     }
-    @Value
-    static class UberSearchResultDto { // sent as JSON
-        Long id;
-        String name;
-        String originCountry;
+}
 
-        public UberSearchResultDto(UberEntity entity) {
-            id = entity.getId();
-            name = entity.getName();
-            originCountry = entity.getOriginCountry().getName();
-        }
-    }
+/**
+ * @param originCountry acel caz unic cand avem nevoie de origin country name
+ */
+record UberSearchResultDto(Long id, String name, String originCountry) { // sent as JSON
+    //    public UberSearchResultDto(UberEntity entity) {
+//        id = entity.getId();
+//        name = entity.getName();
+//        originCountry = entity.getOriginCountry().getName();
+//    }
 }
 

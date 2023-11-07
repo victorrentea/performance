@@ -6,7 +6,7 @@ import javax.persistence.*;
 
 import static javax.persistence.EnumType.STRING;
 
-@Entity // created by a naive OOP developer
+@Entity // naive OOP modeling
 @Data
 public class UberEntity {
     @Id
@@ -20,8 +20,13 @@ public class UberEntity {
     private String ssn;
     private String passportNumber;
 
-    @ManyToOne
-    private Country originCountry;
+//    @ManyToOne
+//    private Country originCountry;
+    // Descoperire: in multe proiecte nu ai nevoie vreodata decat de ID/ISO
+//    prin codul java
+    private Long originCountryId;
+    // NB: va rog 🙏 pastrati FK cu COUNTRY
+
     @ManyToOne
     private Country nationality;
     @ManyToOne
