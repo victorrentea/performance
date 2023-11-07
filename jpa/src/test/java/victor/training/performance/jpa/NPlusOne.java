@@ -73,6 +73,7 @@ public class NPlusOne {
           parent.getId(),
           parent.getName(),
           joinChildrenNames(parent.getChildren()));
+      System.out.println("Proxy revealed: " + parent.getCountry().getClass());
     }
 
     private static String joinChildrenNames(Set<Child> children) {
