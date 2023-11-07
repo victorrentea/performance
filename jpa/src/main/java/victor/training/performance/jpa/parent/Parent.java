@@ -31,7 +31,7 @@ public class Parent {
        // ba mai rau, ori de cate ori primesti isntanta de Parent de la Hibernate, hib a adus si copiii, ca ai ca n-ai nevoie, sunt cu time
        cascade = PERSIST)
 
-   @BatchSize(size=10) // Hibernate magic that avoids N+1 using ID IN (?,?..,?10)
+//   @BatchSize(size=10) // Hibernate magic that avoids N+1 using ID IN (?,?..,?10)
 //   @BatchSize(size=2) // still too many network calls
 //   @BatchSize(size=1000) // memory pressure
    private Set<Child> children = new HashSet<>();

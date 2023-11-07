@@ -33,4 +33,14 @@ public interface ParentRepo extends JpaRepository<Parent, Long> {
   @Query("SELECT pss FROM ParentSearchSubselect pss WHERE pss.name LIKE ?1")
   Page<ParentSearchSubselect> searchSubselect(String namePart, Pageable pageable);
 
+  // ii spun explicit lui Hib sa-mi preincarce copiii cu un JOIN
+  // DISTINCT ii spune lui hib sa elimine din List<> intoarsa dublurile, pe langa DISTINCTul din SQL
+  @Query("""
+    SELECT DISTINCT p
+    FROM Parent p
+    LEFT JOIN FETCH p.children
+    """)
+  // Inner JOIN = lasa doar parintii cu copii
+  // LEFT JOIN = aduce si parintii fara copii
+  List<Parent> fetchAllWithChildren();
 }

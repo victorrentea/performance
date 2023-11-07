@@ -93,7 +93,9 @@ public class NPlusOne {
   // ======================= OPTION 1: SELECT full @Entity =============================
   @Test
   public void selectFullEntity() {
-    List<Parent> parents = repo.findAll(); // 1 SELECT
+//    List<Parent> parents = repo.findAll(); // 1 SELECT
+    List<Parent> parents = repo.fetchAllWithChildren();
+
 
     log.info("Loaded {} parents: {}", parents.size(), parents);
 
