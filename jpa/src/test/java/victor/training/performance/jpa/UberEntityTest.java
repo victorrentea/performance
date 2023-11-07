@@ -48,8 +48,8 @@ public class UberEntityTest {
     final void before() {
         Country romania = countryRepo.save(new Country(1L, "Romania").setRegion(new CountryRegion().setName("EMEA")));
         Country belgium = countryRepo.save(new Country(2L, "Belgium"));
-        Country france = countryRepo.save(new Country(3L, "France"));
-        Country serbia = countryRepo.save(new Country(4L, "Serbia"));
+        Country france = countryRepo.save(new Country(3L, "France").setRegion(new CountryRegion().setName("WE")));
+        Country serbia = countryRepo.save(new Country(4L, "Serbia").setRegion(new CountryRegion().setName("NE")));
         User testUser = userRepo.save(new User("test"));
         Scope globalScope = scopeRepo.save(new Scope(1L, "Global"));
 
@@ -60,8 +60,8 @@ public class UberEntityTest {
                 .setFiscalCountry(romania)
                 .setInvoicingCountry(france)
                 .setNationality(serbia)
-                .setScope(globalScope)
-//                .setScopeEnum(ScopeEnum.GLOBAL) // TODO enum
+//                .setScope(globalScope) DBConstants.SCOPE_GLOBAL_ID=1L + 5
+                .setScopeEnum(ScopeEnum.GLOBAL) // TODO enum
                 .setCreatedBy(testUser);
         uberId = uberRepo.save(uber).getId();
 
@@ -72,16 +72,17 @@ public class UberEntityTest {
     @Test
     public void jpql() {
         log.info("SELECTING a 'very OOP' @Entity with JPQL ...");
-         List<UberEntity> list = uberRepo.findAll();
+//         List<UberEntity> list = uberRepo.findAll(); // + 1 query / @ManyToOne unic
 //        List<UberEntity> list = uberRepo.findAllWithQuery();// EQUIVALENT
-//        List<UberEntity> list = uberRepo.findByName("::uberName::");
+        List<UberEntity> list = uberRepo.findByName("::uberName::");
         log.info("Loaded using JPQL (see how many queries are above):\n" + list);
     }
 
     @Test
     public void findById() {
         log.info("Loading a 'very OOP' @Entity by id...");
-        UberEntity uber = uberRepo.findById(uberId).orElseThrow(); // or em.find(UberEntity.class, id); in plain JPA
+//        UberEntity uber = uberRepo.findById(uberId).orElseThrow(); // or em.find(UberEntity.class, id); in plain JPA
+        var uber = uberRepo.getStatusById(uberId);
         log.info("Loaded using findById (inspect the above query):\n" + uber);
 
         // Use-case: I only loaded UberEntity to get its status

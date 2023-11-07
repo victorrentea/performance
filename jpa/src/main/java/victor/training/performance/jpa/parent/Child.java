@@ -14,7 +14,8 @@ public class Child {
     private String name;
 
     @ManyToOne
-    private Parent parent;
+    private Parent parent; // keep only this side of the bidirectional link
+    // if 1 parent has > 1000 children
 
     private Child() {
     }

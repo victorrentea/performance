@@ -6,7 +6,7 @@ import javax.persistence.*;
 
 import static javax.persistence.EnumType.STRING;
 
-@Entity
+@Entity // created by a naive OOP developer
 @Data
 public class UberEntity {
     @Id
@@ -28,10 +28,11 @@ public class UberEntity {
     private Country fiscalCountry;
     @ManyToOne
     private Country invoicingCountry;
-    @ManyToOne
-    private Scope scope;
+//    @ManyToOne
+//    private Scope scope;
 //    @Convert(converter = ScopeEnumConverter.class)
-//    private ScopeEnum scopeEnum;
+    @Enumerated(STRING)
+    private ScopeEnum scopeEnum;
     @ManyToOne
     private User createdBy;
     @Enumerated(STRING)
