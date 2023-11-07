@@ -36,7 +36,7 @@ public class Parent {
 //   @BatchSize(size=1000) // memory pressure
    private Set<Child> children = new HashSet<>();
 
-   @ManyToOne//(fetch = LAZY)
+   @ManyToOne(fetch = LAZY)
    private Country country; // surprise !
 
    protected Parent() { // MUST HAVE no-arg constructor, devi nu pot chema constructorul
