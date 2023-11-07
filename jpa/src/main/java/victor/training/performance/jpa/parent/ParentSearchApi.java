@@ -56,7 +56,7 @@ public class ParentSearchApi {
       log.info("Matched parents: {}", parentIds);
       Map<Long, Parent> parentDataById = repo.fetchParentsWithChildren(parentIds)
               .stream().collect(Collectors.toMap(Parent::getId, identity()));
-      return parentIdsPage.map(parentDataById::get);
+      return parentIdsPage.map(parentDataById::get); // from Page<Long>->Page<Parent>
    }
 
    // TODO? #3) Break up with Hibernate and extract the hierarchical objects manually from a resultset

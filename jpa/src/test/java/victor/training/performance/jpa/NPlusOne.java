@@ -17,14 +17,14 @@ import victor.training.performance.jpa.uber.Country;
 import victor.training.performance.jpa.uber.CountryRepo;
 
 import javax.persistence.EntityManager;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.List;
+import java.util.*;
+import java.util.stream.Collectors;
 
+import static java.util.function.Function.identity;
 import static java.util.stream.Collectors.joining;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.tuple;
+import static org.springframework.data.domain.Sort.Direction.ASC;
 import static org.springframework.test.annotation.DirtiesContext.ClassMode.BEFORE_EACH_TEST_METHOD;
 
 @Slf4j
@@ -142,6 +142,24 @@ public class NPlusOne {
     Page<ParentSearchViewEntity> results = searchRepo.findAll(pageable);
     assertResultsInUIGrid(results.getContent());
   }
+
+
+  // ======================= OPTION 5: Driving Query =============================
+  @Test
+  public void drivingQuery() {
+    PageRequest pageRequest = PageRequest.of(0, 20, ASC, "name");
+    Page<Long> parentIdsPage = repo.searchIdsByNameLike("%", pageRequest); // 3 IDuri de parinti
+
+    List<Long> parentIds = parentIdsPage.getContent();
+    log.info("Matched parents: {}", parentIds);
+    Set<Parent> fullParents = repo.fetchParentsWithChildren(parentIds);// 7 results, 20 (o page de grid), 500 (un chunk de export)
+
+    List<ParentSearchResult> results = toSearchResults(fullParents);
+
+    assertResultsInUIGrid(results);
+  }
+
+
 
 }
 
