@@ -50,7 +50,7 @@ public class BatchApp {
         .start(importPersonsInChunks())
 
         // TODO insert in 2 passes: 1) cities, 2) people
-        // .start(importCitiesFirstPass()).next(importPersonsInChunks())
+//         .start(importCitiesFirstPass()).next(importPersonsInChunks())
         .listener(new StartListener())
         .build();
   }
@@ -58,7 +58,7 @@ public class BatchApp {
   @Bean
   public Step importPersonsInChunks() {
     return stepBuilder.get("importPersonsInChunks")
-        .<PersonXml, Person>chunk(5)
+        .<PersonXml, Person>chunk(50)
         .reader(xmlReader(null))
         .processor(personProcessor())
         .writer(jpaWriter())

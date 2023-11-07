@@ -38,8 +38,8 @@ public class BatchAppTest extends AbstractTestcontainersTestBase{
    }
    @Test
    public void test() throws Exception {
-      int N = 4_000;
-      File dataFile = XmlFileGenerator.generateFile(N);
+      int N_ELEMENTS = 4_000;
+      File dataFile = XmlFileGenerator.generateFile(N_ELEMENTS);
       Map<String, JobParameter> paramMap = Map.of("FILE_PATH", new JobParameter(dataFile.getAbsolutePath()));
       JobExecution run = launcher.run(job, new JobParameters(paramMap));
       while (run.getExitStatus().isRunning()) {
@@ -47,7 +47,7 @@ public class BatchAppTest extends AbstractTestcontainersTestBase{
       }
       System.out.println("JOB FINISHED");
       assertThat(run.getExitStatus()).isEqualTo(ExitStatus.COMPLETED);
-      assertThat(personRepo.count()).isEqualTo(N);
+      assertThat(personRepo.count()).isEqualTo(N_ELEMENTS);
       assertThat(cityRepo.count()).describedAs("Number of cities")
           .isEqualTo(XmlFileGenerator.citiesNamesGenerated.size());
    }

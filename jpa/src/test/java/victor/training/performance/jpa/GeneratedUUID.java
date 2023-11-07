@@ -15,6 +15,7 @@ public class GeneratedUUID {
     @Test
     @CaptureSystemOutput
     public void assignIdentifiers(OutputCapture capture) {
+        System.out.println("Dau save");
         UUIDEntity entity = new UUIDEntity();
         repo.save(entity);
 

@@ -19,4 +19,9 @@ public class City {
         this.name = name;
     }
     public City() {}
+
+    public City setId(Long id) {
+        this.id = id;
+        return this;
+    }
 }
