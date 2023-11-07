@@ -1,8 +1,7 @@
-package victor.training.performance.jpa;
+package victor.training.performance.jpa.parent;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.context.event.ApplicationStartedEvent;
 import org.springframework.context.annotation.Profile;
 import org.springframework.context.event.EventListener;
@@ -12,8 +11,6 @@ import org.springframework.data.domain.Sort.Direction;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
-import victor.training.performance.jpa.Parent;
-import victor.training.performance.jpa.ParentRepo;
 
 import java.util.List;
 import java.util.Map;
@@ -27,7 +24,7 @@ import static org.springframework.data.domain.Sort.Direction.ASC;
 @Profile("!test")
 @RestController
 @RequiredArgsConstructor
-public class ParentSearchController {
+public class ParentSearchApi {
    private final ParentRepo repo;
 
    public static class ParentDto {
@@ -45,7 +42,7 @@ public class ParentSearchController {
            ) {
 //      PageRequest pageRequest = PageRequest.of(0, 20, ASC, "name");
       PageRequest pageRequest = PageRequest.of(pageIndex, pageSize, Direction.fromString(dir), order);
-      Page<Parent> parentPage = repo.findByNameLike("%"+q+"%", pageRequest);
+      Page<Parent> parentPage = repo.searchByNameLike("%"+q+"%", pageRequest);
       log.info("Returning data");
       return parentPage;
    }
@@ -54,10 +51,10 @@ public class ParentSearchController {
    @Transactional
    public Page<Parent> drivingQuery() {
       PageRequest pageRequest = PageRequest.of(0, 20, ASC, "name");
-      Page<Long> parentIdsPage = repo.findIdsByNameLike("%ar%", pageRequest);
+      Page<Long> parentIdsPage = repo.searchIdsByNameLike("%ar%", pageRequest);
       List<Long> parentIds = parentIdsPage.getContent();
       log.info("Matched parents: {}", parentIds);
-      Map<Long, Parent> parentDataById = repo.findParentsWithChildren(parentIds)
+      Map<Long, Parent> parentDataById = repo.fetchParentsWithChildren(parentIds)
               .stream().collect(Collectors.toMap(Parent::getId, identity()));
       return parentIdsPage.map(parentDataById::get);
    }

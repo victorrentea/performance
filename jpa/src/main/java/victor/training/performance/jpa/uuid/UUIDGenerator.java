@@ -1,4 +1,4 @@
-package victor.training.performance.jpa;
+package victor.training.performance.jpa.uuid;
 
 import lombok.extern.slf4j.Slf4j;
 import org.hibernate.HibernateException;

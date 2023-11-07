@@ -1,4 +1,4 @@
-package victor.training.performance.jpa;
+package victor.training.performance.jpa.uber;
 
 import javax.persistence.*;
 

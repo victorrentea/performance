@@ -1,6 +1,4 @@
-package victor.training.performance.jpa;
-
-import victor.training.performance.jpa.Parent;
+package victor.training.performance.jpa.parent;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;

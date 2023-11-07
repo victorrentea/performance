@@ -1,4 +1,4 @@
-package victor.training.performance.jpa;
+package victor.training.performance.jpa.uuid;
 
 import lombok.Getter;
 import org.hibernate.annotations.GenericGenerator;

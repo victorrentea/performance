@@ -1,23 +1,18 @@
 package victor.training.performance.jpa;
 
-import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.Value;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.data.jpa.repository.Query;
-import org.springframework.lang.Nullable;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.annotation.Rollback;
 import org.springframework.test.context.transaction.TestTransaction;
 import org.springframework.transaction.annotation.Transactional;
-import victor.training.performance.jpa.UberEntity.Status;
+import victor.training.performance.jpa.uber.*;
+import victor.training.performance.jpa.uber.UberEntity.Status;
 
 import javax.persistence.EntityManager;
 import java.util.HashMap;

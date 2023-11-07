@@ -1,4 +1,4 @@
-package victor.training.performance.jpa;
+package victor.training.performance.jpa.parent;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

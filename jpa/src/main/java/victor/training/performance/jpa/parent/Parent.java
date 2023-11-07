@@ -1,7 +1,8 @@
-package victor.training.performance.jpa;
+package victor.training.performance.jpa.parent;
 
 import lombok.Getter;
 import lombok.Setter;
+import victor.training.performance.jpa.uber.Country;
 
 import javax.persistence.*;
 import java.util.HashSet;
@@ -19,21 +20,17 @@ public class Parent {
    private Integer age;
 
    @OneToMany(mappedBy = "parent", cascade = CascadeType.PERSIST)
-   // @BatchSize(size=10) // too much magic
+   // @BatchSize(size=10) // Hibernate magic that avoids N+1 using ID IN (?,?..)
    private Set<Child> children = new HashSet<>();
 
    @ManyToOne
    private Country country; // surprise !
 
-   private Parent() {
+   protected Parent() {
    }
 
    public Parent(String name) {
       this.name = name;
-   }
-
-   public Long getId() {
-      return id;
    }
 
    public Parent addChild(Child child) {
