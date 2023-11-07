@@ -82,11 +82,11 @@ public class UberEntityTest {
     public void findById() {
         log.info("Loading a 'very OOP' @Entity by id...");
 //        UberEntity uber = uberRepo.findById(uberId).orElseThrow(); // or em.find(UberEntity.class, id); in plain JPA
-        var uber = uberRepo.getStatusById(uberId);
+        var uber = uberRepo.getProjectionById(uberId);
         log.info("Loaded using findById (inspect the above query):\n" + uber);
 
         // Use-case: I only loaded UberEntity to get its status
-        if (uber.status() == Status.DRAFT) {
+        if (uber.getStatus() == Status.DRAFT) {
             throw new IllegalArgumentException("Not submitted yet");
         }
         // more logic

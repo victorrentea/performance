@@ -1,6 +1,5 @@
 package victor.training.performance.jpa.uber;
 
-import lombok.Data;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.lang.Nullable;
@@ -10,14 +9,21 @@ import java.util.List;
 
 public interface UberEntityRepo extends JpaRepository<UberEntity, Long> {
   interface UberStatusProjection {
+    Long getId();
     Status getStatus();
   }
+
+  @Query("""
+    SELECT u.id, u.status
+    FROM UberEntity u WHERE u.id=?1
+    """)
+  UberStatusProjection getProjectionById(long id);
 
   @Query("""
     SELECT new victor.training.performance.jpa.uber.UberStatusDto(u.id, u.status)
     FROM UberEntity u WHERE u.id=?1
     """)
-  UberStatusDto getStatusById(long id);
+  UberStatusDto getDtoById(long id);
 
 
   @Query("SELECT u FROM UberEntity u")
