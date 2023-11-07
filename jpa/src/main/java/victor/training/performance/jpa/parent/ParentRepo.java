@@ -39,6 +39,7 @@ public interface ParentRepo extends JpaRepository<Parent, Long> {
     SELECT p
     FROM Parent p
     LEFT JOIN FETCH p.children
+    LEFT JOIN FETCH p.country
     """)
   // Inner JOIN = lasa doar parintii cu copii
   // LEFT JOIN = aduce si parintii fara copii
