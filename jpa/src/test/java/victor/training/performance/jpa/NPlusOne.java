@@ -21,7 +21,6 @@ import victor.training.performance.jpa.uber.CountryRepo;
 import javax.persistence.EntityManager;
 import java.util.Collection;
 import java.util.List;
-import java.util.Set;
 
 import static java.util.stream.Collectors.joining;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -116,7 +115,7 @@ public class NPlusOne {
 
   @Test
   public void nativeQuery() {
-    List<ParentSearchProjection> results = searchRepo.nativeQueryForProjections();
+    var results = searchRepo.nativeQueryForProjections();
     assertResultsInUIGrid(results);
   }
 
