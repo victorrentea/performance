@@ -25,7 +25,7 @@ public class Parent {
    private Integer age;
 
    @OneToMany(mappedBy = "parent",
-       fetch = EAGER, // = ask Hibernate to only give you instances of Parent with children pre-loaded
+//       fetch = EAGER, // = ask Hibernate to only give you instances of Parent with children pre-loaded
        // by default hibernate fetches children by 1 query/parent
        // defapt EAGER e folosit doar ca sa evite lazy loadingul, dar n-ai scapat de N queryuri.
        // ba mai rau, ori de cate ori primesti isntanta de Parent de la Hibernate, hib a adus si copiii, ca ai ca n-ai nevoie, sunt cu time
