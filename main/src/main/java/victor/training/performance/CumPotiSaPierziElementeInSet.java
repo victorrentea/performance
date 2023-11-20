@@ -12,8 +12,8 @@ public class CumPotiSaPierziElementeInSet {
   public static void main(String[] args) {
     Set<Copil> set = new HashSet<>();
 
-    Copil childPoc = new Copil();
-    childPoc.setNume("Emma");
+    Copil childPoc = new Copil("Emma");
+//    childPoc.setNume("Emma");
     set.add(childPoc);
     System.out.println("Imi mai recunosc copilul:" + set.contains(childPoc));
     System.out.println("hashu= " + childPoc);
