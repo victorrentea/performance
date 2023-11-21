@@ -23,10 +23,12 @@ public class ThreadLocalIntro {
 
     public void httpRequest(String currentUser, String data) {
         log.info("Current user is " + currentUser);
-        staticCurrentUser = currentUser;
+        staticCurrentUser.set(currentUser);
         controller.create(data);
     }
-    public static String staticCurrentUser;
+    public final static ThreadLocal<String> staticCurrentUser = new ThreadLocal<>();
+    // asa merge @Transactional, SecurityContextHolder, TraceID propagation, etc...
+    // sa propagi metadate invizibil 'pe langa' semnaturile metodelor chemate
 }
 // ---------- end of framework -----------
 
@@ -54,7 +56,7 @@ class AService {
 @Slf4j
 class ARepo {
     public void save(String data) {
-        String currentUser = ThreadLocalIntro.staticCurrentUser; // TODO de unde-l iau
+        String currentUser = ThreadLocalIntro.staticCurrentUser.get(); // TODO de unde-l iau
 //        String currentUser = SecurityContextHolder.getContext().getAuthentication().getName(); // in spring
         log.info("INSERT INTO A(data, created_by) VALUES ({}, {})", data, currentUser);
     }
