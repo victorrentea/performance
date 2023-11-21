@@ -59,9 +59,9 @@ public class Leak2_Inner {
 
 
 class CalculatorFactory {
-  public class Calculator {
+  public static class Calculator { // tai legatura ascunsa
     public boolean calculate(String data) {
-      System.out.println("Simple Code Code");
+      System.out.println("Simple Code Code ");
       // what's the connection between this instance and the 'bigMac' field ?
       // 🛑 careful with hidden links
       return true;
@@ -78,19 +78,28 @@ class CalculatorFactory {
 
   //<editor-fold desc="Lambdas vs Anonymous implementation">
   public Stream<String> anonymousVsLambdas(List<String> input) {
-    return input.stream()
-            .filter(new Predicate<String>() {
-              @Override
-              public boolean test(String s) {
-                return !s.isBlank();
-              }
-            });
+    return input.parallelStream()
+            .filter(s -> !s.isBlank())// in contrast, lambdas do not keep a reference to the parent instance
+        // but only to the objects they capture in their clojure
+
+            .filter(s -> !s.isBlank() &&  bigMac!=null)//keeps a link to bigMac
+
+//            .filter(new Predicate<String>() { // RAU: anonymous class keeps a reference to the parent instance
+//              @Override
+//              public boolean test(String s) {
+//                return !s.isBlank();
+//              }
+//            });
+    ;
   }
   //</editor-fold>
 
   //<editor-fold desc="Map init in Java <= 8">
   public Map<String, Integer> mapInit() {
-    return new HashMap<>() {{
+    return new HashMap<>() {{ // ce aia, tati?
+      // o clasa anonima care extinde HashMap si are un bloc de initializare
+      // care pune intrari in map.
+      // De ce faceau developerii asta? De lene.
       put("one", 1);
       put("two", 2);
     }};
