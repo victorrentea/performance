@@ -1,17 +1,11 @@
 package victor.training.performance.concurrency;
 
 import lombok.extern.slf4j.Slf4j;
-import victor.training.performance.util.PerformanceUtil;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
-import java.util.concurrent.Callable;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.atomic.AtomicInteger;
+import java.util.concurrent.*;
 import java.util.stream.IntStream;
 
 import static java.util.stream.Collectors.toList;
@@ -21,22 +15,25 @@ import static java.util.stream.Collectors.toList;
 public class RaceBugsIntro {
   private static List<Integer> evenNumbers = new ArrayList<>();
 
-  private static AtomicInteger total = new AtomicInteger(0);
+//  private static AtomicInteger total = new AtomicInteger(0);
 
   // 2 parallel threads run this method with [1..5000], [5001..10000]
-  private static void countEven(List<Integer> numbers) {
+  private static int countEven(List<Integer> numbers) {
     log.info("Start");
+    int myTotal = 0;
     for (Integer n : numbers) {
       if (n % 2 == 0) {
 //        synchronized (RaceBugsIntro.class) {
 //          m();
 //        }
-        total.incrementAndGet();
+//        total.incrementAndGet();
+        myTotal++;
       }
     }
     log.info("end");
-
+    return myTotal; // FUNCTIONAL PROGRAMMING IS MUST-HAVE FOR MULTITHREADING
   }
+  // map-reduce = imparti munca in parti independente, le executi fara syncronizare separat, si abia la final unesti rezultate
 
   private static void m() {
 //    PerformanceUtil.sleepMillis(7); // risk: sa pui blocari in synchronized repo.find/api.call
@@ -47,15 +44,15 @@ public class RaceBugsIntro {
     List<Integer> fullList = IntStream.range(0, 10_000).boxed().collect(toList());
 
     List<List<Integer>> lists = splitList(fullList, 2);
-    List<Callable<Void>> tasks = lists.stream().map(numbers -> (Callable<Void>) () -> {
-      countEven(numbers);
-      return null;
+    List<Callable<Integer>> tasks = lists.stream().map(numbers -> (Callable<Integer>) () -> {
+      return countEven(numbers);
     }).collect(toList());
 
     ExecutorService pool = Executors.newCachedThreadPool();
-    pool.invokeAll(tasks);
+    List<Future<Integer>> futures = pool.invokeAll(tasks);
     pool.shutdown();
 
+    int total = futures.get(0).get() + futures.get(1).get();
     log.debug("Counted: " + total);
 //    log.debug("Counted: " + evenNumbers.size());
   }
