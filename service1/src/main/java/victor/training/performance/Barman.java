@@ -2,6 +2,7 @@ package victor.training.performance;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.client.RestTemplate;
@@ -21,16 +22,17 @@ import static java.lang.System.currentTimeMillis;
 public class Barman {
   @Autowired
   private RestTemplate rest;
-
+@Autowired
+ThreadPoolTaskExecutor barPool;
   @GetMapping("/drink")
   public CompletableFuture<DillyDilly> drink() throws ExecutionException, InterruptedException, TimeoutException {
     long t0 = currentTimeMillis();
 
     //  🛑 independent tasks executed sequentially ~> parallelize
     // promise === CompletableFuture pt ca extinde Future
-    CompletableFuture<Beer> beerPromise = CompletableFuture.supplyAsync(this::pourBeer);
+    CompletableFuture<Beer> beerPromise = CompletableFuture.supplyAsync(this::pourBeer, barPool);
     CompletableFuture<Vodka> vodkaPromise = CompletableFuture.supplyAsync(() ->
-        rest.getForObject("http://localhost:9999/vodka", Vodka.class));
+        rest.getForObject("http://localhost:9999/vodka", Vodka.class), barPool);
 
     CompletableFuture<DillyDilly> dillyPromise = beerPromise.thenCombine(vodkaPromise,
         (beer, vodka) -> new DillyDilly(beer, vodka));
