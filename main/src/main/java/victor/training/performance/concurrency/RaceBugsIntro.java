@@ -13,7 +13,7 @@ import static java.util.stream.Collectors.toList;
 
 @Slf4j
 public class RaceBugsIntro {
-  private static List<Integer> evenNumbers = new ArrayList<>();
+  private static List<Integer> evenNumbers = Collections.synchronizedList(new ArrayList<>());
 
 //  private static AtomicInteger total = new AtomicInteger(0);
 
@@ -28,6 +28,7 @@ public class RaceBugsIntro {
 //        }
 //        total.incrementAndGet();
         myTotal++;
+        evenNumbers.add(n);
       }
     }
     log.info("end");
