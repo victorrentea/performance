@@ -20,11 +20,10 @@
         <spring-cloud.version>2021.0.5</spring-cloud.version>
     </properties>
     <modules>
-        <module>main</module>
+        <module>memory</module>
         <module>wiremock</module>
         <module>jpa</module>
-        <module>service1</module>
-        <module>service2</module>
+        <module>concurrency</module>
         <module>spring-batch</module>
         <module>gatling</module>
     </modules>
