@@ -8,13 +8,13 @@ import victor.training.performance.util.BigObject20MB;
 @RestController
 @RequestMapping("leak1")
 public class Leak1_ThreadLocal {
-   private static final ThreadLocal<BigObject20MB> threadLocalMetadata = new ThreadLocal<>();
+   private static final ThreadLocal<BigObject20MB> threadMetadata = new ThreadLocal<>();
 
    @GetMapping
-   public String test() {
+   public String endpoint() {
       BigObject20MB bigObject = new BigObject20MB().setSomeString("john.doe"); // retrived from a network call
 
-      threadLocalMetadata.set(bigObject);  // 🛑 remember to .remove() any ThreadLocal you have
+      threadMetadata.set(bigObject);  // 🛑 remember to .remove() any ThreadLocal you have
 
       businessMethod1();
 
@@ -26,7 +26,7 @@ public class Leak1_ThreadLocal {
    }
 
    private void businessMethod2() {
-      BigObject20MB bigObject = threadLocalMetadata.get();
+      BigObject20MB bigObject = threadMetadata.get();
       String currentUsernameOnThisThread = bigObject.someString;
       System.out.println("Business logic using " + currentUsernameOnThisThread);
       // TODO what if throw new RuntimeException(); ?

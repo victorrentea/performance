@@ -11,7 +11,7 @@ import static victor.training.performance.util.PerformanceUtil.sleepMillis;
 @Slf4j
 public class ParallelStreams {
    public static void main(String[] args) {
-//      Enemy.parallelRequest(); // demonstrates starvation of the shared commonPool
+//      OnAServer.otherParallelRequestsAreRunning(); // starve the shared commonPool
 
       long t0 = System.currentTimeMillis();
 
@@ -21,7 +21,7 @@ public class ParallelStreams {
           .filter(i -> i % 2 == 0)
           .map(i -> {
              log.debug("Map " + i);
-             sleepMillis(100); // do some 'paralellizable' I/O work (DB, REST, SOAP)
+             sleepMillis(100); // time-consuming work (CPU or DB, REST, SOAP)
              return i * 2;
           })
           .collect(toList());

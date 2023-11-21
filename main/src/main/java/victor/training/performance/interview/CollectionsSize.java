@@ -6,7 +6,7 @@ import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.LongStream;
 
-public class CompactCollections {
+public class CollectionsSize {
 
    public static final int ONE_MILLION = 1_000_000;
 

@@ -44,7 +44,8 @@ public class Leak7_Cache {
 @Service
 @Slf4j
 class CacheService {
-   // @Cacheable makes a proxy intercept the method call and return the cached value for that parameter (if any)
+   // @Cacheable makes a proxy intercept the method call and return
+   // the previously cached value for that parameter (if any)
    @Cacheable("day-cache")
    public BigObject20MB getCachedDataForDay(LocalDateTime date) {
       log.debug("Fetch data for date: {}", date.format(DateTimeFormatter.ISO_DATE));

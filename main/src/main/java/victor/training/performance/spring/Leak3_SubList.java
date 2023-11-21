@@ -19,7 +19,7 @@ public class Leak3_SubList {
    private List<BigObject20MB> lastTenObjects = new ArrayList<>();
 
    @GetMapping
-   public synchronized String test() {
+   public synchronized String endpoint() {
       lastTenObjects.add(new BigObject20MB());
       if (lastTenObjects.size() > 10) {
          lastTenObjects = lastTenObjects.subList(1, lastTenObjects.size());

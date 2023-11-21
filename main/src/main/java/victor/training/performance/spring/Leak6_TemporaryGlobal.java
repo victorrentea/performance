@@ -25,7 +25,7 @@ public class Leak6_TemporaryGlobal {
   private final Map<String, UserProfile> userProfiles = new HashMap<>();
 
   @GetMapping
-  public String test(@RequestParam(defaultValue = "1") Long id) {
+  public String endpoint(@RequestParam(defaultValue = "1") Long id) {
     String currentUser = randomUUID().toString();
     UserProfile userProfile = fetchCurrentUserProfile(currentUser);
     userProfiles.put(currentUser, userProfile);

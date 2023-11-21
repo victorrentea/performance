@@ -18,9 +18,9 @@ public class LoosingElementsInASet {
     System.out.println("My children: " + hashSet);
   }
 
-  @Data
+  @Data //generates hashCode/equals on all fields
   private static class Child {
-    Long id;
-    String name;
+    private Long id;
+    private String name;
   }
 }

@@ -43,7 +43,7 @@ public class Leak10_Hibernate {
    }
 
    @GetMapping
-   public String test() {
+   public String html() {
       return "First <a href=\"/leak10/persist\">persist the data</a>, then <a href=\"/leak10/export\"> export it to a file</a>.<br> Note that after each restart the database is cleared";
    }
 

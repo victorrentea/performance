@@ -13,7 +13,7 @@ import static victor.training.performance.util.PerformanceUtil.sleepMillis;
 @RequestMapping("leak4")
 public class Leak4_LongStackFrame {
 	@GetMapping
-	public String longRunningFunction() {
+	public String endpoint() {
 		BigObject80MB big = new BigObject80MB();
 		String useful = big.getInterestingPart();
 		// 🛑 don't reference large objects longer than needed

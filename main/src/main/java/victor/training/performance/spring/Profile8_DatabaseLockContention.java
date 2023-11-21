@@ -57,6 +57,12 @@ public class Profile8_DatabaseLockContention {
 
 }
 
+@Value
+class BPMTicket {
+  Long id;
+  String status;
+}
+
 @Getter
 @Setter
 @NoArgsConstructor

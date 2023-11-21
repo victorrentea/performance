@@ -1,4 +1,4 @@
-package victor.training.performance.kt;
+package victor.training.performance.kotlin;
 
 import java.util.HashSet;
 import java.util.Set;

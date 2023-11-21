@@ -7,7 +7,7 @@ import java.util.Date;
 
 public class BigObject20MB implements Serializable {
 	public Date date = new Date();
-	public int[] largeArray = new int[5*1024*1024];
+	public int[] largeArray = new int[5*1024*1024]; // = 4b x 5 = 20m
 	@Setter
 	public String someString;
 

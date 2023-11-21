@@ -18,6 +18,7 @@ import java.util.stream.Stream;
 @RequestMapping("leak2")
 public class Leak2_Inner {
 
+  //<editor-fold desc="html">
   @GetMapping
   public String home() {
     return "Do you know Java?<br>" +
@@ -25,12 +26,20 @@ public class Leak2_Inner {
            "<li><a href='/leak2/anon'>Lambdas vs anonymous class</a>" +
            "<li><a href='/leak2/map'>Map{{</a> ";
   }
+  //</editor-fold>
 
   @GetMapping("inner")
-  public String puzzle() {
+  public String endpoint() {
     Calculator calculator = new CalculatorFactory().createRightsCalculator();
     bizLogicUsingCalculator(calculator);
     return "Done";
+  }
+
+  private void bizLogicUsingCalculator(Calculator calculator) {
+    if (!calculator.calculate("launch")) {
+      return;
+    }
+    PerformanceUtil.sleepMillis(20_000); // long flow and/or heavy parallel load
   }
 
   //<editor-fold desc="Entry points of more similar leaks">
@@ -49,12 +58,7 @@ public class Leak2_Inner {
   }
   //</editor-fold>
 
-  private void bizLogicUsingCalculator(Calculator calculator) {
-    if (!calculator.calculate("launch")) {
-      return;
-    }
-    PerformanceUtil.sleepMillis(20_000); // long flow and/or heavy parallel load
-  }
+
 }
 
 
@@ -62,8 +66,7 @@ class CalculatorFactory {
   public class Calculator {
     public boolean calculate(String data) {
       System.out.println("Simple Code Code");
-      // what's the connection between this instance and the 'bigMac' field ?
-      // 🛑 careful with hidden links
+      // 🛑 what's connects the Calculator instance with the 'bigMac' field ?
       return true;
     }
   }
@@ -74,7 +77,7 @@ class CalculatorFactory {
     return new Calculator();
   }
 
-  // more amazing leaks:
+  // other related leaks:
 
   //<editor-fold desc="Lambdas vs Anonymous implementation">
   public Stream<String> anonymousVsLambdas(List<String> input) {

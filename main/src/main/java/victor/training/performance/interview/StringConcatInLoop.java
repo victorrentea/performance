@@ -10,25 +10,27 @@ import java.util.stream.IntStream;
 
 import static java.nio.charset.StandardCharsets.UTF_8;
 import static java.util.stream.Collectors.toList;
+import static victor.training.performance.util.PerformanceUtil.waitForEnter;
 
-public class TheInfamousStringBuilderProblem {
+public class StringConcatInLoop {
    public static void main(String[] args) throws IOException {
       PerformanceUtil.printJfrFile();
-      List<String> elements = IntStream.range(1, 50_000) // see TLAB
-          .mapToObj(n -> "hahaha")
+      List<String> elements = IntStream.range(1, 50_000)
+          .mapToObj(n -> "hahaha") // 6 ch x 2 bytes = 12
           .collect(toList());
 
-      PerformanceUtil.waitForEnter();
-      System.out.println("Start writing contents!");
+      waitForEnter();
+      System.out.println("Start writing contents to file!");
       long t0 = System.currentTimeMillis();
 
       String s = "";
       for (String element : elements) {
          s += element;
       }
+
       FileUtils.writeStringToFile(new File("out.txt"), s, UTF_8);
 
       System.out.println("Done. Took " + (System.currentTimeMillis() - t0));
-      PerformanceUtil.waitForEnter();
+      waitForEnter();
    }
 }
