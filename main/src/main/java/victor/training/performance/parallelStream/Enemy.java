@@ -9,7 +9,7 @@ import java.util.stream.IntStream;
 @Slf4j
 public class Enemy {
   @SneakyThrows
-  public static void parallelRequest() {
+  public static void parallelRequests() {
     Thread thread = new Thread(Enemy::optimized);
     thread.setDaemon(true); // to exit program
     thread.start();

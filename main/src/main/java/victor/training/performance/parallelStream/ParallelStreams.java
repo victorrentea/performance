@@ -12,7 +12,7 @@ import static victor.training.performance.util.PerformanceUtil.sleepMillis;
 public class ParallelStreams {
 //  static int abominatie = 0;
    public static void main(String[] args) {
-//      Enemy.parallelRequest(); // demonstrates starvation of the shared commonPool
+      Enemy.parallelRequests(); // demonstrates starvation of the shared commonPool
 
       long t0 = System.currentTimeMillis();
 
