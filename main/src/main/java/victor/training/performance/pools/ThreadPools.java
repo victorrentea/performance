@@ -1,7 +1,6 @@
 package victor.training.performance.pools;
 
-import java.util.concurrent.Callable;
-import java.util.concurrent.ExecutorService;
+import java.util.concurrent.*;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import static victor.training.performance.util.PerformanceUtil.log;
@@ -11,14 +10,26 @@ public class ThreadPools {
 
    public static void main(String[] args) throws InterruptedException {
       // TODO Executor that keeps a fixed number (3) of threads until it is shut down
-      ExecutorService executor = null; //Executors. ?
+//      ExecutorService executor = Executors.newFixedThreadPool(3);
+      // RISK=sa nu faca fata la rata de requesturi ->
+      // 1) OOME ca coada e de 1M de elemente
+      // 2) Latente mari cat astepti in coada -> omoara daca cineva are nevoie de rezultat.
 
-      // TODO Executor that grows the thread pool as necessary, and kills inactive ones after 1 min
-      // ExecutorService executor = Executors. ?
+      // TODO Executor that grows the thread pool as necessary ∞, and kills inactive ones after 1 min
+      // ExecutorService executor = Executors.newCachedThreadPool();// fara coada
+      // RISK = OOME / Server crash la 100K threads
 
       // TODO Executor that have at least 3 thread but can grow up to 10 threads,
       // with a queue of max 5 elements. Inactive threads die in 1 second.
-      // ExecutorService executor = new ThreadPoolExecutor(...)
+
+      // nicioadata intr-o app Spring nu folosi ExecutorService
+      ExecutorService executor = new ThreadPoolExecutor(
+          3,
+          4,
+          1, TimeUnit.SECONDS,
+          new ArrayBlockingQueue<>(5),
+          new ThreadPoolExecutor.CallerRunsPolicy(
+          ));
 
       // TODO Vary the fixed-sized queue to see it grow the pool and then Rejecting tasks
 

@@ -14,12 +14,13 @@ public class BarPoolConfig {
 
   @Bean
   public ThreadPoolTaskExecutor barPool(@Value("${bar.pool.size}") int barPoolSize) {
+    // Spring are propria impl de ThreadPool
     ThreadPoolTaskExecutor executor = new ThreadPoolTaskExecutor();
     executor.setCorePoolSize(barPoolSize);
     executor.setMaxPoolSize(barPoolSize); // how to decide ?
 
     executor.setQueueCapacity(500); // how to decide?
-
+//    executor.setReject.....new ThreadPoolExecutor.CallerRunsPolicy(
     executor.setTaskDecorator(new MonitorQueueWaitingTimeTaskDecorator(meterRegistry.timer("barman-queue-time")));
     executor.setThreadNamePrefix("bar-");
     executor.initialize();
