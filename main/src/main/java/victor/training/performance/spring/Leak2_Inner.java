@@ -10,6 +10,7 @@ import victor.training.performance.util.PerformanceUtil;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -96,6 +97,8 @@ class CalculatorFactory {
 
   //<editor-fold desc="Map init in Java <= 8">
   public Map<String, Integer> mapInit() {
+//    Map.of/List.of/ Set.of() // nu accepta null si sunt imutabile
+//    stream.toList() //Java17 iti da immutable list vs collect(Collectors.toList()) care iti da ArrayList
     return new HashMap<>() {{ // ce aia, tati?
       // o clasa anonima care extinde HashMap si are un bloc de initializare
       // care pune intrari in map.

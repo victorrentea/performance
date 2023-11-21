@@ -54,12 +54,14 @@ public class Leak10_Hibernate {
    }
 
    @GetMapping("export")
-   @Transactional
+   @Transactional(readOnly = true) // tine JPA tine toate entitatile pe care ti le da pe toata durata metodei in 1st level cache
    public void export() throws IOException {
       log.debug("Exporting....");
 
       try (Writer writer = new FileWriter("big-entity.txt")) {
+         // purpose: never load the full 500 MB in RAM, streamline the data to file
          repo.streamAll()
+             .peek(entityManager::detach)// uita explicit aceasta @Entity. scoate-o din 1st level cache
              .map(BigEntity::getDescription)
              .forEach(Unchecked.consumer(writer::write));
       }
@@ -82,7 +84,8 @@ class BigEntity {
 
 interface BigEntityRepo extends JpaRepository<BigEntity, Long> {
    @Query("FROM BigEntity")
-   Stream<BigEntity> streamAll();
+   Stream<BigEntity> streamAll(); // sa iterez pe toate (milioane)
+   // un fel de while(resultSet.next()) { ... }
 }
 
 @Service
