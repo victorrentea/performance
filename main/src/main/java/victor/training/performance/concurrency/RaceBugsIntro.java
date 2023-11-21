@@ -26,7 +26,9 @@ public class RaceBugsIntro {
     log.info("Start");
     for (Integer n : numbers) {
       if (n % 2 == 0) {
-        total++;
+        synchronized (RaceBugsIntro.class) {
+          total++;
+        }
       }
     }
     log.info("end");
@@ -34,7 +36,7 @@ public class RaceBugsIntro {
   }
 
   public static void main(String[] args) throws ExecutionException, InterruptedException {
-    List<Integer> fullList = IntStream.range(0, 1000).boxed().collect(toList());
+    List<Integer> fullList = IntStream.range(0, 10_000).boxed().collect(toList());
 
     List<List<Integer>> lists = splitList(fullList, 2);
     List<Callable<Void>> tasks = lists.stream().map(numbers -> (Callable<Void>) () -> {
