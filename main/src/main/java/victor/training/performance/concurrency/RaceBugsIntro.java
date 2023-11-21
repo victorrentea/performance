@@ -1,6 +1,7 @@
 package victor.training.performance.concurrency;
 
 import lombok.extern.slf4j.Slf4j;
+import victor.training.performance.util.PerformanceUtil;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -27,12 +28,17 @@ public class RaceBugsIntro {
     for (Integer n : numbers) {
       if (n % 2 == 0) {
         synchronized (RaceBugsIntro.class) {
-          total++;
+          m();
         }
       }
     }
     log.info("end");
 
+  }
+
+  private static void m() {
+//    PerformanceUtil.sleepMillis(7); // risk: sa pui blocari in synchronized repo.find/api.call
+    total++;
   }
 
   public static void main(String[] args) throws ExecutionException, InterruptedException {
