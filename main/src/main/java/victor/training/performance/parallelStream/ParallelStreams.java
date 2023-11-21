@@ -19,11 +19,12 @@ public class ParallelStreams {
       List<Integer> list = IntStream.range(1,100).boxed().collect(toList());
 
       // si main() lucreaza, de aia FJP.commonPool.size=NCPU-1(main)
-      List<Integer> result = list.parallelStream()
-          .filter(i -> i % 2 == 0) // N threads
+//      List<Integer> result = list.parallelStream() // 500 ms
+      List<Integer> result = list.stream() // 5000 ms
+          .filter(i -> i % 2 == 0)
 //          .distinct() // .sorted() // 1 thread tre sa colecteze tot de mai sus pana dau drumul in jos
           .map(i -> {
-             log.debug("Map " + i); // N threads
+             log.debug("Map " + i);
              sleepMillis(100); // do some 'paralellizable' I/O work (DB, REST, SOAP)
              return i * 2;
           })
