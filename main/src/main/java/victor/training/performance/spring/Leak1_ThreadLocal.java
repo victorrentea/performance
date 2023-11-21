@@ -1,5 +1,6 @@
 package victor.training.performance.spring;
 
+import org.slf4j.MDC;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -15,9 +16,24 @@ public class Leak1_ThreadLocal {
       BigObject20MB bigObject = new BigObject20MB().setSomeString("john.doe"); // retrived from a network call
 
       threadLocalMetadata.set(bigObject);  // 🛑 remember to .remove() any ThreadLocal you have
-
-      businessMethod1();
-
+      try {
+         businessMethod1();
+         // de ce raman datele Thread Local in viata dupa ce requestul curent se termina?
+         // ce se intampla cu threadu curent dupa ce se termina requestul ?
+         // se intoarce in thread pool cu tot cu THreadLocal de 20MB dupa el.
+         // ThreadPool+ThreadLocal!=❤️
+         // deci mereu inainte sa iesi faci:
+      } finally {
+         threadLocalMetadata.remove(); // pattern tl.set>try{}finally{tl.remove}
+      }
+      // VICTOR ZICE:
+      // EVITA SA LUCREZI TU CU THREAD LOCALURI. In schimb:
+      // @Scope("request") spring
+      // @Scope(thread) cauta pe net
+      // MDC Slf4j %X{tenantId}
+      MDC.put("tenantID", "abc"); // logging
+      // Daca totusi trebuie ThreadLocal, ai grija pe toate threadurile care intr ain codul tau
+      // sa faci set;try{}finally{remove}}
       return "Magic can do harm.";
    }
 
