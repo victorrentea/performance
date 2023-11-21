@@ -11,6 +11,7 @@ import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.IntStream;
 
 import static java.util.stream.Collectors.toList;
@@ -20,16 +21,17 @@ import static java.util.stream.Collectors.toList;
 public class RaceBugsIntro {
   private static List<Integer> evenNumbers = new ArrayList<>();
 
-  private static Integer total = 0;
+  private static AtomicInteger total = new AtomicInteger(0);
 
   // 2 parallel threads run this method with [1..5000], [5001..10000]
   private static void countEven(List<Integer> numbers) {
     log.info("Start");
     for (Integer n : numbers) {
       if (n % 2 == 0) {
-        synchronized (RaceBugsIntro.class) {
-          m();
-        }
+//        synchronized (RaceBugsIntro.class) {
+//          m();
+//        }
+        total.incrementAndGet();
       }
     }
     log.info("end");
@@ -38,7 +40,7 @@ public class RaceBugsIntro {
 
   private static void m() {
 //    PerformanceUtil.sleepMillis(7); // risk: sa pui blocari in synchronized repo.find/api.call
-    total++;
+//    total++;
   }
 
   public static void main(String[] args) throws ExecutionException, InterruptedException {
