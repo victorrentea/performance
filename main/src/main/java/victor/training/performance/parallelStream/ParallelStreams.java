@@ -10,7 +10,7 @@ import static victor.training.performance.util.PerformanceUtil.sleepMillis;
 
 @Slf4j
 public class ParallelStreams {
-  static int abominatie = 0;
+//  static int abominatie = 0;
    public static void main(String[] args) {
 //      Enemy.parallelRequest(); // demonstrates starvation of the shared commonPool
 
@@ -18,10 +18,12 @@ public class ParallelStreams {
 
       List<Integer> list = IntStream.range(1,100).boxed().collect(toList());
 
+      // si main() lucreaza, de aia FJP.commonPool.size=NCPU-1(main)
       List<Integer> result = list.parallelStream()
-          .filter(i -> i % 2 == abominatie++)
+          .filter(i -> i % 2 == 0) // N threads
+//          .distinct() // .sorted() // 1 thread tre sa colecteze tot de mai sus pana dau drumul in jos
           .map(i -> {
-             log.debug("Map " + i);
+             log.debug("Map " + i); // N threads
              sleepMillis(100); // do some 'paralellizable' I/O work (DB, REST, SOAP)
              return i * 2;
           })
