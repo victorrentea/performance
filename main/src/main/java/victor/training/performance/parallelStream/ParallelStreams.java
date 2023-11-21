@@ -20,7 +20,7 @@ public class ParallelStreams {
 
     List<Integer> list = IntStream.range(1, 100).boxed().collect(toList());
 
-    ForkJoinPool myfjp = new ForkJoinPool(10);
+    ForkJoinPool myfjp = new ForkJoinPool(50);
 
     // si main() lucreaza, de aia FJP.commonPool.size=NCPU-1(main)
 //      List<Integer> result = list.parallelStream() // 500 ms
