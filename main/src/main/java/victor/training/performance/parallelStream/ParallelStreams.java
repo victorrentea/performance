@@ -22,12 +22,7 @@ public class ParallelStreams {
 //      List<Integer> result = list.parallelStream() // 500 ms
       List<Integer> result = list.stream() // 5000 ms
           .filter(i -> i % 2 == 0)
-//          .distinct() // .sorted() // 1 thread tre sa colecteze tot de mai sus pana dau drumul in jos
-          .map(i -> {
-             log.debug("Map " + i);
-             sleepMillis(100); // do some 'paralellizable' I/O work (DB, REST, SOAP)
-             return i * 2;
-          })
+          .map(i -> i * 2)
           .collect(toList());
       log.debug("Got result: " + result);
 
