@@ -3,6 +3,7 @@ package victor.training.performance.threadpool;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import static victor.training.performance.util.PerformanceUtil.log;
@@ -30,9 +31,10 @@ public class ThreadPools {
          executor.submit(task);
          sleepSomeTime(100, 200); // simulate random request rate
       }
-//      executor.shutdown();
-      executor.shutdownNow();
-      System.out.println("Main iese");
+      executor.shutdown();
+//      executor.shutdownNow();
+      executor.awaitTermination(10, TimeUnit.SECONDS);
+      log("Main iese");
    }
 }
 
