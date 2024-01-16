@@ -51,7 +51,10 @@ public class Barman {
         (beer, vodka) -> new DillyDilly(beer, vodka));
 
     //Fire-and-Forget Pattern:eg process uploaded files, audit, send emails
-    CompletableFuture.runAsync(()->processUploadedFile("import.csv"), barPool);
+    CompletableFuture.runAsync(()->processUploadedFile("import.csv"), barPool)
+        .exceptionally(e-> {
+          log.error("Failed" +e);
+          throw new RuntimeException(e);});
 
     long t1 = currentTimeMillis();
     log.info("HTTP thread blocked for millis: " + (t1 - t0));
