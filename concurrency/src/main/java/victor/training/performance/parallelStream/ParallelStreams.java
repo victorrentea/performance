@@ -11,7 +11,7 @@ import static victor.training.performance.util.PerformanceUtil.sleepMillis;
 @Slf4j
 public class ParallelStreams {
    public static void main(String[] args) {
-//      OnAServer.otherParallelRequestsAreRunning(); // starve the shared commonPool
+      OnAServer.otherParallelRequestsAreRunning(); // starve the shared commonPool din JVM
 
       List<Integer> list = IntStream.range(1,100).boxed().collect(toList());
 
