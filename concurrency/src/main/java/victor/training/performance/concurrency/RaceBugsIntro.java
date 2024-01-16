@@ -9,6 +9,9 @@ import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.atomic.AtomicInteger;
+import java.util.concurrent.atomic.AtomicLong;
+import java.util.concurrent.atomic.AtomicReference;
 import java.util.stream.IntStream;
 
 import static java.util.stream.Collectors.toList;
@@ -19,16 +22,20 @@ public class RaceBugsIntro {
   private static final Object MUTEX = new Object(); // SOC: e folosit doar ca obiect pe care sa te sincronzezi
   private static List<Integer> evenNumbers = new ArrayList<>();
 
-  private static Integer total = 0;
+  // excelent pt a genera id-uri noi, secvente in memorie, sau a face sume
+//  AtomicLong
+//  AtomicReference
+  private static AtomicInteger total = new AtomicInteger(0);
 
   // many parallel threads run this method:
   private static void countEven(List<Integer> numbers) {
     log.info("Start");
     for (Integer n : numbers) {
       if (n % 2 == 0) {
-        synchronized (MUTEX) {
-          total++;
-        }
+//        synchronized (MUTEX) {
+//          total++;
+//        }
+        total.incrementAndGet(); // spilu e ca foloseste o instruct de CPU low level
       }
     }
     log.info("end");
