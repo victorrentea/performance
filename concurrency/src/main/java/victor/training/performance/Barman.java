@@ -57,6 +57,7 @@ public class Barman {
 
     //Fire-and-Forget Pattern:eg process uploaded files, audit, send emails
     altaClasa.processUploadedFile("import.csv");
+//    CompletableFuture.runAsync(()-> doStuff)
 
     long t1 = currentTimeMillis();
     log.info("HTTP thread blocked for millis: " + (t1 - t0));

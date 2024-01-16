@@ -30,11 +30,11 @@ public class RaceBugsIntro {
       }
     }
     log.info("end");
-
   }
 
   public static void main(String[] args) throws ExecutionException, InterruptedException {
     List<Integer> fullList = IntStream.range(0, 10_000).boxed().collect(toList());
+    // 5000 nr pare
 
     List<List<Integer>> lists = splitList(fullList, 2);
     List<Callable<Void>> tasks = lists.stream().map(numbers -> (Callable<Void>) () -> {
