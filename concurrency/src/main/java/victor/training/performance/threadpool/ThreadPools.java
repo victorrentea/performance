@@ -2,6 +2,7 @@ package victor.training.performance.threadpool;
 
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import static victor.training.performance.util.PerformanceUtil.log;
@@ -11,7 +12,8 @@ public class ThreadPools {
 
    public static void main(String[] args) throws InterruptedException {
       // TODO Executor that keeps a fixed number (3) of threads until it is shut down
-      ExecutorService executor = null; //Executors. ?
+      // RISK: out of memory daca vin foarte multe taskuri gramada
+      ExecutorService executor = Executors.newFixedThreadPool(3);
 
       // TODO Executor that grows the thread pool as necessary, and kills inactive ones after 1 min
       // ExecutorService executor = Executors. ?
@@ -28,13 +30,15 @@ public class ThreadPools {
          executor.submit(task);
          sleepSomeTime(100, 200); // simulate random request rate
       }
-      // TODO shutdown the executor !
+      executor.shutdown();
+      System.out.println("Main iese");
    }
 }
 
 class MyTask implements Callable<Integer> {
    private static final AtomicInteger NEXT_ID = new AtomicInteger(0);
    public int id = NEXT_ID.incrementAndGet();
+//   byte[] fileContents; // DOAMNE FERESTE!!! 10MB in RAM Nu cumva!!
 
    public Integer call() {
       log("Start work item #" + id);
