@@ -13,18 +13,19 @@ public class ParallelStreams {
    public static void main(String[] args) {
 //      OnAServer.otherParallelRequestsAreRunning(); // starve the shared commonPool
 
-      long t0 = System.currentTimeMillis();
-
       List<Integer> list = IntStream.range(1,100).boxed().collect(toList());
 
-      List<Integer> result = list.stream()
+      long t0 = System.currentTimeMillis();
+
+      List<Integer> result = list.parallelStream()
           .filter(i -> i % 2 == 0)
           .map(i -> {
              log.debug("Map " + i);
              sleepMillis(100); // time-consuming work (CPU or DB, REST, SOAP)
-             return i * 2;
+             return i * 2; // pretend: return api.call(i);
           })
-          .collect(toList());
+          .collect(toList()); // acum fluxul ruleaza pe 10-1 = 9th + main = 10 threaduri
+     // munca dureaza 500ms nu 5000 ca la inceput
       log.debug("Got result: " + result);
 
       long t1 = System.currentTimeMillis();
