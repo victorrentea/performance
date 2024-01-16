@@ -34,8 +34,16 @@ public class Barman {
 
     // codul asta face un thread leak: dupa fiecare apel raman pornite pe vecie 2 thread-uri, care NU se inchid la finalul request-ului
     //  🛑 independent tasks executed sequentially
-    Future<Beer> beerFuture = barPool.submit(() -> fetchBeer1s()); // non-blocking call, just starts the task
-    Future<Vodka> vodkaFuture = barPool.submit(() -> fetchVodka1s()); // non-blocking call
+
+    // promise (altii) === CompletableFuture (java)
+    // $http.get().then( (response) => { ... } ).then( (response) => { ... } ).catch( (error) => { ... } )
+
+    // 1) nu se mai propaga TraceID ca inainte cand faceam barPool.submit(()->{})
+    // 2) acum taskul meu ruleaza pe ForkJoinPool.commonPool() laolalta cu oricine altcineva din acest JVM
+    //    face CompletableFuture.supplyAsync sau .parallelStream() -> voi concura cu el la cele N-1 threaduri din ForkJoinPool.commonPool()
+    //    poate sa duca la Thread Starvation
+    Future<Beer> beerFuture = CompletableFuture.supplyAsync(() -> fetchBeer1s()); // non-blocking call, just starts the task
+    Future<Vodka> vodkaFuture = CompletableFuture.supplyAsync(() -> fetchVodka1s()); // non-blocking call
 
     Beer beer = beerFuture.get(); // blocking call for 1 sec
     Vodka vodka = vodkaFuture.get(); // 0 waiting time aici pentru ca deja s-a terminat task-ul
