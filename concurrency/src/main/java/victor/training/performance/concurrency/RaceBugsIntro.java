@@ -15,7 +15,7 @@ import static java.util.stream.Collectors.toList;
 @Slf4j
 public class RaceBugsIntro {
   private static final Object MUTEX = new Object(); // SOC: e folosit doar ca obiect pe care sa te sincronzezi
-  private static List<Integer> evenNumbers = synchronizedList(new ArrayList<>());
+  private static List<Integer> evenNumbers = new ArrayList<>();
 
   // excelent pt a genera id-uri noi, secvente in memorie, sau a face sume
 //  AtomicLong
@@ -33,9 +33,11 @@ public class RaceBugsIntro {
 //        }
 //        total.incrementAndGet(); // spilu e ca foloseste o instruct de CPU low level
         totalLocal++;
-//        if (!evenNumbers.contains(n)) {
-        evenNumbers.add(n);
-//        }
+        synchronized(evenNumbers) {
+          if (!evenNumbers.contains(n)) {
+            evenNumbers.add(n);
+          }
+        }
       }
     }
     log.info("end");
