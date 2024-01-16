@@ -35,7 +35,6 @@ public class RaceBugsIntro {
 //        total.incrementAndGet(); // spilu e ca foloseste o instruct de CPU low level
         totalLocal++;
         // orice e modificabil intr-un flux multithread trebuie pazit cu un lock
-//        synchronized(MUTEX) {
         lock.lock();
         try {
           if (!evenNumbers.contains(n)) {
