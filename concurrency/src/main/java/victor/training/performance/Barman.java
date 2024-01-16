@@ -23,6 +23,7 @@ public class Barman {
   public DillyDilly drink() throws ExecutionException, InterruptedException {
     long t0 = currentTimeMillis();
 
+    // codul asta face un thread leak: dupa fiecare apel raman pornite pe vecie 2 thread-uri, care NU se inchid la finalul request-ului
     //  🛑 independent tasks executed sequentially
     ThreadPoolExecutor threadPool = new ThreadPoolExecutor(2, 2,
         1, TimeUnit.SECONDS,
@@ -39,6 +40,7 @@ public class Barman {
 
     long t1 = currentTimeMillis();
     log.info("HTTP thread blocked for millis: " + (t1 - t0));
+
     return dilly;
   }
 }
