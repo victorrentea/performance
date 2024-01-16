@@ -2,6 +2,7 @@ package victor.training.performance;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.client.RestTemplate;
@@ -18,10 +19,14 @@ import static java.lang.System.currentTimeMillis;
 public class Barman {
   @Autowired
   private RestTemplate rest;
-  private static final ThreadPoolExecutor threadPool =
-      new ThreadPoolExecutor(2, 2,
-          1, TimeUnit.SECONDS,
-          new ArrayBlockingQueue<>(600));
+  @Autowired
+  private ThreadPoolTaskExecutor barPool; // implem Springului de ThreadPool care
+  // trebuie mereu folsita in loc de ThreadPoolExecutor din JDK daca esti pe Spring
+
+//  private static final ThreadPoolExecutor threadPool =
+//      new ThreadPoolExecutor(2, 2,
+//          1, TimeUnit.SECONDS,
+//          new ArrayBlockingQueue<>(600));
 
   @GetMapping("/drink")
   public DillyDilly drink() throws ExecutionException, InterruptedException {
@@ -29,9 +34,9 @@ public class Barman {
 
     // codul asta face un thread leak: dupa fiecare apel raman pornite pe vecie 2 thread-uri, care NU se inchid la finalul request-ului
     //  🛑 independent tasks executed sequentially
-    Future<Beer> beerFuture = threadPool.submit(() ->
+    Future<Beer> beerFuture = barPool.submit(() ->
         rest.getForObject("http://localhost:9999/beer", Beer.class));
-    Future<Vodka> vodkaFuture = threadPool.submit(() ->
+    Future<Vodka> vodkaFuture = barPool.submit(() ->
         rest.getForObject("http://localhost:9999/vodka", Vodka.class));
 
     Beer beer = beerFuture.get();
