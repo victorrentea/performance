@@ -19,14 +19,14 @@ import static java.lang.System.currentTimeMillis;
 public class Barman {
   @Autowired
   private RestTemplate rest;
-//  @Autowired
-//  private ThreadPoolTaskExecutor barPool; // implem Springului de ThreadPool care
+  @Autowired
+  private ThreadPoolTaskExecutor barPool; // implem Springului de ThreadPool care
   // trebuie mereu folsita in loc de ThreadPoolExecutor din JDK daca esti pe Spring
 
-  private static final ThreadPoolExecutor barPool =
-      new ThreadPoolExecutor(2, 2,
-          1, TimeUnit.SECONDS,
-          new ArrayBlockingQueue<>(600));
+//  private static final ThreadPoolExecutor barPool =
+//      new ThreadPoolExecutor(2, 2,
+//          1, TimeUnit.SECONDS,
+//          new ArrayBlockingQueue<>(600));
 
   @GetMapping("/drink")
   public DillyDilly drink() throws ExecutionException, InterruptedException {
