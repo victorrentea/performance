@@ -43,5 +43,7 @@ public class ParallelStreams {
 
 // concluzii:
 // - pe parallelStream ar trebui sa fac doar calcule cu CPU in memory fara sa ating reteaua. eg: transformate XML, generezi pdf,
+// - atentie sa masori inainte cat castigi, ca poate nu merita parallelStream. fa-ti benchmark cu JMH
+//    Branch: main on git: https://github.com/victorrentea/performance-jmh.git
 
 
