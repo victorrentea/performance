@@ -9,6 +9,7 @@ import org.springframework.web.client.RestTemplate;
 import victor.training.performance.drinks.Beer;
 import victor.training.performance.drinks.DillyDilly;
 import victor.training.performance.drinks.Vodka;
+import victor.training.performance.util.PerformanceUtil;
 
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
@@ -49,6 +50,9 @@ public class Barman {
     CompletableFuture<DillyDilly> dillyPromise = beerPromise.thenCombine(vodkaPromise,
         (beer, vodka) -> new DillyDilly(beer, vodka));
 
+    //Fire-and-Forget Pattern:eg process uploaded files, audit, send emails
+    CompletableFuture.runAsync(()->processUploadedFile("import.csv"), barPool);
+
     long t1 = currentTimeMillis();
     log.info("HTTP thread blocked for millis: " + (t1 - t0));
     // acum threadul lui Tomcat este blocat pentru 1 secunda la linia 40
@@ -57,6 +61,13 @@ public class Barman {
     // in astfel de sisteme nu-ti permiti sa tii blocat threadul Tomcat.
     // ==> non-blocking concurrency (CompletableFuture, RxJava, Reactor)
     return dillyPromise;
+  }
+
+  private void processUploadedFile(String fileName) {
+    log.info("Start processing file");
+    PerformanceUtil.sleepMillis(3000);
+    if (true)throw new IllegalArgumentException("Oups!");
+    log.info("DONE");
   }
 
   private Vodka fetchVodka1s() {
