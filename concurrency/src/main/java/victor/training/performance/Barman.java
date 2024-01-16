@@ -18,6 +18,10 @@ import static java.lang.System.currentTimeMillis;
 public class Barman {
   @Autowired
   private RestTemplate rest;
+  private static final ThreadPoolExecutor threadPool =
+      new ThreadPoolExecutor(2, 2,
+          1, TimeUnit.SECONDS,
+          new ArrayBlockingQueue<>(600));
 
   @GetMapping("/drink")
   public DillyDilly drink() throws ExecutionException, InterruptedException {
@@ -25,9 +29,6 @@ public class Barman {
 
     // codul asta face un thread leak: dupa fiecare apel raman pornite pe vecie 2 thread-uri, care NU se inchid la finalul request-ului
     //  🛑 independent tasks executed sequentially
-    ThreadPoolExecutor threadPool = new ThreadPoolExecutor(2, 2,
-        1, TimeUnit.SECONDS,
-        new ArrayBlockingQueue<>(600));
     Future<Beer> beerFuture = threadPool.submit(() ->
         rest.getForObject("http://localhost:9999/beer", Beer.class));
     Future<Vodka> vodkaFuture = threadPool.submit(() ->
@@ -36,11 +37,10 @@ public class Barman {
     Beer beer = beerFuture.get();
     Vodka vodka = vodkaFuture.get();
 
-    DillyDilly dilly = new DillyDilly(beer,vodka);
+    DillyDilly dilly = new DillyDilly(beer, vodka);
 
     long t1 = currentTimeMillis();
     log.info("HTTP thread blocked for millis: " + (t1 - t0));
-threadPool.shutdown();
     return dilly;
   }
 }
