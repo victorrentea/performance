@@ -2,9 +2,7 @@ package victor.training.performance.concurrency;
 
 import lombok.extern.slf4j.Slf4j;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
+import java.util.*;
 import java.util.concurrent.*;
 import java.util.concurrent.locks.ReentrantLock;
 import java.util.stream.IntStream;
@@ -17,6 +15,8 @@ public class RaceBugsIntro {
   private static final Object MUTEX = new Object(); // SOC: e folosit doar ca obiect pe care sa te sincronzezi
   private static List<Integer> evenNumbers = new ArrayList<>();
   private static ReentrantLock lock = new ReentrantLock();
+
+  private static Set<Integer> uniceSiInOrdine = Collections.synchronizedSet(new LinkedHashSet<>());
 
   // excelent pt a genera id-uri noi, secvente in memorie, sau a face sume
 //  AtomicLong
