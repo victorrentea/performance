@@ -33,3 +33,7 @@ public class ParallelStreams {
    }
 }
 
+// concluzii:
+// - pe parallelStream ar trebui sa fac doar calcule cu CPU in memory fara sa ating reteaua. eg: transformate XML, generezi pdf,
+
+
