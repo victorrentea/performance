@@ -43,8 +43,8 @@ public class Barman {
     // 2) acum taskul meu ruleaza pe ForkJoinPool.commonPool() laolalta cu oricine altcineva din acest JVM
     //    face CompletableFuture.supplyAsync sau .parallelStream() -> voi concura cu el la cele N-1 threaduri din ForkJoinPool.commonPool()
     //    poate sa duca la Thread Starvation
-    CompletableFuture<Beer> beerPromise = CompletableFuture.supplyAsync(() -> fetchBeer1s()); // non-blocking call, just starts the task
-    CompletableFuture<Vodka> vodkaPromise = CompletableFuture.supplyAsync(() -> fetchVodka1s()); // non-blocking call
+    CompletableFuture<Beer> beerPromise = CompletableFuture.supplyAsync(() -> fetchBeer1s(), barPool); // non-blocking call, just starts the task
+    CompletableFuture<Vodka> vodkaPromise = CompletableFuture.supplyAsync(() -> fetchVodka1s(), barPool); // non-blocking call
 
     CompletableFuture<DillyDilly> dillyPromise = beerPromise.thenCombine(vodkaPromise,
         (beer, vodka) -> new DillyDilly(beer, vodka));
