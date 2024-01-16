@@ -8,7 +8,12 @@ import lombok.extern.slf4j.Slf4j;
 public class DillyDilly {
   Beer beer;
   Vodka vodka;
-  {
-//    log.info("Mixing Dilly (in what thread?)");
+
+  public DillyDilly(Beer beer, Vodka vodka) {
+    if (beer.getType().equals("DARK")) {
+      throw new IllegalArgumentException();
+    }
+    this.beer = beer;
+    this.vodka = vodka;
   }
 }

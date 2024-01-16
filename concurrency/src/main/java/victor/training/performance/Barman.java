@@ -10,7 +10,8 @@ import victor.training.performance.drinks.Beer;
 import victor.training.performance.drinks.DillyDilly;
 import victor.training.performance.drinks.Vodka;
 
-import java.util.concurrent.*;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutionException;
 
 import static java.lang.System.currentTimeMillis;
 
@@ -45,7 +46,8 @@ public class Barman {
     CompletableFuture<Beer> beerPromise = CompletableFuture.supplyAsync(() -> fetchBeer1s()); // non-blocking call, just starts the task
     CompletableFuture<Vodka> vodkaPromise = CompletableFuture.supplyAsync(() -> fetchVodka1s()); // non-blocking call
 
-    CompletableFuture<DillyDilly> dillyPromise = beerPromise.thenCombine(vodkaPromise, (beer, vodka)-> new DillyDilly(beer, vodka));
+    CompletableFuture<DillyDilly> dillyPromise = beerPromise.thenCombine(vodkaPromise,
+        (beer, vodka) -> new DillyDilly(beer, vodka));
 
     long t1 = currentTimeMillis();
     log.info("HTTP thread blocked for millis: " + (t1 - t0));
