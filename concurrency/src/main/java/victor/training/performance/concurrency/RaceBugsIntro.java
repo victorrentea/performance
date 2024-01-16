@@ -20,7 +20,7 @@ public class RaceBugsIntro {
 //  AtomicLong
 //  AtomicReference
 //  private static AtomicInteger total = new AtomicInteger(0);
-  private static long total;
+//  private static long total;
 
   // many parallel threads run this method:
   private static int countEven(List<Integer> numbers) {
