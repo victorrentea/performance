@@ -29,26 +29,23 @@ public class Barman {
 //          new ArrayBlockingQueue<>(600));
 
   @GetMapping("/drink")
-  public DillyDilly drink() throws ExecutionException, InterruptedException {
+  public CompletableFuture<DillyDilly> drink() throws ExecutionException, InterruptedException {
     long t0 = currentTimeMillis();
-
     // codul asta face un thread leak: dupa fiecare apel raman pornite pe vecie 2 thread-uri, care NU se inchid la finalul request-ului
     //  🛑 independent tasks executed sequentially
 
     // promise (altii) === CompletableFuture (java)
-    // $http.get().then( (response) => { ... } ).then( (response) => { ... } ).catch( (error) => { ... } )
+    // fetch().then() React
+    // $http.get().then( (response) => { ... } ).then( (response) => { ... } ).catch( (error) => { ... } ) Angular
 
     // 1) nu se mai propaga TraceID ca inainte cand faceam barPool.submit(()->{})
     // 2) acum taskul meu ruleaza pe ForkJoinPool.commonPool() laolalta cu oricine altcineva din acest JVM
     //    face CompletableFuture.supplyAsync sau .parallelStream() -> voi concura cu el la cele N-1 threaduri din ForkJoinPool.commonPool()
     //    poate sa duca la Thread Starvation
-    Future<Beer> beerFuture = CompletableFuture.supplyAsync(() -> fetchBeer1s()); // non-blocking call, just starts the task
-    Future<Vodka> vodkaFuture = CompletableFuture.supplyAsync(() -> fetchVodka1s()); // non-blocking call
+    CompletableFuture<Beer> beerPromise = CompletableFuture.supplyAsync(() -> fetchBeer1s()); // non-blocking call, just starts the task
+    CompletableFuture<Vodka> vodkaPromise = CompletableFuture.supplyAsync(() -> fetchVodka1s()); // non-blocking call
 
-    Beer beer = beerFuture.get(); // blocking call for 1 sec
-    Vodka vodka = vodkaFuture.get(); // 0 waiting time aici pentru ca deja s-a terminat task-ul
-
-    DillyDilly dilly = new DillyDilly(beer, vodka);
+    CompletableFuture<DillyDilly> dillyPromise = beerPromise.thenCombine(vodkaPromise, (beer, vodka)-> new DillyDilly(beer, vodka));
 
     long t1 = currentTimeMillis();
     log.info("HTTP thread blocked for millis: " + (t1 - t0));
@@ -57,7 +54,7 @@ public class Barman {
     // exista sisteme supuse unui load infernal (nu tipic in banci) 10000/s, 500/s
     // in astfel de sisteme nu-ti permiti sa tii blocat threadul Tomcat.
     // ==> non-blocking concurrency (CompletableFuture, RxJava, Reactor)
-    return dilly;
+    return dillyPromise;
   }
 
   private Vodka fetchVodka1s() {
