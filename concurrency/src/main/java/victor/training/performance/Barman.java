@@ -40,7 +40,7 @@ public class Barman {
 
     long t1 = currentTimeMillis();
     log.info("HTTP thread blocked for millis: " + (t1 - t0));
-
+threadPool.shutdown();
     return dilly;
   }
 }
