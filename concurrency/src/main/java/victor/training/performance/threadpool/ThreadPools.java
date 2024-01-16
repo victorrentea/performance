@@ -30,7 +30,8 @@ public class ThreadPools {
          executor.submit(task);
          sleepSomeTime(100, 200); // simulate random request rate
       }
-      executor.shutdown();
+//      executor.shutdown();
+      executor.shutdownNow();
       System.out.println("Main iese");
    }
 }
