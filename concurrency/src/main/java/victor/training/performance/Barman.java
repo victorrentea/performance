@@ -2,7 +2,9 @@ package victor.training.performance;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
+import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.client.RestTemplate;
@@ -51,10 +53,7 @@ public class Barman {
         (beer, vodka) -> new DillyDilly(beer, vodka));
 
     //Fire-and-Forget Pattern:eg process uploaded files, audit, send emails
-    CompletableFuture.runAsync(()->processUploadedFile("import.csv"), barPool)
-        .exceptionally(e-> {
-          log.error("Failed" +e);
-          throw new RuntimeException(e);});
+    altaClasa.processUploadedFile("import.csv");
 
     long t1 = currentTimeMillis();
     log.info("HTTP thread blocked for millis: " + (t1 - t0));
@@ -65,13 +64,7 @@ public class Barman {
     // ==> non-blocking concurrency (CompletableFuture, RxJava, Reactor)
     return dillyPromise;
   }
-
-  private void processUploadedFile(String fileName) {
-    log.info("Start processing file");
-    PerformanceUtil.sleepMillis(3000);
-    if (true)throw new IllegalArgumentException("Oups!");
-    log.info("DONE");
-  }
+@Autowired AltaClasa altaClasa;
 
   private Vodka fetchVodka1s() {
     return rest.getForObject("http://localhost:9999/vodka", Vodka.class);
@@ -80,5 +73,19 @@ public class Barman {
   private Beer fetchBeer1s() {
     log.info("Cer berea");
     return rest.getForObject("http://localhost:9999/beer", Beer.class);
+  }
+}
+
+
+@Slf4j
+@Service
+class AltaClasa {
+   @Async //lanseaza metoda in alt thread! DAR! TZEAPA: Adnotarea nu merge pentru ca:
+   // logheaza automat orice exceptie daca functia @Async intoarce VOID
+  public void processUploadedFile(String fileName) {
+    log.info("Start processing file");
+    PerformanceUtil.sleepMillis(3000);
+    if (true)throw new IllegalArgumentException("Oups!");
+    log.info("DONE");
   }
 }
