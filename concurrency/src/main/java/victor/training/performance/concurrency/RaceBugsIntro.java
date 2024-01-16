@@ -5,13 +5,7 @@ import lombok.extern.slf4j.Slf4j;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.concurrent.Callable;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.atomic.AtomicInteger;
-import java.util.concurrent.atomic.AtomicLong;
-import java.util.concurrent.atomic.AtomicReference;
+import java.util.concurrent.*;
 import java.util.stream.IntStream;
 
 import static java.util.stream.Collectors.toList;
@@ -29,7 +23,7 @@ public class RaceBugsIntro {
   private static long total;
 
   // many parallel threads run this method:
-  private static void countEven(List<Integer> numbers) {
+  private static int countEven(List<Integer> numbers) {
     log.info("Start");
     int totalLocal = 0;
     for (Integer n : numbers) {
@@ -42,9 +36,13 @@ public class RaceBugsIntro {
       }
     }
     log.info("end");
-    total += totalLocal; // inginereste riscul muuult mai mic sa te suprapui
+//    total += totalLocal; // inginereste riscul muuult mai mic sa te suprapui
     // dar nu e inca stiintific thread safe;
-//    return total;
+    return totalLocal;
+    // "Map-Reduce" strategy: principiu de viata
+    // imparti munca la workeri care ruleaza independent (aici e usor:) = MAP
+    // numeri parele din fiecare jumatate independent,
+    // si aduni totalele locale = REDUCE
   }
 
   public static void main(String[] args) throws ExecutionException, InterruptedException {
@@ -52,16 +50,18 @@ public class RaceBugsIntro {
     // 5000 nr pare
 
     List<List<Integer>> lists = splitList(fullList, 2);
-    List<Callable<Void>> tasks = lists.stream().map(numbers -> (Callable<Void>) () -> {
-      countEven(numbers);
-      return null;
-    }).collect(toList());
+    List<Callable<Integer>> tasks = lists.stream().map(numbers -> (Callable<Integer>) () -> countEven(numbers)).collect(toList());
 
     ExecutorService pool = Executors.newCachedThreadPool();
-    pool.invokeAll(tasks);
+    List<Future<Integer>> rezultate = pool.invokeAll(tasks);
+    int totalGeneral =0;
+    for (Future<Integer> r : rezultate) {
+      totalGeneral += r.get();
+    }
+
     pool.shutdown();
 
-    log.debug("Counted: " + total);
+    log.debug("Counted: " + totalGeneral);
 //    log.debug("Counted: " + evenNumbers.size());
   }
 
