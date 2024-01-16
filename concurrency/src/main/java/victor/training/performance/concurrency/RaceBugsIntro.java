@@ -25,20 +25,26 @@ public class RaceBugsIntro {
   // excelent pt a genera id-uri noi, secvente in memorie, sau a face sume
 //  AtomicLong
 //  AtomicReference
-  private static AtomicInteger total = new AtomicInteger(0);
+//  private static AtomicInteger total = new AtomicInteger(0);
+  private static long total;
 
   // many parallel threads run this method:
   private static void countEven(List<Integer> numbers) {
     log.info("Start");
+    int totalLocal = 0;
     for (Integer n : numbers) {
       if (n % 2 == 0) {
 //        synchronized (MUTEX) {
 //          total++;
 //        }
-        total.incrementAndGet(); // spilu e ca foloseste o instruct de CPU low level
+//        total.incrementAndGet(); // spilu e ca foloseste o instruct de CPU low level
+        totalLocal++;
       }
     }
     log.info("end");
+    total += totalLocal; // inginereste riscul muuult mai mic sa te suprapui
+    // dar nu e inca stiintific thread safe;
+//    return total;
   }
 
   public static void main(String[] args) throws ExecutionException, InterruptedException {
