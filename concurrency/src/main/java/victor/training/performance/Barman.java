@@ -9,24 +9,36 @@ import victor.training.performance.drinks.Beer;
 import victor.training.performance.drinks.DillyDilly;
 import victor.training.performance.drinks.Vodka;
 
+import java.util.concurrent.*;
+
 import static java.lang.System.currentTimeMillis;
 
-@RestController
 @Slf4j
+@RestController
 public class Barman {
   @Autowired
   private RestTemplate rest;
 
   @GetMapping("/drink")
-  public DillyDilly drink() {
+  public DillyDilly drink() throws ExecutionException, InterruptedException {
     long t0 = currentTimeMillis();
 
-    //  🛑 independent tasks executed sequentially ~> parallelize
-    Beer beer = rest.getForObject("http://localhost:9999/beer", Beer.class);
-    Vodka vodka = rest.getForObject("http://localhost:9999/vodka", Vodka.class);
+    //  🛑 independent tasks executed sequentially
+    ThreadPoolExecutor threadPool = new ThreadPoolExecutor(2, 2,
+        1, TimeUnit.SECONDS,
+        new ArrayBlockingQueue<>(600));
+    Future<Beer> beerFuture = threadPool.submit(() ->
+        rest.getForObject("http://localhost:9999/beer", Beer.class));
+    Future<Vodka> vodkaFuture = threadPool.submit(() ->
+        rest.getForObject("http://localhost:9999/vodka", Vodka.class));
+
+    Beer beer = beerFuture.get();
+    Vodka vodka = vodkaFuture.get();
+
+    DillyDilly dilly = new DillyDilly(beer,vodka);
 
     long t1 = currentTimeMillis();
     log.info("HTTP thread blocked for millis: " + (t1 - t0));
-    return new DillyDilly(beer,vodka);
+    return dilly;
   }
 }

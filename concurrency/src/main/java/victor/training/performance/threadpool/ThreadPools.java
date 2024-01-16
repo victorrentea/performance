@@ -22,8 +22,10 @@ public class ThreadPools {
       // TODO Executor that have at least min=3 thread but can grow up to max=10 threads,
       //  with a bounded queue of max 5 elements.
       //  Inactive threads kept alive for 1 second.
+//      int numberOfProcessors = Runtime.getRuntime().availableProcessors();
        ExecutorService executor = new ThreadPoolExecutor(
-         3, 3, // fixed size = 3
+         Runtime.getRuntime().availableProcessors(),
+           Runtime.getRuntime().availableProcessors(), // fixed size = 3
          1, TimeUnit.SECONDS,
          new ArrayBlockingQueue<>(5),
         new ThreadPoolExecutor.CallerRunsPolicy() // o forma pritimiva de backpressure:
