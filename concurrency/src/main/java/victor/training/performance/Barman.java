@@ -34,21 +34,29 @@ public class Barman {
 
     // codul asta face un thread leak: dupa fiecare apel raman pornite pe vecie 2 thread-uri, care NU se inchid la finalul request-ului
     //  🛑 independent tasks executed sequentially
-    Future<Beer> beerFuture = barPool.submit(() -> fetchBeer());
-    Future<Vodka> vodkaFuture = barPool.submit(() ->
-        rest.getForObject("http://localhost:9999/vodka", Vodka.class));
+    Future<Beer> beerFuture = barPool.submit(() -> fetchBeer1s()); // non-blocking call, just starts the task
+    Future<Vodka> vodkaFuture = barPool.submit(() -> fetchVodka1s()); // non-blocking call
 
-    Beer beer = beerFuture.get();
-    Vodka vodka = vodkaFuture.get();
+    Beer beer = beerFuture.get(); // blocking call for 1 sec
+    Vodka vodka = vodkaFuture.get(); // 0 waiting time aici pentru ca deja s-a terminat task-ul
 
     DillyDilly dilly = new DillyDilly(beer, vodka);
 
     long t1 = currentTimeMillis();
     log.info("HTTP thread blocked for millis: " + (t1 - t0));
+    // acum threadul lui Tomcat este blocat pentru 1 secunda la linia 40
+    // - si ce daca?
+    // exista sisteme supuse unui load infernal (nu tipic in banci) 10000/s, 500/s
+    // in astfel de sisteme nu-ti permiti sa tii blocat threadul Tomcat.
+    // ==> non-blocking concurrency (CompletableFuture, RxJava, Reactor)
     return dilly;
   }
 
-  private Beer fetchBeer() {
+  private Vodka fetchVodka1s() {
+    return rest.getForObject("http://localhost:9999/vodka", Vodka.class);
+  }
+
+  private Beer fetchBeer1s() {
     log.info("Cer berea");
     return rest.getForObject("http://localhost:9999/beer", Beer.class);
   }
