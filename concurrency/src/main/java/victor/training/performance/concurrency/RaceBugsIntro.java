@@ -6,9 +6,9 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.*;
+import java.util.concurrent.locks.ReentrantLock;
 import java.util.stream.IntStream;
 
-import static java.util.Collections.synchronizedList;
 import static java.util.stream.Collectors.toList;
 
 
@@ -16,6 +16,7 @@ import static java.util.stream.Collectors.toList;
 public class RaceBugsIntro {
   private static final Object MUTEX = new Object(); // SOC: e folosit doar ca obiect pe care sa te sincronzezi
   private static List<Integer> evenNumbers = new ArrayList<>();
+  private static ReentrantLock lock = new ReentrantLock();
 
   // excelent pt a genera id-uri noi, secvente in memorie, sau a face sume
 //  AtomicLong
@@ -33,11 +34,17 @@ public class RaceBugsIntro {
 //        }
 //        total.incrementAndGet(); // spilu e ca foloseste o instruct de CPU low level
         totalLocal++;
-        synchronized(MUTEX) {
+        // orice e modificabil intr-un flux multithread trebuie pazit cu un lock
+//        synchronized(MUTEX) {
+        lock.lock();
+        try {
           if (!evenNumbers.contains(n)) {
             evenNumbers.add(n);
           }
+        } finally {
+          lock.unlock();
         }
+//          }
       }
     }
     log.info("end");
@@ -59,7 +66,7 @@ public class RaceBugsIntro {
 
     ExecutorService pool = Executors.newCachedThreadPool();
     List<Future<Integer>> rezultate = pool.invokeAll(tasks);
-    int totalGeneral =0;
+    int totalGeneral = 0;
     for (Future<Integer> r : rezultate) {
       totalGeneral += r.get();
     }
