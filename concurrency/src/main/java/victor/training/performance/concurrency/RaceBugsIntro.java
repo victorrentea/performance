@@ -8,20 +8,20 @@ import java.util.List;
 import java.util.concurrent.*;
 import java.util.stream.IntStream;
 
+import static java.util.Collections.synchronizedList;
 import static java.util.stream.Collectors.toList;
 
 
 @Slf4j
 public class RaceBugsIntro {
   private static final Object MUTEX = new Object(); // SOC: e folosit doar ca obiect pe care sa te sincronzezi
-  private static List<Integer> evenNumbers = new ArrayList<>();
+  private static List<Integer> evenNumbers = synchronizedList(new ArrayList<>());
 
   // excelent pt a genera id-uri noi, secvente in memorie, sau a face sume
 //  AtomicLong
 //  AtomicReference
 //  private static AtomicInteger total = new AtomicInteger(0);
 //  private static long total;
-
   // many parallel threads run this method:
   private static int countEven(List<Integer> numbers) {
     log.info("Start");
@@ -33,6 +33,9 @@ public class RaceBugsIntro {
 //        }
 //        total.incrementAndGet(); // spilu e ca foloseste o instruct de CPU low level
         totalLocal++;
+//        if (!evenNumbers.contains(n)) {
+        evenNumbers.add(n);
+//        }
       }
     }
     log.info("end");
@@ -62,7 +65,7 @@ public class RaceBugsIntro {
     pool.shutdown();
 
     log.debug("Counted: " + totalGeneral);
-//    log.debug("Counted: " + evenNumbers.size());
+    log.debug("Counted: " + evenNumbers.size());
   }
 
   //<editor-fold desc="splitList utility function">
