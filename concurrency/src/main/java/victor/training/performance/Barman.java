@@ -46,7 +46,10 @@ public class Barman {
     // 2) acum taskul meu ruleaza pe ForkJoinPool.commonPool() laolalta cu oricine altcineva din acest JVM
     //    face CompletableFuture.supplyAsync sau .parallelStream() -> voi concura cu el la cele N-1 threaduri din ForkJoinPool.commonPool()
     //    poate sa duca la Thread Starvation
-    CompletableFuture<Beer> beerPromise = CompletableFuture.supplyAsync(() -> fetchBeer1s(), barPool); // non-blocking call, just starts the task
+
+    // Spring iti da aici imediat inapoi un CF pe care il va termina cand si functia termina executia si intoarce
+    CompletableFuture<Beer> beerPromise = altaClasa.fetchBeer1s(); // non-blocking call, just starts the task
+
     CompletableFuture<Vodka> vodkaPromise = CompletableFuture.supplyAsync(() -> fetchVodka1s(), barPool); // non-blocking call
 
     CompletableFuture<DillyDilly> dillyPromise = beerPromise.thenCombine(vodkaPromise,
@@ -64,28 +67,37 @@ public class Barman {
     // ==> non-blocking concurrency (CompletableFuture, RxJava, Reactor)
     return dillyPromise;
   }
-@Autowired AltaClasa altaClasa;
+
+  @Autowired
+  AltaClasa altaClasa;
 
   private Vodka fetchVodka1s() {
     return rest.getForObject("http://localhost:9999/vodka", Vodka.class);
   }
 
-  private Beer fetchBeer1s() {
-    log.info("Cer berea");
-    return rest.getForObject("http://localhost:9999/beer", Beer.class);
-  }
+
 }
 
 
 @Slf4j
 @Service
 class AltaClasa {
-   @Async //lanseaza metoda in alt thread! DAR! TZEAPA: Adnotarea nu merge pentru ca:
-   // logheaza automat orice exceptie daca functia @Async intoarce VOID
+  @Autowired
+  private RestTemplate rest;
+
+  @Async //lanseaza metoda in alt thread! DAR! TZEAPA: Adnotarea nu merge pentru ca:
+  // logheaza automat orice exceptie daca functia @Async intoarce VOID
   public void processUploadedFile(String fileName) {
     log.info("Start processing file");
     PerformanceUtil.sleepMillis(3000);
-    if (true)throw new IllegalArgumentException("Oups!");
+    if (true) throw new IllegalArgumentException("Oups!");
     log.info("DONE");
+  }
+
+  @Async
+  public CompletableFuture<Beer> fetchBeer1s() {
+    log.info("Cer berea");
+    Beer beer = rest.getForObject("http://localhost:9999/beer", Beer.class);
+    return CompletableFuture.completedFuture(beer);
   }
 }
