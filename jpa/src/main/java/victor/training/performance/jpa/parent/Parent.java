@@ -25,8 +25,9 @@ public class Parent {
 
 
    // Zei ai Hibernate-ului: Vlad Mihalcea, Thorben Janssen
-   @OneToMany(mappedBy = "parent", cascade = PERSIST,
-       fetch = EAGER)// ii spune lui JPA sa incarce copiii din prima
+   @OneToMany(mappedBy = "parent", cascade = PERSIST
+       //,fetch = EAGER // sa nu ma prinda Vlad
+   )// ii spune lui JPA sa incarce copiii din prima
    // ori de cate ori vei primit o instanta de Parent de la JPA, ea va avea lista de copii incarcata
     @BatchSize(size=10) // Hibernate magic that avoids N+1 using ID IN (?,?..,?10)
    private Set<Child> children = new HashSet<>();
