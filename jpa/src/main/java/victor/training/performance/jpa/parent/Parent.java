@@ -2,6 +2,7 @@ package victor.training.performance.jpa.parent;
 
 import lombok.Getter;
 import lombok.Setter;
+import org.hibernate.annotations.BatchSize;
 import victor.training.performance.jpa.uber.Country;
 
 import javax.persistence.*;
@@ -27,7 +28,7 @@ public class Parent {
    @OneToMany(mappedBy = "parent", cascade = PERSIST,
        fetch = EAGER)// ii spune lui JPA sa incarce copiii din prima
    // ori de cate ori vei primit o instanta de Parent de la JPA, ea va avea lista de copii incarcata
-   // @BatchSize(size=10) // Hibernate magic that avoids N+1 using ID IN (?,?..,?10)
+    @BatchSize(size=10) // Hibernate magic that avoids N+1 using ID IN (?,?..,?10)
    private Set<Child> children = new HashSet<>();
 
    @ManyToOne
