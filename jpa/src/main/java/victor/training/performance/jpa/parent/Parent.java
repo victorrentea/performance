@@ -32,7 +32,7 @@ public class Parent {
     @BatchSize(size=10) // Hibernate magic that avoids N+1 using ID IN (?,?..,?10)
    private Set<Child> children = new HashSet<>();
 
-   @ManyToOne
+   @ManyToOne // by default fetch=EAGER, Oups! am nevoie de asta=> SELECT * FROM COUNTRY WHERE ID=?
    private Country country; // surprise !
 
    public Parent() {}
