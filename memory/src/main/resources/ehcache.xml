@@ -24,9 +24,11 @@
     </cache>
     <cache alias="day-cache" >
         <expiry>
+            <!-- dupa 30 min intrarile din ca che sunt evitate automate-->
             <ttl unit="minutes">30</ttl>
         </expiry>
         <resources>
+            <!--<disk unit="GB">1</disk>-->
             <heap unit="MB">100</heap>
         </resources>
     </cache>

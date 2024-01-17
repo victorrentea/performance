@@ -54,12 +54,13 @@ public class Leak10_Hibernate {
    }
 
    @GetMapping("export")
-   @Transactional
+   @Transactional(readOnly = true)
    public void export() throws IOException {
       log.debug("Exporting....");
 
       try (Writer writer = new FileWriter("big-entity.txt")) {
          repo.streamAll()
+             .peek(entityManager::detach) // KEY POINT: ii spui lui Hibernate sa UITE de entitatea asta, sa nu o tina in cache
              .map(BigEntity::getDescription)
              .forEach(Unchecked.consumer(writer::write));
       }

@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.RestController;
 import victor.training.performance.leak.obj.BigObject20MB;
 import victor.training.performance.util.PerformanceUtil;
 
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 
 @RestController
@@ -22,7 +22,7 @@ public class Leak7_Cache {
 
    @GetMapping
    public String cacheKey() {
-      BigObject20MB data = cacheService.getCachedDataForDay(LocalDateTime.now());
+      BigObject20MB data = cacheService.getCachedDataForDay(LocalDate.now());
       return "Data from cache for today = " + data + ", " + PerformanceUtil.getUsedHeap();
    }
 
@@ -30,7 +30,7 @@ public class Leak7_Cache {
    public String signature() {
       String currentUsername = RandomStringUtils.random(8); // some random username
       // TODO CR: pass username as 2nd param below
-      BigObject20MB data = cacheService.getContractById(1L /*, currentUsername*/);
+      BigObject20MB data = cacheService.getContractById(1L , currentUsername);
       return "Contract id:1 = " + data + ", " + PerformanceUtil.getUsedHeap();
    }
 
@@ -45,15 +45,15 @@ public class Leak7_Cache {
 @Slf4j
 class CacheService {
    // @Cacheable makes a proxy intercept the method call and return
-   // the previously cached value for that parameter (if any)
+   // any previously cached value for that parameter(s) // TODO victorrentea 2024-01-17: polish
    @Cacheable("day-cache")
-   public BigObject20MB getCachedDataForDay(LocalDateTime date) {
+   public BigObject20MB getCachedDataForDay(LocalDate date) {
       log.debug("Fetch data for date: {}", date.format(DateTimeFormatter.ISO_DATE));
       return new BigObject20MB();
    }
 
-   @Cacheable("contracts")
-   public BigObject20MB getContractById(Long contractId) {
+   @Cacheable(value = "contracts",key = "#contractId") // foloseste doar primul param ca cache key, ignora pe al doilea
+   public BigObject20MB getContractById(Long contractId, String currentUsername) {
       log.debug("Fetch contract for id: {}", contractId);
       return new BigObject20MB();
    }
@@ -65,28 +65,8 @@ class CacheService {
    }
 }
 
-class InvoiceByDate {
-   private final Long contractId;
-   private final int year;
-   private final int month;
+record InvoiceByDate(Long contractId, int year, int month) { // love
 
-   InvoiceByDate(Long contractId, int year, int month) {
-      this.contractId = contractId;
-      this.year = year;
-      this.month = month;
-   }
-
-   public int getMonth() {
-      return month;
-   }
-
-   public int getYear() {
-      return year;
-   }
-
-   public Long getContractId() {
-      return contractId;
-   }
 }
 
 /**

@@ -27,8 +27,9 @@ public class Leak3_SubList {
       return "The current window size is " + lastTenObjects.size();
    }
 }
-
+// RTFM means Read the *ucking Manual,
 /**
+ *
  * KEY POINTS
  * - .subList() returns a projection over the original array => the original list is kept referenced
  * - RTFM: https://www.google.com/search?q=RTFM

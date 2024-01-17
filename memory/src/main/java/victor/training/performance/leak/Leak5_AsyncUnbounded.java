@@ -10,6 +10,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.IntStream;
@@ -26,8 +28,14 @@ public class Leak5_AsyncUnbounded {
 	@GetMapping
 	public String endpoint(@RequestParam(value = "file",required = false)
 													 MultipartFile multipartFile) throws IOException {
-		byte[] contents = multipartFile.getBytes();
-		worker.processFile(index.incrementAndGet(), contents);
+
+		// best practice dai jos din mem pe disc tot ce e mare. nu tine in mem!!
+    File tempFile = File.createTempFile("prefix", "suffix");
+    try (FileOutputStream fos = new FileOutputStream(tempFile)) {
+        fos.write(multipartFile.getBytes());
+    }
+
+		worker.processFile(index.incrementAndGet(), tempFile);
 		return "Keep calling this 20 times within 10 seconds, then heap dump";
 	}
 }
@@ -36,10 +44,11 @@ public class Leak5_AsyncUnbounded {
 @Service
 class Worker {
 	@Async // runs on a default Spring thread pool with 8 threads
-	public void processFile(int param, byte[] contents) {
+	// unbounded queue
+	public void processFile(int param, File tempFile) {
 		log.debug("Start task...");
 		sleepMillis(10_000);
-		int count = (int) IntStream.range(0, contents.length).filter(i -> contents[i] == 17).count();
+		// Process The File As Required
     log.debug("Done task");
 	}
 }

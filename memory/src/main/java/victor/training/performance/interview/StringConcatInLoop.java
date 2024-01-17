@@ -1,6 +1,7 @@
 package victor.training.performance.interview;
 
 import org.apache.commons.io.FileUtils;
+import org.jetbrains.annotations.NotNull;
 import victor.training.performance.util.PerformanceUtil;
 
 import java.io.File;
@@ -23,14 +24,23 @@ public class StringConcatInLoop {
       System.out.println("Start writing contents to file!");
       long t0 = System.currentTimeMillis();
 
-      String s = "";
-      for (String element : elements) {
-         s += element;
-      }
+      String s = interviu(elements);
 
       FileUtils.writeStringToFile(new File("out.txt"), s, UTF_8);
 
-      System.out.println("Done. Took " + (System.currentTimeMillis() - t0));
+      System.out.println("Done. Took " + (System.currentTimeMillis() - t0) + "." + args); // perfect ok din java 8+
+      // javac pune un cod optimizat aici
       waitForEnter();
+   }
+
+   private static String interviu(List<String> elements) {
+      StringBuilder s = new StringBuilder(); // de ce repara asta problema?
+      // in loc sa aloce un string la fiecare iteratie,
+      // string builder este un string redimensionabil,
+      // StringBuilder este pentru String ce ArrayList este pentru []
+      for (String element : elements) {
+         s.append(element).append(",");
+      }
+      return s.toString();
    }
 }

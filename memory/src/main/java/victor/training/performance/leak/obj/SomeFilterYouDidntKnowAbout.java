@@ -20,7 +20,11 @@ public class SomeFilterYouDidntKnowAbout implements Filter {
          log.debug("doFilter");
          BigObject20MB bigObject = new BigObject20MB();
          someFrameworkThreadLocal.set(bigObject); // mistake: no .remove()
-         chain.doFilter(request, response);
+         try {
+            chain.doFilter(request, response);
+         } finally {
+            someFrameworkThreadLocal.remove();
+         }
       } else {
          chain.doFilter(request, response);
       }
