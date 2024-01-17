@@ -1,5 +1,6 @@
 package victor.training.performance.leak;
 
+import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -7,7 +8,6 @@ import victor.training.performance.leak.CalculatorFactory.Calculator;
 import victor.training.performance.leak.obj.BigObject20MB;
 import victor.training.performance.util.PerformanceUtil;
 
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Predicate;
@@ -22,9 +22,9 @@ public class Leak2_Inner {
   @GetMapping
   public String home() {
     return "Do you know Java?<br>" +
-           "<li><a href='/leak2/inner'>Hidden links</a>" +
-           "<li><a href='/leak2/anon'>Lambdas vs anonymous class</a>" +
-           "<li><a href='/leak2/map'>Map{{</a> ";
+        "<li><a href='/leak2/inner'>Hidden links</a>" +
+        "<li><a href='/leak2/anon'>Lambdas vs anonymous class</a>" +
+        "<li><a href='/leak2/map'>Map{{</a> ";
   }
   //</editor-fold>
 
@@ -57,15 +57,13 @@ public class Leak2_Inner {
     return map;
   }
   //</editor-fold>
-
-
 }
 
-
 class CalculatorFactory {
-  public class Calculator {
+  //  public  class Calculator {//inner, instance class = rau
+  public static class Calculator { // nested, static class = mai bine, nu tine ref la instanta de outer class
     public boolean calculate(String data) {
-      System.out.println("Simple Code Code");
+      System.out.println("Simple Code Code + ");
       // 🛑 what's connects the Calculator instance with the 'bigMac' field ?
       return true;
     }
@@ -77,26 +75,35 @@ class CalculatorFactory {
     return new Calculator();
   }
 
-  // other related leaks:
-
   //<editor-fold desc="Lambdas vs Anonymous implementation">
   public Stream<String> anonymousVsLambdas(List<String> input) {
     return input.stream()
-            .filter(new Predicate<String>() {
-              @Override
-              public boolean test(String s) {
-                return !s.isBlank();
-              }
-            });
+//        .filter(new Predicate<String>() { // implem anonima de interfata
+//          // tine referinta la instanta outer.
+//          @Override
+//          public boolean test(String s) {
+//            return !s.isBlank();
+//          }
+//        });
+        .filter(s -> !s.isBlank()) // lambda nu agata din jur stare,
+    // decat ce  foloseste
+
+      .filter(s -> !s.isBlank() || bigMac==null); // acum da, instanta de Stream<>
+    // returnata trage dupa ea referinta la bigMac
   }
   //</editor-fold>
 
   //<editor-fold desc="Map init in Java <= 8">
   public Map<String, Integer> mapInit() {
-    return new HashMap<>() {{
-      put("one", 1);
-      put("two", 2);
-    }};
+//    return new HashMap<>() {{
+//      // anonymous subclass of HashMap with an instance initializer block
+    // keeps a reference to the outer class instance
+//      put("one", 1);
+//      put("two", 2);
+//    }};
+    return Map.of(
+        "one", 1,
+        "two", 2);
   }
   //</editor-fold>
 }
