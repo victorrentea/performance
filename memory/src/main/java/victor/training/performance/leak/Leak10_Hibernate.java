@@ -55,6 +55,7 @@ public class Leak10_Hibernate {
 
    @GetMapping("export")
    @Transactional(readOnly = true)
+//   @Bulkhead()// resilience4j si apoi in proprietati poti limita de cate ori in paralel se poate rula aceasta metoda (Semaphore)
    public void export() throws IOException {
       log.debug("Exporting....");
 

@@ -5,7 +5,10 @@ import org.jetbrains.annotations.NotNull;
 import victor.training.performance.util.PerformanceUtil;
 
 import java.io.File;
+import java.io.FileWriter;
 import java.io.IOException;
+import java.io.Writer;
+import java.sql.ResultSet;
 import java.util.List;
 import java.util.stream.IntStream;
 
@@ -24,9 +27,15 @@ public class StringConcatInLoop {
       System.out.println("Start writing contents to file!");
       long t0 = System.currentTimeMillis();
 
-      String s = interviu(elements);
-
-      FileUtils.writeStringToFile(new File("out.txt"), s, UTF_8);
+//      String s = interviu(elements);
+//      FileUtils.writeStringToFile(new File("out.txt"), s, UTF_8);
+      File file = new File("out.txt");
+      try (Writer writer = new FileWriter(file)) {
+         for (String element : elements) {
+            writer.write(element);
+            writer.write(",");
+         }
+      }
 
       System.out.println("Done. Took " + (System.currentTimeMillis() - t0) + "." + args); // perfect ok din java 8+
       // javac pune un cod optimizat aici
@@ -38,7 +47,9 @@ public class StringConcatInLoop {
       // in loc sa aloce un string la fiecare iteratie,
       // string builder este un string redimensionabil,
       // StringBuilder este pentru String ce ArrayList este pentru []
-      for (String element : elements) {
+      for (String element : elements) { //50K elemente mari x 500 chars x 2 byte = 50MB
+         // nu putem streamlina??
+         // -adica, ce faci tu cu stringu asta dupa?
          s.append(element).append(",");
       }
       return s.toString();
