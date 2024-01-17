@@ -80,14 +80,15 @@ public class NPlusOne {
   public void selectFullEntity() {
     List<Parent> parents = repo.findAll();
     log.info("Loaded {} parents: {}", parents.size(), parents);
-
     List<ParentDto> results = toSearchResults(parents);
     assertResults(results);
   }
 
   private List<ParentDto> toSearchResults(Collection<Parent> parents) { // eg, in a Mapper
     log.debug("Converting-->Dto START");
-    List<ParentDto> results = parents.stream().map(ParentDto::fromEntity).toList();
+    List<ParentDto> results = parents.stream()
+        .map(parent -> ParentDto.fromEntity(parent))
+        .toList();
     log.debug("Converting-->Dto DONE");
     return results;
   }
