@@ -58,9 +58,9 @@ public class UberEntityTest {
                 .setName("::uberName::")
                 .setStatus(Status.SUBMITTED)
                 .setOriginCountry(belgium)
-                .setFiscalCountry(romania)
+                .setFiscalCountryId(romania.getId())
                 .setInvoicingCountry(france)
-                .setNationality(serbia)
+                .setNationalityId(serbia.getId())
                 .setScope(globalScope)
 //                .setScopeEnum(ScopeEnum.GLOBAL) // TODO enum
                 .setCreatedBy(testUser);
@@ -73,15 +73,18 @@ public class UberEntityTest {
 
     @Test
     public void jpql() {
+        // daca JPA merge cu QUERY in DB iti preincarca @ManyToOne si @OneToOne AUTOMAT (EAGER) cu queryuri aditionale
         log.info("SELECTING a 'very OOP' @Entity with JPQL ...");
-         List<UberEntity> list = uberRepo.findAll();
+//         List<UberEntity> list = uberRepo.findAll();
 //        List<UberEntity> list = uberRepo.findAllWithQuery();// EQUIVALENT
-//        List<UberEntity> list = uberRepo.findByName("::uberName::");
+        List<UberEntity> list = uberRepo.findByName("::uberName::");
         log.info("Loaded using JPQL (see how many queries are above):\n" + list);
     }
 
     @Test
     public void findById() {
+        // retrive by PK SELECT .... WHERE ID = ?, hibernate preincarca @ManyToOne si @OneToOne AUTOMAT (EAGER)
+        // adaugand JOINuri la query
         log.info("Loading a 'very OOP' @Entity by id...");
         UberEntity uber = uberRepo.findById(uberId).orElseThrow(); // or em.find(UberEntity.class, id); in plain JPA
         log.info("Loaded using findById (inspect the above query):\n" + uber);
@@ -109,8 +112,12 @@ public class UberEntityTest {
         // TODO [2] Select u.id AS id -> Dto
     }
 
+    // BAZA: ori de cate ori in ecran arati 30% din campuri, eg 5 din 20, extragi direct din query JPA
+    // instanta de DTO facand select new bla.bla.Dto(...campurile necesare...)
     private List<UberSearchResult> classicSearch(UberSearchCriteria criteria) {
-        String jpql = "SELECT u FROM UberEntity u WHERE 1 = 1 ";
+        String jpql = "SELECT new victor.training.performance.jpa.UberEntityTest$UberSearchResult(" +
+            "u.id,u.name, u.originCountry.name) FROM UberEntity" +
+            " u WHERE 1 = 1 ";
         // alternative implementation: CriteriaAPI, Criteria+Metamodel, QueryDSL, Spring Specifications
         Map<String, Object> params = new HashMap<>();
         if (criteria.name != null) {
@@ -121,16 +128,16 @@ public class UberEntityTest {
             jpql += " AND u.status = :status ";
             params.put("status", criteria.status);
         }
-        var query = em.createQuery(jpql, UberEntity.class);
+        var query = em.createQuery(jpql, UberSearchResult.class);
         for (String key : params.keySet()) {
             query.setParameter(key, params.get(key));
         }
-        var entities = query.getResultList();
+        var results = query.getResultList();// TODO victorrentea 2024-01-17: polish
 
         // OR: Spring Data Repo @Query with a fixed JPQL
 //        entities = uberRepo.searchFixedJqpl(criteria.name, criteria.status);
 
-        return entities.stream().map(this::toResult).collect(toList());
+        return results;//.stream().map(this::toResult).collect(toList());
     }
 
     private UberSearchResult toResult(UberEntity entity) {

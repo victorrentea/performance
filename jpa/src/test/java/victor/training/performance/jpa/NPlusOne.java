@@ -25,6 +25,7 @@ import static java.util.stream.Collectors.joining;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.tuple;
 import static org.springframework.data.domain.Sort.Direction.ASC;
+import static org.springframework.data.domain.Sort.Direction.DESC;
 import static org.springframework.test.annotation.DirtiesContext.ClassMode.BEFORE_EACH_TEST_METHOD;
 
 @Slf4j
@@ -96,7 +97,7 @@ public class NPlusOne {
 
   // ======================= @Query(native sql) returning Spring projections ==============
   @Test
-  public void nativeQuery() {
+  public void nativeQuery() { // ca sa scot strict ce am nevoie (nu coloane in plus parent.age, nu randuri in plus 1 rand/parinte)
     List<ParentProjection> results = repo.nativeQuery();
     assertResults(results);
   }
@@ -104,10 +105,12 @@ public class NPlusOne {
   // ======================= @Entity on Hibernate @Subselect(native sql) ==============
   @Test
   public void subselect() {
-    // TODO pagination
-    // TODO filter the original @Entity model
-    List<ParentSubselect> results = repo.subselect();
-    assertResults(results);
+    // pp ca vrea prima pagina de 50 eleme, sortata desc dupa nume
+    PageRequest pageRequest = PageRequest.of(0, 50, DESC, "name");
+
+    Page<ParentSubselect> results = repo.subselect(pageRequest);
+    System.out.println("cate elem: "+results.getTotalElements());
+    assertResults(results.getContent());
   }
 
   // ======================= @Entity mapped on DB VIEW(native sql) =============================
@@ -116,7 +119,14 @@ public class NPlusOne {
     List<ParentView> results = repo.view();
     assertResults(results);
   }
+  // pana aici vorbim despre tuning de searchuri - sa aduca cat mai putine date necesare
+  // si sa poti exprima criteriile in JPQL (pe modelul JPA)
 
+  // daca vrei sa exporti date:
+  // 1) Stream<> peste toate datele, tii conexiunea deschisa pana termini de trecut prin toate
+  // 2) Driving Query technique:
+  //    a) selectezi doar ID-urile de exportat -> List<Long> sau int[]
+  //    b) faci un query separat care sa aduca datele in PAGINI de cate 1000 de elem din ID-urile preselectate [in paralel] : tema parallelStream() rulat pe ForkJoinPool-ul meu!!!! privat! al meu!
   // ======================= Driving Query: identify data + fetch data =============================
   @Test
   public void drivingQuery() {

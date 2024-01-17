@@ -8,6 +8,7 @@ import static javax.persistence.EnumType.STRING;
 
 @Entity
 @Data
+// entitate naiva OOP, modelata de un student ce abia s-a incantat cu OOP la scoala
 public class UberEntity {
     @Id
     @GeneratedValue
@@ -22,10 +23,17 @@ public class UberEntity {
 
     @ManyToOne
     private Country originCountry;
-    @ManyToOne
-    private Country nationality;
-    @ManyToOne
-    private Country fiscalCountry;
+
+//    @ManyToOne
+//    private Country nationality; // in tot codul din BE
+    private Long nationalityId; // gata cu JOINURILE inutile, SELECTURILE aiurea pe care le face JPA JPA
+    // de fiecare data cand accessez getNationatlity().getId()
+    // + PASTRAM FK intre tabele, ca sa nu avem probleme cu integritatea datelor!!!
+//    @ManyToOne
+//    private Country fiscalCountry;
+
+    private Long fiscalCountryId; // + FK
+
     @ManyToOne
     private Country invoicingCountry;
     @ManyToOne
@@ -35,7 +43,7 @@ public class UberEntity {
 //    private ScopeEnum scopeEnum;
     @ManyToOne
     private User createdBy;
-    @Enumerated(STRING)
+    @Enumerated(STRING) // sa nu te prind cu @Entity UberStatus cu valori fixate in DB.
     private Status status;
 
     public enum Status {

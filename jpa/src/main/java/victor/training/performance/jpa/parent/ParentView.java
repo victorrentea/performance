@@ -7,7 +7,7 @@ import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
-@Entity
+@Entity // mapat pe un DB VIEW
 @Immutable
 @Getter
 public class ParentView {
