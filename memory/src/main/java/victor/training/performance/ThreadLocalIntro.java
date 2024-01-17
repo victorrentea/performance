@@ -24,10 +24,15 @@ public class ThreadLocalIntro {
 
     public void httpRequest(String currentUser, String data) {
         log.info("Current user is " + currentUser);
-        staticCurrentUser= currentUser;
+        staticCurrentUser.set(currentUser);
         controller.create(data);
     }
-    public static String staticCurrentUser;
+    public static ThreadLocal<String> staticCurrentUser = new ThreadLocal<>();
+    //Thread local e folosit la o gramada de magie in Spring:
+    // - SecurityContextHolder - userul curent
+    // - @Transactional - conexiunea curenta
+    // - TraceId - pentru loguri
+    // - Logback - MDC
 }
 // ---------- end of framework -----------
 
@@ -60,7 +65,8 @@ class AService {
 @Slf4j
 class ARepo {
     public void save(String data) {
-        String user = staticCurrentUser;
-        log.info("INSERT INTO A(data, created_by) VALUES ({}, {})", data, user);
+//        String usenrmaeDinSpringSEcurity = SecurityContextHolder.getContext().getAuthentication().getName();
+        String user = staticCurrentUser.get();
+        log.info("INSERT INTO A(data, created_by) VALUES ({}, {})", data, user); // TODO polish
     }
 }
