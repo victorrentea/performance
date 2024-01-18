@@ -54,6 +54,6 @@ class AService {
 class ARepo {
     public void save(String data) {
         String currentUser = "TODO"; // TODO
-        log.info("INSERT INTO A(data, created_by) VALUES ({}, {})", data, currentUser);
+        log.info("INSERT INTO A (data={}, created_by={}) ", data, currentUser);
     }
 }

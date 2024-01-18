@@ -125,12 +125,12 @@ public class UberEntityTest {
         for (String key : params.keySet()) {
             query.setParameter(key, params.get(key));
         }
-        var entities = query.getResultList();
+        var results = query.getResultList();
 
         // OR: Spring Data Repo @Query with a fixed JPQL
-//        entities = uberRepo.searchFixedJqpl(criteria.name, criteria.status);
+//        results = uberRepo.searchFixedJqpl(criteria.name, criteria.status);
 
-        return entities.stream().map(this::toResult).collect(toList());
+        return results.stream().map(this::toResult).collect(toList());
     }
 
     private UberSearchResult toResult(UberEntity entity) {

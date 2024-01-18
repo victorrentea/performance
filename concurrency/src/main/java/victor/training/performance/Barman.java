@@ -11,8 +11,8 @@ import victor.training.performance.drinks.Vodka;
 
 import static java.lang.System.currentTimeMillis;
 
-@RestController
 @Slf4j
+@RestController
 public class Barman {
   @Autowired
   private RestTemplate rest;
@@ -21,12 +21,12 @@ public class Barman {
   public DillyDilly drink() {
     long t0 = currentTimeMillis();
 
-    //  🛑 independent tasks executed sequentially ~> parallelize
+    //  🛑 independent tasks executed sequentially. What TODO ?
     Beer beer = rest.getForObject("http://localhost:9999/beer", Beer.class);
     Vodka vodka = rest.getForObject("http://localhost:9999/vodka", Vodka.class);
+    DillyDilly dilly = new DillyDilly(beer, vodka);
 
-    long t1 = currentTimeMillis();
-    log.info("HTTP thread blocked for millis: " + (t1 - t0));
-    return new DillyDilly(beer,vodka);
+    log.info("HTTP thread blocked for millis: " + (currentTimeMillis() - t0));
+    return dilly;
   }
 }

@@ -28,7 +28,7 @@ public class ThreadPools {
          executor.submit(task);
          sleepSomeTime(100, 200); // simulate random request rate
       }
-      // TODO shutdown the executor !
+      // TODO shutdown the executor
    }
 }
 
