@@ -112,3 +112,4 @@ VisualVM deadlocks
 ### Troubleshoot starting visualvm on macos if JDK collision
 open -a visualvm --args --jdkhome `/usr/libexec/java_home -v 17`
 
+test
