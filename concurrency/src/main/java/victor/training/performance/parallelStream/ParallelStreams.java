@@ -5,57 +5,45 @@ import lombok.extern.slf4j.Slf4j;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ForkJoinPool;
-import java.util.concurrent.ForkJoinTask;
 import java.util.stream.IntStream;
+import java.util.stream.Stream;
 
 import static java.util.stream.Collectors.toList;
 import static victor.training.performance.util.PerformanceUtil.sleepMillis;
 
 @Slf4j
 public class ParallelStreams {
-  public static void main(String[] args) throws ExecutionException, InterruptedException {
-    OnAServer.otherParallelRequestsAreRunning(); // starve the shared commonPool
+   public static void main(String[] args) throws ExecutionException, InterruptedException {
+      OnAServer.otherParallelRequestsAreRunning(); // starve the shared commonPool din JVM
 
-    long t0 = System.currentTimeMillis();
+      List<Integer> list = IntStream.range(1,100).boxed().collect(toList());
 
-    List<Integer> list = IntStream.range(1, 100).boxed().collect(toList());
+      long t0 = System.currentTimeMillis();
 
-//      List<Integer> result = list.parallelStream()
-//          .filter(i -> i % 2 == 0)
-//          .map(i -> {
-//             log.debug("working on " + i);
-//             sleepMillis(100); // time-consuming work (DB, REST)
-//             return i * 2;
-//          })
-//          .collect(toList());
-//      log.debug("Got result: " + result);
-//
-//      long t1 = System.currentTimeMillis();
-//      log.debug("Took {} ms", t1 - t0);
-    // what kind of work should you do in a parallelStream, knowing that
-    // hyou will execute on exactly N-1+you =N CPUs?
-    // Answer: CPU-bound work, not IO-bound work
+     Stream<Integer> stream = list.parallelStream()
+         .filter(i -> i % 2 == 0)
+         .map(i -> {
+           log.debug("Map " + i);
+           sleepMillis(100); // time-consuming work (CPU or DB, REST, SOAP)
+           return i * 2; // pretend: return api.call(i);
+         });
 
-    // what if you do EXTRA-COMPLEX CPU WORK? taking 100 ms each item?
-    // probably that much work is not fair for other.
-    ForkJoinPool pool = new ForkJoinPool(20);
+     // cum rulez parallelStream pe thread pool privat al meu
+     ForkJoinPool forkJoinPool = new ForkJoinPool(16);
+     List<Integer> result = forkJoinPool.submit(
+         () -> stream.collect(toList())).get();
+     // acum fluxul ruleaza pe 10-1 = 9th + main = 10 threaduri
+     // munca dureaza 500ms nu 5000 ca la inceput
+      log.debug("Got result: " + result);
 
-
-    ForkJoinTask<List<Integer>> futureResult = pool.submit(() ->
-        list.parallelStream()
-            .filter(i -> i % 2 == 0)
-            .map(i -> {
-              log.debug("working on " + i);
-              sleepMillis(100); // time-consuming work (DB, REST)
-              return i * 2;
-            })
-            .collect(toList()));
-    List<Integer> integers = futureResult.get();
-    log.debug("Got result: " + integers);
-
-
-    long t1 = System.currentTimeMillis();
-    log.debug("Took {} ms", t1 - t0);
-  }
+      long t1 = System.currentTimeMillis();
+      log.debug("Took {} ms", t1 - t0);
+   }
 }
+
+// concluzii:
+// - pe parallelStream ar trebui sa fac doar calcule cu CPU in memory fara sa ating reteaua. eg: transformate XML, generezi pdf,
+// - atentie sa masori inainte cat castigi, ca poate nu merita parallelStream. fa-ti benchmark cu JMH
+//    Branch: main on git: https://github.com/victorrentea/performance-jmh.git
+
 
