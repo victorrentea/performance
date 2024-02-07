@@ -29,6 +29,9 @@ public class ParallelStreams {
 
       long t1 = System.currentTimeMillis();
       log.debug("Took {} ms", t1 - t0);
+      // what kind of work should you do in a parallelStream, knowing that
+     // hyou will execute on exactly N-1+you =N CPUs?
+     // Answer: CPU-bound work, not IO-bound work
    }
 }
 
