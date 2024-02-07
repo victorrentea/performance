@@ -17,11 +17,11 @@ public class ParallelStreams {
 
       List<Integer> list = IntStream.range(1,100).boxed().collect(toList());
 
-      List<Integer> result = list.stream()
+      List<Integer> result = list.parallelStream()
           .filter(i -> i % 2 == 0)
           .map(i -> {
-             log.debug("Map " + i);
-             sleepMillis(100); // time-consuming work (CPU or DB, REST, SOAP)
+             log.debug("working on " + i);
+             sleepMillis(100); // time-consuming work (DB, REST)
              return i * 2;
           })
           .collect(toList());

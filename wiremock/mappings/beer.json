@@ -12,7 +12,7 @@
       "type": "Neumarkt"
     },
 
-    "fixedDelayMilliseconds": 1000
+    "fixedDelayMilliseconds": 5
 
   }
 }
