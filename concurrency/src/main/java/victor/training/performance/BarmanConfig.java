@@ -9,7 +9,7 @@ import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 import victor.training.performance.threadpool.MonitorQueueWaitingTimeTaskDecorator;
 
 @Configuration
-public class BarPoolConfig {
+public class BarmanConfig {
   @Autowired
   MeterRegistry meterRegistry;
 

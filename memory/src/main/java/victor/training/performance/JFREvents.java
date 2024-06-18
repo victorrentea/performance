@@ -16,8 +16,8 @@ import java.net.http.HttpResponse;
 import java.net.http.HttpResponse.BodyHandlers;
 
 // TODO check this out : http://hirt.se/blog/?tag=jfr
-public class CustomJFREvents {
-   private static final Logger log = LoggerFactory.getLogger(CustomJFREvents.class);
+public class JFREvents {
+   private static final Logger log = LoggerFactory.getLogger(JFREvents.class);
 
    public static void main(String[] args) throws IOException, InterruptedException {
       PerformanceUtil.printJfrFile();
