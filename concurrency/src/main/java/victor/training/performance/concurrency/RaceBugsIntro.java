@@ -10,6 +10,7 @@ import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.IntStream;
 
 import static java.util.stream.Collectors.toList;
@@ -19,7 +20,7 @@ import static java.util.stream.Collectors.toList;
 public class RaceBugsIntro {
   private static List<Integer> evenNumbers = new ArrayList<>();
 
-  private static Integer total = 0;
+  private static final AtomicInteger total = new AtomicInteger(0);
   private static final Object lock = new Object();
 
   // many parallel threads run this method:
@@ -28,9 +29,10 @@ public class RaceBugsIntro {
     for (Integer n : numbers) {
       if (n % 2 == 0) {
 //        System.out.println("Heisenbug[haisamibag]");// il pui si trece bugu. #haisamibag
-      synchronized (lock) {
-        total++;// e de fapt        total = Integer.valueOf(total.intValue() + 1);
-      }
+//      synchronized (lock) {
+//        total++;// e de fapt        total = Integer.valueOf(total.intValue() + 1);
+//      }
+        total.incrementAndGet();
 //        Thread.sleep(10); // #haisamibag
       }
     }
