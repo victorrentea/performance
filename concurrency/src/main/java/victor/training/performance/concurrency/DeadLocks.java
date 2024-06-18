@@ -31,12 +31,12 @@ public class DeadLocks {
          for (int i = 0; i < 5000; i++) {
             PerformanceUtil.log("I'm hungry");
 
-            PerformanceUtil.log("Waiting for first fork (id=" + firstFork.id + ")...");
+            PerformanceUtil.log("Taking fork #" + firstFork.id + "...");
             synchronized (firstFork) {
-               PerformanceUtil.log("Took the first fork");
-               PerformanceUtil.log("Waiting for the second fork (id=" + secondFork.id + ")...");
+               PerformanceUtil.log("Took one fork");
+               PerformanceUtil.log("Taking fork #" + secondFork.id + "...");
                synchronized (secondFork) {
-                  PerformanceUtil.log("Took both forks. Eating 🌟🌟🌟 ...");
+                  PerformanceUtil.log("Eating🌟...");
                   // sleepNanos(10);
                   PerformanceUtil.log("Done eating. Releasing forks");
                }
@@ -45,7 +45,6 @@ public class DeadLocks {
          }
          PerformanceUtil.log("NORMAL FINISH (no deadlock happened)");
       }
-
    }
 
    public static void main(String[] args) {
