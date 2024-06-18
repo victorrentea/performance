@@ -62,8 +62,8 @@ public class Leak2_Inner {
 }
 
 
-class CalculatorFactory {
-  public class Calculator {
+class CalculatorFactory { // instantiata trecator
+  public static class Calculator {
     public boolean calculate(String data) {
       System.out.println("Simple Code Code");
       // 🛑 what's connects the Calculator instance with the 'bigMac' field ?
@@ -82,18 +82,22 @@ class CalculatorFactory {
   //<editor-fold desc="Lambdas vs Anonymous implementation">
   public Stream<String> anonymousVsLambdas(List<String> input) {
     return input.stream()
-            .filter(new Predicate<String>() {
-              @Override
-              public boolean test(String s) {
-                return !s.isBlank();
-              }
-            });
+//            .filter(new Predicate<String>() { // anonymous inner class tine pointer ascuns catre outer class
+//              @Override
+//              public boolean test(String s) {
+//                return !s.isBlank();
+//              }
+//            });
+            .filter(s -> !s.isBlank()); // nu tine pointer la outer class, ci doar
+                    // la ce referi efectiv din jurul ei
   }
   //</editor-fold>
 
   //<editor-fold desc="Map init in Java <= 8">
   public Map<String, Integer> mapInit() {
-    return new HashMap<>() {{
+    return new HashMap<>() { // subclasa anonima tine pointer la outer = LEAK
+      {
+      // instance init block
       put("one", 1);
       put("two", 2);
     }};

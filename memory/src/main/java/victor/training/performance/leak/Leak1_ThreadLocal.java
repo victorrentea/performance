@@ -14,9 +14,12 @@ public class Leak1_ThreadLocal {
    public String endpoint() {
       BigObject20MB bigObject = new BigObject20MB().setSomeString("john.doe"); // retrived from a network call
 
-      threadLocal.set(bigObject);  // 🛑 remember to .remove() any ThreadLocal you have
-
-      businessMethod1();
+      threadLocal.set(bigObject);
+      try {
+         businessMethod1();
+      } finally {
+         threadLocal.remove();
+      }
 
       return "Magic can do harm.";
    }
