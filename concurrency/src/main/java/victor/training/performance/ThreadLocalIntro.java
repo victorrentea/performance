@@ -27,10 +27,17 @@ public class ThreadLocalIntro {
 //        HttpServletRequest r;
 //        r.getSession().getAttribute("username")
         log.info("Current user is " + currentUser);
-        staticCurrentUser = currentUser;
+        staticCurrentUser.set(currentUser);
         controller.create(data);
     }
-    public static String staticCurrentUser;
+    // in variabila asta ce scrie/citeste un thread doar acel thread vede
+    public static final ThreadLocal<String> staticCurrentUser = new ThreadLocal<>();
+    // use-cases:
+    // - metadate de user de pe request: username, httpRequestTimestamp, IP, language, timezone
+    // - rolurile userului -> SecurityContextHolder, pt @Secured/@RolesAllowed/@PreAuthorize, JWT Token
+    // - Logback MDC (Mapped Diagnostic Context) -> pt a pune in log fiecare log line cu userul curent (eg)
+    // - TraceID + OTEL "Baggage"<<
+    // - @Transactional propaga tx curenta catre toate metodele chemate in threadul tau
 }
 // ---------- end of framework -----------
 
@@ -62,7 +69,7 @@ class AService {
 @Slf4j
 class ARepo {
     public void save(String data) {
-        String currentUser = staticCurrentUser;
+        String currentUser = staticCurrentUser.get();
         log.info("INSERT INTO A (data={}, created_by={}) ", data, currentUser);
     }
 }
