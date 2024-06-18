@@ -4,7 +4,9 @@ import lombok.extern.slf4j.Slf4j;
 
 import java.util.List;
 import java.util.concurrent.ExecutionException;
+import java.util.concurrent.ForkJoinPool;
 import java.util.stream.IntStream;
+import java.util.stream.Stream;
 
 import static java.util.stream.Collectors.toList;
 import static victor.training.performance.util.PerformanceUtil.sleepMillis;
@@ -18,14 +20,17 @@ public class ParallelStreams {
 
     long t0 = System.currentTimeMillis();
 
-    List<Integer> result = list.parallelStream()
+    Stream<Integer> sss = list.parallelStream()
         .filter(i -> i % 2 == 0)
         .map(i -> {
           log.info("Processing " + i);
           sleepMillis(100); // network call (IO)
           return i * 2;
-        })
-        .toList();
+        });
+
+    ForkJoinPool fjp = new ForkJoinPool(20);
+    List<Integer> result = fjp.submit(() -> sss.toList()).get();
+
     log.debug("Got result: " + result);
 
     long t1 = System.currentTimeMillis();
