@@ -18,7 +18,7 @@ import static java.util.stream.Collectors.toList;
 
 @Slf4j
 public class RaceBugsIntro {
-  private static List<Integer> evenNumbers = new ArrayList<>();
+  private static final List<Integer> evenNumbers = Collections.synchronizedList(new ArrayList<>());
 
   private static final AtomicInteger total = new AtomicInteger(0);
   private static final Object lock = new Object();
@@ -33,6 +33,11 @@ public class RaceBugsIntro {
 //        total++;// e de fapt        total = Integer.valueOf(total.intValue() + 1);
 //      }
         total.incrementAndGet();
+
+//        synchronized (evenNumbers) {
+//          evenNumbers.add(n);
+//        }
+        evenNumbers.add(n);
 //        Thread.sleep(10); // #haisamibag
       }
     }
@@ -54,7 +59,7 @@ public class RaceBugsIntro {
     pool.shutdown();
 
     log.debug("Counted: " + total);
-//    log.debug("Counted: " + evenNumbers.size());
+    log.debug("Counted: " + evenNumbers.size());
   }
 
   //<editor-fold desc="splitList utility function">
