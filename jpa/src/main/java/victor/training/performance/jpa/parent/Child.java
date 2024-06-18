@@ -13,7 +13,7 @@ public class Child {
 
     private String name;
 
-    @ManyToOne //  <-> bidirectional link
+    @ManyToOne //  <-> bidirectional link  // ewwwww bidirectional e rau
     private Parent parent;
 
     public Child() {

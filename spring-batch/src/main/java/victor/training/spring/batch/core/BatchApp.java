@@ -48,6 +48,7 @@ public class BatchApp {
     return jobBuilder.get("basicJob")
         .incrementer(new RunIdIncrementer())
         .start(importPersonsInChunks())
+//        .start(step2())
 
         // TODO insert in 2 passes: 1) cities, 2) people
         // .start(importCitiesFirstPass()).next(importPersonsInChunks())

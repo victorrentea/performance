@@ -2,6 +2,7 @@ package victor.training.performance.jpa.parent;
 
 import lombok.Getter;
 import lombok.Setter;
+import org.hibernate.annotations.BatchSize;
 import victor.training.performance.jpa.uber.Country;
 
 import javax.persistence.*;
@@ -21,6 +22,7 @@ public class Parent {
    private String name;
    private Integer age;
 
+   @BatchSize(size = 10) // Hibernate magic that avoids N+1 using ID IN (?,?..,?10)
    @OneToMany(mappedBy = "parent", cascade = PERSIST)
    // @BatchSize(size=10) // Hibernate magic that avoids N+1 using ID IN (?,?..,?10)
    private Set<Child> children = new HashSet<>();
