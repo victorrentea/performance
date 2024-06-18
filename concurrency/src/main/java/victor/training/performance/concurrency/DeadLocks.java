@@ -25,10 +25,13 @@ public class DeadLocks {
       }
 
       public void run() {
+//         Fork firstFork = leftFork.id>rightFork.id ? leftFork : rightFork;
+//         Fork secondFork = leftFork.id>rightFork.id ? rightFork : leftFork;
+
          Fork firstFork = leftFork;
          Fork secondFork = rightFork;
 
-         for (int i = 0; i < 5000; i++) {
+         for (int i = 0; i < 50; i++) {
             PerformanceUtil.log("I'm hungry");
 
             PerformanceUtil.log("Waiting for first fork (id=" + firstFork.id + ")...");
@@ -37,7 +40,7 @@ public class DeadLocks {
                PerformanceUtil.log("Waiting for the second fork (id=" + secondFork.id + ")...");
                synchronized (secondFork) {
                   PerformanceUtil.log("Took both forks. Eating 🌟🌟🌟 ...");
-                  // sleepNanos(10);
+//                   sleepNanos(10);
                   PerformanceUtil.log("Done eating. Releasing forks");
                }
             }

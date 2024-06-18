@@ -20,13 +20,18 @@ public class RaceBugsIntro {
   private static List<Integer> evenNumbers = new ArrayList<>();
 
   private static Integer total = 0;
+  private static final Object lock = new Object();
 
   // many parallel threads run this method:
   private static void countEven(List<Integer> numbers) {
     log.info("Start");
     for (Integer n : numbers) {
       if (n % 2 == 0) {
-        total++;
+//        System.out.println("Heisenbug[haisamibag]");// il pui si trece bugu. #haisamibag
+      synchronized (lock) {
+        total++;// e de fapt        total = Integer.valueOf(total.intValue() + 1);
+      }
+//        Thread.sleep(10); // #haisamibag
       }
     }
     log.info("end");

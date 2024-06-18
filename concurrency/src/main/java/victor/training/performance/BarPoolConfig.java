@@ -22,6 +22,7 @@ public class BarPoolConfig {
 
     executor.setTaskDecorator(new MonitorQueueWaitingTimeTaskDecorator(meterRegistry.timer("barman-queue-time")));
     executor.setThreadNamePrefix("bar-");
+//    executor.set
     executor.initialize();
     return executor;
   }
