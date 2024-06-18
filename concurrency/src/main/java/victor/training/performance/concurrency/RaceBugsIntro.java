@@ -5,10 +5,7 @@ import lombok.extern.slf4j.Slf4j;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.concurrent.Callable;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
+import java.util.concurrent.*;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.IntStream;
 
@@ -22,8 +19,10 @@ public class RaceBugsIntro {
   private static final Object lock = new Object();
 
   // many parallel threads run this method:
-  private static void findEvenNumber(List<Integer> numbers) {
+  // am facut functia PURA (fara side effects). produce date, nu modifica
+  private static List<Integer> findEvenNumber(List<Integer> numbers) {
     log.info("Start");
+    List<Integer> results = new ArrayList<>();
     for (Integer n : numbers) {
       if (n % 2 == 0) {
 //        System.out.println("Heisenbug[haisamibag]");// il pui si trece bugu. #haisamibag
@@ -34,24 +33,28 @@ public class RaceBugsIntro {
 //        synchronized (evenNumbers) {
 //          evenNumbers.add(n);
 //        }
-        evenNumbers.add(n);
+//        evenNumbers.add(n);
 //        Thread.sleep(10); // #haisamibag
+        results.add(n);
       }
     }
     log.info("end");
+    return results;
   }
 
   public static void main(String[] args) throws ExecutionException, InterruptedException {
     List<Integer> fullList = IntStream.range(0, 10_000).boxed().collect(toList());
 
     List<List<Integer>> lists = splitList(fullList, 2);
-    List<Callable<Void>> tasks = lists.stream().map(numbers -> (Callable<Void>) () -> {
-      findEvenNumber(numbers);
-      return null;
-    }).collect(toList());
+    List<Callable<List<Integer>>> tasks = lists.stream()
+        .map(numbers -> (Callable<List<Integer>>)
+            () -> findEvenNumber(numbers)).collect(toList());
 
     ExecutorService pool = Executors.newCachedThreadPool();
-    pool.invokeAll(tasks);
+    List<Future<List<Integer>>> viituri = pool.invokeAll(tasks);
+    for (Future<List<Integer>> viitor : viituri) {
+      evenNumbers.addAll(viitor.get());
+    }
     pool.shutdown();
 
     log.debug("Counted: " + total);
