@@ -11,14 +11,16 @@ import java.util.concurrent.atomic.AtomicReference;
 import static java.util.Collections.synchronizedList;
 
 public class ProducerConsumer {
-  private static AtomicReference<List<Integer>> buffer = Collections.synchronizedList(new ArrayList<>());
+  private static List<Integer> buffer = new ArrayList<>();
 
   public static void main(String[] args) {
     ExecutorService submitteri = Executors.newCachedThreadPool();
     for (int i = 0; i < 100; i++) {
       submitteri.submit(() -> {
         for (int j = 0; true; j++) {
-          buffer.get().add(j);
+          synchronized (ProducerConsumer.class) {
+            buffer.add(j);
+          }
           Thread.sleep(10);
         }
       });
@@ -27,10 +29,11 @@ public class ProducerConsumer {
     var sc = Executors.newScheduledThreadPool(1);
     sc.scheduleAtFixedRate(() -> {
       try {
+        List<Integer> newBuffer = new ArrayList<>();
         List<Integer> copie;
         synchronized (ProducerConsumer.class) {
            copie = buffer;
-          buffer = Collections.synchronizedList(new ArrayList<>());
+           buffer = newBuffer;
         }
         for (Integer e : copie) {
           counter += e;
