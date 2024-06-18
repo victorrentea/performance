@@ -6,6 +6,7 @@ import org.springframework.stereotype.Repository;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.RestController;
 
+import static victor.training.performance.ThreadLocalIntro.staticCurrentUser;
 import static victor.training.performance.util.PerformanceUtil.sleepMillis;
 
 @Slf4j
@@ -21,7 +22,8 @@ public class ThreadLocalIntro {
 //        HttpServletRequest r;
 //        r.getSession().getAttribute("username")
         log.info("Current user is " + currentUser);
-        controller.create(data, currentUser);
+        staticCurrentUser = currentUser;
+        controller.create(data);
     }
     public static String staticCurrentUser;
 }
@@ -33,8 +35,8 @@ public class ThreadLocalIntro {
 class AController {
     private final AService service;
 
-    public void create(String data, String user) {
-        service.create(data, user);
+    public void create(String data) {
+        service.create(data);
     }
 }
 
@@ -44,9 +46,9 @@ class AController {
 class AService {
     private final ARepo repo;
 
-    public void create(String data, String user) {
+    public void create(String data) {
         sleepMillis(10); // some delay, to reproduce the race bug
-        repo.save(data, user);
+        repo.save(data);
     }
 }
 
@@ -54,8 +56,8 @@ class AService {
 @Repository
 @Slf4j
 class ARepo {
-    public void save(String data, String user) {
-        String currentUser = user;
+    public void save(String data) {
+        String currentUser = staticCurrentUser;
         log.info("INSERT INTO A (data={}, created_by={}) ", data, currentUser);
     }
 }
