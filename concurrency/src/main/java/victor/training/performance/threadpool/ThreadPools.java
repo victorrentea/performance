@@ -23,7 +23,8 @@ public class ThreadPools {
        ExecutorService executor = new ThreadPoolExecutor(
            2, 4,
             1, TimeUnit.SECONDS,
-            new ArrayBlockingQueue<>(5)
+            new ArrayBlockingQueue<>(5),
+           new ThreadPoolExecutor.CallerRunsPolicy()
        );
 
       // TODO Vary the fixed-sized queue to see it grow the pool and then Rejecting tasks
@@ -35,6 +36,10 @@ public class ThreadPools {
          sleepSomeTime(100, 100); // simulate random request rate
       }
       // TODO shutdown the executor
+      executor.shutdown(); // io inchid magazinu: las gardu pana la jumate
+      executor.shutdownNow(); // io inchid magazinu: las gardu pana la jumate
+      executor.awaitTermination(10, TimeUnit.SECONDS); // sa iasa clientii
+      // sting lumina
    }
 }
 class MyTask implements Callable<Integer> {
