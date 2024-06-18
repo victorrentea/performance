@@ -9,7 +9,7 @@ import java.util.stream.IntStream;
 @Slf4j
 public class OnAServer {
   @SneakyThrows
-  public static void otherParallelRequestsAreRunning() {
+  public static void altiAnimaliDinTraficCuBmveulMaiVechiCaTine() {
     Thread thread = new Thread(OnAServer::optimized);
     thread.setDaemon(true); // to exit program
     thread.start();
