@@ -3,7 +3,6 @@ package victor.training.performance.concurrency;
 import lombok.extern.slf4j.Slf4j;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.Callable;
@@ -33,24 +32,24 @@ public class RaceBugsIntro {
 
   }
 
-  public static void main(String[] args) throws ExecutionException, InterruptedException {
+  public static void main(String[] args) throws Exception {
     List<Integer> fullList = IntStream.range(0, 10_000).boxed().collect(toList());
 
     List<List<Integer>> lists = splitList(fullList, 2);
-    List<Callable<Void>> tasks = lists.stream().map(numbers -> (Callable<Void>) () -> {
-      countEven(numbers);
-      return null;
-    }).collect(toList());
-
+    List<Callable<Void>> tasks = lists.stream()
+        .map(numbers -> (Callable<Void>) () -> {
+          countEven(numbers);
+          return null;
+        }).collect(toList());
     ExecutorService pool = Executors.newCachedThreadPool();
     pool.invokeAll(tasks);
     pool.shutdown();
 
     log.debug("Counted: " + total);
-//    log.debug("Counted: " + evenNumbers.size());
+    log.debug("List.size: " + evenNumbers.size());
   }
 
-  //<editor-fold desc="splitList utility function">
+  //<editor-fold desc="utility functions">
   private static List<List<Integer>> splitList(List<Integer> all, int parts) {
     Collections.shuffle(all);
     List<List<Integer>> lists = new ArrayList<>();
