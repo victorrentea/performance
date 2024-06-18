@@ -20,13 +20,7 @@ public class ParallelStreams {
 
     long t0 = System.currentTimeMillis();
 
-    Stream<Integer> sss = list.parallelStream()
-        .filter(i -> i % 2 == 0)
-        .map(i -> {
-          log.info("Processing " + i);
-          sleepMillis(100); // network call (IO)
-          return i * 2;
-        });
+    Stream<Integer> sss = f(list);
 
     ForkJoinPool fjp = new ForkJoinPool(20);
     List<Integer> result = fjp.submit(() -> sss.toList()).get();
@@ -35,6 +29,17 @@ public class ParallelStreams {
 
     long t1 = System.currentTimeMillis();
     log.debug("Took {} ms", t1 - t0);
+  }
+
+  private static Stream<Integer> f(List<Integer> list) {
+    Integer millis = 100;
+    return list.parallelStream()
+        .filter(i -> i % 2 == 0)
+        .map(i -> {
+          log.info("Processing " + i);
+          sleepMillis(millis); // network call (IO)
+          return i * 2;
+        });
   }
 }
 

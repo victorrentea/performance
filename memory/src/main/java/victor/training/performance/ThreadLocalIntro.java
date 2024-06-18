@@ -18,8 +18,10 @@ public class ThreadLocalIntro {
     }
 
     public void httpRequest(String currentUser, String data) {
+//        HttpServletRequest r;
+//        r.getSession().getAttribute("username")
         log.info("Current user is " + currentUser);
-        controller.create(data);
+        controller.create(data, currentUser);
     }
     public static String staticCurrentUser;
 }
@@ -31,8 +33,8 @@ public class ThreadLocalIntro {
 class AController {
     private final AService service;
 
-    public void create(String data) {
-        service.create(data);
+    public void create(String data, String user) {
+        service.create(data, user);
     }
 }
 
@@ -42,9 +44,9 @@ class AController {
 class AService {
     private final ARepo repo;
 
-    public void create(String data) {
+    public void create(String data, String user) {
         sleepMillis(10); // some delay, to reproduce the race bug
-        repo.save(data);
+        repo.save(data, user);
     }
 }
 
@@ -52,8 +54,8 @@ class AService {
 @Repository
 @Slf4j
 class ARepo {
-    public void save(String data) {
-        String currentUser = "TODO"; // TODO
+    public void save(String data, String user) {
+        String currentUser = user;
         log.info("INSERT INTO A (data={}, created_by={}) ", data, currentUser);
     }
 }
