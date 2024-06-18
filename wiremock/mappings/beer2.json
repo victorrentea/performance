@@ -1,0 +1,17 @@
+{
+  "request": {
+    "method": "GET",
+    "urlPathPattern": "/api/beer/blond"
+  },
+  "response": {
+    "status": 200,
+    "jsonBody":
+      {
+        "type": "blond"
+      },
+    "fixedDelayMilliseconds": 1000,
+    "headers": {
+      "Content-Type": "application/json"
+    }
+  }
+}
