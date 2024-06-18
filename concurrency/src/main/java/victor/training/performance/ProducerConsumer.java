@@ -6,18 +6,19 @@ import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicReference;
 
 import static java.util.Collections.synchronizedList;
 
 public class ProducerConsumer {
-  private static final List<Integer> buffer = Collections.synchronizedList(new ArrayList<>());
+  private static AtomicReference<List<Integer>> buffer = Collections.synchronizedList(new ArrayList<>());
 
   public static void main(String[] args) {
     ExecutorService submitteri = Executors.newCachedThreadPool();
     for (int i = 0; i < 100; i++) {
       submitteri.submit(() -> {
         for (int j = 0; true; j++) {
-          buffer.add(j);
+          buffer.get().add(j);
           Thread.sleep(10);
         }
       });
@@ -27,9 +28,9 @@ public class ProducerConsumer {
     sc.scheduleAtFixedRate(() -> {
       try {
         List<Integer> copie;
-        synchronized (buffer) {
-           copie = new ArrayList<>(buffer);
-           buffer.clear();
+        synchronized (ProducerConsumer.class) {
+           copie = buffer;
+          buffer = Collections.synchronizedList(new ArrayList<>());
         }
         for (Integer e : copie) {
           counter += e;
