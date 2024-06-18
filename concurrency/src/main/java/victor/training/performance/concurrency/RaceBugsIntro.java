@@ -3,7 +3,6 @@ package victor.training.performance.concurrency;
 import lombok.extern.slf4j.Slf4j;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.Callable;
@@ -19,12 +18,11 @@ import static java.util.stream.Collectors.toList;
 @Slf4j
 public class RaceBugsIntro {
   private static final List<Integer> evenNumbers = Collections.synchronizedList(new ArrayList<>());
-
   private static final AtomicInteger total = new AtomicInteger(0);
   private static final Object lock = new Object();
 
   // many parallel threads run this method:
-  private static void countEven(List<Integer> numbers) {
+  private static void findEvenNumber(List<Integer> numbers) {
     log.info("Start");
     for (Integer n : numbers) {
       if (n % 2 == 0) {
@@ -32,8 +30,7 @@ public class RaceBugsIntro {
 //      synchronized (lock) {
 //        total++;// e de fapt        total = Integer.valueOf(total.intValue() + 1);
 //      }
-        total.incrementAndGet();
-
+//        total.incrementAndGet();
 //        synchronized (evenNumbers) {
 //          evenNumbers.add(n);
 //        }
@@ -42,7 +39,6 @@ public class RaceBugsIntro {
       }
     }
     log.info("end");
-
   }
 
   public static void main(String[] args) throws ExecutionException, InterruptedException {
@@ -50,7 +46,7 @@ public class RaceBugsIntro {
 
     List<List<Integer>> lists = splitList(fullList, 2);
     List<Callable<Void>> tasks = lists.stream().map(numbers -> (Callable<Void>) () -> {
-      countEven(numbers);
+      findEvenNumber(numbers);
       return null;
     }).collect(toList());
 
