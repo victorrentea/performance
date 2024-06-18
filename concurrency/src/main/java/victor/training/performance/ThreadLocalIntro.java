@@ -6,6 +6,9 @@ import org.springframework.stereotype.Repository;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.concurrent.CompletableFuture;
+
+import static java.util.concurrent.CompletableFuture.runAsync;
 import static victor.training.performance.ThreadLocalIntro.staticCurrentUser;
 import static victor.training.performance.util.PerformanceUtil.sleepMillis;
 
@@ -15,7 +18,9 @@ public class ThreadLocalIntro {
     public static void main(String[] args) {
         ThreadLocalIntro app = new ThreadLocalIntro();
         System.out.println("Imagine incoming HTTP requests...");
-        app.httpRequest("alice", "alice's data");
+        runAsync(() -> app.httpRequest("alice", "alice's data"));
+        runAsync(() -> app.httpRequest("bob", "bob's data"));
+        sleepMillis(100);
     }
 
     public void httpRequest(String currentUser, String data) {
