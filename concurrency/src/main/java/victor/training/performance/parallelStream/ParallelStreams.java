@@ -18,7 +18,7 @@ public class ParallelStreams {
 
     long t0 = System.currentTimeMillis();
 
-    List<Integer> result = list.stream()
+    List<Integer> result = list.parallelStream()
         .filter(i -> i % 2 == 0)
         .map(i -> {
           log.info("Processing " + i);
