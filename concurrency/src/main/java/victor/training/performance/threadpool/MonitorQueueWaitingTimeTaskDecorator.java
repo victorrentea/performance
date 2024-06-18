@@ -1,4 +1,4 @@
-package victor.training.performance;
+package victor.training.performance.threadpool;
 
 import io.micrometer.core.instrument.Timer;
 import org.springframework.core.task.TaskDecorator;

@@ -1,4 +1,4 @@
-package victor.training.performance.threadpool;
+package victor.training.performance;
 
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutorService;

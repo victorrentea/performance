@@ -4,7 +4,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.junit.jupiter.MockitoExtension;
 import victor.training.performance.concurrency.ExternalDependencyFake;
-import victor.training.performance.concurrency.RaceBugs;
+import victor.training.performance.concurrency.RaceBugsHard;
 import victor.training.performance.util.TimingExtension;
 
 import java.util.List;
@@ -14,11 +14,11 @@ import static java.util.stream.Collectors.toList;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @ExtendWith({MockitoExtension.class, TimingExtension.class})
-class RaceBugsTest {
+class RaceBugsHardTest {
    private static final int N = 20_000;
    private static final List<Integer> ids = IntStream.range(0, N).boxed().collect(toList());
    private ExternalDependencyFake dependency = new ExternalDependencyFake(N);
-   private RaceBugs target = new RaceBugs(dependency);
+   private RaceBugsHard target = new RaceBugsHard(dependency);
 
 
    @Test

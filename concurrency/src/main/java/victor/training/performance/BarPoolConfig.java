@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
+import victor.training.performance.threadpool.MonitorQueueWaitingTimeTaskDecorator;
 
 @Configuration
 public class BarPoolConfig {
@@ -13,10 +14,10 @@ public class BarPoolConfig {
   MeterRegistry meterRegistry;
 
   @Bean
-  public ThreadPoolTaskExecutor barPool(@Value("${bar.pool.size}") int barPoolSize) {
+  public ThreadPoolTaskExecutor poolBar(@Value("${pool.bar.size}") int barPoolSize) {
     ThreadPoolTaskExecutor executor = new ThreadPoolTaskExecutor();
-    executor.setCorePoolSize(barPoolSize);
-    executor.setMaxPoolSize(barPoolSize); // how to decide ?
+    executor.setCorePoolSize(barPoolSize); // core == max
+    executor.setMaxPoolSize(barPoolSize); // how to decide size?
 
     executor.setQueueCapacity(500); // how to decide?
 

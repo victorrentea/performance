@@ -21,12 +21,12 @@ public class Barman {
   public DillyDilly drink() {
     long t0 = currentTimeMillis();
 
-    //  🛑 independent tasks executed sequentially. What TODO ?
+    //  🛑 independent tasks ran sequentially take too long. What TODO ?
     Beer beer = rest.getForObject("http://localhost:9999/beer", Beer.class);
     Vodka vodka = rest.getForObject("http://localhost:9999/vodka", Vodka.class);
     DillyDilly dilly = new DillyDilly(beer, vodka);
 
-    log.info("HTTP thread blocked for millis: " + (currentTimeMillis() - t0));
+    log.info("HTTP thread blocked for {} millis", currentTimeMillis() - t0);
     return dilly;
   }
 }

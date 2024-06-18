@@ -18,29 +18,16 @@ import org.springframework.web.client.RestTemplate;
 @EnableCaching
 @SpringBootApplication
 @EnableFeignClients
-public class PerformanceApp {
+public class MemoryApp {
+    public static void main(String[] args) {
+        SpringApplication.run(MemoryApp.class, args);
+    }
+
     private static final long t0 = System.currentTimeMillis();
-
-    @Bean
-    public RestTemplate rest() {
-        return new RestTemplate();
-        // it is critical to define RestTemplate as a @Bean rather than instantiating it at usage point,
-        // to allow Apache Sleuth to hack it to send its TraceID over HTTP request headers
-    }
-
-    @Bean // enables the use of @Timed on methods
-    public TimedAspect timedAspect(MeterRegistry meterRegistry) {
-        return new TimedAspect(meterRegistry);
-    }
 
     @EventListener
     public void onStart(ApplicationReadyEvent event) {
         long t1 = System.currentTimeMillis();
-
-        log.info("🌟🌟🌟🌟🌟🌟 PerformanceApp Started in {} seconds 🌟🌟🌟🌟🌟🌟", (t1-t0)/1000);
-    }
-
-    public static void main(String[] args) {
-        SpringApplication.run(PerformanceApp.class, args);
+        log.info("🌟🌟🌟🌟🌟🌟 MemoryApp Started in {} seconds 🌟🌟🌟🌟🌟🌟", (t1-t0)/1000);
     }
 }

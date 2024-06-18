@@ -21,15 +21,6 @@ public class ConcurrencyApp {
     return new RestTemplate();
   }
 
-  // increase the connection pool of WebClient over 500 (bottleneck)
-//  @Bean
-//  public WebClient webClient() {
-//    HttpClient httpClient = HttpClient.create(ConnectionProvider
-  //    .create("httpClient", 1000));
-//    return WebClient.builder()
-//            .clientConnector(new ReactorClientHttpConnector(httpClient))
-//            .build();
-//  }
 }
 
 

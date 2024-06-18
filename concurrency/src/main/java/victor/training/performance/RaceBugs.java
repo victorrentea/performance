@@ -1,4 +1,4 @@
-package victor.training.performance.concurrency;
+package victor.training.performance;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -6,7 +6,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.Callable;
-import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.stream.IntStream;
@@ -15,7 +14,7 @@ import static java.util.stream.Collectors.toList;
 
 
 @Slf4j
-public class RaceBugsIntro {
+public class RaceBugs {
   private static List<Integer> evenNumbers = new ArrayList<>();
 
   private static Integer total = 0;

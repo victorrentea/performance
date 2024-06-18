@@ -18,7 +18,7 @@ import static java.util.stream.Collectors.toList;
 
 @Slf4j
 @RequiredArgsConstructor
-public class RaceBugs {
+public class RaceBugsHard {
    private final ExternalDependency dependency;
 
    // TODO Collect all emails with dependency#retrieveEmail(id) - !!takes time (networking) - parallelize
@@ -39,7 +39,7 @@ public class RaceBugs {
    public static void main(String[] args) throws Exception {
       ExternalDependencyFake dependency = new ExternalDependencyFake(20_000);
       List<Integer> ids = IntStream.range(0, 20_000).boxed().collect(toList());
-      Collection<String> results = new RaceBugs(dependency).retrieveEmailsInParallel(ids);
+      Collection<String> results = new RaceBugsHard(dependency).retrieveEmailsInParallel(ids);
 
       log.debug("No of emails returned: " + results.size());
       // log.debug("No of emails checked: " + dependency.emailChecksPerformed());
