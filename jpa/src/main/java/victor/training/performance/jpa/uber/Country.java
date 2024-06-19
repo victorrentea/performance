@@ -20,7 +20,7 @@ public class Country {
    private String iso3Code;
    private String continent;
 
-   private Country() {
+   protected Country() {
    }
 
    public Country(Long id, String name) {

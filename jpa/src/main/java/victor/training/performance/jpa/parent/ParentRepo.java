@@ -15,7 +15,6 @@ public interface ParentRepo extends JpaRepository<Parent, Long> {
         SELECT p 
         FROM Parent p 
         LEFT JOIN FETCH p.children
-        LEFT JOIN FETCH p.country
         """)
   Set<Parent> cuCopchii();
 

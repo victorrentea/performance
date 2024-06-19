@@ -11,6 +11,7 @@ import java.util.Set;
 
 import static javax.persistence.CascadeType.PERSIST;
 import static javax.persistence.FetchType.EAGER;
+import static javax.persistence.FetchType.LAZY;
 
 @Getter
 @Setter
@@ -28,7 +29,8 @@ public class Parent {
    @OneToMany(mappedBy = "parent", cascade = PERSIST)
    private Set<Child> children = new HashSet<>();
 
-   @ManyToOne
+   @ManyToOne(fetch = LAZY)
+   // hibernate creates a proxy for the Country class
    private Country country; // surprise !
 
    public Parent() {}
