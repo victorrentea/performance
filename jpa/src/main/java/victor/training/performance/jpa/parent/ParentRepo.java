@@ -11,7 +11,12 @@ import java.util.Set;
 public interface ParentRepo extends JpaRepository<Parent, Long> {
 
 
-  @Query("SELECT p FROM Parent p LEFT JOIN FETCH p.children")
+  @Query("""
+        SELECT p 
+        FROM Parent p 
+        LEFT JOIN FETCH p.children
+        LEFT JOIN FETCH p.country
+        """)
   Set<Parent> cuCopchii();
 
 
