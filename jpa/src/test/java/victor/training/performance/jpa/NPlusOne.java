@@ -102,6 +102,9 @@ public class NPlusOne {
   public void nativeQuery() {
     List<ParentProjection> results = repo.nativeQuery();
     assertResults(results);
+    for (ParentProjection result : results) {
+      System.out.println("oare ce clasa efectiva e in lista " + repo.getClass());
+    }
   }
 
   // ======================= @Entity on Hibernate @Subselect(native sql) ==============

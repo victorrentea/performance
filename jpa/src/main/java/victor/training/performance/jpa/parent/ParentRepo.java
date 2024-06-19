@@ -24,9 +24,9 @@ public interface ParentRepo extends JpaRepository<Parent, Long> {
 
 
   interface ParentProjection { // Spring generates an implementation of this interface
+    String getChildrenNames();
     Long getId();
     String getName();
-    String getChildrenNames();
   }
   @Query(nativeQuery = true, value = """
       select p.id, 
@@ -48,6 +48,8 @@ public interface ParentRepo extends JpaRepository<Parent, Long> {
 
   @Query("""
     SELECT pv FROM ParentView pv
+    JOIN Parent p ON p.id = pv.id
+    WHERE p.age > 40
     """)
   List<ParentView> view();
 

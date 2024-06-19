@@ -110,7 +110,18 @@ public class UberEntityTest {
     }
 
     private List<UberSearchResult> classicSearch(UberSearchCriteria criteria) {
-        String jpql = "SELECT u FROM UberEntity u WHERE 1 = 1 ";
+        // IMORAL:
+//        String jpql = "SELECT u FROM UberEntity u WHERE 1 = 1 ";
+        // instantiez DTO
+        String jpql = "SELECT new victor.training.performance.jpa.UberEntityTest.UberSearchResult" +
+                      "(u.id, u.name, u.originCountry.name) " +
+                      "FROM UberEntity u WHERE 1 = 1 ";
+        // cu Spring Projections
+//        String jpql = "SELECT u.id id2, u.name, u.originCountry.name countryName " +
+//                      "FROM UberEntity u WHERE 1 = 1 ";
+        // si-=ti scoti din query lista de interfete cu getteri:
+        // getId2, getName, getCountryName
+
         // alternative implementation: CriteriaAPI, Criteria+Metamodel, QueryDSL, Spring Specifications
         Map<String, Object> params = new HashMap<>();
         if (criteria.name != null) {
@@ -121,7 +132,7 @@ public class UberEntityTest {
             jpql += " AND u.status = :status ";
             params.put("status", criteria.status);
         }
-        var query = em.createQuery(jpql, UberEntity.class);
+        var query = em.createQuery(jpql, UberSearchResult.class);
         for (String key : params.keySet()) {
             query.setParameter(key, params.get(key));
         }
@@ -130,7 +141,7 @@ public class UberEntityTest {
         // OR: Spring Data Repo @Query with a fixed JPQL
 //        results = uberRepo.searchFixedJqpl(criteria.name, criteria.status);
 
-        return results.stream().map(this::toResult).collect(toList());
+        return results;
     }
 
     private UberSearchResult toResult(UberEntity entity) {

@@ -20,8 +20,11 @@ public class UberEntity {
     private String ssn;
     private String passportNumber;
 
-    @ManyToOne
+    @ManyToOne //a) lazy
     private Country originCountry;
+    //b) id numeric in loc de jpa link
+//    private Long originCountryId;
+
     @ManyToOne
     private Country nationality;
     @ManyToOne
