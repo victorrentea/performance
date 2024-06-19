@@ -24,7 +24,7 @@ public class Parent {
    private Integer age;
 // fetch = EAGER rau pt 1) nu mereu ai neviie de copii
    // 2) oricum se fac N query-uri pt fiecare copil
-   @BatchSize(size = 2)
+//   @BatchSize(size = 2)
    @OneToMany(mappedBy = "parent", cascade = PERSIST)
    private Set<Child> children = new HashSet<>();
 

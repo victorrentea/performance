@@ -81,7 +81,7 @@ public class NPlusOne {
     // ca nu mai pun eu SQL pun filter = wrong daca aduci mii ca sa filterezi 10.
   @Test
   public void selectFullEntity() {
-    List<Parent> parents = repo.findAll();
+    Set<Parent> parents = repo.cuCopchii();
     log.info("Loaded {} parents: {}", parents.size(), parents);
 
     List<ParentDto> results = toSearchResults(parents);
