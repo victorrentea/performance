@@ -23,11 +23,15 @@
         </resources>
     </cache>
     <cache alias="day-cache" >
+        <key-type>java.time.LocalDate</key-type>
         <expiry>
             <ttl unit="minutes">30</ttl>
         </expiry>
         <resources>
             <heap unit="MB">100</heap>
+<!--
+            <disk unit="MB">10000</disk>
+-->
         </resources>
     </cache>
 

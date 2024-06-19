@@ -3,7 +3,9 @@ package victor.training.performance.interview;
 import org.apache.commons.io.FileUtils;
 import victor.training.performance.util.PerformanceUtil;
 
+import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.util.List;
 import java.util.stream.IntStream;
@@ -23,12 +25,21 @@ public class StringConcatInLoop {
       System.out.println("Start writing contents to file!");
       long t0 = System.currentTimeMillis();
 
-      String s = "";
-      for (String element : elements) {
-         s += element;
-      }
+      //
+//      BufferedReader reader = FileUtils.openInputStream(new File("in.txt"));
+//      Stream<string> lines = reader.lines()
+//      Stream<Entity> lines = repo.streamAll()
 
-      FileUtils.writeStringToFile(new File("out.txt"), s, UTF_8);
+      try (FileWriter writer = new FileWriter("out.txt")) {
+         for (String element : elements) {
+            writer.write(element);
+         }
+      }
+//      StringBuilder s = new StringBuilder();
+//      for (String element : elements) {
+//         s.append(element);
+//      }
+//      FileUtils.writeStringToFile(new File("out.txt"), s.toString(), UTF_8);
 
       System.out.println("Done. Took " + (System.currentTimeMillis() - t0));
       waitForEnter();

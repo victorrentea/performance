@@ -22,7 +22,8 @@ public class Leak3_SubList {
    public synchronized String endpoint() {
       lastTenObjects.add(new BigObject20MB());
       if (lastTenObjects.size() > 10) {
-         lastTenObjects = lastTenObjects.subList(1, lastTenObjects.size());
+//         lastTenObjects = lastTenObjects.subList(1, lastTenObjects.size());
+         lastTenObjects = new ArrayList<>(lastTenObjects.subList(1, lastTenObjects.size())); // fix
       }
       return "The current window size is " + lastTenObjects.size();
    }
