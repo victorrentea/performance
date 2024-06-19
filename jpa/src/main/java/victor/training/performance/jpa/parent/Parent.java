@@ -10,6 +10,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 import static javax.persistence.CascadeType.PERSIST;
+import static javax.persistence.FetchType.EAGER;
 
 @Getter
 @Setter
@@ -21,7 +22,9 @@ public class Parent {
 
    private String name;
    private Integer age;
-
+// fetch = EAGER rau pt 1) nu mereu ai neviie de copii
+   // 2) oricum se fac N query-uri pt fiecare copil
+   @BatchSize(size = 2)
    @OneToMany(mappedBy = "parent", cascade = PERSIST)
    private Set<Child> children = new HashSet<>();
 

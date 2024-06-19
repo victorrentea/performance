@@ -90,7 +90,9 @@ public class NPlusOne {
 
   private List<ParentDto> toSearchResults(Collection<Parent> parents) { // eg, in a Mapper
     log.debug("Converting-->Dto START");
-    List<ParentDto> results = parents.stream().map(ParentDto::fromEntity).toList();
+    List<ParentDto> results = parents.stream()
+        .map(ParentDto::fromEntity)
+        .toList();
     log.debug("Converting-->Dto DONE");
     return results;
   }
