@@ -76,6 +76,9 @@ public class NPlusOne {
   }
 
   // ======================= SELECT full @Entity =============================
+    // entuziastu de FP
+    // repo.findAll().stream().filter(p -> p.getAge() > 40).collect(toList());
+    // ca nu mai pun eu SQL pun filter = wrong daca aduci mii ca sa filterezi 10.
   @Test
   public void selectFullEntity() {
     List<Parent> parents = repo.findAll();

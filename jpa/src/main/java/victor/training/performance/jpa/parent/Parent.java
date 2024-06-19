@@ -22,9 +22,7 @@ public class Parent {
    private String name;
    private Integer age;
 
-   @BatchSize(size = 10) // Hibernate magic that avoids N+1 using ID IN (?,?..,?10)
    @OneToMany(mappedBy = "parent", cascade = PERSIST)
-   // @BatchSize(size=10) // Hibernate magic that avoids N+1 using ID IN (?,?..,?10)
    private Set<Child> children = new HashSet<>();
 
    @ManyToOne
