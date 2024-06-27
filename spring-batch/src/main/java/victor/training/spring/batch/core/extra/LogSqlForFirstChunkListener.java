@@ -1,7 +1,9 @@
-package victor.training.spring.batch.core;
+package victor.training.spring.batch.core.extra;
 
 import ch.qos.logback.classic.Level;
+import ch.qos.logback.classic.Logger;
 import lombok.extern.slf4j.Slf4j;
+import org.slf4j.LoggerFactory;
 import org.springframework.batch.core.ChunkListener;
 import org.springframework.batch.core.scope.context.ChunkContext;
 
@@ -10,7 +12,7 @@ import org.springframework.batch.core.scope.context.ChunkContext;
  * After that, we disable it to minimize the impact of logging on measurements;
  */
 @Slf4j
-public class LogListener implements ChunkListener {
+public class LogSqlForFirstChunkListener implements ChunkListener {
    private int chunksLeft = 2;
    @Override
    public void beforeChunk(ChunkContext context) {
@@ -33,8 +35,7 @@ public class LogListener implements ChunkListener {
    }
 
    public static void setP6spyLogging(Level level) {
-      ch.qos.logback.classic.Logger p6spyLogger = (ch.qos.logback.classic.Logger) org.slf4j.LoggerFactory.getLogger(
-          "p6spy");
+      Logger p6spyLogger = (Logger) LoggerFactory.getLogger("p6spy");
       p6spyLogger.setLevel(level);
    }
    @Override
