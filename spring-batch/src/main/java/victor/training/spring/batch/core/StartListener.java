@@ -8,7 +8,8 @@ import java.time.LocalDateTime;
 public class StartListener implements JobExecutionListener {
     @Override
     public void beforeJob(JobExecution jobExecution) {
-        jobExecution.getExecutionContext().put("START_TIME", LocalDateTime.now().toString());
+        jobExecution.getExecutionContext().put("START_TIME",
+            LocalDateTime.now().toString());
     }
 
     @Override
