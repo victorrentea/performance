@@ -38,12 +38,12 @@ public class CityMerger implements ItemProcessor<PersonXml, City>, StepExecution
 
   @Override
   public void beforeStep(StepExecution stepExecution) {
-    log.info("First Pass - START");
+    log.info("First Pass: Merge Cities - START");
   }
 
   @Override
   public ExitStatus afterStep(StepExecution stepExecution) {
-    log.info("First Pass - END");
+    log.info("First Pass: Merge Cities - END");
     return stepExecution.getExitStatus();
   }
 }

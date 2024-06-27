@@ -21,7 +21,7 @@ public class AbstractTestcontainersTestBase {
 
    @Container
    static public PostgreSQLContainer<?> postgres = new PostgreSQLContainer<>("postgres:11")
-       .withDatabaseName("prop")
+//       .withDatabaseName("prop")
        .withUsername("postgres")
        .withPassword("password")
        .withNetwork(network);

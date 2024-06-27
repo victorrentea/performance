@@ -38,7 +38,6 @@ import java.io.IOException;
 public class BatchApp {
   private final JobBuilderFactory jobBuilder;
   private final StepBuilderFactory stepBuilder;
-  private final EntityManagerFactory emf;
 
   public static void main(String[] args) throws IOException {
     XmlFileGenerator.generateFile(10_000);
@@ -51,10 +50,10 @@ public class BatchApp {
     return jobBuilder.get("basicJob")
         .incrementer(new RunIdIncrementer())
 //        .start(unzipfile).next(importPersonsInChunks())
-        .start(importPersonsInChunks())
+//        .start(importPersonsInChunks())
 
         // TODO insert in 2 passes: 1) cities, 2) people
-        // .start(importCitiesFirstPass()).next(importPersonsInChunks())
+         .start(importCities()).next(importPersonsInChunks())
         .listener(new CaptureStartTimeListener())
         .build();
   }
@@ -66,7 +65,7 @@ public class BatchApp {
 
         .reader(xmlReader(null))
         .processor(personProcessor())
-        .writer(jpaWriter())
+        .writer(jpaWriter(null))
 
         // .taskExecutor(batchExecutor()) // process each chunk in a separate thread
         .listener(new LogSqlForFirstChunkListener())
@@ -106,7 +105,7 @@ public class BatchApp {
   }
 
   @Bean
-  public <T> JpaItemWriter<T> jpaWriter() {
+  public <T> JpaItemWriter<T> jpaWriter(EntityManagerFactory emf) {
     JpaItemWriter<T> writer = new JpaItemWriter<>();
     writer.setEntityManagerFactory(emf);
     return writer;
@@ -125,12 +124,12 @@ public class BatchApp {
   }
 
   @Bean
-  public Step importCitiesFirstPass() {
-    return stepBuilder.get("importCitiesFirstPass")
-        .<PersonXml, City>chunk(100)
+  public Step importCities() {
+    return stepBuilder.get("importCities")
+        .<PersonXml, City>chunk(1000)
         .reader(xmlReader(null))
         .processor(cityMerger())
-        .writer(jpaWriter())
+        .writer(jpaWriter(null))
         .listener(cityMerger())
         .build();
   }
