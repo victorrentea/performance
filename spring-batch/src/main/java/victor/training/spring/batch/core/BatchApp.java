@@ -43,12 +43,10 @@ public class BatchApp {
   @Bean
   public Job importJob() {
     return jobBuilder.get("importJob")
+        .listener(new CaptureStartTimeListener())
         .incrementer(new RunIdIncrementer())
         .start(importPersonData())
-
-        // TODO insert in 2 passes: 1) cities, 2) people
-//        .start(importCityData()).next(importPersonData())
-        .listener(new CaptureStartTimeListener())
+//        .start(importCityData()).next(importPersonData()) // TODO 2-pass import
         .build();
   }
 
