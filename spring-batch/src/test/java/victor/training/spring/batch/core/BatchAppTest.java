@@ -38,7 +38,7 @@ public class BatchAppTest extends AbstractTestcontainersTestBase{
    }
    @Test
    public void test() throws Exception {
-      int N = 4;
+      int N = 40;
       File dataFile = XmlFileGenerator.generateFile(N);
       Map<String, JobParameter> paramMap = Map.of("FILE_PATH", new JobParameter(dataFile.getAbsolutePath()));
       JobExecution run = launcher.run(job, new JobParameters(paramMap));
