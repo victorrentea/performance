@@ -39,8 +39,20 @@ public class PersonProcessor implements ItemProcessor<PersonXml, Person> {
 
         Person entity = new Person();
         entity.setName(personXml.getName());
-        City city = cityRepo.findByName(personXml.getCity())
-            .orElseGet(() -> cityRepo.save(new City(personXml.getCity())));
+//        City city = cityRepo.findByName(personXml.getCity())
+//            .orElseGet(() -> cityRepo.save(new City(personXml.getCity())));
+
+        Long cityId = cityIdByName.get(personXml.getCity());
+        City city;
+        if (cityId != null) {
+            city = new City();
+            city.setId(cityId);
+        } else {
+            city = new City();
+            city.setName(personXml.getCity());
+            city = cityRepo.save(city);
+            cityIdByName.put(city.getName(), city.getId());
+        }
 
         entity.setCity(city);
         return entity;
