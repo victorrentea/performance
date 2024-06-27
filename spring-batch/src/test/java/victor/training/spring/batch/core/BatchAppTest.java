@@ -31,6 +31,7 @@ public class BatchAppTest extends AbstractTestcontainersTestBase {
 
   @BeforeEach
   final void insertInitialCities() {
+    // simulate existing data
 //      cityRepo.save(new City("City 1"));
   }
 

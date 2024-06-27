@@ -15,7 +15,7 @@ import java.util.Set;
 import static java.util.stream.Collectors.toSet;
 
 @Slf4j
-public class CityMerger implements ItemProcessor<PersonXml, City>, StepExecutionListener {
+public class CityProcessor implements ItemProcessor<PersonXml, City>, StepExecutionListener {
   @Autowired
   private CityRepo repo;
 

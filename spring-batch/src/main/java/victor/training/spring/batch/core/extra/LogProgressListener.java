@@ -39,7 +39,7 @@ public class LogProgressListener implements ChunkListener {
             long elapsedSeconds = startTime.until(now(), SECONDS);
             int speed = (int) (totalRead / elapsedSeconds);
             int estimatedTotalTime = (int) (1.0 * totalItems / totalRead * elapsedSeconds);
-            log.info("Progress: {}% done. Speed = {} items/s. Est. total time = {} s. {} chunks/transactions",
+            log.info("Progress: {}% done. Speed = {} items/s. Est. total time = {} s. {} chunks processed",
                 newPercent, speed, estimatedTotalTime, chunksCount);
         }
     }
