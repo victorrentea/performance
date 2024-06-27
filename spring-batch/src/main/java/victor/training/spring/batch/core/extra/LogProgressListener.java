@@ -1,4 +1,4 @@
-package victor.training.spring.batch.core;
+package victor.training.spring.batch.core.extra;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.batch.core.ChunkListener;
@@ -12,7 +12,7 @@ import static java.time.LocalDateTime.now;
 import static java.time.temporal.ChronoUnit.SECONDS;
 
 @Slf4j
-public class ProgressTrackingListener implements ChunkListener {
+public class LogProgressListener implements ChunkListener {
     @Value("#{stepExecutionContext['TOTAL_ITEM_COUNT']}")
     private int totalItems;
     private int lastPercent = -1;

@@ -21,6 +21,10 @@ import org.springframework.oxm.jaxb.Jaxb2Marshaller;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 import victor.training.spring.batch.core.domain.City;
 import victor.training.spring.batch.core.domain.Person;
+import victor.training.spring.batch.core.extra.CaptureStartTimeListener;
+import victor.training.spring.batch.core.extra.CountTotalItemsListener;
+import victor.training.spring.batch.core.extra.LogProgressListener;
+import victor.training.spring.batch.core.extra.LogSqlForFirstChunkListener;
 import victor.training.spring.batch.util.PerformanceUtil;
 
 import javax.persistence.EntityManagerFactory;
@@ -51,7 +55,7 @@ public class BatchApp {
 
         // TODO insert in 2 passes: 1) cities, 2) people
         // .start(importCitiesFirstPass()).next(importPersonsInChunks())
-        .listener(new StartListener())
+        .listener(new CaptureStartTimeListener())
         .build();
   }
 
@@ -65,7 +69,7 @@ public class BatchApp {
         .writer(jpaWriter())
 
         // .taskExecutor(batchExecutor()) // process each chunk in a separate thread
-        .listener(new LogListener())
+        .listener(new LogSqlForFirstChunkListener())
         .listener(progressTrackingChunkListener())
         .listener(countTotalNumberOfRecordsListener())
         .build();
@@ -110,14 +114,14 @@ public class BatchApp {
 
   @Bean
   @StepScope
-  public ProgressTrackingListener progressTrackingChunkListener() {
-    return new ProgressTrackingListener();
+  public LogProgressListener progressTrackingChunkListener() {
+    return new LogProgressListener();
   }
 
   @Bean
   @StepScope
-  public CountingTotalItemsStepListener countTotalNumberOfRecordsListener() {
-    return new CountingTotalItemsStepListener();
+  public CountTotalItemsListener countTotalNumberOfRecordsListener() {
+    return new CountTotalItemsListener();
   }
 
   @Bean

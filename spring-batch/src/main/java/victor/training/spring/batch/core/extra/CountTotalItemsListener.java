@@ -1,4 +1,4 @@
-package victor.training.spring.batch.core;
+package victor.training.spring.batch.core.extra;
 
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
@@ -15,7 +15,7 @@ import java.io.FileInputStream;
 import java.io.IOException;
 
 @Slf4j
-public class CountingTotalItemsStepListener implements StepExecutionListener {
+public class CountTotalItemsListener implements StepExecutionListener {
    @Value("#{jobExecutionContext['START_TIME']}")
    private String startTime;
 

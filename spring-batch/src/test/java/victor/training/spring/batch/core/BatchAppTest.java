@@ -14,45 +14,44 @@ import victor.training.spring.batch.util.PerformanceUtil;
 import java.io.File;
 import java.util.Map;
 
-import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 
 @SpringBootTest(properties = "spring.batch.job.enabled=false")
-public class BatchAppTest extends AbstractTestcontainersTestBase{
-   @Autowired
-   Job job;
-   @Autowired
-   JobLauncher launcher;
-   @Autowired
-   PersonRepo personRepo;
-   @Autowired
-   CityRepo cityRepo;
-   @Autowired
-   JobRepository jobRepository;
-   @BeforeEach
-   final void before() {
+public class BatchAppTest extends AbstractTestcontainersTestBase {
+  @Autowired
+  Job job;
+  @Autowired
+  JobLauncher launcher;
+  @Autowired
+  PersonRepo personRepo;
+  @Autowired
+  CityRepo cityRepo;
+  @Autowired
+  JobRepository jobRepository;
+
+  @BeforeEach
+  final void insertInitialCities() {
 //      cityRepo.save(new City("City 1"));
+  }
 
-//      for (int i = 1; i <= 4; i++) {
-//         cityRepo.save(new City("City " + i));
-//      }
-   }
-   @Test
-   public void test() throws Exception {
-      int N = 4_000;
-      File dataFile = XmlFileGenerator.generateFile(N);
-      Map<String, JobParameter> paramMap = Map.of("FILE_PATH", new JobParameter(dataFile.getAbsolutePath()));
-      JobExecution run = launcher.run(job, new JobParameters(paramMap));
-      while (run.getExitStatus().isRunning()) {
-         PerformanceUtil.sleepMillis(1);
-      }
-      System.out.println("JOB FINISHED");
-//      assertThat(run.getExitStatus()).isEqualTo(ExitStatus.COMPLETED);
-//      assertThat(personRepo.count()).isEqualTo(N);
-//      assertThat(cityRepo.count()).describedAs("Number of cities")
-//          .isEqualTo(XmlFileGenerator.citiesNamesGenerated.size());
+  @Test
+  public void test() throws Exception {
+    int N = 4_000;
+    File dataFile = XmlFileGenerator.generateFile(N);
+    Map<String, JobParameter> paramMap = Map.of("FILE_PATH", new JobParameter(dataFile.getAbsolutePath()));
+    JobExecution run = launcher.run(job, new JobParameters(paramMap));
+    while (run.getExitStatus().isRunning()) {
+      PerformanceUtil.sleepMillis(1);
+    }
+    System.out.println("JOB FINISHED");
+    int pgPort = postgres.getFirstMappedPort();
+    System.out.println("You can connect to the Postgres DB on port " + pgPort);
+    System.out.println("[ENTER] to finish test and destroy DB...");
+    System.in.read();
 
-      int pgPort = postgres.getFirstMappedPort();
-      System.out.println("Hit [ENTER] to finish test and destroy DB docker (running on port :" +pgPort+")...");
-      System.in.read();
-   }
+    assertThat(run.getExitStatus()).isEqualTo(ExitStatus.COMPLETED);
+    assertThat(personRepo.count()).isEqualTo(N);
+    assertThat(cityRepo.count()).describedAs("Number of cities")
+        .isEqualTo(XmlFileGenerator.citiesNamesGenerated.size());
+  }
 }
