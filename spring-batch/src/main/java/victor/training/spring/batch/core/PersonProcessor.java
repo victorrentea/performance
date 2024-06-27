@@ -18,6 +18,9 @@ public class PersonProcessor implements ItemProcessor<PersonXml, Person> {
 
     @Override
     public Person process(PersonXml xml) {
+        if (xml.getName().contains("1")) {
+            return null;
+        }
         Person entity = new Person();
         entity.setName(xml.getName());
         City city = cityRepo.findByName(xml.getCity())
