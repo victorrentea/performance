@@ -11,6 +11,7 @@ import org.springframework.batch.core.configuration.annotation.StepScope;
 import org.springframework.batch.core.launch.support.RunIdIncrementer;
 import org.springframework.batch.item.ItemStreamReader;
 import org.springframework.batch.item.database.JpaItemWriter;
+import org.springframework.batch.item.support.SynchronizedItemStreamReader;
 import org.springframework.batch.item.xml.StaxEventItemReader;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.SpringApplication;
@@ -39,38 +40,32 @@ public class BatchApp {
   private final JobBuilderFactory jobBuilder;
   private final StepBuilderFactory stepBuilder;
 
-  public static void main(String[] args) throws IOException {
-    XmlFileGenerator.generateFile(10_000);
-    int dt = PerformanceUtil.measureCall(() -> SpringApplication.run(BatchApp.class, args).close());
-    System.out.println("Batch took " + dt + " ms");
-  }
-
   @Bean
-  public Job basicJob() {
-    return jobBuilder.get("basicJob")
+  public Job importJob() {
+    return jobBuilder.get("importJob")
         .incrementer(new RunIdIncrementer())
-//        .start(unzipfile).next(importPersonsInChunks())
-//        .start(importPersonsInChunks())
+        .start(importPersonData())
 
         // TODO insert in 2 passes: 1) cities, 2) people
-         .start(importCities()).next(importPersonsInChunks())
+//        .start(importCityData()).next(importPersonData())
         .listener(new CaptureStartTimeListener())
         .build();
   }
 
   @Bean
-  public Step importPersonsInChunks() {
-    return stepBuilder.get("importPersonsInChunks")
-        .<PersonXml, Person>chunk(100)
+  public Step importPersonData() {
+    return stepBuilder.get("importPersonData")
+        .<PersonXml, Person>chunk(5)
 
         .reader(xmlReader(null))
         .processor(personProcessor())
         .writer(jpaWriter(null))
 
-        // .taskExecutor(batchExecutor()) // process each chunk in a separate thread
         .listener(new LogSqlForFirstChunkListener())
         .listener(progressTrackingChunkListener())
         .listener(countTotalNumberOfRecordsListener())
+
+//        .taskExecutor(batchExecutor()) // TODO insert chunks on multiple threads
         .build();
   }
 
@@ -78,8 +73,7 @@ public class BatchApp {
   @StepScope
   public ItemStreamReader<PersonXml> xmlReader(
       @Value("#{jobParameters['FILE_PATH']}") File inputFile
-      // inseamna ca in contextul spring exista un bean numit "jobParameters" care
-      // e aici de tip Map<String,Object>
+      // there's a Map in the Spring context as a bean named "jobParameters"
   ) {
     log.info("Reading data from file: {}", inputFile);
     if (!inputFile.exists()) throw new IllegalArgumentException("Not Found: " + inputFile);
@@ -90,12 +84,12 @@ public class BatchApp {
     Jaxb2Marshaller unmarshaller = new Jaxb2Marshaller();
     unmarshaller.setClassesToBeBound(PersonXml.class);
     reader.setUnmarshaller(unmarshaller);
-    return reader;
 
     // parallelization of a chunk insert step requires synchronizing the reader
-//    SynchronizedItemStreamReader<PersonXml> syncReader = new SynchronizedItemStreamReader<>();
-//    syncReader.setDelegate(reader);
-//    return syncReader;
+    // this is useful only when parallelizing the chunks
+    SynchronizedItemStreamReader<PersonXml> syncReader = new SynchronizedItemStreamReader<>();
+    syncReader.setDelegate(reader);
+    return syncReader;
   }
 
   @Bean
@@ -124,8 +118,19 @@ public class BatchApp {
   }
 
   @Bean
-  public Step importCities() {
-    return stepBuilder.get("importCities")
+  public ThreadPoolTaskExecutor batchExecutor() {
+    ThreadPoolTaskExecutor executor = new ThreadPoolTaskExecutor();
+    executor.setCorePoolSize(8);
+    executor.setMaxPoolSize(8);
+    executor.setQueueCapacity(500);
+    executor.setThreadNamePrefix("batch-");
+    executor.initialize();
+    return executor;
+  }
+
+  @Bean
+  public Step importCityData() {
+    return stepBuilder.get("importCityData")
         .<PersonXml, City>chunk(1000)
         .reader(xmlReader(null))
         .processor(cityMerger())
@@ -135,19 +140,14 @@ public class BatchApp {
   }
 
   @Bean
-  public ThreadPoolTaskExecutor batchExecutor() {
-    ThreadPoolTaskExecutor executor = new ThreadPoolTaskExecutor();
-    executor.setCorePoolSize(5);
-    executor.setMaxPoolSize(5);
-    executor.setQueueCapacity(500);
-    executor.setThreadNamePrefix("batch-");
-    executor.initialize();
-    return executor;
+  public CityProcessor cityMerger() {
+    return new CityProcessor();
   }
 
-  @Bean
-  public CityMerger cityMerger() {
-    return new CityMerger();
+  public static void main(String[] args) throws IOException {
+    XmlFileGenerator.generateFile(10_000);
+    int dt = PerformanceUtil.measureCall(() -> SpringApplication.run(BatchApp.class, args).close());
+    System.out.println("Batch took " + dt + " ms");
   }
 }
 
