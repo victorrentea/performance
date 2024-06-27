@@ -42,11 +42,11 @@ public class BatchApp {
     System.out.println("Batch took " + dt + " ms");
   }
 
-
   @Bean
   public Job basicJob() {
     return jobBuilder.get("basicJob")
         .incrementer(new RunIdIncrementer())
+//        .start(unzipfile).next(importPersonsInChunks())
         .start(importPersonsInChunks())
 
         // TODO insert in 2 passes: 1) cities, 2) people
@@ -59,13 +59,15 @@ public class BatchApp {
   public Step importPersonsInChunks() {
     return stepBuilder.get("importPersonsInChunks")
         .<PersonXml, Person>chunk(5)
+
         .reader(xmlReader(null))
         .processor(personProcessor())
         .writer(jpaWriter())
+
         // .taskExecutor(batchExecutor()) // process each chunk in a separate thread
         .listener(new LogListener())
         .listener(progressTrackingChunkListener())
-        .listener(stepListener())
+        .listener(countTotalNumberOfRecordsListener())
         .build();
   }
 
@@ -73,6 +75,8 @@ public class BatchApp {
   @StepScope
   public ItemStreamReader<PersonXml> xmlReader(
       @Value("#{jobParameters['FILE_PATH']}") File inputFile
+      // inseamna ca in contextul spring exista un bean numit "jobParameters" care
+      // e aici de tip Map<String,Object>
   ) {
     log.info("Reading data from file: {}", inputFile);
     if (!inputFile.exists()) throw new IllegalArgumentException("Not Found: " + inputFile);
@@ -112,7 +116,7 @@ public class BatchApp {
 
   @Bean
   @StepScope
-  public CountingTotalItemsStepListener stepListener() {
+  public CountingTotalItemsStepListener countTotalNumberOfRecordsListener() {
     return new CountingTotalItemsStepListener();
   }
 

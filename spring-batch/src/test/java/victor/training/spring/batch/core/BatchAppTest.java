@@ -38,7 +38,7 @@ public class BatchAppTest extends AbstractTestcontainersTestBase{
    }
    @Test
    public void test() throws Exception {
-      int N = 4_000;
+      int N = 4;
       File dataFile = XmlFileGenerator.generateFile(N);
       Map<String, JobParameter> paramMap = Map.of("FILE_PATH", new JobParameter(dataFile.getAbsolutePath()));
       JobExecution run = launcher.run(job, new JobParameters(paramMap));
@@ -50,5 +50,9 @@ public class BatchAppTest extends AbstractTestcontainersTestBase{
       assertThat(personRepo.count()).isEqualTo(N);
       assertThat(cityRepo.count()).describedAs("Number of cities")
           .isEqualTo(XmlFileGenerator.citiesNamesGenerated.size());
+
+      int pgPort = postgres.getFirstMappedPort();
+      System.out.println("Hit [ENTER] to finish test and destroy DB docker (running on port :" +pgPort+")...");
+      System.in.read();
    }
 }

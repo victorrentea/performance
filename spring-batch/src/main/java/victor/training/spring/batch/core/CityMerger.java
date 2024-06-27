@@ -10,6 +10,8 @@ import victor.training.spring.batch.core.domain.City;
 import victor.training.spring.batch.core.domain.CityRepo;
 
 import javax.annotation.PostConstruct;
+import javax.persistence.EntityManager;
+import javax.persistence.EntityManagerFactory;
 import java.util.Set;
 
 import static java.util.stream.Collectors.toSet;
@@ -25,9 +27,12 @@ public class CityMerger implements ItemProcessor<PersonXml, City>, StepExecution
    public void loadPreExistingCities() {
       allCitiesInDB = repo.findAll().stream().map(City::getName).collect(toSet());
    }
-
+//EntityManager em;
+//      em.clear();//
    @Override
    public City process(PersonXml xml) {
+
+
       if (!allCitiesInDB.contains(xml.getCity())) {
          allCitiesInDB.add(xml.getCity());
          return new City(xml.getCity());
