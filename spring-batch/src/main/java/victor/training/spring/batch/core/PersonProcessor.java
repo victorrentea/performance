@@ -41,7 +41,6 @@ public class PersonProcessor implements ItemProcessor<PersonXml, Person> {
         entity.setName(personXml.getName());
 //        City city = cityRepo.findByName(personXml.getCity())
 //            .orElseGet(() -> cityRepo.save(new City(personXml.getCity())));
-
         Long cityId = cityIdByName.get(personXml.getCity());
         City city;
         if (cityId != null) {
@@ -58,4 +57,7 @@ public class PersonProcessor implements ItemProcessor<PersonXml, Person> {
         return entity;
     }
 
+
+    // trecerea 1 prin fisier insereaza doar orasele - 1 thread, ca-s sute
+    // trecerea 2 prin fisier insereaza persoanele - 4 threaduri, ca-s mii/milioane
 }
