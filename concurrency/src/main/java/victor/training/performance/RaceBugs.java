@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.IntStream;
 
 import static java.util.stream.Collectors.toList;
@@ -17,21 +18,23 @@ import static java.util.stream.Collectors.toList;
 public class RaceBugs {
   private static List<Integer> evenNumbers = new ArrayList<>();
 
+//  private static AtomicInteger total = new AtomicInteger(0);
   private static Integer total = 0;
-
-  // many parallel threads run this method:
   private static void countEven(List<Integer> numbers) {
     log.info("Start");
     for (Integer n : numbers) {
       if (n % 2 == 0) {
-        total++;
+//        total.incrementAndGet(); // exista o infima penaliza de performanta(Compare and swap instruction CAS)
+        synchronized (total){
+          total++; // => total = new Integer
+        }
       }
     }
     log.info("end");
-
   }
 
   public static void main(String[] args) throws Exception {
+    // maresti sansa sa dai in concurrencu bug: NUMARUL DE THREADURI, NUMARUL DE ELEMENTE IN LISTA, NUMARUL DE ITERATII
     List<Integer> fullList = IntStream.range(0, 10_000).boxed().collect(toList());
 
     List<List<Integer>> lists = splitList(fullList, 2);
