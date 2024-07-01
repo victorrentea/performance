@@ -26,7 +26,7 @@ public class Barman {
     Vodka vodka = rest.getForObject("http://localhost:9999/vodka", Vodka.class);
     DillyDilly dilly = new DillyDilly(beer, vodka);
 
-    log.info("HTTP thread blocked for {} millis", currentTimeMillis() - t0);
+    log.info("HTTP thread blocked for {} durationMillis", currentTimeMillis() - t0);
     return dilly;
   }
 }

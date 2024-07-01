@@ -10,6 +10,7 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.stream.IntStream;
 
+import static java.util.concurrent.TimeUnit.MINUTES;
 import static java.util.stream.Collectors.toList;
 
 
@@ -28,35 +29,33 @@ public class RaceBugs {
       }
     }
     log.info("end");
-
   }
 
   public static void main(String[] args) throws Exception {
     List<Integer> fullList = IntStream.range(0, 10_000).boxed().collect(toList());
 
-    List<List<Integer>> lists = splitList(fullList, 2);
-    List<Callable<Void>> tasks = lists.stream()
-        .map(numbers -> (Callable<Void>) () -> {
-          countEven(numbers);
-          return null;
-        }).collect(toList());
+    List<List<Integer>> parts = splitList(fullList, 2);
+
     ExecutorService pool = Executors.newCachedThreadPool();
-    pool.invokeAll(tasks);
+    for (List<Integer> part : parts) {
+      pool.submit(()-> countEven(part));
+    }
     pool.shutdown();
+    pool.awaitTermination(1, MINUTES);
 
     log.debug("Counted: " + total);
     log.debug("List.size: " + evenNumbers.size());
   }
 
   //<editor-fold desc="utility functions">
-  private static List<List<Integer>> splitList(List<Integer> all, int parts) {
+  private static List<List<Integer>> splitList(List<Integer> all, int numberOfParts) {
     Collections.shuffle(all);
     List<List<Integer>> lists = new ArrayList<>();
-    for (int i = 0; i < parts; i++) {
+    for (int i = 0; i < numberOfParts; i++) {
       lists.add(new ArrayList<>());
     }
     for (int i = 0; i < all.size(); i++) {
-      lists.get(i % parts).add(all.get(i));
+      lists.get(i % numberOfParts).add(all.get(i));
     }
     return lists;
   }
