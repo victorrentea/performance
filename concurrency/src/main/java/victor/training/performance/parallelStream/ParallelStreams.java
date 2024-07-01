@@ -20,12 +20,17 @@ public class ParallelStreams {
     var result = list.parallelStream()
         .filter(i -> i % 2 == 0)
         .map(i -> {
-          log.debug("Map " + i);
-          sleepMillis(100); // network call (DB, REST, SOAP..) or CPU work
+          log.info("Calling " +  i);
+          sleepMillis(100); // I/O
           return i * 2;
-        }).toList();
+        })
+        .toList();
 
     long t1 = System.currentTimeMillis();
     log.debug("Took {} ms to get: {}", t1 - t0, result);
   }
 }
+
+// Probleme cu parallelStream:
+// 1) parallelSream in parallelStream = crash!
+//config.exceptions.ExceptionControllerAdvice - handleException(): An unexpected exception occurred!java.util.concurrent.RejectedExecutionException: Thread limit exceeded replacing blocked worker

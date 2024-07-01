@@ -5,14 +5,12 @@ import lombok.extern.slf4j.Slf4j;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.concurrent.Callable;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.Future;
+import java.util.concurrent.*;
 import java.util.concurrent.locks.ReentrantLock;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
+import static java.util.concurrent.CompletableFuture.supplyAsync;
 import static java.util.stream.Collectors.toList;
 
 
@@ -58,17 +56,27 @@ public class RaceBugs {
     List<Integer> fullList = IntStream.range(0, 10_000).boxed().collect(toList());
 
     List<List<Integer>> lists = splitList(fullList, 2);
-    List<Callable<Integer>> tasks = lists.stream()
-        .map(numbers -> (Callable<Integer>) () -> countEven(numbers))
-        .collect(toList());
-    ExecutorService pool = Executors.newCachedThreadPool();
-    List<Future<Integer>> viitoareInturi = pool.invokeAll(tasks);
+//    List<Callable<Integer>> tasks = lists.stream()
+//        .map(numbers -> (Callable<Integer>) () -> countEven(numbers))
+//        .collect(toList());
+//    ExecutorService pool = Executors.newCachedThreadPool();
+//    List<Future<Integer>> viitoareInturi = pool.invokeAll(tasks);
+//
+//    int total=0;
+//    for (Future<Integer> viitor : viitoareInturi) {
+//      total+=viitor.get(); // nu race, pt ca sunt intr-un singur thread
+//    }
+//    pool.shutdown();
 
-    int total=0;
-    for (Future<Integer> viitor : viitoareInturi) {
-      total+=viitor.get(); // nu race, pt ca sunt intr-un singur thread
-    }
-    pool.shutdown();
+    // fa cu CompletableFuture
+    CompletableFuture<Integer> future1 = supplyAsync(() -> countEven(lists.get(0)));
+    CompletableFuture<Integer> future2 = supplyAsync(() -> countEven(lists.get(1)));
+    total = future1.get() + future2.get();
+
+    // cu combineWith e Doamne Fereste!
+//    total = supplyAsync(() -> countEven(lists.get(0)))
+//        .thenCombine(supplyAsync(() -> countEven(lists.get(1))), Integer::sum)
+//        .get();
 
     log.debug("Counted: " + total);
     log.debug("List.size: " + evenNumbers.size());
