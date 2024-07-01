@@ -8,7 +8,7 @@ import java.util.List;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-import java.util.concurrent.atomic.AtomicInteger;
+import java.util.concurrent.locks.ReentrantLock;
 import java.util.stream.IntStream;
 
 import static java.util.stream.Collectors.toList;
@@ -17,20 +17,28 @@ import static java.util.stream.Collectors.toList;
 @Slf4j
 public class RaceBugs {
   private static List<Integer> evenNumbers = new ArrayList<>();
+  private static final ReentrantLock lock =  new ReentrantLock();
 
-//  private static AtomicInteger total = new AtomicInteger(0);
+  //  private static AtomicInteger total = new AtomicInteger(0);
   private static Integer total = 0;
+
   private static void countEven(List<Integer> numbers) {
     log.info("Start");
     for (Integer n : numbers) {
       if (n % 2 == 0) {
-        synchronized (RaceBugs.class) { // DOAMNE FERESTE ASA IN JAVA 21! DACA VREI SA SUPORIT MULT PARALELISM
-          // face virtual thread pinning : nu da void JVM sa dea drumu la Platform Thread
-          total++; // => total = new Integer
+        lock.lock();
+        try {
+          f();
+        } finally {
+          lock.unlock();
         }
       }
     }
     log.info("end");
+  }
+
+  private static void f() {
+    total++; // => total = new Integer
   }
 
   public static void main(String[] args) throws Exception {
