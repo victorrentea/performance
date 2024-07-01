@@ -23,6 +23,7 @@ public class BarmanConfig {
 
     executor.setTaskDecorator(new MonitorQueueWaitingTimeTaskDecorator(meterRegistry.timer("barman-queue-time")));
     executor.setThreadNamePrefix("bar-");
+//    executor.setRejectedExecutionHandler(...);
     executor.initialize();
     return executor;
   }

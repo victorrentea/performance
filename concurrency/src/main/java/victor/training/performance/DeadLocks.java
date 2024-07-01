@@ -4,6 +4,8 @@ import lombok.Value;
 import lombok.extern.slf4j.Slf4j;
 import victor.training.performance.util.PerformanceUtil;
 
+import static victor.training.performance.util.PerformanceUtil.log;
+
 @Slf4j
 public class DeadLocks {
    @Value
@@ -26,21 +28,21 @@ public class DeadLocks {
          Fork secondFork = rightFork;
 
          for (int i = 0; i < 5000; i++) {
-            PerformanceUtil.log("I'm hungry");
+            log("I'm hungry");
 
-            PerformanceUtil.log("Taking fork #" + firstFork.id + "...");
+            log("Taking fork #" + firstFork.id + "...");
             synchronized (firstFork) {
-               PerformanceUtil.log("Took one fork");
-               PerformanceUtil.log("Taking fork #" + secondFork.id + "...");
+               log("Took one fork");
+               log("Taking fork #" + secondFork.id + "...");
                synchronized (secondFork) {
-                  PerformanceUtil.log("Eating🌟...");
+                  log("Eating🌟...");
                   // sleepNanos(10);
-                  PerformanceUtil.log("Done eating. Releasing forks");
+                  log("Done eating. Releasing forks");
                }
             }
-            PerformanceUtil.log("Thinking...");
+            log("Thinking...");
          }
-         PerformanceUtil.log("NORMAL FINISH (no deadlock happened)");
+         log("NORMAL FINISH (no deadlock happened)");
       }
    }
 

@@ -14,6 +14,7 @@ import static java.util.concurrent.TimeUnit.MINUTES;
 import static java.util.stream.Collectors.toList;
 
 
+@SuppressWarnings("ALL")
 @Slf4j
 public class RaceBugs {
   private static List<Integer> evenNumbers = new ArrayList<>();
@@ -28,11 +29,11 @@ public class RaceBugs {
         total++;
       }
     }
-    log.info("end");
+    log.info("End");
   }
 
   public static void main(String[] args) throws Exception {
-    List<Integer> fullList = IntStream.range(0, 10_000).boxed().collect(toList());
+    List<Integer> fullList = IntStream.range(0, 1_000).boxed().toList();
 
     List<List<Integer>> parts = splitList(fullList, 2);
 
@@ -49,17 +50,16 @@ public class RaceBugs {
 
   //<editor-fold desc="utility functions">
   private static List<List<Integer>> splitList(List<Integer> all, int numberOfParts) {
-    Collections.shuffle(all);
+    List<Integer> shuffled = new ArrayList<>(all);
+    Collections.shuffle(shuffled);
     List<List<Integer>> lists = new ArrayList<>();
     for (int i = 0; i < numberOfParts; i++) {
       lists.add(new ArrayList<>());
     }
-    for (int i = 0; i < all.size(); i++) {
-      lists.get(i % numberOfParts).add(all.get(i));
+    for (int i = 0; i < shuffled.size(); i++) {
+      lists.get(i % numberOfParts).add(shuffled.get(i));
     }
     return lists;
   }
   //</editor-fold>
-
-
 }
