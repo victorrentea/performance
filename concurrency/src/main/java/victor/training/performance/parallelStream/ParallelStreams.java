@@ -11,7 +11,7 @@ import static victor.training.performance.util.PerformanceUtil.sleepMillis;
 @Slf4j
 public class ParallelStreams {
   public static void main(String[] args) throws ExecutionException, InterruptedException {
-    // OnAServer.otherParallelRequestsAreRunning(); // starve the shared commonPool din JVM
+    OnAServer.otherParallelRequestsAreRunning(); // starve the shared commonPool din JVM
 
     List<Integer> list = IntStream.range(1, 100).boxed().toList();
 
@@ -25,6 +25,7 @@ public class ParallelStreams {
           return i * 2;
         })
         .toList();
+    // cine mai e cu mie in pool("strand")?
 
     long t1 = System.currentTimeMillis();
     log.debug("Took {} ms to get: {}", t1 - t0, result);
