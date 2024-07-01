@@ -28,7 +28,8 @@ public class RaceBugs {
       if (n % 2 == 0) {
         lock.lock();
         try {
-          f();
+          f(); // problema daca f dureaza mult!!
+          // Doamne fereste sa faci aici: I/O (REST API CALL, DB, RMI, SOAP, ..)
         } finally {
           lock.unlock();
         }
