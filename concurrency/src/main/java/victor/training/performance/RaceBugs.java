@@ -25,7 +25,7 @@ public class RaceBugs {
     for (Integer n : numbers) {
       if (n % 2 == 0) {
 //        total.incrementAndGet(); // exista o infima penaliza de performanta(Compare and swap instruction CAS)
-        synchronized (total){
+        synchronized (RaceBugs.class){
           total++; // => total = new Integer
         }
       }
