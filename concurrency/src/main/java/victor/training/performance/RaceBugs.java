@@ -24,8 +24,8 @@ public class RaceBugs {
     log.info("Start");
     for (Integer n : numbers) {
       if (n % 2 == 0) {
-//        total.incrementAndGet(); // exista o infima penaliza de performanta(Compare and swap instruction CAS)
-        synchronized (RaceBugs.class){
+        synchronized (RaceBugs.class) { // DOAMNE FERESTE ASA IN JAVA 21! DACA VREI SA SUPORIT MULT PARALELISM
+          // face virtual thread pinning : nu da void JVM sa dea drumu la Platform Thread
           total++; // => total = new Integer
         }
       }
