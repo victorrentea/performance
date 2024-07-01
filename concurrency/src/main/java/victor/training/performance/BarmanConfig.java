@@ -8,6 +8,9 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 import victor.training.performance.threadpool.MonitorQueueWaitingTimeTaskDecorator;
 
+import java.util.concurrent.ThreadPoolExecutor;
+import java.util.concurrent.ThreadPoolExecutor.CallerRunsPolicy;
+
 @Configuration
 public class BarmanConfig {
   @Autowired
@@ -19,10 +22,11 @@ public class BarmanConfig {
     executor.setCorePoolSize(barPoolSize); // core == max
     executor.setMaxPoolSize(barPoolSize); // how to decide size?
 
-    executor.setQueueCapacity(500); // how to decide?
+    executor.setQueueCapacity(2); // how to decide?
 
     executor.setTaskDecorator(new MonitorQueueWaitingTimeTaskDecorator(meterRegistry.timer("barman-queue-time")));
     executor.setThreadNamePrefix("bar-");
+//    executor.setRejectedExecutionHandler(new CallerRunsPolicy());
     executor.initialize();
     return executor;
   }
