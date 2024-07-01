@@ -24,17 +24,20 @@ public class RaceBugs {
 
   private static void countEven(List<Integer> numbers) {
     log.info("Start");
+    int totalLocal = 0;
     for (Integer n : numbers) {
       if (n % 2 == 0) {
-        lock.lock();
-        try {
-          f(); // problema daca f dureaza mult!!
-          // Doamne fereste sa faci aici: I/O (REST API CALL, DB, RMI, SOAP, ..)
-        } finally {
-          lock.unlock();
-        }
+        totalLocal ++;
+//        lock.lock();
+//        try {
+//          f(); // problema daca f dureaza mult!!
+//          // Doamne fereste sa faci aici: I/O (REST API CALL, DB, RMI, SOAP, ..)
+//        } finally {
+//          lock.unlock();
+//        }
       }
     }
+    total += totalLocal; // inca avem race p=0.0000000001
     log.info("end");
   }
 
