@@ -27,10 +27,12 @@ public class ThreadLocalIntro {
 
     public void httpRequest(String currentUser, String data) {
         log.info("Current user is " + currentUser);
-        staticCurrentUser = currentUser;
+        staticCurrentUser.set(currentUser);
         controller.create(data);
     }
-    public static String staticCurrentUser;
+    // desi e statica, fiecare thread are propria valoare.
+    // la nivel de CPU se foloseste TLS (Thread Local Storage) pentru a pastra aceasta valoare.
+    public static ThreadLocal<String> staticCurrentUser = new ThreadLocal<>();
 }
 // ---------- end of framework -----------
 
@@ -40,7 +42,7 @@ public class ThreadLocalIntro {
 class AController {
     private final AService service;
 
-    public void create(String data) {
+    public /*synchronized */void create(String data) {
 //        String username  = httpServletRequest.getSession().getAttribute("username");// anii 2000'
         service.create(data);
     }
@@ -62,7 +64,7 @@ class AService {
 @Slf4j
 class ARepo {
     public void save(String data) {
-        String currentUser = ThreadLocalIntro.staticCurrentUser; // TODO
+        String currentUser = ThreadLocalIntro.staticCurrentUser.get(); // TODO
         log.info("INSERT INTO A (data={}, updated_by={}) ", data, currentUser);
     }
 }
