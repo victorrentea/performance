@@ -9,12 +9,14 @@
     <cache alias="victor.training.performance.jpa.uber.Country" >
         <resources>
             <heap unit="entries">1000</heap>
+            <!--<heap unit="MB">500</heap>-->
         </resources>
     </cache>
 
     <cache alias="contracts" >
         <resources>
             <heap unit="GB">1</heap>
+<!--            <disk-->
         </resources>
     </cache>
     <cache alias="invoices" >
@@ -23,6 +25,7 @@
         </resources>
     </cache>
     <cache alias="day-cache" >
+        <key-type>java.time.LocalDate</key-type>
         <expiry>
             <ttl unit="minutes">30</ttl>
         </expiry>
