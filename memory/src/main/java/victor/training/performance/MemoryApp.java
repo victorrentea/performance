@@ -27,6 +27,9 @@ public class MemoryApp {
 
     @EventListener
     public void onStart(ApplicationReadyEvent event) {
+//        while(true) System.gc();// doar o rugaminte, nu o promisiune, si nu neaparat sincron
+        // niciodata in prod!! doar in benchmarkuri (teste automate de performanta)
+
         long t1 = System.currentTimeMillis();
         log.info("🌟🌟🌟🌟🌟🌟 MemoryApp Started in {} seconds 🌟🌟🌟🌟🌟🌟", (t1-t0)/1000);
     }

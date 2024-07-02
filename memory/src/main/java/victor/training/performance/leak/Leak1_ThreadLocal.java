@@ -18,6 +18,8 @@ public class Leak1_ThreadLocal {
 
       businessMethod1();
 
+      threadLocal.remove();
+
       return "Magic can do harm.";
    }
 
