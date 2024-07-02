@@ -19,29 +19,30 @@ import static victor.training.performance.util.PerformanceUtil.sleepMillis;
 @RestController
 @RequestMapping("leak5")
 public class Leak5_AsyncUnbounded {
-	@Autowired
-	private Worker worker;
-	private static final AtomicInteger index = new AtomicInteger(0);
+  @Autowired
+  private Worker worker;
+  private static final AtomicInteger index = new AtomicInteger(0);
 
-	@GetMapping
-	public String endpoint(@RequestParam(value = "file",required = false)
-													 MultipartFile multipartFile) throws IOException {
-		byte[] contents = multipartFile.getBytes();
-		worker.processFile(index.incrementAndGet(), contents);
-		return "Keep calling this 20 times within 10 seconds, then heap dump";
-	}
+  @GetMapping
+  public String endpoint(
+      @RequestParam(value = "file", required = false)
+      MultipartFile multipartFile) throws IOException {
+    byte[] contents = multipartFile.getBytes();
+    worker.processFile(index.incrementAndGet(), contents);
+    return "Keep calling this 20 times within 10 seconds, then heap dump";
+  }
 }
 
 @Slf4j
 @Service
 class Worker {
-	@Async // runs on a default Spring thread pool with 8 threads
-	public void processFile(int param, byte[] contents) {
-		log.debug("Start task...");
-		sleepMillis(10_000);
-		int count = (int) IntStream.range(0, contents.length).filter(i -> contents[i] == 17).count();
+  @Async // runs on a default Spring thread pool with 8 threads
+  public void processFile(int taskId, byte[] contents) {
+    log.debug("Start task {}...", taskId);
+    sleepMillis(10_000);
+    int count = (int) IntStream.range(0, contents.length).filter(i -> contents[i] == 17).count();
     log.debug("Done task");
-	}
+  }
 }
 
 /**

@@ -1,23 +1,24 @@
-<h1>Play with async flows</h1>
-<a href="drink">Have some drinks</a>
-
-<h1>Trace some Leaks</h1>
+<h1>Memory Leaks</h1>
+Click a link, refresh the page several times, take a heapdump (for example with VisualVM) then trace the memory leak.
 <ul>
-    <li><a href="leak0">Leak0-OOM Intentional</a></li>
-    <li><a href="leak1">Leak1</a></li>
-    <li><a href="leak2">Leak2</a></li>
-    <li><a href="leak3">Leak3</a></li>
-    <li><a href="leak4">Leak4</a></li>
-    <li><a href="leak5">Leak5</a></li>
-    <li><a href="leak6">Leak6</a></li>
-    <li><a href="leak7">Leak7</a></li>
-    <li><a href="leak7/signature">Leak7-signature</a></li>
-    <li><a href="leak7/customKey">Leak7-customKey</a></li>
-    <li><a href="leak8">Leak8</a></li>
-    <li><a href="leak9">Leak9</a></li>
-    <li><a href="leak10">Leak10-hibernate</a></li>
-    <li><a href="leak12">Leak12</a></li>
-    <li><a href="leak14">Leak14</a></li>
+    <li><a href="leak0">0) OOME Intentional</a> - make JVM dump heap on OOME</li>
+    <li><a href="leak1">1) Magic</a></li>
+    <li><a href="leak2">2) Inside</a></li>
+    <li><a href="leak3">3) Java + Retained</a> ... nothing; then <a href="leak3/mass">click here</a> to call it 10K times</li>
+    <li><a href="leak4">4) Long Frame</a></li>
+    <li><a href="leak5">5) Async</a></li>
+    <!--<li><a href="leak6">6)</a></li>-->
+    <li><a href="leak7">7) Caching</a></li>
+    <li><a href="leak7/signature">7) Caching#2</a></li>
+    <li><a href="leak7/customKey">7) Caching#3</a></li>
+    <li><a href="leak8">8) Profile Allocation</a></li>
+    <li><a href="leak9">9) Session</a></li>
+    <li><a href="leak10">10) Hibernate</a></li>
+    <li><a href="leak11">11) XML DOM</a></li>
+    <li><a href="leak12">12) Deadlock</a></li>
+    <li><a href="leak13">13) Deadlock HARD</a></li>
+    <li><a href="leak14">14) Obscure lib</a></li>
+    <li><a href="leak15">15) Thread Leak</a></li>
 </ul>
 <h1>Profile flows</h1>
 Add -javaagent:glowroot.jar to app startup params (like explained <a href="https://glowroot.org/https://glowroot.org/">here</a>), <br />

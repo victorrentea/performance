@@ -10,8 +10,8 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
+import victor.training.performance.util.PerformanceUtil;
 
-import javax.servlet.http.HttpServletResponse;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
@@ -29,36 +29,30 @@ import java.util.stream.IntStream;
 @RequestMapping("leak11")
 @Slf4j
 public class Leak11_XmlDom {
-
    public static final int LOTS_OF_XMLs = 1000;
    private static final DocumentBuilderFactory documentBuilderFactory = DocumentBuilderFactory.newInstance();
    private static final XPathFactory xPathFactory = XPathFactory.newInstance();
 
-
    @GetMapping
-   public void countPlugins(HttpServletResponse response) throws ParserConfigurationException, SAXException, XPathExpressionException, IOException {
-
+   public void countPlugins() {
       List<Node> allDependencies = new ArrayList<>();
-
       for (int x = 0; x < LOTS_OF_XMLs; x++) {
          List<Node> pluginNodes = extractPluginsFromPom();
          allDependencies.addAll(pluginNodes);
       }
 
-      log.info("Loaded {} nodes", allDependencies.size());
+      log.info("Loaded {} <dependency> nodes", allDependencies.size());
       log.info(allDependencies.get(0).getClass().toString());
 
-
       // How many Node instances do you expect to have in memory here ?
-      while (true) { // imagine a long task here...
-      }
+      PerformanceUtil.sleepMillis(100_000); // imagine a long task here...
 
       // RUN this in OQL in jvisualVM : select x.name from com.sun.org.apache.xerces.internal.dom.DeferredElementImpl x
    }
 
-   public static List<Node> extractPluginsFromPom(int n) {
+   private List<Node> extractPluginsFromPom(int n) {
       return IntStream.range(0, n)
-          .mapToObj(Leak11_XmlDom::extractPluginsFromPom)
+          .mapToObj(this::extractPluginsFromPom)
           .flatMap(Collection::stream)
           .collect(Collectors.toList());
    }

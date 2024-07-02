@@ -1,7 +1,6 @@
 package victor.training.performance.leak;
 
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang.RandomStringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
@@ -28,9 +27,8 @@ public class Leak7_Cache {
 
    @GetMapping("signature")
    public String signature() {
-      String currentUsername = RandomStringUtils.random(8); // some random username
-      // TODO CR: pass username as 2nd param below
-      BigObject20MB data = cacheService.getContractById(1L /*, currentUsername*/);
+      long requestStartTime = System.currentTimeMillis();
+      BigObject20MB data = cacheService.getContractById(1L , requestStartTime);
       return "Contract id:1 = " + data + ", " + PerformanceUtil.getUsedHeap();
    }
 
@@ -53,8 +51,8 @@ class CacheService {
    }
 
    @Cacheable("contracts")
-   public BigObject20MB getContractById(Long contractId) {
-      log.debug("Fetch contract for id: {}", contractId);
+   public BigObject20MB getContractById(Long contractId, long requestStartTime) {
+      log.debug("<{}> Fetch contract id={}", requestStartTime, contractId);
       return new BigObject20MB();
    }
 
