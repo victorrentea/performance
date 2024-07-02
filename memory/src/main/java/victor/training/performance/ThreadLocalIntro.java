@@ -3,10 +3,13 @@ package victor.training.performance;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.bouncycastle.jcajce.provider.symmetric.AES.CFB;
+import org.slf4j.MDC;
 import org.springframework.stereotype.Repository;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.time.LocalDateTime;
+import java.util.Random;
 import java.util.concurrent.CompletableFuture;
 
 import static victor.training.performance.util.PerformanceUtil.sleepMillis;
@@ -37,6 +40,7 @@ public class ThreadLocalIntro {
 // ---------- end of framework -----------
 
 // ---------- Controller -----------
+@Slf4j
 @RestController
 @RequiredArgsConstructor
 class AController {
@@ -44,7 +48,10 @@ class AController {
 
     public /*synchronized */void create(String data) {
 //        String username  = httpServletRequest.getSession().getAttribute("username");// anii 2000'
+        MDC.put("batchId", new Random().nextInt(100)+"");
+        log.info("Start");
         service.create(data);
+        // Cerinta: toate logurile unui batch sa aiba un TOKEN comun in mesajul de log ca sa pot identifica tot ce a facut batch
     }
 }
 // ----------- Service ------------
@@ -65,6 +72,7 @@ class AService {
 class ARepo {
     public void save(String data) {
         String currentUser = ThreadLocalIntro.staticCurrentUser.get(); // TODO
+        // currentUser = SecurityContextHolder.getContext().getAuthentication().getName(); // in spring
         log.info("INSERT INTO A (data={}, updated_by={}) ", data, currentUser);
     }
 }
