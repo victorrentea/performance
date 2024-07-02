@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.RestController;
 import java.time.LocalDateTime;
 import java.util.Random;
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import static victor.training.performance.util.PerformanceUtil.sleepMillis;
 
@@ -46,9 +47,10 @@ public class ThreadLocalIntro {
 class AController {
     private final AService service;
 
+    AtomicInteger batchId = new AtomicInteger(0);
     public /*synchronized */void create(String data) {
 //        String username  = httpServletRequest.getSession().getAttribute("username");// anii 2000'
-        MDC.put("batchId", new Random().nextInt(100)+"");
+        MDC.put("batchId", batchId.incrementAndGet() % 100+"");
         log.info("Start");
         service.create(data);
         // Cerinta: toate logurile unui batch sa aiba un TOKEN comun in mesajul de log ca sa pot identifica tot ce a facut batch
