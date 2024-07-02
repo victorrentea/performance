@@ -293,8 +293,8 @@
     closeViewScrollWheelToggle = 1;
     closeViewSplitScreenRatio = "0.4538943598925694";
     closeViewTrackpadGestureZoomEnabled = 0;
-    closeViewWindowPosition = {length = 251, bytes = 0x62706c69 73743030 d4010203 04050607 ... 00000000 000000c1 };
-    closeViewWindowSize = {length = 250, bytes = 0x62706c69 73743030 d4010203 04050607 ... 00000000 000000c0 };
+    closeViewWindowPosition = {length = 247, bytes = 0x62706c69 73743030 d4010203 04050607 ... 00000000 000000bd };
+    closeViewWindowSize = {length = 252, bytes = 0x62706c69 73743030 d4010203 04050607 ... 00000000 000000c2 };
     closeViewZoomDisplayID = 0;
     closeViewZoomFactor = 1;
     closeViewZoomFactorBeforeTermination = 1;
