@@ -15,10 +15,16 @@ public class Leak1_ThreadLocal {
       BigObject20MB bigObject = new BigObject20MB().setSomeString("john.doe"); // retrived from a network call
 
       threadLocal.set(bigObject);  // 🛑 ThreadLocal#remove()
+      try { // imediat dupa set() se face un try-finally cu remove() > REGULA!
+         // daca-ti faci tu in curte un ThreadLocal.
+         // Recomandarea e sa NU pui mana manual tu muritor pe ThreadLocal ci sa folosesti ceva de framework
+         // eg: SeciurityContextHolder, MDC.put(   dar fara sa pui prea multe date acolo)
+         // Remember: vin Virtual Threads si orice date pui pe thread x 100K threaduri (worst case)
+         businessMethod1();
+      } finally {
+         threadLocal.remove();
+      }
 
-      businessMethod1();
-
-      threadLocal.remove();
 
       return "Magic can do harm.";
    }

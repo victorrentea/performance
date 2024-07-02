@@ -8,6 +8,8 @@ import org.springframework.web.bind.annotation.RestController;
 import victor.training.performance.leak.obj.BigObject20MB;
 
 import java.util.ArrayList;
+import java.util.Deque;
+import java.util.LinkedList;
 import java.util.List;
 
 @Slf4j
@@ -16,13 +18,15 @@ import java.util.List;
 @RequestMapping("leak3")
 public class Leak3_SubList {
 
-   private List<BigObject20MB> lastTenObjects = new ArrayList<>();
+//   private List<BigObject20MB> lastTenObjects = new ArrayList<>();
+   private Deque<BigObject20MB> lastTenObjects = new LinkedList<>(); // queue
 
    @GetMapping
-   public synchronized String endpoint() {
+   public synchronized String endpoint() { // running window
       lastTenObjects.add(new BigObject20MB());
       if (lastTenObjects.size() > 10) {
-         lastTenObjects = lastTenObjects.subList(1, lastTenObjects.size());
+          lastTenObjects.removeFirst(); // STERGE PE BUNE
+//         lastTenObjects = lastTenObjects.subList(1, lastTenObjects.size());
       }
       return "The current window size is " + lastTenObjects.size();
    }

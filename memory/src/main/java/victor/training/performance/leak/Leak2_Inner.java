@@ -63,16 +63,14 @@ public class Leak2_Inner {
 
 
 class CalculatorFactory {
-  public class Calculator {
+  public static class Calculator { // yeeee - 20MB pe cele 10 min de job.
     public boolean calculate(String data) {
-      System.out.println("Simple Code Code");
+      System.out.println("Simple Code Code ");
       // 🛑 what's connects the Calculator instance with the 'bigMac' field ?
       return true;
     }
   }
-
   private BigObject20MB bigMac = new BigObject20MB();
-
   public Calculator createRightsCalculator() {
     return new Calculator();
   }
@@ -82,21 +80,28 @@ class CalculatorFactory {
   //<editor-fold desc="Lambdas vs Anonymous implementation">
   public Stream<String> anonymousVsLambdas(List<String> input) {
     return input.stream()
-            .filter(new Predicate<String>() {
+            .filter(new Predicate<String>() { // PROST = anonymous interface implementation
               @Override
               public boolean test(String s) {
                 return !s.isBlank();
               }
-            });
+            })
+            .filter(s -> !s.isBlank()) // conceptual e la fel ca aia de sus, dar NU tine ref la instanta parinte de CalculatorFactory
+            .filter(s -> !s.isBlank() && bigMac != null) // tine ref la bigMac pt ca o folosessc
+        ;
   }
   //</editor-fold>
 
   //<editor-fold desc="Map init in Java <= 8">
   public Map<String, Integer> mapInit() {
-    return new HashMap<>() {{
-      put("one", 1);
-      put("two", 2);
-    }};
+    // #nostalgia
+    // doua {{ inseamna ca e un anonymous subclass cu un bloc de initializare de instanta
+//    return new HashMap<>() {{
+//      put("one", 1);
+//      put("two", 2);
+//    }};
+    // #asada
+    return Map.of("one", 1, "two", 2);
   }
   //</editor-fold>
 }
