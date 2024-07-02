@@ -23,7 +23,7 @@ public class Leak7_Cache {
 
    @GetMapping
    public String cacheKey() {
-      BigObject20MB data = cacheService.getCachedDataForDay(LocalDate.now());
+      BigObject20MB data = cacheService.getCachedDataForDay(LocalDateTime.now());
       return "Data from cache for today = " + data + ", " + PerformanceUtil.getUsedHeap();
    }
 
@@ -48,7 +48,7 @@ class CacheService {
    // @Cacheable makes a proxy intercept the method call and return
    // the previously cached value for that parameter (if any)
    @Cacheable("day-cache")
-   public BigObject20MB getCachedDataForDay(LocalDate date) {
+   public BigObject20MB getCachedDataForDay(LocalDateTime date) {
       log.debug("Fetch data for date: {}", date.format(DateTimeFormatter.ISO_DATE));
       return new BigObject20MB();
    }
