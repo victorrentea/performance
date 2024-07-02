@@ -19,7 +19,7 @@ public class ThreadLocalIntro {
 
     public void httpRequest(String currentUser, String data) {
         log.info("Current user is " + currentUser);
-        controller.create(data);
+        controller.create(data, currentUser);
     }
     public static String staticCurrentUser;
 }
@@ -31,20 +31,20 @@ public class ThreadLocalIntro {
 class AController {
     private final AService service;
 
-    public void create(String data) {
-        service.create(data);
+    public void create(String data, String username) {
+//        String username  = httpServletRequest.getSession().getAttribute("username");// anii 2000'
+        service.create(data, username);
     }
 }
-
 // ----------- Service ------------
 @Service
 @RequiredArgsConstructor
 class AService {
     private final ARepo repo;
 
-    public void create(String data) {
+    public void create(String data, String username) {
         sleepMillis(10); // some delay, to reproduce the race bug
-        repo.save(data);
+        repo.save(data, username); // toate metodele din app mea vor sfarsi avand username param = GU-NOI!
     }
 }
 
@@ -52,8 +52,8 @@ class AService {
 @Repository
 @Slf4j
 class ARepo {
-    public void save(String data) {
-        String currentUser = "TODO"; // TODO
-        log.info("INSERT INTO A (data={}, created_by={}) ", data, currentUser);
+    public void save(String data, String username) {
+        String currentUser = username; // TODO
+        log.info("INSERT INTO A (data={}, updated_by={}) ", data, currentUser);
     }
 }

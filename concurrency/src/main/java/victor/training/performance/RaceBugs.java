@@ -69,8 +69,15 @@ public class RaceBugs {
 //    pool.shutdown();
 
     // fa cu CompletableFuture
-    CompletableFuture<Integer> future1 = supplyAsync(() -> countEven(lists.get(0)));
-    CompletableFuture<Integer> future2 = supplyAsync(() -> countEven(lists.get(1)));
+
+    // niciodata de acum pana la pensie nu lansa CompletableFuture fara sa-i dai un executor in care sa blochezi
+    ExecutorService executor = Executors.newCachedThreadPool();
+    // intr-o aplicatie Spring, acest executor trebuie @Autowired de spring, ca sa-ti poata propaga Spring
+    // a) SecurityContext
+    // b) TraceId / MDC
+//    CompletableFuture<Integer> future1 = supplyAsync(() -> countEven(lists.get(0)));
+    CompletableFuture<Integer> future1 = supplyAsync(() -> countEven(lists.get(0)), executor);
+    CompletableFuture<Integer> future2 = supplyAsync(() -> countEven(lists.get(1)), executor);
     total = future1.get() + future2.get();
 
     // cu combineWith e Doamne Fereste!
