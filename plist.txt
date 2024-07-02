@@ -280,7 +280,7 @@
             modifiers = 1572864;
         };
     };
-    closeViewDesiredZoomFactor = "1.0718221303";
+    closeViewDesiredZoomFactor = "1.274397401602525";
     closeViewFarPoint = "17.12028155940594";
     closeViewHotkeysEnabled = 0;
     closeViewLastZoomDisplayID = 0;
