@@ -5,11 +5,13 @@ import lombok.extern.slf4j.Slf4j;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 import java.util.stream.IntStream;
 
+import static java.util.concurrent.CompletableFuture.supplyAsync;
 import static java.util.concurrent.TimeUnit.MINUTES;
 
 
@@ -38,25 +40,29 @@ public class RaceBugs {
 
     List<List<Integer>> parts = splitList(fullList, 2);
 
-    ExecutorService pool = Executors.newCachedThreadPool();
-    List<Future<Integer>> futures = new ArrayList<>();
-    for (List<Integer> part : parts) {
-      Future<Integer> futureResult = pool.submit(() -> countEven(part));
-      futures.add(futureResult);
-    }
-    int total = futures.stream().mapToInt(f -> {
-      try {
-        return f.get();
-      } catch (Exception e) {
-        throw new RuntimeException(e);
-      }
-    }).sum(); // this sum runs in a single thread
+    // promises (FE) === CompletableFuture (java): call-backbased way of non-blockign concurreny
+
+    CompletableFuture<Integer> cf1 = supplyAsync(() -> countEven(parts.get(0)));
+    CompletableFuture<Integer> cf2 = supplyAsync(() -> countEven(parts.get(1)));
+    int total = cf1.join() + cf2.join();
+//    ExecutorService pool = Executors.newCachedThreadPool(); // risky: too many threads might crash your ssytem=
+//    List<Future<Integer>> futures = new ArrayList<>();
+//    for (List<Integer> part : parts) {
+//      Future<Integer> futureResult = pool.submit(() -> countEven(part));
+//      futures.add(futureResult);
+//    }
+//    int total = futures.stream().mapToInt(f -> {
+//      try {
+//        return f.get();
+//      } catch (Exception e) {
+//        throw new RuntimeException(e);
+//      }
+//    }).sum(); // this sum runs in a single thread
     // map-reduce strategy: split the work in *independent* parts (CAN BE HARD)
     // work on each part in parallel
     // and then combine the results in a single thread
-    pool.shutdown();
-    pool.awaitTermination(1, MINUTES);
-
+//    pool.shutdown();
+//    pool.awaitTermination(1, MINUTES);
     log.debug("Counted: " + total);
     log.debug("List.size: " + evenNumbers.size());
   }
