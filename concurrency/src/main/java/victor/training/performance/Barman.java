@@ -42,8 +42,18 @@ public class Barman {
     Future<Beer> futureBeer = poolBar.submit(() -> beer());
     Future<Vodka> futureVodka = poolBar.submit(() -> rest.getForObject("http://localhost:9999/vodka", Vodka.class));
 
-    Beer beer = futureBeer.get();
-    Vodka vodka = futureVodka.get();
+    Beer beer = futureBeer.get(); // 1s blocks Tomcat's thread (1/200, 0.5%) = bad.
+    // BAD iff your system is under heavy fire (10k rps)
+    // if you measure!!! a problem: waiting time for tomcat threads, memory usage
+    // then try non-blocking concurrency:
+    // a) CompletableFuture < today this
+    // b) WebFlux (Flux/Mono)/ Observable (rxJava). not just using webClient
+    //   to stay away from reactive hell,
+    //   use webClient.toFuture():CompletableFuture
+    Vodka vodka = futureVodka.get(); // 0s because the vodka is ready already
+
+    // goal: don't block tomcat thread!!
+
     DillyDilly dilly = new DillyDilly(beer, vodka);
     log.info("HTTP thread blocked for {} durationMillis", currentTimeMillis() - t0);
     return dilly;
