@@ -38,14 +38,21 @@ public class RaceBugs {
   public static void main(String[] args) throws Exception {
     List<Integer> fullList = IntStream.range(0, 1_0000).boxed().toList();
 
-    List<List<Integer>> parts = splitList(fullList, 2);
+    List<List<Integer>> parts = splitList(fullList, 4);
 
     // promises (FE) === CompletableFuture (java): call-backbased way of non-blockign concurreny
+    CompletableFuture<Integer> initial = CompletableFuture.completedFuture(0);
 
-    CompletableFuture<Integer> cf1 = supplyAsync(() -> countEven(parts.get(0)));
-    CompletableFuture<Integer> cf2 = supplyAsync(() -> countEven(parts.get(1)));
+    for (List<Integer> part : parts) {
+      CompletableFuture<Integer> task = supplyAsync(() -> countEven(part));
+      initial = initial.thenCombineAsync(task, Integer::sum);
+    }
+    int total = initial.join();
+
+//    CompletableFuture < Integer > cf1 = supplyAsync(() -> countEven(parts.get(0)));
+//    CompletableFuture<Integer> cf2 = supplyAsync(() -> countEven(parts.get(1)));
 //    int total = cf1.join() + cf2.join();
-    int total = cf1.thenCombine(cf2, Integer::sum).join();
+//    int total = cf1.thenCombine(cf2, Integer::sum).join();
 
 //    ExecutorService pool = Executors.newCachedThreadPool(); // risky: too many threads might crash your ssytem=
 //    List<Future<Integer>> futures = new ArrayList<>();
