@@ -44,7 +44,9 @@ public class RaceBugs {
 
     CompletableFuture<Integer> cf1 = supplyAsync(() -> countEven(parts.get(0)));
     CompletableFuture<Integer> cf2 = supplyAsync(() -> countEven(parts.get(1)));
-    int total = cf1.join() + cf2.join();
+//    int total = cf1.join() + cf2.join();
+    int total = cf1.thenCombine(cf2, Integer::sum).join();
+
 //    ExecutorService pool = Executors.newCachedThreadPool(); // risky: too many threads might crash your ssytem=
 //    List<Future<Integer>> futures = new ArrayList<>();
 //    for (List<Integer> part : parts) {
