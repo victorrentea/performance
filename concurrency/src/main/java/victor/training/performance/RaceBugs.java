@@ -5,14 +5,12 @@ import lombok.extern.slf4j.Slf4j;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-import java.util.concurrent.atomic.AtomicInteger;
+import java.util.concurrent.Future;
 import java.util.stream.IntStream;
 
 import static java.util.concurrent.TimeUnit.MINUTES;
-import static java.util.stream.Collectors.toList;
 
 
 @SuppressWarnings("ALL")
@@ -20,17 +18,19 @@ import static java.util.stream.Collectors.toList;
 public class RaceBugs {
   private static List<Integer> evenNumbers = new ArrayList<>();
 
-  private static AtomicInteger total = new AtomicInteger(0);
 
   // many parallel threads run this method:
-  private static void countEven(List<Integer> numbers) {
+  private static int countEven(List<Integer> numbers) {
+    // FP principles: return don;t change
     log.info("Start");
+    int localTotal = 0;
     for (Integer n : numbers) {
       if (n % 2 == 0) {
-        total.incrementAndGet();
+        localTotal++;
       }
     }
     log.info("End");
+    return localTotal;
   }
 
   public static void main(String[] args) throws Exception {
@@ -39,9 +39,21 @@ public class RaceBugs {
     List<List<Integer>> parts = splitList(fullList, 2);
 
     ExecutorService pool = Executors.newCachedThreadPool();
+    List<Future<Integer>> futures = new ArrayList<>();
     for (List<Integer> part : parts) {
-      pool.submit(()-> countEven(part));
+      Future<Integer> futureResult = pool.submit(() -> countEven(part));
+      futures.add(futureResult);
     }
+    int total = futures.stream().mapToInt(f -> {
+      try {
+        return f.get();
+      } catch (Exception e) {
+        throw new RuntimeException(e);
+      }
+    }).sum(); // this sum runs in a single thread
+    // map-reduce strategy: split the work in *independent* parts (CAN BE HARD)
+    // work on each part in parallel
+    // and then combine the results in a single thread
     pool.shutdown();
     pool.awaitTermination(1, MINUTES);
 
