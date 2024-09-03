@@ -12,8 +12,8 @@ import victor.training.performance.drinks.DillyDilly;
 import victor.training.performance.drinks.Vodka;
 
 import java.util.Random;
+import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
-import java.util.concurrent.Future;
 
 import static java.lang.System.currentTimeMillis;
 
@@ -29,7 +29,7 @@ public class Barman {
   ThreadPoolTaskExecutor poolBar;
 
   @GetMapping("/drink")
-  public DillyDilly drink() throws ExecutionException, InterruptedException {
+  public CompletableFuture<DillyDilly> drink() throws ExecutionException, InterruptedException {
     long t0 = currentTimeMillis();
 
     MDC.put("tenantId", "tenant-" + new Random().nextInt(100));
@@ -39,24 +39,23 @@ public class Barman {
     // to call network without blocking any thread for the call duration
 
     // #2 I forgot the close the pool
-    Future<Beer> futureBeer = poolBar.submit(() -> beer());
-    Future<Vodka> futureVodka = poolBar.submit(() -> rest.getForObject("http://localhost:9999/vodka", Vodka.class));
 
-    Beer beer = futureBeer.get(); // 1s blocks Tomcat's thread (1/200, 0.5%) = bad.
-    // BAD iff your system is under heavy fire (10k rps)
-    // if you measure!!! a problem: waiting time for tomcat threads, memory usage
-    // then try non-blocking concurrency:
-    // a) CompletableFuture < today this
-    // b) WebFlux (Flux/Mono)/ Observable (rxJava). not just using webClient
-    //   to stay away from reactive hell,
-    //   use webClient.toFuture():CompletableFuture
-    Vodka vodka = futureVodka.get(); // 0s because the vodka is ready already
-
+    // In Spring you must always submit your tasks to an executor,
+    // even if you use completable future (ThreadLocal: MDC, traceId, SecurityContext)
+    CompletableFuture<Beer> futureBeer = CompletableFuture.supplyAsync(this::beer);
+    CompletableFuture<Vodka> futureVodka = CompletableFuture.supplyAsync(this::getVodka);
     // goal: don't block tomcat thread!!
+    CompletableFuture<DillyDilly> futureDilly = futureBeer.thenCombine(futureVodka, DillyDilly::new);
 
-    DillyDilly dilly = new DillyDilly(beer, vodka);
+//    DillyDilly dilly = futureDilly.get();
     log.info("HTTP thread blocked for {} durationMillis", currentTimeMillis() - t0);
-    return dilly;
+    return futureDilly;// return to the web framework a promise of the response.
+    // the framework is gonna do KungFu not to block any threads while waiting.
+    // but keep the network socket open until the response is ready
+  }
+
+  private Vodka getVodka() {
+    return rest.getForObject("http://localhost:9999/vodka", Vodka.class);
   }
 
   private Beer beer() {
