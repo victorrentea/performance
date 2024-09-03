@@ -41,14 +41,29 @@ public class Barman {
     // #2 I forgot the close the pool
 
     // In Spring you must always submit your tasks to an executor,
-    // even if you use completable future (ThreadLocal: MDC, traceId, SecurityContext)
-    CompletableFuture<Beer> futureBeer = CompletableFuture.supplyAsync(this::beer);
-    CompletableFuture<Vodka> futureVodka = CompletableFuture.supplyAsync(this::getVodka);
+    // even if you use completable future
+    // 1) propagate (ThreadLocal: MDC, traceId, SecurityContext)
+    // 2) avoid starving the JVM-global Common ForkJoinPool with I/O
+//    try {
+      CompletableFuture<Beer> futureBeer = CompletableFuture.supplyAsync(this::beer, poolBar)
+          .thenApply(beer -> {
+            log.info("warm up beer");
+            return beer;
+          });
+//          .exceptionally(e -> {
+            // good bye try{}catch
+//            return new Beer("No Beer");
+//          });
+//    } catch (Exception e) {
+//      log.error("Oups I catch nothing here!", e);
+//    }
+
+    CompletableFuture<Vodka> futureVodka = CompletableFuture.supplyAsync(this::getVodka, poolBar);
     // goal: don't block tomcat thread!!
     CompletableFuture<DillyDilly> futureDilly = futureBeer.thenCombine(futureVodka, DillyDilly::new);
 
 //    DillyDilly dilly = futureDilly.get();
-    log.info("HTTP thread blocked for {} durationMillis", currentTimeMillis() - t0);
+    log.info("HTTP thread blocked for {} milli", currentTimeMillis() - t0);
     return futureDilly;// return to the web framework a promise of the response.
     // the framework is gonna do KungFu not to block any threads while waiting.
     // but keep the network socket open until the response is ready
@@ -60,6 +75,6 @@ public class Barman {
 
   private Beer beer() {
     log.info("Calling beer");
-    return rest.getForObject("http://localhost:9999/beer", Beer.class);
+    return rest.getForObject("http://localhost:9999/beerOUPS", Beer.class);
   }
 }
