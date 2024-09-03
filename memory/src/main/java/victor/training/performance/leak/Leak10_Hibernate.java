@@ -21,6 +21,7 @@ import javax.sql.DataSource;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.Writer;
+import java.sql.ResultSet;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.IntStream;
@@ -59,7 +60,12 @@ public class Leak10_Hibernate {
       log.debug("Exporting....");
 
       try (Writer writer = new FileWriter("big-entity.txt")) {
-         repo.streamAll()
+//         /*ResultSet rs;
+//         while (rs.next()) {
+//            String description = rs.getString("description");
+//            writer.write(description);
+//         }*/
+         repo.streamAll()// se deschide un ResultSet
              .map(BigEntity::getDescription)
              .forEach(Unchecked.consumer(writer::write));
       }

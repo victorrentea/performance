@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.IntStream;
 
 import static java.util.concurrent.TimeUnit.MINUTES;
@@ -19,21 +20,21 @@ import static java.util.stream.Collectors.toList;
 public class RaceBugs {
   private static List<Integer> evenNumbers = new ArrayList<>();
 
-  private static Integer total = 0;
+  private static AtomicInteger total = new AtomicInteger(0);
 
   // many parallel threads run this method:
   private static void countEven(List<Integer> numbers) {
     log.info("Start");
     for (Integer n : numbers) {
       if (n % 2 == 0) {
-        total++;
+        total.incrementAndGet();
       }
     }
     log.info("End");
   }
 
   public static void main(String[] args) throws Exception {
-    List<Integer> fullList = IntStream.range(0, 1_000).boxed().toList();
+    List<Integer> fullList = IntStream.range(0, 1_0000).boxed().toList();
 
     List<List<Integer>> parts = splitList(fullList, 2);
 
