@@ -17,7 +17,7 @@ public class ParallelStreams {
 
     long t0 = System.currentTimeMillis();
 
-    var result = list.parallelStream()
+    var result = list.stream()
         .filter(i -> i % 2 == 0)
         .map(i -> {
           log.debug("Map " + i);
