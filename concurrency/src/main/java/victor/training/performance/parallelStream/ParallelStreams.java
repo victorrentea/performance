@@ -2,6 +2,8 @@ package victor.training.performance.parallelStream;
 
 import lombok.extern.slf4j.Slf4j;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
 import java.util.stream.IntStream;
@@ -12,7 +14,6 @@ import static victor.training.performance.util.PerformanceUtil.sleepMillis;
 public class ParallelStreams {
   public static void main(String[] args) throws ExecutionException, InterruptedException {
     // OnAServer.otherParallelRequestsAreRunning(); // starve the shared commonPool din JVM
-
     List<Integer> list = IntStream.range(1, 100).boxed().toList();
 
     long t0 = System.currentTimeMillis();

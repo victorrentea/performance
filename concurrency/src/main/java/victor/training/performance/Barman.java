@@ -14,6 +14,7 @@ import victor.training.performance.drinks.Vodka;
 import java.util.Random;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
+import java.util.concurrent.Semaphore;
 
 import static java.lang.System.currentTimeMillis;
 
@@ -27,11 +28,13 @@ public class Barman {
 //    ExecutorService pool;
   @Autowired
   ThreadPoolTaskExecutor poolBar;
+//    Semaphore s = new Semaphore(2)
 
   @GetMapping("/drink")
   public CompletableFuture<DillyDilly> drink() throws ExecutionException, InterruptedException {
     long t0 = currentTimeMillis();
-
+//    s.acquire();
+//    s.release();
     MDC.put("tenantId", "tenant-" + new Random().nextInt(100));
     log.info("Start");
     // #1 it is inefficient to spawn 2 threads to keep them blocked for the API call duration
