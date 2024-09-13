@@ -16,19 +16,21 @@ public class ParallelStreams {
 //     OnAServer.otherParallelRequestsAreRunning(); // starve the shared commonPool din JVM
     List<Integer> list = IntStream.range(1, 100).boxed().toList();
 
-    long t0 = System.currentTimeMillis();
+    Long t0 = System.currentTimeMillis();
 
     Stream<Integer> stream = list.parallelStream()
         .filter(i -> i % 2 == 0)
         .map(i -> {
-          log.debug("Map " + i);
+          log.debug("Map " + i + " started at " + t0);
           apiCall(i); // network call (DB, REST, SOAP..) or CPU work
           return i * 2;
         });
 
+//    return stream;
+//  }
 
 
-    // - use parallel stream only for CPU-bound work. not I/O.
+  // - use parallel stream only for CPU-bound work. not I/O.
     // - PLEASE check that you're improving performance. Don't guess, measure!
     // avoid race condition
     // eleemnts should be processed independently

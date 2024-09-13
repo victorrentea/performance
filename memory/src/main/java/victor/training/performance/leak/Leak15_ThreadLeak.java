@@ -13,20 +13,17 @@ import java.util.concurrent.Executors;
 @RequestMapping("leak15")
 public class Leak15_ThreadLeak {
 
-   @GetMapping
-   public void endpoint() {
-      ExecutorService pool = Executors.newFixedThreadPool(2);
-      try {
-         pool.submit(() -> log.info("Work"));
-         surprise();
-      } finally {
-         pool.shutdown();
-      }
-   }
+  @GetMapping
+  public void endpoint() {
+    ExecutorService pool = Executors.newFixedThreadPool(2);
+    pool.submit(() -> log.info("Work"));
+    surprise();
+    pool.shutdown();
+  }
 
-   private void surprise() {
-      throw new RuntimeException("#life");
-   }
+  private void surprise() {
+    throw new RuntimeException("#life");
+  }
 }
 
 // TODO avoid creating new Thread Pools per request

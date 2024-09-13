@@ -34,14 +34,12 @@ public class Leak2_Inner {
     bizLogicUsingCalculator(calculator);
     return "Done";
   }
-
   private void bizLogicUsingCalculator(Calculator calculator) {
     if (!calculator.calculate("launch")) {
       return;
     }
     PerformanceUtil.sleepMillis(20_000); // long flow and/or heavy parallel load
   }
-
   //<editor-fold desc="Entry points of more similar leaks">
   @GetMapping("anon")
   public String anon() {
@@ -57,20 +55,15 @@ public class Leak2_Inner {
     return map;
   }
   //</editor-fold>
-
-
 }
-
-
 class CalculatorFactory {
-  public class Calculator {
+  public static class Calculator { // keeps a hidden reference to the outer CalculatorFactory instance
     public boolean calculate(String data) {
       System.out.println("Simple Code Code");
       // 🛑 what's connects the Calculator instance with the 'bigMac' field ?
       return true;
     }
   }
-
   private BigObject20MB bigMac = new BigObject20MB();
 
   public Calculator createRightsCalculator() {
@@ -82,21 +75,32 @@ class CalculatorFactory {
   //<editor-fold desc="Lambdas vs Anonymous implementation">
   public Stream<String> anonymousVsLambdas(List<String> input) {
     return input.stream()
-            .filter(new Predicate<String>() {
+            .filter(new Predicate<String>() { // anonymous interface implementation
+              // keeping a ref to the oyter ckass
               @Override
               public boolean test(String s) {
                 return !s.isBlank();
               }
-            });
+            })
+            .filter(s -> !s.isBlank())
+        ;
   }
   //</editor-fold>
 
   //<editor-fold desc="Map init in Java <= 8">
   public Map<String, Integer> mapInit() {
-    return new HashMap<>() {{
-      put("one", 1);
-      put("two", 2);
-    }};
+//    return new HashMap<>() { // anonymous subclass of HashMap
+//      { // instance initialization block
+//      put("one", 1);
+//      put("two", 2);
+//    }};
+
+    Map<String, Integer> map = new HashMap<>();
+    map.put("one", 1);
+    map.put("two", 2);
+    return map;
+
+//    return Map.of("one", 1, "two", 2); // java 10
   }
   //</editor-fold>
 }
