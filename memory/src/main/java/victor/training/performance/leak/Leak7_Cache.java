@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.RestController;
 import victor.training.performance.leak.obj.BigObject20MB;
 import victor.training.performance.util.PerformanceUtil;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
@@ -21,7 +22,7 @@ public class Leak7_Cache {
 
    @GetMapping
    public String cacheKey() {
-      BigObject20MB data = cacheService.getCachedDataForDay(LocalDateTime.now());
+      BigObject20MB data = cacheService.getCachedDataForDay(LocalDate.now());
       return "Data from cache for today = " + data + ", " + PerformanceUtil.getUsedHeap();
    }
 
@@ -43,16 +44,17 @@ public class Leak7_Cache {
 @Slf4j
 class CacheService {
    // @Cacheable makes a proxy intercept the method call and return
-   // the previously cached value for that parameter (if any)
+   // the previously cached value for that parameter(s), if any
    @Cacheable("day-cache")
-   public BigObject20MB getCachedDataForDay(LocalDateTime date) {
+//   public BigObject20MB getCachedDataForDay(LocalDateTime date) { //100% cache miss as the param is never the same
+   public BigObject20MB getCachedDataForDay(LocalDate date) {
       log.debug("Fetch data for date: {}", date.format(DateTimeFormatter.ISO_DATE));
       return new BigObject20MB();
    }
 
    @Cacheable("contracts")
-   public BigObject20MB getContractById(Long contractId, long requestStartTime) {
-      log.debug("<{}> Fetch contract id={}", requestStartTime, contractId);
+   public BigObject20MB getContractById(Long contractId, long requestStartTimeMillis) {
+      log.debug("<{}> Fetch contract id={}", requestStartTimeMillis, contractId);
       return new BigObject20MB();
    }
 

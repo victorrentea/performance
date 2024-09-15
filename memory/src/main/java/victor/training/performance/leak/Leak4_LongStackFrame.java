@@ -15,12 +15,7 @@ import static victor.training.performance.util.PerformanceUtil.sleepMillis;
 public class Leak4_LongStackFrame {
 	@GetMapping
 	public String endpoint() {
-		String useful;
-		{System.out.println("it was Nicolas! - did not work");
-			BigObject80MB largeDto = downloadSomeData();
-			useful = largeDto.getInterestingPart();
-		}
-
+    String useful = getWhatYouNeed();
 //		dto = null;
 
 		longBatch();
@@ -28,6 +23,11 @@ public class Leak4_LongStackFrame {
 			log.trace("Using useful part: " + useful);
 		}
 		return "end";
+	}
+
+	// usually placed in an adapter over the API you are consuming = architecture
+	private static String getWhatYouNeed() {
+		return downloadSomeData().getInterestingPart();
 	}
 
 	@NotNull

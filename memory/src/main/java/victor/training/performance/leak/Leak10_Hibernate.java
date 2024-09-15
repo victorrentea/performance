@@ -53,23 +53,29 @@ public class Leak10_Hibernate {
       fastInserter.insert(500);
       return "Inserted 500MB of data. Now <a href=\"/leak10/export\">export</a> the file 'big-entity.txt' and check the logs";
    }
-
-   @GetMapping("export")
    @Transactional
+       (readOnly = true) // #1 i hoped disabling the auot-UPDATE of dirty entities would help. it didnt.
+   // i forgot about 1st level cache of Hibernate
+   @GetMapping("export")
    public void export() throws IOException {
-      log.debug("Exporting....");
+      // 1st level cache of Hibernate (so called Transaction-scoped)
+//      BigEntity o1 = repo.findById(1L).orElseThrow();
+//      BigEntity o2 = repo.findById(1L).orElseThrow();
+//      log.debug("o1 == o2 is true: {}", o1 == o2);
+      // Solution: entityManager.detach(entity) removes the entity from Hibernate
 
+      log.debug("Exporting....");
       try (Writer writer = new FileWriter("big-entity.txt")) {
-//         /*ResultSet rs;
-//         while (rs.next()) {
-//            String description = rs.getString("description");
-//            writer.write(description);
-//         }*/
-         repo.streamAll()// se deschide un ResultSet
+         repo.streamAll()
+             .peek(entityManager::detach) // NOSONAR - this is the solution!!
+
+//             .map(e -> { // SONAR 💩 in our code NEVER!
+//                entityManager.detach(e);
+//                return e;
+//             })
              .map(BigEntity::getDescription)
              .forEach(Unchecked.consumer(writer::write));
       }
-
       log.debug("Export completed. Sleeping 2 minutes to get a heapdump...");
       PerformanceUtil.sleepMillis(120 * 1000);
    }

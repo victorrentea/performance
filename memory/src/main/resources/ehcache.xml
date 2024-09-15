@@ -23,6 +23,7 @@
         </resources>
     </cache>
     <cache alias="day-cache" >
+        <key-type>java.time.LocalDate</key-type>
         <expiry>
             <ttl unit="minutes">30</ttl>
         </expiry>
