@@ -2,9 +2,9 @@ package victor.training.performance.jpa.entity;
 
 import jakarta.persistence.*;
 import lombok.Data;
-import victor.training.performance.jpa.util.UUIDIdentifierGenerator.GeneratedUUID;
 
 import java.sql.Clob;
+import java.util.UUID;
 
 import static jakarta.persistence.EnumType.STRING;
 
@@ -12,8 +12,9 @@ import static jakarta.persistence.EnumType.STRING;
 @Data
 public class Uber {
     @Id
-    @GeneratedUUID// .save(entity{id=null}) => generator is called to create an id
-    private String id;// = UUID.randomUUID().toString(); // .save(entity{id!=null}) => .merge() => +1 SELECT before every INSERT
+//    @GeneratedUUID// .save(entity{id=null}) => generator is called to create an id
+//    private String id;
+    private String id = UUID.randomUUID().toString(); // .save(entity{id!=null}) => .merge() => +1 SELECT before every INSERT
 
     private String name;
     private String address;

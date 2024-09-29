@@ -42,3 +42,4 @@ data-output*.txt
 
 capture/
 /spring-batch/data.xml
+/jpa/export.txt

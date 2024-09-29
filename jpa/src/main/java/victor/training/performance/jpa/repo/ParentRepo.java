@@ -10,6 +10,7 @@ import victor.training.performance.jpa.entity.ParentView;
 
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Stream;
 
 public interface ParentRepo extends JpaRepository<Parent, Long> {
 
@@ -58,4 +59,7 @@ public interface ParentRepo extends JpaRepository<Parent, Long> {
         LEFT JOIN FETCH p.country
       WHERE p.id IN ?1""")
   Set<Parent> fetchParentsByIds(List<Long> parentIds); // #2 fetching
+
+  @Query("SELECT p FROM Parent p")
+  Stream<Parent> streamAll();
 }

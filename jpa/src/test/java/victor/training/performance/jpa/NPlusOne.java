@@ -1,5 +1,6 @@
 package victor.training.performance.jpa;
 
+import jakarta.persistence.EntityManager;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -10,16 +11,14 @@ import org.springframework.test.annotation.Rollback;
 import org.springframework.test.context.transaction.TestTransaction;
 import org.springframework.transaction.annotation.Transactional;
 import victor.training.performance.jpa.entity.*;
+import victor.training.performance.jpa.repo.CountryRepo;
 import victor.training.performance.jpa.repo.ParentRepo;
 import victor.training.performance.jpa.repo.ParentRepo.ParentProjection;
-import victor.training.performance.jpa.repo.CountryRepo;
 
-import jakarta.persistence.EntityManager;
 import java.util.Collection;
 import java.util.List;
 import java.util.Set;
 
-import static java.util.stream.Collectors.joining;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.tuple;
 import static org.springframework.test.annotation.DirtiesContext.ClassMode.BEFORE_EACH_TEST_METHOD;
@@ -39,6 +38,8 @@ public class NPlusOne {
 
   @BeforeEach
   void persistData() {
+    repo.deleteAll();
+    countryRepo.deleteAll();
     Country romania = countryRepo.save(new Country(1L, "Romania"));
     Country moldavia = countryRepo.save(new Country(2L, "Moldavia"));
     repo.save(new Parent("Victor")

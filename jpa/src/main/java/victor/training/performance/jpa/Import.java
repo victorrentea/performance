@@ -19,7 +19,6 @@ import java.util.List;
 @Service
 @RequiredArgsConstructor
 public class Import {
-  public static final int N_PAGES = 2;
   public static final int ITEMS_PER_PAGE = 5;
   private final UberRepo uberRepo;
   private final UserRepo userRepo;
@@ -41,7 +40,7 @@ public class Import {
     log.info("▶️▶️▶️▶️▶️▶️ Start page");
     for (ImportedRecord record : page) {
       Country country = countryRepo.findByIso2Code("RO").orElseThrow();
-      User user = userRepo.getReferenceById(record.userId);
+      User user = userRepo.findById(record.userId()).orElseThrow();
       Uber entity = new Uber()
           .setFiscalCountry(country)
           .setCreatedBy(user);

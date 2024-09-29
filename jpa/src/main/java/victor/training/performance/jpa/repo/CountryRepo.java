@@ -16,9 +16,9 @@ public interface CountryRepo extends JpaRepository<Country, Long> {
   })
   List<Country> findAll();
 
-  @QueryHints({
-      @QueryHint(name = "org.hibernate.cacheable", value = "true"),
-      @QueryHint(name = "org.hibernate.cacheRegion", value = "country-by-iso")
-  })
+//  @QueryHints({
+//      @QueryHint(name = "org.hibernate.cacheable", value = "true"),
+//      @QueryHint(name = "org.hibernate.cacheRegion", value = "country-by-iso")
+//  })
   Optional<Country> findByIso2Code(String iso2Code);
 }
