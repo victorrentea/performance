@@ -1,7 +1,7 @@
 package victor.training.performance.jpa.uber;
 
-import javax.persistence.Entity;
-import javax.persistence.Id;
+import jakarta.persistence.Entity;
+import jakarta.persistence.Id;
 
 @Entity
 public class Scope { // old-school static 'referential' data - prefer enum ScopeEnum

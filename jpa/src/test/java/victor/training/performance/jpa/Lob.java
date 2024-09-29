@@ -14,7 +14,7 @@ import org.springframework.test.annotation.Rollback;
 import org.springframework.test.context.transaction.TestTransaction;
 import org.springframework.transaction.annotation.Transactional;
 
-import javax.persistence.*;
+import jakarta.persistence.*;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -58,10 +58,9 @@ public class Lob {
 
       // ============= WRITING ==================
       Session hibernateSession = (Session) entityManager.getDelegate();
-      LobCreator lobCreator = Hibernate.getLobCreator(hibernateSession);
 
       InputStream fileInputStream = new FileInputStream(tempFile);
-      Blob blob = lobCreator.createBlob(fileInputStream, tempFile.length());
+      Blob blob = hibernateSession.getLobHelper().createBlob(fileInputStream, tempFile.length());
 
 
       Prof prof = new Prof()
@@ -107,10 +106,10 @@ class Prof {
    private String name;
 
    @Basic(fetch = FetchType.LAZY)
-   @javax.persistence.Lob // CLOB
+   @jakarta.persistence.Lob // CLOB
    private String cvMarkdown; // BIG and dangerous, TODO move away
 
-   @javax.persistence.Lob // BLOB
+   @jakarta.persistence.Lob // BLOB
    private Blob cvPdf;
 }
 
@@ -125,10 +124,10 @@ class ProfData {
    // TODO @MapsId // shared PK with Prof https://vladmihalcea.com/the-best-way-to-map-a-onetoone-relationship-with-jpa-and-hibernate/
    private Prof prof;
 
-   @javax.persistence.Lob
+   @jakarta.persistence.Lob
    private byte[] cvPdf; // BLOB
 
-   @javax.persistence.Lob
+   @jakarta.persistence.Lob
    private String cvMarkdown; // CLOB
 }
 

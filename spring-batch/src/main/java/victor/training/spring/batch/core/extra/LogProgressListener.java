@@ -29,7 +29,7 @@ public class LogProgressListener implements ChunkListener {
     public void afterChunk(ChunkContext context) {
         chunksCount++;
         StepExecution stepExecution = context.getStepContext().getStepExecution();
-        int totalRead = stepExecution.getReadCount() + stepExecution.getReadSkipCount();
+        long totalRead = stepExecution.getReadCount() + stepExecution.getReadSkipCount();
         int newPercent = (int) Math.round(totalRead * 100d / totalItems);
         boolean passedEnoughTime = now().minusSeconds(percentDisplayDeltaSeconds).isAfter(lastDisplayTime);
         boolean lastChunk = totalRead == totalItems;

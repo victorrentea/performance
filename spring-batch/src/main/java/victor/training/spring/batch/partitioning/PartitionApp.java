@@ -27,7 +27,7 @@ import victor.training.spring.batch.core.extra.CaptureStartTimeListener;
 import victor.training.spring.batch.core.PersonXml;
 import victor.training.spring.batch.core.domain.Person;
 
-import javax.persistence.EntityManagerFactory;
+import jakarta.persistence.EntityManagerFactory;
 import java.io.IOException;
 
 @Slf4j

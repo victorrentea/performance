@@ -4,7 +4,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.lang.Nullable;
 
-import javax.validation.constraints.Null;
+import jakarta.validation.constraints.Null;
 import java.util.List;
 
 import static victor.training.performance.jpa.uber.UberEntity.*;

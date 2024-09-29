@@ -16,7 +16,7 @@ import org.springframework.transaction.annotation.Transactional;
 import victor.training.performance.jpa.uber.Country;
 import victor.training.performance.jpa.uber.CountryRepo;
 
-import javax.persistence.EntityManager;
+import jakarta.persistence.EntityManager;
 
 import static org.assertj.core.api.Assertions.assertThat;
 

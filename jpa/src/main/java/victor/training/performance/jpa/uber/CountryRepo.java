@@ -3,7 +3,7 @@ package victor.training.performance.jpa.uber;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.QueryHints;
 
-import javax.persistence.QueryHint;
+import jakarta.persistence.QueryHint;
 import java.util.List;
 
 public interface CountryRepo extends JpaRepository<Country, Long> {

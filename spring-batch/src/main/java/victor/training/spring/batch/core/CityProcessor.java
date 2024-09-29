@@ -9,7 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import victor.training.spring.batch.core.domain.City;
 import victor.training.spring.batch.core.domain.CityRepo;
 
-import javax.annotation.PostConstruct;
+import jakarta.annotation.PostConstruct;
 import java.util.Set;
 
 import static java.util.stream.Collectors.toSet;

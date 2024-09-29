@@ -13,7 +13,7 @@ import org.springframework.transaction.annotation.Transactional;
 import victor.training.performance.jpa.uber.*;
 import victor.training.performance.jpa.uber.UberEntity.Status;
 
-import javax.persistence.EntityManager;
+import jakarta.persistence.EntityManager;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;

@@ -2,7 +2,7 @@ package victor.training.spring.batch.core.domain;
 
 import lombok.Data;
 
-import javax.persistence.*;
+import jakarta.persistence.*;
 
 @Data
 @Entity

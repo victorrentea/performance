@@ -7,7 +7,7 @@ import org.springframework.transaction.annotation.Transactional;
 import victor.training.spring.batch.core.domain.City;
 import victor.training.spring.batch.core.domain.Person;
 
-import javax.persistence.EntityManager;
+import jakarta.persistence.EntityManager;
 import java.util.ArrayList;
 import java.util.List;
 

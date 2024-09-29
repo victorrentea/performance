@@ -16,7 +16,7 @@ import victor.training.performance.jpa.parent.ParentRepo.ParentProjection;
 import victor.training.performance.jpa.uber.Country;
 import victor.training.performance.jpa.uber.CountryRepo;
 
-import javax.persistence.EntityManager;
+import jakarta.persistence.EntityManager;
 import java.util.Collection;
 import java.util.List;
 import java.util.Set;

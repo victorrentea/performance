@@ -2,9 +2,9 @@ package victor.training.performance.jpa.uber;
 
 import lombok.Data;
 
-import javax.persistence.*;
+import jakarta.persistence.*;
 
-import static javax.persistence.EnumType.STRING;
+import static jakarta.persistence.EnumType.STRING;
 
 @Entity
 @Data

@@ -1,8 +1,8 @@
 package victor.training.performance.jpa.uber;
 
-import javax.persistence.*;
+import jakarta.persistence.*;
 
-import static javax.persistence.EnumType.STRING;
+import static jakarta.persistence.EnumType.STRING;
 
 @Entity
 @Table(name = "USERS")

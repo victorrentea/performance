@@ -6,6 +6,7 @@ import victor.training.spring.batch.core.domain.Person;
 
 import javax.xml.bind.annotation.XmlRootElement;
 
+
 @Data
 @NoArgsConstructor
 @XmlRootElement(name = "person")

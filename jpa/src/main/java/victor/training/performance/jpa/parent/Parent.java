@@ -4,11 +4,11 @@ import lombok.Getter;
 import lombok.Setter;
 import victor.training.performance.jpa.uber.Country;
 
-import javax.persistence.*;
+import jakarta.persistence.*;
 import java.util.HashSet;
 import java.util.Set;
 
-import static javax.persistence.CascadeType.PERSIST;
+import static jakarta.persistence.CascadeType.PERSIST;
 
 @Getter
 @Setter

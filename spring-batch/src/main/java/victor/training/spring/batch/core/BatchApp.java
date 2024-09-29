@@ -28,7 +28,7 @@ import victor.training.spring.batch.core.extra.LogProgressListener;
 import victor.training.spring.batch.core.extra.LogSqlForFirstChunkListener;
 import victor.training.spring.batch.util.PerformanceUtil;
 
-import javax.persistence.EntityManagerFactory;
+import jakarta.persistence.EntityManagerFactory;
 import java.io.File;
 import java.io.IOException;
 
