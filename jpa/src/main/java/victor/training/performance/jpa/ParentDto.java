@@ -1,4 +1,7 @@
-package victor.training.performance.jpa.parent;
+package victor.training.performance.jpa;
+
+import victor.training.performance.jpa.entity.Child;
+import victor.training.performance.jpa.entity.Parent;
 
 import static java.util.stream.Collectors.joining;
 

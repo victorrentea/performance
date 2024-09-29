@@ -1,4 +1,4 @@
-package victor.training.performance.jpa.uber;
+package victor.training.performance.jpa.entity;
 
 import java.util.stream.Stream;
 

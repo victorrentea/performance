@@ -1,4 +1,4 @@
-package victor.training.performance.jpa.uber;
+package victor.training.performance.jpa.entity;
 
 import lombok.Data;
 
@@ -20,7 +20,7 @@ public class Country {
    private String iso3Code;
    private String continent;
 
-   private Country() {
+   protected Country() {
    }
 
    public Country(Long id, String name) {

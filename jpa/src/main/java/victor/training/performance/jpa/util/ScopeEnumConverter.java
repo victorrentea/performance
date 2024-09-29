@@ -1,7 +1,8 @@
-package victor.training.performance.jpa.uber;
+package victor.training.performance.jpa.util;
 
 import jakarta.persistence.AttributeConverter;
 import jakarta.persistence.Converter;
+import victor.training.performance.jpa.entity.ScopeEnum;
 
 @Converter
 public class ScopeEnumConverter implements AttributeConverter<ScopeEnum, String> {

@@ -10,8 +10,12 @@ import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.annotation.Rollback;
 import org.springframework.test.context.transaction.TestTransaction;
 import org.springframework.transaction.annotation.Transactional;
-import victor.training.performance.jpa.uber.*;
-import victor.training.performance.jpa.uber.UberEntity.Status;
+import victor.training.performance.jpa.entity.*;
+import victor.training.performance.jpa.repo.CountryRepo;
+import victor.training.performance.jpa.repo.ScopeRepo;
+import victor.training.performance.jpa.repo.UberRepo;
+import victor.training.performance.jpa.repo.UserRepo;
+import victor.training.performance.jpa.entity.Uber.Status;
 
 import jakarta.persistence.EntityManager;
 import java.util.HashMap;
@@ -29,7 +33,7 @@ import static org.springframework.test.annotation.DirtiesContext.ClassMode.BEFOR
 @Transactional
 @Rollback(false) // don't wipe the data after each test (for debugging)
 @DirtiesContext(classMode = BEFORE_EACH_TEST_METHOD) // recreate DB schema before each test
-public class UberEntityTest {
+public class UberEntity {
     @Autowired
     private CountryRepo countryRepo;
     @Autowired
@@ -39,9 +43,9 @@ public class UberEntityTest {
     @Autowired
     private EntityManager em;
     @Autowired
-    private UberEntityRepo uberRepo;
+    private UberRepo uberRepo;
 
-    private Long uberId;
+    private String uberId;
 
     @BeforeEach
     final void before() {
@@ -54,7 +58,7 @@ public class UberEntityTest {
         User testUser = userRepo.save(new User("test"));
         Scope globalScope = scopeRepo.save(new Scope(1L, "Global"));
 
-        UberEntity uber = new UberEntity()
+        Uber uber = new Uber()
                 .setName("::uberName::")
                 .setStatus(Status.SUBMITTED)
                 .setOriginCountry(belgium)
@@ -74,7 +78,7 @@ public class UberEntityTest {
     @Test
     public void jpql() {
         log.info("SELECTING a 'very OOP' @Entity with JPQL ...");
-         List<UberEntity> list = uberRepo.findAll();
+         List<Uber> list = uberRepo.findAll();
 //        List<UberEntity> list = uberRepo.findAllWithQuery();// EQUIVALENT
 //        List<UberEntity> list = uberRepo.findByName("::uberName::");
         log.info("Loaded using JPQL (see how many queries are above):\n" + list);
@@ -83,7 +87,7 @@ public class UberEntityTest {
     @Test
     public void findById() {
         log.info("Loading a 'very OOP' @Entity by id...");
-        UberEntity uber = uberRepo.findById(uberId).orElseThrow(); // or em.find(UberEntity.class, id); in plain JPA
+        Uber uber = uberRepo.findById(uberId).orElseThrow(); // or em.find(UberEntity.class, id); in plain JPA
         log.info("Loaded using findById (inspect the above query):\n" + uber);
 
         // Use-case: I only loaded UberEntity to get its status
@@ -110,7 +114,7 @@ public class UberEntityTest {
     }
 
     private List<UberSearchResult> classicSearch(UberSearchCriteria criteria) {
-        String jpql = "SELECT u FROM UberEntity u WHERE 1 = 1 ";
+        String jpql = "SELECT u FROM Uber u WHERE 1 = 1 ";
         // alternative implementation: CriteriaAPI, Criteria+Metamodel, QueryDSL, Spring Specifications
         Map<String, Object> params = new HashMap<>();
         if (criteria.name != null) {
@@ -121,7 +125,7 @@ public class UberEntityTest {
             jpql += " AND u.status = :status ";
             params.put("status", criteria.status);
         }
-        var query = em.createQuery(jpql, UberEntity.class);
+        var query = em.createQuery(jpql, Uber.class);
         for (String key : params.keySet()) {
             query.setParameter(key, params.get(key));
         }
@@ -133,7 +137,7 @@ public class UberEntityTest {
         return results.stream().map(this::toResult).collect(toList());
     }
 
-    private UberSearchResult toResult(UberEntity entity) {
+    private UberSearchResult toResult(Uber entity) {
         return new UberSearchResult(
             entity.getId(),
             entity.getName(),
@@ -143,6 +147,6 @@ public class UberEntityTest {
     @Builder
     record UberSearchCriteria(String name, Status status, boolean hasPassport) {}
 
-    record UberSearchResult(Long id, String name, String originCountry) {}
+    record UberSearchResult(String id, String name, String originCountry) {}
 }
 

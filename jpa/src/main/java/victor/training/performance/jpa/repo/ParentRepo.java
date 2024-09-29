@@ -1,9 +1,12 @@
-package victor.training.performance.jpa.parent;
+package victor.training.performance.jpa.repo;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
+import victor.training.performance.jpa.entity.Parent;
+import victor.training.performance.jpa.entity.ParentSubselect;
+import victor.training.performance.jpa.entity.ParentView;
 
 import java.util.List;
 import java.util.Set;

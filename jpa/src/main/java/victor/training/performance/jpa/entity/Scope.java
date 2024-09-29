@@ -1,15 +1,15 @@
-package victor.training.performance.jpa.uber;
+package victor.training.performance.jpa.entity;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 
 @Entity
-public class Scope { // old-school static 'referential' data - prefer enum ScopeEnum
+public class Scope { // old-school static 'referential' data -> prefer enum ScopeEnum
    @Id
    private Long id;
    private String name;
 
-   private Scope() {
+   protected Scope() {
    }
 
    public Scope(Long id, String name) {

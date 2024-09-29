@@ -1,100 +1,75 @@
 package victor.training.performance.jpa;
 
-import lombok.Getter;
-import lombok.Setter;
+import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.test.annotation.DirtiesContext;
-import org.springframework.test.annotation.Rollback;
-import org.springframework.test.context.transaction.TestTransaction;
-import org.springframework.transaction.annotation.Transactional;
+import victor.training.performance.jpa.CaptureSystemOutput.OutputCapture;
+import victor.training.performance.jpa.Import.ImportedRecord;
+import victor.training.performance.jpa.entity.Country;
+import victor.training.performance.jpa.entity.Parent;
+import victor.training.performance.jpa.entity.Uber;
+import victor.training.performance.jpa.entity.User;
+import victor.training.performance.jpa.repo.CountryRepo;
+import victor.training.performance.jpa.repo.ParentRepo;
+import victor.training.performance.jpa.repo.UberRepo;
+import victor.training.performance.jpa.repo.UserRepo;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.Id;
-import jakarta.persistence.ManyToOne;
 import java.util.List;
 import java.util.stream.IntStream;
 
-import static java.lang.System.currentTimeMillis;
-import static java.util.stream.Collectors.toList;
+import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 
 @SpringBootTest
-@Transactional
-@Rollback(false)
-@DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_EACH_TEST_METHOD)
+@Slf4j
 public class MassInsert {
-  private static final Logger log = LoggerFactory.getLogger(MassInsert.class);
-
   @Autowired
-  private DocumentRepo documentRepo;
+  Import massInsert;
   @Autowired
-  private DocumentTypeRepo documentTypeRepo;
-  private List<Long> docTypeIds;
+  ParentRepo parentRepo;
+  @Autowired
+  CountryRepo countryRepo;
+  @Autowired
+  UserRepo userRepo;
+  @Autowired
+  UberRepo uberRepo;
+  Long userId;
 
   @BeforeEach
-  final void before() {
-    List<DocumentType> docTypes = IntStream.range(1, 20).mapToObj(i -> "DocType" + i).map(DocumentType::new).collect(toList());
-    docTypeIds = documentTypeRepo.saveAll(docTypes).stream().map(DocumentType::getId).collect(toList());
-    TestTransaction.end(); // flush and close the Persistence Context
+  final void setup() {
+    countryRepo.save(new Country(1L, "Romania").setIso2Code("RO"));
+    userId = userRepo.save(new User("jdoe")).getId();
   }
 
   @Test
-  public void importData() {
-    long t0 = currentTimeMillis();
-    for (int page = 0; page < 20; page++) {
-      TestTransaction.start();
-      log.debug("--- PAGE " + page);
-      for (int i = 0; i < 100; i++) {
-        Document document = new Document();
-        Long docTypeId = docTypeIds.get(i % docTypeIds.size());
-        document.setType(documentTypeRepo.findById(docTypeId).orElseThrow());
-        documentRepo.save(document);
-      }
-      TestTransaction.end(); // flush and close the Persistence Context
-    }
-    long t1 = currentTimeMillis();
-    log.debug("Took {} ms (naive)", t1 - t0);
-
-    // TODO FK to doctype
-    // TODO docTypeId = docTypeRepo.findByName(""): preload a Map<String, Long> docTypeNameToId
-    // TODO batching inserts
-    // TODO identifiers: Sequence size (@see gaps!), IDENTITY, UUID
+  @Disabled// TODO enable and fix
+  @CaptureSystemOutput
+  public void oneUuid(OutputCapture capture) {
+    uberRepo.save(new Uber());
+    assertThat(capture.toString()).doesNotContainIgnoringCase("SELECT");
   }
-}
 
-// When using a UUID as PK:
-// @GenericGenerator(name = "uuid", strategy = "victor.training.jpa.perf.UUIDGenerator") +  @GeneratedValue(generator = "uuid") private String id;
-@Entity
-@Getter
-@Setter
- class Document {
-  @Id
-  @GeneratedValue
-  private Long id;
-  @ManyToOne
-  private DocumentType type;
-}
-interface DocumentRepo extends JpaRepository<Document, Long> {
-}
-@Entity
-@Getter
-@Setter
- class DocumentType {
-  @Id
-  @GeneratedValue
-  private Long id;
-  private String label;
-  public DocumentType() {}
-
-  public DocumentType(String label) {
-    this.label = label;
+  @Test
+  public void massInsert() {
+    log.info("vvvvvvvvvvv Start mass insert");
+    List<ImportedRecord> records = IntStream.range(0, 10)
+        .mapToObj(i -> new ImportedRecord("name" + i, "RO", userId))
+        .toList();
+    massInsert.bulkImport(records);
+    log.info("^^^^^^^^^^^ End mass insert");
   }
-}
-interface DocumentTypeRepo extends JpaRepository<DocumentType, Long> {
+
+  @Test
+  @Disabled("only a problem in older Hibernate versions")
+  public void sequence_1_legacy() {
+    parentRepo.save(new Parent());
+    parentRepo.save(new Parent());
+    parentRepo.save(new Parent());
+    parentRepo.save(new Parent());
+    parentRepo.save(new Parent());
+
+    // You should only see 1-2 SELECT from the sequence
+  }
 }

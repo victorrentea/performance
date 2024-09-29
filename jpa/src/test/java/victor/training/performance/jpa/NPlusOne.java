@@ -5,16 +5,14 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.annotation.Rollback;
 import org.springframework.test.context.transaction.TestTransaction;
 import org.springframework.transaction.annotation.Transactional;
-import victor.training.performance.jpa.parent.*;
-import victor.training.performance.jpa.parent.ParentRepo.ParentProjection;
-import victor.training.performance.jpa.uber.Country;
-import victor.training.performance.jpa.uber.CountryRepo;
+import victor.training.performance.jpa.entity.*;
+import victor.training.performance.jpa.repo.ParentRepo;
+import victor.training.performance.jpa.repo.ParentRepo.ParentProjection;
+import victor.training.performance.jpa.repo.CountryRepo;
 
 import jakarta.persistence.EntityManager;
 import java.util.Collection;
@@ -24,7 +22,6 @@ import java.util.Set;
 import static java.util.stream.Collectors.joining;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.tuple;
-import static org.springframework.data.domain.Sort.Direction.ASC;
 import static org.springframework.test.annotation.DirtiesContext.ClassMode.BEFORE_EACH_TEST_METHOD;
 
 @Slf4j

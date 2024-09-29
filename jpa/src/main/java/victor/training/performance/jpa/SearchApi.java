@@ -1,4 +1,4 @@
-package victor.training.performance.jpa.parent;
+package victor.training.performance.jpa;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -7,6 +7,8 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort.Direction;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
+import victor.training.performance.jpa.entity.Parent;
+import victor.training.performance.jpa.repo.ParentRepo;
 
 import java.util.List;
 import java.util.Map;
@@ -17,17 +19,12 @@ import static org.springframework.data.domain.Sort.Direction.ASC;
 
 
 @Slf4j
-//@Profile("!test")
 @RestController
 @RequiredArgsConstructor
-public class ParentSearchApi {
+public class SearchApi {
    private final ParentRepo repo;
 
-   public static class ParentDto {
-//       TODO children csv.
-   }
-
-   @GetMapping("parent/search")
+   @GetMapping("search")
    @Transactional
    public Page<Parent> searchPaginated(
            @RequestParam(defaultValue = "ar") String q,
@@ -43,7 +40,7 @@ public class ParentSearchApi {
       return parentPage;
    }
 
-   @GetMapping("parent/search-driving")
+   @GetMapping("search-driving")
    @Transactional
    public Page<Parent> drivingQuery() {
       PageRequest pageRequest = PageRequest.of(0, 20, ASC, "name");

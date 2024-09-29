@@ -1,17 +1,20 @@
-package victor.training.performance.jpa.uber;
-
-import lombok.Data;
+package victor.training.performance.jpa.entity;
 
 import jakarta.persistence.*;
+import lombok.Data;
+import victor.training.performance.jpa.util.UUIDIdentifierGenerator.GeneratedUUID;
+
+import java.sql.Clob;
 
 import static jakarta.persistence.EnumType.STRING;
 
 @Entity
 @Data
-public class UberEntity {
+public class Uber {
     @Id
-    @GeneratedValue
-    private Long id;
+    @GeneratedUUID// .save(entity{id=null}) => generator is called to create an id
+    private String id;// = UUID.randomUUID().toString(); // .save(entity{id!=null}) => .merge() => +1 SELECT before every INSERT
+
     private String name;
     private String address;
     private String city;
@@ -35,11 +38,14 @@ public class UberEntity {
 //    private ScopeEnum scopeEnum;
     @ManyToOne
     private User createdBy;
-    @Enumerated(STRING)
-    private Status status;
-
     public enum Status {
         DRAFT, SUBMITTED, DELETED
     }
+    @Enumerated(STRING)
+    private Status status;
+
+    @Lob
+//    private char[] content;
+    private Clob content;
 }
 

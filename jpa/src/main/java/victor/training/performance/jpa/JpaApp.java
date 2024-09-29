@@ -6,9 +6,9 @@ import org.springframework.cache.annotation.EnableCaching;
 
 @EnableCaching
 @SpringBootApplication
-public class JpaPerformanceApp {
+public class JpaApp {
     public static void main(String[] args) {
-        SpringApplication.run(JpaPerformanceApp.class, args);
+        SpringApplication.run(JpaApp.class, args);
     }
 
 }

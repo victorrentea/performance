@@ -1,4 +1,4 @@
-package victor.training.performance.jpa.parent;
+package victor.training.performance.jpa.entity;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;

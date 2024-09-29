@@ -13,8 +13,8 @@ import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.annotation.DirtiesContext.ClassMode;
 import org.springframework.test.context.jdbc.Sql;
 import org.springframework.transaction.annotation.Transactional;
-import victor.training.performance.jpa.uber.Country;
-import victor.training.performance.jpa.uber.CountryRepo;
+import victor.training.performance.jpa.entity.Country;
+import victor.training.performance.jpa.repo.CountryRepo;
 
 import jakarta.persistence.EntityManager;
 
@@ -72,7 +72,7 @@ public class Cache_2ndLevel {
 
       assertThat(session().getSessionFactory().getCache().containsEntity(Country.class, 1L)).isTrue();
       long hitCount = session().getSessionFactory().getStatistics()
-          .getDomainDataRegionStatistics("victor.training.performance.jpa.uber.Country")
+          .getDomainDataRegionStatistics("victor.training.performance.jpa.entity.Country")
           .getHitCount();
       assertThat(hitCount).isEqualTo(1);
    }
@@ -102,6 +102,6 @@ public class Cache_2ndLevel {
       assertThat(cache.containsEntity(Country.class, 2L)).isTrue();
 
       System.out.println(cacheManager.getCacheNames());
-      System.out.println(cacheManager.getCache("victor.training.performance.jpa.uber.Country").getNativeCache());
+      System.out.println(cacheManager.getCache("victor.training.performance.jpa.entity.Country").getNativeCache());
    }
 }
