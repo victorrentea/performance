@@ -5,7 +5,8 @@ import victor.training.performance.jpa.entity.Parent;
 
 import static java.util.stream.Collectors.joining;
 
-public record ParentDto(Long id, String name, String childrenNames) { // smells like JSON
+public record ParentDto(Long id, String name, String childrenNames) { // returned as JSON
+
     public static ParentDto fromEntity(Parent parent) {
       String childrenNames = parent.getChildren().stream()
           .map(Child::getName)

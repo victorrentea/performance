@@ -24,7 +24,7 @@ import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 
 @SpringBootTest
 @Slf4j
-public class MassInsert {
+public class MassImport {
   @Autowired
   Import massInsert;
   @Autowired

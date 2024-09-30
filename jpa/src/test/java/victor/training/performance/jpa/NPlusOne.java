@@ -17,7 +17,6 @@ import victor.training.performance.jpa.repo.ParentRepo.ParentProjection;
 
 import java.util.Collection;
 import java.util.List;
-import java.util.Set;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.tuple;
@@ -110,17 +109,6 @@ public class NPlusOne {
   @Test
   public void view() {
     List<ParentView> results = repo.view();
-    assertResults(results);
-  }
-
-  // ======================= Driving Query: identify data + fetch data =============================
-  @Test
-  public void drivingQuery() {
-    List<Long> parentIds = repo.findIds("%");
-    log.info("Matched parents IDs: {}", parentIds);
-    Set<Parent> fullParents = repo.fetchParentsByIds(parentIds);
-
-    List<ParentDto> results = toSearchResults(fullParents);
     assertResults(results);
   }
 

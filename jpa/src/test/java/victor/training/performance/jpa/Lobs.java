@@ -35,7 +35,7 @@ public class Lobs {
   @Test
   void streamDataInOutDb() throws IOException, SQLException {
     File tempFile = new File("pom.xml"); // imagine large
-    System.out.println("File size: " + Util.formatSize(tempFile.length()));
+    System.out.println("File size bytes: " + tempFile.length());
 
     // ============= WRITING TO DB ==================
     Session hibernateSession = (Session) entityManager.getDelegate();
@@ -55,7 +55,7 @@ public class Lobs {
 
     // usually ofloaded to a temp file on disk
     char[] chars = IOUtils.toCharArray(uberLoaded.getContent().getCharacterStream());
-    System.out.println("clob size: " + Util.formatSize(chars.length));
+    System.out.println("Downloaded clob size bytes: " + chars.length);
   }
 
 }

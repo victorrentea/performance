@@ -5,71 +5,50 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort.Direction;
-import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 import victor.training.performance.jpa.entity.Parent;
-import victor.training.performance.jpa.repo.ParentRepo;
-
-import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
-
-import static java.util.function.Function.identity;
-import static org.springframework.data.domain.Sort.Direction.ASC;
+import victor.training.performance.jpa.repo.ParentSearchRepo;
 
 
 @Slf4j
 @RestController
 @RequiredArgsConstructor
 public class SearchApi {
-   private final ParentRepo repo;
+  private final ParentSearchRepo parentSearchRepo;
 
-   @GetMapping("search")
-   @Transactional
-   public Page<Parent> searchPaginated(
-           @RequestParam(defaultValue = "ar") String q,
-           @RequestParam(defaultValue = "0") int pageIndex,
-           @RequestParam(defaultValue = "20") int pageSize,
-           @RequestParam(defaultValue = "name") String order,
-           @RequestParam(defaultValue = "ASC") String dir
-           ) {
-//      PageRequest pageRequest = PageRequest.of(0, 20, ASC, "name");
-      PageRequest pageRequest = PageRequest.of(pageIndex, pageSize, Direction.fromString(dir), order);
-      Page<Parent> parentPage = repo.searchByNameLike("%"+q+"%", pageRequest);
-      log.info("Returning data");
-      return parentPage;
-   }
+  @GetMapping("search")
+  public Page<Parent> searchPaginated(
+      @RequestParam(defaultValue = "ar") String q,
+      @RequestParam(defaultValue = "0") int pageIndex,
+      @RequestParam(defaultValue = "20") int pageSize,
+      @RequestParam(defaultValue = "name") String order,
+      @RequestParam(defaultValue = "ASC") String dir
+  ) {
+    PageRequest pageRequest = PageRequest.of(pageIndex, pageSize, Direction.fromString(dir), order);
 
-   @GetMapping("search-driving")
-   @Transactional
-   public Page<Parent> drivingQuery() {
-      PageRequest pageRequest = PageRequest.of(0, 20, ASC, "name");
-      Page<Long> parentIdsPage = repo.findIdsPage("%ar%", pageRequest);
-      List<Long> parentIds = parentIdsPage.getContent();
-      log.info("Matched parents: {}", parentIds);
-      Map<Long, Parent> parentDataById = repo.fetchParentsByIds(parentIds)
-              .stream().collect(Collectors.toMap(Parent::getId, identity()));
-      return parentIdsPage.map(parentDataById::get);
-   }
+    return parentSearchRepo.searchByNameLike("%" + q + "%", pageRequest);
+    // TODO #1 - start the JpaApp and inspect response of http://localhost:8080/search
+    //   then look in the logs to see the number of queries executed
 
-   // TODO? #3) Break up with Hibernate and extract the hierarchical objects manually from a resultset
-   //  (grouped by parentId)
+    // TODO #2 - return a list of ParentDto mapped from entities ; commit
+    //   reduce the number of DB queries using @BatchSize ; commit
 
+    // TODO #3 - use the driving query technique
+    //   1. use #findIdsPage to identify which Parents match the criteria
+    //   2. use #fetchParentsByIds to load Parents with children
+    //   commit;
 
+    // TODO #4 - write a @Query method that select from ParentView or ParentSubselect instead of Parent; commit
+    //   how many queries are executed now? ; commit
 
-   //<editor-fold desc="initial data">
-//   private final JdbcTemplate jdbc;
-//   @EventListener(ApplicationStartedEvent.class)
-//   public void insertInitialData() {
-//      log.warn("INSERTING data ...");
-//      jdbc.update("INSERT INTO COUNTRY(ID, NAME) SELECT X, 'Country ' || X  FROM SYSTEM_RANGE(1, 20)");
-//      jdbc.update("INSERT INTO PARENT(ID, NAME, COUNTRY_ID, AGE) SELECT X, 'Parent' || X, 1 + MOD(X,20),  20 + MOD(X*17,40),   FROM SYSTEM_RANGE(1, 1000)");
-//
-//      // jdbc.update("INSERT INTO PARENT(ID, NAME) SELECT X, 'Parent ' || X FROM SYSTEM_RANGE(1, 1000)");
-//      jdbc.update("INSERT INTO CHILD(ID, NAME, PARENT_ID) SELECT X, 'Child' || X || '-1',X FROM SYSTEM_RANGE(1, 1000)");
-//      jdbc.update("INSERT INTO CHILD(ID, NAME, PARENT_ID) SELECT X + 1000, 'Child' || X || '-2', X FROM SYSTEM_RANGE(1, 1000)");
-//      log.info("DONE");
-//   }
-   //</editor-fold>
+    // TODO #5 (bonus) - add a new optional search criteria: country name (exact match, case-insensitive)
+    //  The query should include only the provided criteria:
+    //  - ?q=t1x&country=country2 -> returns all Parents with name containing 't1x' and country 'country2'
+    //  - ?q=t1x -> returns all Parents with name containing 't1x' regardless of country
+    //  Hint: inspiration: victor.training.performance.jpa.repo.UberRepo.searchFixedJqpl
+  }
+
 }
 

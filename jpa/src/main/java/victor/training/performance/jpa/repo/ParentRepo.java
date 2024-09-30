@@ -1,7 +1,5 @@
 package victor.training.performance.jpa.repo;
 
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import victor.training.performance.jpa.entity.Parent;
@@ -9,7 +7,6 @@ import victor.training.performance.jpa.entity.ParentSubselect;
 import victor.training.performance.jpa.entity.ParentView;
 
 import java.util.List;
-import java.util.Set;
 import java.util.stream.Stream;
 
 public interface ParentRepo extends JpaRepository<Parent, Long> {
@@ -41,24 +38,6 @@ public interface ParentRepo extends JpaRepository<Parent, Long> {
     SELECT pv FROM ParentView pv
     """)
   List<ParentView> view();
-
-
-  // A) Retrieve hierarchical data allowing lazy load to trigger
-  @Query("SELECT p FROM Parent p WHERE p.name LIKE ?1")
-  Page<Parent> searchByNameLike(String namePart, Pageable pageable);
-
-  // B) Retrieve hierarchical data via Driving Query
-  @Query("SELECT p.id FROM Parent p WHERE p.name LIKE ?1")
-  Page<Long> findIdsPage(String namePart, Pageable pageable); // #1 driving
-  @Query("SELECT p.id FROM Parent p WHERE p.name LIKE ?1")
-  List<Long> findIds(String namePart); // #1 driving
-  @Query("""
-      SELECT p
-      FROM Parent p
-        LEFT JOIN FETCH p.children
-        LEFT JOIN FETCH p.country
-      WHERE p.id IN ?1""")
-  Set<Parent> fetchParentsByIds(List<Long> parentIds); // #2 fetching
 
   @Query("SELECT p FROM Parent p")
   Stream<Parent> streamAll();

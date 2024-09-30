@@ -18,6 +18,7 @@ import victor.training.performance.jpa.repo.CountryRepo;
 
 import jakarta.persistence.EntityManager;
 
+import static java.lang.System.currentTimeMillis;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @Slf4j
@@ -53,8 +54,8 @@ public class Cache_2ndLevel {
    @Test
    @Transactional
    void test1stLevelCache_transactionScoped() {
-      int t1 = Util.measureCall(() -> countryRepo.findById(1L).get());
-      int t1bis = Util.measureCall(() -> countryRepo.findById(1L).get());
+      int t1 = measureCall(() -> countryRepo.findById(1L).get());
+      int t1bis = measureCall(() -> countryRepo.findById(1L).get());
 
       log.info("time={}, time again={}", t1, t1bis);
 
@@ -65,8 +66,8 @@ public class Cache_2ndLevel {
    void test2ndLevelCache_byId() {
       assertThat(session().getSessionFactory().getCache().containsEntity(Country.class, 1L)).isFalse();
 
-      int t1 = Util.measureCall(() -> System.out.println(countryRepo.findById(1L).get()));
-      int t1bis = Util.measureCall(() -> System.out.println(countryRepo.findById(1L).get()));
+      int t1 = measureCall(() -> System.out.println(countryRepo.findById(1L).get()));
+      int t1bis = measureCall(() -> System.out.println(countryRepo.findById(1L).get()));
 
       log.info("time={}, time again={}", t1, t1bis);
 
@@ -81,8 +82,8 @@ public class Cache_2ndLevel {
    void test2ndLevelCache_findAll() {
       assertThat(session().getSessionFactory().getCache().containsQuery("allCountries")).isFalse();
 
-      int t1 = Util.measureCall(() -> System.out.println(countryRepo.findAll()));
-      int t1bis = Util.measureCall(() -> System.out.println(countryRepo.findAll()));
+      int t1 = measureCall(() -> System.out.println(countryRepo.findAll()));
+      int t1bis = measureCall(() -> System.out.println(countryRepo.findAll()));
 
       log.info("time={}, time again={}", t1, t1bis);
 
@@ -103,5 +104,12 @@ public class Cache_2ndLevel {
 
       System.out.println(cacheManager.getCacheNames());
       System.out.println(cacheManager.getCache("victor.training.performance.jpa.entity.Country").getNativeCache());
+   }
+
+   public static int measureCall(Runnable r) {
+      long t0 = currentTimeMillis();
+      r.run();
+      long t1 = currentTimeMillis();
+      return (int) (t1 - t0);
    }
 }
