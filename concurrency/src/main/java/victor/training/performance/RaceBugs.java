@@ -17,7 +17,6 @@ import static java.util.concurrent.TimeUnit.HOURS;
 @Slf4j
 public class RaceBugs {
   private static List<Integer> evenNumbers = new ArrayList<>();
-
 //  private static final Object LOCK = new Object();
   private static Integer total = 0;
 
@@ -27,6 +26,9 @@ public class RaceBugs {
     int totalLocal = 0;
     for (Integer n : numbers) {
       if (n % 2 == 0) {
+        synchronized (evenNumbers) {
+          evenNumbers.add(n);
+        }
 //        total++;
         totalLocal++;
       }
