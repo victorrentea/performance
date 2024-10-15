@@ -7,6 +7,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
 import java.util.stream.IntStream;
 
 import static java.util.concurrent.TimeUnit.HOURS;
@@ -17,22 +18,23 @@ import static java.util.concurrent.TimeUnit.HOURS;
 public class RaceBugs {
   private static List<Integer> evenNumbers = new ArrayList<>();
 
+//  private static final Object LOCK = new Object();
   private static Integer total = 0;
-  private static final Object LOCK = new Object();
 
   // many parallel threads run this method:
-  private static void countEven(List<Integer> numbers) {
+  private static Integer countEven(List<Integer> numbers) {
     log.info("Start");
+    int totalLocal = 0;
     for (Integer n : numbers) {
       if (n % 2 == 0) {
-//        synchronized (RaceBugs.class) {
-        synchronized (LOCK) { // tii 'mutexul' privat in clasa
-          total++;
-//          total = new Integer(total.intValue() + 1);
-        }
+//        total++;
+        totalLocal++;
       }
     }
     log.info("End");
+    return totalLocal; // FP-style; map-reduce
+    // spark: dataframe spark in imparti si apoi aplici o suma pe partitii separat
+    // si apoi faci "reduce" de rezultate (le mergeuiesti)
   }
 
   public static void main(String[] args) throws Exception {
@@ -40,12 +42,18 @@ public class RaceBugs {
 
     List<List<Integer>> parts = splitList(fullList, 20);
 
+    List<Future<Integer>> futures = new ArrayList<>();
     ExecutorService pool = Executors.newCachedThreadPool();
     for (List<Integer> part : parts) {
-      pool.submit(() -> countEven(part));
+      var f=pool.submit(() -> countEven(part));
+      futures.add(f);
     }
     pool.shutdown();
     pool.awaitTermination(1, HOURS);
+
+    for (var f : futures) {
+      total += f.get();
+    }
 
     log.debug("Counted: " + total);
     log.debug("List.size: " + evenNumbers.size());
