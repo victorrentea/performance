@@ -19,7 +19,12 @@ public class ParallelStreams {
     long t0 = System.currentTimeMillis();
 
     Stream<Integer> stream = list.parallelStream()
-        .filter(i -> i % 2 == 0)
+        .filter(i -> {
+          log.debug("Filter " + i);
+          return i % 2 == 0;
+        })
+        .distinct()
+//        .sorted()
         .map(i -> {
           log.debug("Map " + i);
           sleepMillis(100); // network call (DB, REST, SOAP..) or CPU work
