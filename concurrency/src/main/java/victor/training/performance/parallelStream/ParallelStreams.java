@@ -23,6 +23,9 @@ public class ParallelStreams {
           sleepMillis(100); // network call (DB, REST, SOAP..) or CPU work
           return i * 2;
         }).toList();
+    // DECI: evita sa faci I/O (blocari) in taskuri pe parallelStream
+    // ca sa nu blochezi munca altora care fac si ei parallelStream
+    // pe parallelStream faci doar munca CPU
 
     long t1 = System.currentTimeMillis();
     log.debug("Took {} ms to get: {}", t1 - t0, result);
