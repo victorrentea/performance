@@ -26,14 +26,15 @@ public class Barman {
     long t0 = currentTimeMillis();
     CompletableFuture<Beer> futureBeer = supplyAsync(() -> fetchBeer());
     CompletableFuture<Vodka> futureVodka = supplyAsync(() -> fetchVodka());
-    var beer = futureBeer.get();
-    var vodka = futureVodka.get();
+    var beer = futureBeer.get(); // 1sec sta HTTP thread aici
+    var vodka = futureVodka.get(); //0 sec ca deja e gata vodka
     DillyDilly dilly = new DillyDilly(beer, vodka);
     log.info("HTTP thread blocked for {} durationMillis", currentTimeMillis() - t0);
     return dilly;
   }
 
   private Vodka fetchVodka() {
+    log.info("fetching beer");
     return rest.getForObject("http://localhost:9999/vodka", Vodka.class);
   }
 
