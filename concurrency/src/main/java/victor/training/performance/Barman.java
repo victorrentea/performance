@@ -4,7 +4,9 @@ import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.slf4j.MDC;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
+import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.client.RestTemplate;
@@ -16,7 +18,7 @@ import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 
 import static java.lang.System.currentTimeMillis;
-import static java.util.concurrent.CompletableFuture.*;
+import static java.util.concurrent.CompletableFuture.supplyAsync;
 
 @Slf4j
 @RestController
@@ -40,26 +42,35 @@ public class Barman {
     var beer = fetchBeer(); // 1sec sta HTTP thread aici
     var vodka = futureVodka.get(); //0 sec ca deja e gata vodka
     DillyDilly dilly = new DillyDilly(beer, vodka);
-    CompletableFuture.runAsync(() -> audit(dilly));
+//    CompletableFuture.runAsync(() -> audit(dilly));// interzis in Spring
+    altaClasa.audit(dilly);
     log.info("HTTP thread blocked for {} durationMillis", currentTimeMillis() - t0);
     return dilly;
   }
-
-  @SneakyThrows
-  private void audit(DillyDilly dilly) {
-    log.info("start audit");
-    Thread.sleep(1000); // pretend network
-    if (true) throw new RuntimeException("Sh*t happens");
-    log.info("end audit");
-  }
-
+  @Autowired
+  private AltaClasa altaClasa; // spring va injecta un proxy aici
   private Vodka fetchVodka() {
     log.info("fetching vodka");
     return rest.getForObject("http://localhost:9999/vodka", Vodka.class);
   }
-
   private Beer fetchBeer() {
     log.info("fetching beer in my thread");
     return rest.getForObject("http://localhost:9999/beer", Beer.class);
+  }
+}
+@Slf4j
+@Service
+class AltaClasa {
+  @Async // Spring's AOP proxy
+  // nu merge inca pt ca apelul se face IN ACEEASI CLASA!
+  // idem pt: @Transactional, @Secured, @RolesAllowed, @PreAuthorized,
+  // @PostAuthorize, @Cacheable, @CacheEvict, @RateLimiter,
+  // @Retryable, @CircuitBreaker
+  @SneakyThrows
+  public void audit(DillyDilly dilly) {
+    log.info("start audit");
+    Thread.sleep(1000); // pretend network
+    if (true) throw new RuntimeException("Sh*t happens");
+    log.info("end audit");
   }
 }
