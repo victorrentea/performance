@@ -55,16 +55,17 @@ public class Barman {
   }
   private Beer fetchBeer() {
     log.info("fetching beer in my thread");
+    if (true) throw new RuntimeException("VALUE nu mai e bere");
     return rest.getForObject("http://localhost:9999/beer", Beer.class);
   }
 
   @GetMapping("drink-nonblocking")
   public CompletableFuture<DillyDilly> drink2() {
-    CompletableFuture<Beer> futureBeer = supplyAsync(() -> fetchBeer());
-    CompletableFuture<Vodka> futureVodka = supplyAsync(() -> fetchVodka());
-    CompletableFuture<DillyDilly> futureDilly = futureBeer.thenCombine(futureVodka,
-        (beer, vodka) -> new DillyDilly(beer, vodka));
-    return futureDilly;
+    MDC.put("user","bibi");
+    CompletableFuture<Beer> futureBeer = supplyAsync(this::fetchBeer, poolBar)
+        .exceptionally(e-> new Beer().setType("ceai"));
+    CompletableFuture<Vodka> futureVodka = supplyAsync(this::fetchVodka, poolBar);
+    return futureBeer.thenCombine(futureVodka, DillyDilly::new);
   }
 }
 @Slf4j
