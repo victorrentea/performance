@@ -1,7 +1,10 @@
 package victor.training.performance;
 
+import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
+import org.slf4j.MDC;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.client.RestTemplate;
@@ -20,25 +23,43 @@ import static java.util.concurrent.CompletableFuture.*;
 public class Barman {
   @Autowired
   private RestTemplate rest;
+  @Autowired
+  private ThreadPoolTaskExecutor poolBar;
 
   @GetMapping("/drink")
   public DillyDilly drink() throws ExecutionException, InterruptedException {
     long t0 = currentTimeMillis();
-    CompletableFuture<Beer> futureBeer = supplyAsync(() -> fetchBeer());
-    CompletableFuture<Vodka> futureVodka = supplyAsync(() -> fetchVodka());
-    var beer = futureBeer.get(); // 1sec sta HTTP thread aici
+    MDC.put("user","gigi"); // afisat %X{user} de LOG_PATTERN
+    // am infipt metadate in threadul curent. si alte tehnici folosesc tot thread local:
+    // 1) @Secured/@RolesAllowed/@PreAuthorized
+    // 2) @Transactional - conexiunea curenta e tinuta pe Thread automat,
+    // 3) TraceID / CorrelationID
+    // OBLIGATORIU folosesti doar threaduri din ThreadPools manageuite de Spring,
+    // ca sa nu pierzi cele de mai sus, si ca sa poti dimensiona usor din config nr de threaduri
+    CompletableFuture<Vodka> futureVodka = supplyAsync(() -> fetchVodka(), poolBar);
+    var beer = fetchBeer(); // 1sec sta HTTP thread aici
     var vodka = futureVodka.get(); //0 sec ca deja e gata vodka
     DillyDilly dilly = new DillyDilly(beer, vodka);
+    CompletableFuture.runAsync(() -> audit(dilly));
     log.info("HTTP thread blocked for {} durationMillis", currentTimeMillis() - t0);
     return dilly;
   }
 
+  @SneakyThrows
+  private void audit(DillyDilly dilly) {
+    log.info("start audit");
+    Thread.sleep(1000); // pretend network
+    if (true) throw new RuntimeException("Sh*t happens");
+    log.info("end audit");
+  }
+
   private Vodka fetchVodka() {
-    log.info("fetching beer");
+    log.info("fetching vodka");
     return rest.getForObject("http://localhost:9999/vodka", Vodka.class);
   }
 
   private Beer fetchBeer() {
+    log.info("fetching beer in my thread");
     return rest.getForObject("http://localhost:9999/beer", Beer.class);
   }
 }

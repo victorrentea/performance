@@ -22,6 +22,7 @@ public class BarmanConfig {
     executor.setQueueCapacity(500); // how to decide?
 
     executor.setTaskDecorator(new MonitorQueueWaitingTimeTaskDecorator(meterRegistry.timer("barman-queue-time")));
+    // executorul poate fi decorat mai departe sa COPIEZE METADATELE IN TH PARINTE IN COPIL
     executor.setThreadNamePrefix("bar-");
 //    executor.setRejectedExecutionHandler(...);
     executor.initialize();
