@@ -5,6 +5,7 @@ import lombok.extern.slf4j.Slf4j;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
@@ -16,7 +17,8 @@ import static java.util.concurrent.TimeUnit.HOURS;
 @SuppressWarnings("ALL")
 @Slf4j
 public class RaceBugs {
-  private static List<Integer> evenNumbers = new ArrayList<>();
+  private static List<Integer> evenNumbers =
+      Collections.synchronizedList(new ArrayList<>());
 //  private static final Object LOCK = new Object();
   private static Integer total = 0;
 
@@ -26,9 +28,8 @@ public class RaceBugs {
     int totalLocal = 0;
     for (Integer n : numbers) {
       if (n % 2 == 0) {
-        synchronized (evenNumbers) {
-          evenNumbers.add(n);
-        }
+        new CopyOnWriteArrayList<>(evenNumbers).stream().forEach(e -> System.out.println(e));
+        evenNumbers.add(n);
 //        total++;
         totalLocal++;
       }
