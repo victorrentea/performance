@@ -31,7 +31,7 @@ public class Barman {
   @GetMapping("/drink")
   public DillyDilly drink() throws ExecutionException, InterruptedException {
     long t0 = currentTimeMillis();
-    MDC.put("user","gigi"); // afisat %X{user} de LOG_PATTERN
+    MDC.put("user", "gigi"); // afisat %X{user} de LOG_PATTERN
     // am infipt metadate in threadul curent. si alte tehnici folosesc tot thread local:
     // 1) @Secured/@RolesAllowed/@PreAuthorized
     // 2) @Transactional - conexiunea curenta e tinuta pe Thread automat,
@@ -47,12 +47,21 @@ public class Barman {
     log.info("HTTP thread blocked for {} durationMillis", currentTimeMillis() - t0);
     return dilly;
   }
+
   @Autowired
   private AltaClasa altaClasa; // spring va injecta un proxy aici
+
   private Vodka fetchVodka() {
     log.info("fetching vodka");
+    //apel BLOCANT DE REST API
     return rest.getForObject("http://localhost:9999/vodka", Vodka.class);
+    // CompletableFuture<Vodka> f= webClient.get().uri("http://localhost:9999/vodka")
+    //    .retrieve()
+    //    .bodyToMono(Vodka.class)
+    //    .toFuture(); // nu blochezi NICI UN THREAD!!
+    // tre sa ai spring-webflux nu spring-web
   }
+
   private Beer fetchBeer() {
     log.info("fetching beer in my thread");
     if (true) throw new RuntimeException("VALUE nu mai e bere");
@@ -61,13 +70,16 @@ public class Barman {
 
   @GetMapping("drink-nonblocking")
   public CompletableFuture<DillyDilly> drink2() {
-    MDC.put("user","bibi");
-    CompletableFuture<Beer> futureBeer = supplyAsync(this::fetchBeer, poolBar)
-        .exceptionally(e-> new Beer().setType("ceai"));
-    CompletableFuture<Vodka> futureVodka = supplyAsync(this::fetchVodka, poolBar);
-    return futureBeer.thenCombine(futureVodka, DillyDilly::new);
+    MDC.put("user", "bibi");
+
+    return supplyAsync(this::fetchBeer, poolBar)
+          .exceptionally(e -> new Beer().setType("ceai"))
+          .thenCombine(supplyAsync(this::fetchVodka, poolBar)
+                  .exceptionally(e->new Vodka().setBrand("Alcool sanitar")),
+            DillyDilly::new);
   }
 }
+
 @Slf4j
 @Service
 class AltaClasa {
