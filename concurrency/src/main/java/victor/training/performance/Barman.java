@@ -57,6 +57,15 @@ public class Barman {
     log.info("fetching beer in my thread");
     return rest.getForObject("http://localhost:9999/beer", Beer.class);
   }
+
+  @GetMapping("drink-nonblocking")
+  public CompletableFuture<DillyDilly> drink2() {
+    CompletableFuture<Beer> futureBeer = supplyAsync(() -> fetchBeer());
+    CompletableFuture<Vodka> futureVodka = supplyAsync(() -> fetchVodka());
+    CompletableFuture<DillyDilly> futureDilly = futureBeer.thenCombine(futureVodka,
+        (beer, vodka) -> new DillyDilly(beer, vodka));
+    return futureDilly;
+  }
 }
 @Slf4j
 @Service
