@@ -1,14 +1,16 @@
 package victor.training.performance;
 
+import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
 import java.util.stream.IntStream;
 
 import static java.util.concurrent.TimeUnit.HOURS;
@@ -21,17 +23,27 @@ public class RaceBugs {
       Collections.synchronizedList(new ArrayList<>());
 //  private static final Object LOCK = new Object();
   private static Integer total = 0;
+  private static final Lock lock = new ReentrantLock();
 
   // many parallel threads run this method:
+  @SneakyThrows
   private static Integer countEven(List<Integer> numbers) {
     log.info("Start");
     int totalLocal = 0;
     for (Integer n : numbers) {
       if (n % 2 == 0) {
-        new CopyOnWriteArrayList<>(evenNumbers).stream().forEach(e -> System.out.println(e));
-        evenNumbers.add(n);
+//        Thread.sleep((long) (100 * Math.random()));
+//        new CopyOnWriteArrayList<>(evenNumbers).stream().forEach(e -> System.out.println(e));
+//        evenNumbers.add(n);
 //        total++;
-        totalLocal++;
+//        totalLocaxl++;
+        lock.lock();
+//        lock.tryLock(1,SECONDS); //de gandit
+        try {
+          total++;
+        } finally {
+          lock.unlock();
+        }
       }
     }
     log.info("End");
@@ -43,7 +55,7 @@ public class RaceBugs {
   public static void main(String[] args) throws Exception {
     List<Integer> fullList = IntStream.range(0, 1000).boxed().toList();
 
-    List<List<Integer>> parts = splitList(fullList, 20);
+    List<List<Integer>> parts = splitList(fullList, 2);
 
     List<Future<Integer>> futures = new ArrayList<>();
     ExecutorService pool = Executors.newCachedThreadPool();

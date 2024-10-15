@@ -14,10 +14,9 @@ public class ParallelStreams {
     // OnAServer.otherParallelRequestsAreRunning(); // starve the shared commonPool din JVM
 
     List<Integer> list = IntStream.range(1, 100).boxed().toList();
-
     long t0 = System.currentTimeMillis();
 
-    var result = list.stream()
+    var result = list.parallelStream()
         .filter(i -> i % 2 == 0)
         .map(i -> {
           log.debug("Map " + i);
