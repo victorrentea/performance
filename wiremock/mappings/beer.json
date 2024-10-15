@@ -11,8 +11,6 @@
     "jsonBody" : {
       "type": "Neumarkt"
     },
-
     "fixedDelayMilliseconds": 1000
-
   }
 }
