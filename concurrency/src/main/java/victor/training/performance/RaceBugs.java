@@ -5,13 +5,12 @@ import lombok.extern.slf4j.Slf4j;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.IntStream;
 
-import static java.util.concurrent.TimeUnit.MINUTES;
-import static java.util.stream.Collectors.toList;
+import static java.util.concurrent.TimeUnit.HOURS;
 
 
 @SuppressWarnings("ALL")
@@ -19,30 +18,30 @@ import static java.util.stream.Collectors.toList;
 public class RaceBugs {
   private static List<Integer> evenNumbers = new ArrayList<>();
 
-  private static Integer total = 0;
+  private static AtomicInteger total = new AtomicInteger();
 
   // many parallel threads run this method:
   private static void countEven(List<Integer> numbers) {
     log.info("Start");
     for (Integer n : numbers) {
       if (n % 2 == 0) {
-        total++;
+        total.incrementAndGet();
       }
     }
     log.info("End");
   }
 
   public static void main(String[] args) throws Exception {
-    List<Integer> fullList = IntStream.range(0, 1_000).boxed().toList();
+    List<Integer> fullList = IntStream.range(0, 1000).boxed().toList();
 
-    List<List<Integer>> parts = splitList(fullList, 2);
+    List<List<Integer>> parts = splitList(fullList, 20);
 
     ExecutorService pool = Executors.newCachedThreadPool();
     for (List<Integer> part : parts) {
       pool.submit(()-> countEven(part));
     }
     pool.shutdown();
-    pool.awaitTermination(1, MINUTES);
+    pool.awaitTermination(1, HOURS);
 
     log.debug("Counted: " + total);
     log.debug("List.size: " + evenNumbers.size());
