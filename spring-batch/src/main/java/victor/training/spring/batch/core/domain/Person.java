@@ -8,9 +8,10 @@ import static javax.persistence.GenerationType.SEQUENCE;
 
 @Data
 @Entity
+@SequenceGenerator(name="person_seq", allocationSize = 50) // + INCREMENT BY in seq = 100
 public class Person {
     @Id
-    @GeneratedValue
+    @GeneratedValue(generator = "person_seq", strategy = SEQUENCE)
     private Long id;
     private String name;
     @ManyToOne

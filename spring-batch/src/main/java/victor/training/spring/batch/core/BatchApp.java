@@ -53,7 +53,7 @@ public class BatchApp {
   @Bean
   public Step importPersonData() {
     return stepBuilder.get("importPersonData")
-        .<PersonXml, Person>chunk(5)
+        .<PersonXml, Person>chunk(50)
 
         .reader(xmlReader(null))
         .processor(personProcessor())

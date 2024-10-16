@@ -16,7 +16,6 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.core.io.FileSystemResource;
 import org.springframework.oxm.jaxb.Jaxb2Marshaller;
 import victor.training.spring.batch.util.PerformanceUtil;
-
 import javax.persistence.EntityManagerFactory;
 import java.io.IOException;
 
