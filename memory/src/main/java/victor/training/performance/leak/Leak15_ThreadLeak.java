@@ -16,13 +16,10 @@ public class Leak15_ThreadLeak {
    @GetMapping
    public void endpoint() {
       ExecutorService pool = Executors.newFixedThreadPool(2);
-      try {
-         pool.submit(() -> log.info("Work"));
-         surprise();
-      } finally {
-         pool.shutdown();
-      }
+      pool.submit(() -> log.info("Work"));
    }
+
+
 
    private void surprise() {
       throw new RuntimeException("#life");
