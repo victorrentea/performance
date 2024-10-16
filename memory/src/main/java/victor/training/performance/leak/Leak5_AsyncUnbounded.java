@@ -27,6 +27,10 @@ public class Leak5_AsyncUnbounded {
   public String endpoint(
       @RequestParam(value = "file", required = false)
       MultipartFile multipartFile) throws IOException {
+//    File tempFile = File.createTempFile("leak5", ".tmp");
+//    IOUtils.copy(multipartFile.getInputStream(), new FileOutputStream(tempFile));
+
+//    Stream<String> lines = Files.lines(new File("un.csv").toPath());
     byte[] contents = multipartFile.getBytes();
     worker.processFile(index.incrementAndGet(), contents);
     return "Keep calling this 20 times within 10 seconds, then heap dump";

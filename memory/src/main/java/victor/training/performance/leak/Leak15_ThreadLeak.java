@@ -1,22 +1,27 @@
 package victor.training.performance.leak;
 
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 
 @Slf4j
 @RestController
 @RequestMapping("leak15")
 public class Leak15_ThreadLeak {
 
+   //   ExecutorService pool = Executors.newFixedThreadPool(2); //#2
+
+   @Autowired
+   ThreadPoolTaskExecutor pool; // #asa-da
    @GetMapping
    public void endpoint() {
-      ExecutorService pool = Executors.newFixedThreadPool(2);
-      pool.submit(() -> log.info("Work"));
+//      ExecutorService pool = Executors.newFixedThreadPool(2);
+      pool.submit(() -> log.info("Work1"));
+      pool.submit(() -> log.info("Work2"));
+      pool.shutdown();// #1
    }
 
 
