@@ -9,34 +9,26 @@ import victor.training.spring.batch.core.domain.Person;
 
 import javax.annotation.PostConstruct;
 import java.util.Map;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 @Slf4j
 public class PersonProcessor implements ItemProcessor<PersonXml, Person> {
   @Autowired
   private CityRepo cityRepo;
-  private Map<String, Long> cityNameToId;
+  private Map<String, City> cityNameToId;
 
   @PostConstruct
   public void loadInitialCities() {
     cityNameToId = cityRepo.findAll().stream()
-        .collect(Collectors.toMap(City::getName, City::getId));
+        .collect(Collectors.toMap(City::getName, Function.identity()));
   }
 
   @Override
   public Person process(PersonXml xml) {
     Person entity = new Person();
     entity.setName(xml.getName());
-    City city;
-    if (cityNameToId.containsKey(xml.getCity())) {
-      Long cityId = cityNameToId.get(xml.getCity());
-      city = cityRepo.getReferenceById(cityId);
-    } else {
-      city = new City(xml.getCity());
-      cityRepo.save(city);
-      cityNameToId.put(city.getName(), city.getId());
-    }
-    entity.setCity(city);
+    entity.setCity(cityNameToId.get(xml.getCity()));
     return entity;
   }
 

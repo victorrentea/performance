@@ -45,8 +45,9 @@ public class BatchApp {
     return jobBuilder.get("importJob")
         .listener(new CaptureStartTimeListener())
         .incrementer(new RunIdIncrementer())
-        .start(importPersonData())
-//        .start(importCityData()).next(importPersonData()) // TODO 2-pass import
+//        .start(importPersonData())
+        .start(importCityData())
+        .next(importPersonData()) // TODO 2-pass import
         .build();
   }
 
