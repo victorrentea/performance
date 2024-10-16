@@ -1,4 +1,4 @@
-package victor.training.spring.batch;
+package victor.training.spring.batch.core;
 
 import java.io.File;
 import java.sql.SQLException;
@@ -25,6 +25,8 @@ public class StartDatabase {
 			} else {
 				System.out.println("Previous DB contents wiped out");
 			}
+		} else {
+			System.out.println("No previous DB found");
 		}
 	}
 }

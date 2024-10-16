@@ -1,4 +1,4 @@
-package victor.training.spring.batch;
+package victor.training.spring.batch.core;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

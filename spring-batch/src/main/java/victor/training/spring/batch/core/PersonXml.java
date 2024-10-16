@@ -1,10 +1,9 @@
 package victor.training.spring.batch.core;
 
+import jakarta.xml.bind.annotation.XmlRootElement;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import victor.training.spring.batch.core.domain.Person;
-
-import javax.xml.bind.annotation.XmlRootElement;
 
 
 @Data

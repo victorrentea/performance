@@ -18,7 +18,7 @@ public class XmlFileGenerator {
         citiesNamesGenerated.clear();
         long t0 = System.currentTimeMillis();
         Random r = new Random();
-        File dataFile = new File("data.xml");
+        File dataFile = new File("data-"+System.currentTimeMillis()+".xml");
         try (Writer writer = new FileWriter(dataFile)){ // TODO how to optimize this?
             writer.write("<personList>\n");
             for (int i = 0; i < recordCount; i++) {

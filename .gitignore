@@ -43,3 +43,5 @@ data-output*.txt
 capture/
 /spring-batch/data.xml
 /jpa/export.txt
+/spring-batch/data*.xml
+/big-entity.csv
