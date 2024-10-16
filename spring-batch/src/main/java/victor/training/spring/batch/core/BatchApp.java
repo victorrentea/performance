@@ -64,7 +64,7 @@ public class BatchApp {
         .listener(progressTrackingChunkListener())
         .listener(countTotalNumberOfRecordsListener())
 
-//        .taskExecutor(batchExecutor()) // TODO insert chunks on multiple threads
+        .taskExecutor(batchExecutor()) // TODO insert chunks on multiple threads
         .build();
   }
 
