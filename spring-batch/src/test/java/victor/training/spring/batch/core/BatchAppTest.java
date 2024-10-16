@@ -17,7 +17,7 @@ import java.util.Map;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 
 @SpringBootTest(properties = "spring.batch.job.enabled=false")
-public class BatchAppTest/* extends AbstractTestcontainersTestBase */{
+public class BatchAppTest {
   @Autowired
   Job job;
   @Autowired
