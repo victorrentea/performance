@@ -52,6 +52,7 @@ public class NPlusOne {
         .setCountry(romania)
         .addChild(new Child("Maria"))
         .addChild(new Child("Paul"))
+//        .addChild(new Child("Filip"))
         .addChild(new Child("Stephan"))
     );
     repo.save(new Parent("Trofim") // bachelor, no children
@@ -84,7 +85,8 @@ public class NPlusOne {
 
   private List<ParentDto> toSearchResults(Collection<Parent> parents) { // eg, in a Mapper
     log.debug("Converting-->Dto START");
-    List<ParentDto> results = parents.stream().map(ParentDto::fromEntity).toList();
+    List<ParentDto> results = parents.stream()
+        .map(ParentDto::fromEntity).toList();
     log.debug("Converting-->Dto DONE");
     return results;
   }
