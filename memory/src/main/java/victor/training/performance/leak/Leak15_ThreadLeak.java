@@ -16,18 +16,20 @@ public class Leak15_ThreadLeak {
    @GetMapping
    public void endpoint() {
       ExecutorService pool = Executors.newFixedThreadPool(2);
-      try {
-         pool.submit(() -> log.info("Work"));
-         surprise();
-      } finally {
-         pool.shutdown();
-      }
+      pool.submit(() -> someWorkInParallel(1));
+      pool.submit(() -> someWorkInParallel(2));
+      moreWork();
    }
 
-   private void surprise() {
+   private static void someWorkInParallel(int i) {
+      log.info("Work " + i);
+   }
+
+   private void moreWork() {
       throw new RuntimeException("#life");
    }
 }
 
 // TODO avoid creating new Thread Pools per request
-//  > inject and use a Spring-managed ThreadPoolTaskExecutor
+// 1. thread pool not #shutdown()
+// 2. Better: autowire and use a Spring-managed ThreadPoolTaskExecutor

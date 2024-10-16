@@ -104,7 +104,7 @@ class FastInserter {
                          .collect(toList());
 
                  jdbc.batchUpdate("INSERT INTO BIG_ENTITY(ID, DESCRIPTION) " +
-                                  "VALUES (  next value for hibernate_sequence, repeat(? ,500000))",params); // random letter repeated 500.000 times
+                                  "VALUES (  next value for big_entity_seq, repeat(? ,500000))",params); // random letter repeated 500.000 times
 //                              "VALUES ( HIBERNATE_SEQUENCE.nextval, repeat(? ,500000))",params);
                  log.debug("Persist {}0%", percent.incrementAndGet());
               });
