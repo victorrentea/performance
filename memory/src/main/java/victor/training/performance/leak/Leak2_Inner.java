@@ -7,7 +7,6 @@ import victor.training.performance.leak.CalculatorFactory.Calculator;
 import victor.training.performance.leak.obj.BigObject20MB;
 import victor.training.performance.util.PerformanceUtil;
 
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Predicate;
@@ -17,6 +16,9 @@ import java.util.stream.Stream;
 @RestController
 @RequestMapping("leak2")
 public class Leak2_Inner {
+  {
+    System.out.println("#sieu");
+  }
 
   //<editor-fold desc="html">
   @GetMapping
@@ -63,9 +65,9 @@ public class Leak2_Inner {
 
 
 class CalculatorFactory {
-  public class Calculator {
+  public static class Calculator {
     public boolean calculate(String data) {
-      System.out.println("Simple Code Code");
+      System.out.println("Simple Code Code ");
       // 🛑 what's connects the Calculator instance with the 'bigMac' field ?
       return true;
     }
@@ -81,7 +83,10 @@ class CalculatorFactory {
 
   //<editor-fold desc="Lambdas vs Anonymous implementation">
   public Stream<String> anonymousVsLambdas(List<String> input) {
+    String mare = "x".repeat(1000);
     return input.stream()
+            .filter(s -> !s.isBlank() ) // nu tine ref decat la ce referi din clojure ul ei
+            .filter(s -> !s.isBlank() && mare.contains("y") && bigMac!=null) // cara  lucrurile explicit referite
             .filter(new Predicate<String>() {
               @Override
               public boolean test(String s) {
@@ -93,10 +98,20 @@ class CalculatorFactory {
 
   //<editor-fold desc="Map init in Java <= 8">
   public Map<String, Integer> mapInit() {
-    return new HashMap<>() {{
-      put("one", 1);
-      put("two", 2);
-    }};
+//    Map<String,Integer> curat = new HashMap<>();
+//    curat.put("one", 1);
+//    curat.put("two", 2);
+
+
+//    return new HashMap<>() { // sublcasa anonima ( ce tine pointer la "this" )
+//      { // bloc de initializare de instanta
+//      put("one", 1);
+//      put("two", 2);
+//    }};
+
+    return Map.of(
+        "one", 1,
+        "two", 2);
   }
   //</editor-fold>
 }
