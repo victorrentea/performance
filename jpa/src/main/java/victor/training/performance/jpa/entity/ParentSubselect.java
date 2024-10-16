@@ -9,15 +9,13 @@ import jakarta.persistence.Id;
 
 @Entity
 @Immutable // hibernate will never update it
-@Subselect("""
-  select 
-    P.ID, 
-    P.NAME,
-    nvl(STRING_AGG(c.NAME, ',') within group (order by c.name asc), '') as children_names
-  from PARENT P
-  left join CHILD C on P.ID = C.PARENT_ID
-  group by p.ID, P.NAME
-  """)
+@Subselect("select\n" +
+           "  P.ID,\n" +
+           "  P.NAME,\n" +
+           "  nvl(STRING_AGG(c.NAME, ',') within group (order by c.name asc), '') as children_names\n" +
+           "from PARENT P " +
+           "left join CHILD C on P.ID = C.PARENT_ID\n" +
+           "group by p.ID, P.NAME\n")
 @Getter
 public class ParentSubselect {
    @Id

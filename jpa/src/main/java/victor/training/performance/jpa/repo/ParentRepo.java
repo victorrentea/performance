@@ -11,6 +11,13 @@ import java.util.stream.Stream;
 
 public interface ParentRepo extends JpaRepository<Parent, Long> {
 
+  @Query("""
+      SELECT p FROM Parent p
+      LEFT JOIN FETCH p.children
+      LEFT JOIN FETCH p.country
+      """)
+  List<Parent> findAllWithChildren();
+
   interface ParentProjection { // Spring generates an implementation of this interface
     Long getId();
     String getName();
@@ -19,7 +26,8 @@ public interface ParentRepo extends JpaRepository<Parent, Long> {
   @Query(nativeQuery = true, value = """
       select p.id, 
              p.name,
-             nvl(string_agg(c.name, ',') within group (order by c.name asc), '') as childrenNames
+             nvl(string_agg(c.name, ',') within group (order by c.name asc), '') 
+                    as childrenNames
       from parent p
       left join child c on p.id = c.parent_id
       group by p.id, p.name
@@ -36,6 +44,8 @@ public interface ParentRepo extends JpaRepository<Parent, Long> {
 
   @Query("""
     SELECT pv FROM ParentView pv
+    JOIN Parent p ON p.id=pv.id
+    WHERE p.age > 10
     """)
   List<ParentView> view();
 
