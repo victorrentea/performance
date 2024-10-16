@@ -15,6 +15,7 @@ import java.util.Set;
 import static java.util.stream.Collectors.toSet;
 
 @Slf4j
+// 1 instance per job run
 public class CityProcessor implements ItemProcessor<PersonXml, City>, StepExecutionListener {
   @Autowired
   private CityRepo repo;
@@ -23,7 +24,8 @@ public class CityProcessor implements ItemProcessor<PersonXml, City>, StepExecut
 
   @PostConstruct
   public void loadPreExistingCities() {
-    allCitiesInDB = repo.findAll().stream().map(City::getName).collect(toSet());
+    allCitiesInDB = repo.findAll().stream()
+        .map(City::getName).collect(toSet());
   }
 
   @Override

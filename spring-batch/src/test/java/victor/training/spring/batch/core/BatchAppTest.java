@@ -17,7 +17,7 @@ import java.util.Map;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 
 @SpringBootTest(properties = "spring.batch.job.enabled=false")
-public class BatchAppTest extends AbstractTestcontainersTestBase {
+public class BatchAppTest {
   @Autowired
   Job job;
   @Autowired
@@ -45,8 +45,6 @@ public class BatchAppTest extends AbstractTestcontainersTestBase {
       PerformanceUtil.sleepMillis(1);
     }
     System.out.println("JOB FINISHED");
-    int pgPort = postgres.getFirstMappedPort();
-    System.out.println("You can connect to the Postgres DB on port " + pgPort);
     System.out.println("[ENTER] to finish test and destroy DB...");
     System.in.read();
 

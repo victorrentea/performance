@@ -1,14 +1,16 @@
 package victor.training.spring.batch.core;
 
+import jakarta.persistence.EntityManagerFactory;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.batch.core.Job;
 import org.springframework.batch.core.Step;
 import org.springframework.batch.core.configuration.annotation.EnableBatchProcessing;
-import org.springframework.batch.core.configuration.annotation.JobBuilderFactory;
-import org.springframework.batch.core.configuration.annotation.StepBuilderFactory;
 import org.springframework.batch.core.configuration.annotation.StepScope;
+import org.springframework.batch.core.job.builder.JobBuilder;
 import org.springframework.batch.core.launch.support.RunIdIncrementer;
+import org.springframework.batch.core.repository.JobRepository;
+import org.springframework.batch.core.step.builder.StepBuilder;
 import org.springframework.batch.item.ItemStreamReader;
 import org.springframework.batch.item.database.JpaItemWriter;
 import org.springframework.batch.item.support.SynchronizedItemStreamReader;
@@ -20,6 +22,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.core.io.FileSystemResource;
 import org.springframework.oxm.jaxb.Jaxb2Marshaller;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
+import org.springframework.transaction.PlatformTransactionManager;
 import victor.training.spring.batch.core.domain.City;
 import victor.training.spring.batch.core.domain.Person;
 import victor.training.spring.batch.core.extra.CaptureStartTimeListener;
@@ -28,7 +31,6 @@ import victor.training.spring.batch.core.extra.LogProgressListener;
 import victor.training.spring.batch.core.extra.LogSqlForFirstChunkListener;
 import victor.training.spring.batch.util.PerformanceUtil;
 
-import jakarta.persistence.EntityManagerFactory;
 import java.io.File;
 import java.io.IOException;
 
@@ -37,12 +39,12 @@ import java.io.IOException;
 @EnableBatchProcessing
 @RequiredArgsConstructor
 public class BatchApp {
-  private final JobBuilderFactory jobBuilder;
-  private final StepBuilderFactory stepBuilder;
+  private final JobRepository jobRepository;
+  private final PlatformTransactionManager transactionManager;
 
   @Bean
   public Job importJob() {
-    return jobBuilder.get("importJob")
+    return new JobBuilder("importJob",jobRepository)
         .listener(new CaptureStartTimeListener())
         .incrementer(new RunIdIncrementer())
         .start(importPersonData())
@@ -52,8 +54,8 @@ public class BatchApp {
 
   @Bean
   public Step importPersonData() {
-    return stepBuilder.get("importPersonData")
-        .<PersonXml, Person>chunk(5)
+    return new StepBuilder("importPersonData", jobRepository)
+        .<PersonXml, Person>chunk(5,transactionManager)
 
         .reader(xmlReader(null))
         .processor(personProcessor())
@@ -128,8 +130,8 @@ public class BatchApp {
 
   @Bean
   public Step importCityData() {
-    return stepBuilder.get("importCityData")
-        .<PersonXml, City>chunk(1000)
+    return new StepBuilder("importCityData",jobRepository)
+        .<PersonXml, City>chunk(1000, transactionManager)
         .reader(xmlReader(null))
         .processor(cityMerger())
         .writer(jpaWriter(null))
@@ -148,4 +150,3 @@ public class BatchApp {
     System.out.println("Batch took " + dt + " ms");
   }
 }
-

@@ -8,6 +8,7 @@ import victor.training.spring.batch.core.domain.CityRepo;
 import victor.training.spring.batch.core.domain.Person;
 
 @Slf4j
+// 1 instance per job run
 public class PersonProcessor implements ItemProcessor<PersonXml, Person> {
   @Autowired
   private CityRepo cityRepo;
