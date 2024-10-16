@@ -27,7 +27,7 @@ public class CityProcessor implements ItemProcessor<PersonXml, City>, StepExecut
   }
 
   @Override
-  public City process(PersonXml xml) {
+  public City process(PersonXml xml) {// 1 thread doar aici !! ca fac add in colectie comuna!!!
     if (!allCitiesInDB.contains(xml.getCity())) {
       allCitiesInDB.add(xml.getCity());
       return new City(xml.getCity());
