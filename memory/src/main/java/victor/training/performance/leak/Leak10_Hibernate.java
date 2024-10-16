@@ -54,11 +54,19 @@ public class Leak10_Hibernate {
    }
 
    @GetMapping("export")
+   @Transactional(readOnly = true)
    public void export() throws IOException {
       log.debug("Exporting....");
+      BigEntity o1 = repo.findById(1L).orElseThrow();
+      log.info("----");
+      BigEntity o2 = repo.findById(1L).orElseThrow();
+      log.info("====");
+      log.info("o1 == o2: {}", o1 == o2);
 
       try (Writer writer = new FileWriter("big-entity.csv")) {
          repo.streamAll()
+             .peek(e-> entityManager.detach(e))
+                  // uit-o. scoate-o din viata ta. elimin-o din 1st level cache ca sa salvez memorie.
              .map(bigEntity -> bigEntity.getDescription()+";"+bigEntity.getId()+"\n")
              .forEach(Unchecked.consumer(writer::write));
       }
