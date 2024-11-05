@@ -5,13 +5,11 @@ import lombok.extern.slf4j.Slf4j;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.stream.IntStream;
 
 import static java.util.concurrent.TimeUnit.MINUTES;
-import static java.util.stream.Collectors.toList;
 
 
 @SuppressWarnings("ALL")
@@ -35,6 +33,7 @@ public class RaceBugs {
   public static void main(String[] args) throws Exception {
     List<Integer> fullList = IntStream.range(0, 1_000).boxed().toList();
 
+    // [[500elems],[500elems]]
     List<List<Integer>> parts = splitList(fullList, 2);
 
     ExecutorService pool = Executors.newCachedThreadPool();
