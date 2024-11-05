@@ -31,7 +31,7 @@ public class RaceBugs {
   }
 
   public static void main(String[] args) throws Exception {
-    List<Integer> fullList = IntStream.range(0, 1_000).boxed().toList();
+    List<Integer> fullList = IntStream.range(0, 10000).boxed().toList();
 
     // [[500elems],[500elems]]
     List<List<Integer>> parts = splitList(fullList, 2);
