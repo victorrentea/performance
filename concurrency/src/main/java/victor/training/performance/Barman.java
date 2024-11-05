@@ -25,10 +25,10 @@ public class Barman {
   public DillyDilly drink() throws ExecutionException, InterruptedException {
     long t0 = currentTimeMillis();
 
-    // how to optimize
-//    executor.submit(()->)
-    Future<Beer> futureBeer = CompletableFuture.supplyAsync(() ->
-        rest.getForObject("http://localhost:9999/beer", Beer.class));
+    // never execute network calls in the internal JVM ForkJoinPool.commonPool()
+    // 1) starvation
+    // 2) thread metadata
+    Future<Beer> futureBeer = CompletableFuture.supplyAsync(() -> fetchBeer());
 
     Future<Vodka> futureVodka = CompletableFuture.supplyAsync(() ->
         rest.getForObject("http://localhost:9999/vodka", Vodka.class));
@@ -37,5 +37,10 @@ public class Barman {
 
     log.info("HTTP thread blocked for {} durationMillis", currentTimeMillis() - t0);
     return dilly;
+  }
+
+  private Beer fetchBeer() {
+    log.info("Where am I");
+    return rest.getForObject("http://localhost:9999/beer", Beer.class);
   }
 }

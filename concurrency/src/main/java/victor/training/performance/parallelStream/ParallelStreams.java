@@ -17,8 +17,9 @@ public class ParallelStreams {
 
     long t0 = System.currentTimeMillis();
 
-    var result = list.stream()
-        .filter(i -> i % 2 == 0)
+    // both parallelStream and completableFuture run by default on the JVM commonPool
+    var result = list.parallelStream()
+        .filter(i -> i % 2 == 0) //50
         .map(i -> {
           log.debug("Map " + i);
           sleepMillis(100); // network call (DB, REST, SOAP..) or CPU work
