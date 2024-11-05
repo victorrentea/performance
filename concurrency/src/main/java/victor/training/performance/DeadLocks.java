@@ -1,9 +1,11 @@
 package victor.training.performance;
 
+import lombok.SneakyThrows;
 import lombok.Value;
 import lombok.extern.slf4j.Slf4j;
 import victor.training.performance.util.PerformanceUtil;
 
+import java.util.concurrent.TimeUnit;
 import java.util.concurrent.locks.ReentrantLock;
 
 import static victor.training.performance.util.PerformanceUtil.log;
@@ -26,6 +28,7 @@ public class DeadLocks {
       this.rightFork = rightFork;
     }
 
+    @SneakyThrows
     public void run() {
       Fork firstFork = leftFork;
       Fork secondFork = rightFork;
@@ -40,10 +43,12 @@ public class DeadLocks {
         try {
           log("Took one fork");
           log("Taking fork #" + secondFork.id + "...");
-          secondFork.lock.lock();
+          var tookIt = secondFork.lock.tryLock(1, TimeUnit.MILLISECONDS);
           try {
-            log("Eating🌟...");
-            log("Done eating. Releasing forks");
+            if (tookIt) {
+              log("Eating🌟...");
+              log("Done eating. Releasing forks");
+            }
           } finally {
             secondFork.lock.unlock();
           }
