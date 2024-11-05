@@ -21,15 +21,11 @@ public class RaceBugs {
   private static final Object lock = new Object();
 
   // many parallel threads run this method:
-  private static void countEven(List<Integer> numbers) {
+  private synchronized static void countEven(List<Integer> numbers) {
     log.info("Start");
     for (Integer n : numbers) {
       if (n % 2 == 0) {
-        synchronized (RaceBugs.class) {
-//          total++;
-//          total = total + 1;
-          total = new Integer(total + 1);
-        }
+        total = new Integer(total + 1);
       }
     }
     log.info("End");
@@ -43,7 +39,7 @@ public class RaceBugs {
 
     ExecutorService pool = Executors.newCachedThreadPool();
     for (List<Integer> part : parts) {
-      pool.submit(()-> countEven(part));
+      pool.submit(() -> countEven(part));
     }
     pool.shutdown();
     pool.awaitTermination(1, MINUTES);
