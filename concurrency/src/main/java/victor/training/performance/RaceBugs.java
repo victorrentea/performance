@@ -17,7 +17,8 @@ import static java.util.concurrent.TimeUnit.MINUTES;
 @Slf4j
 public class RaceBugs {
   private static final Object lock = new Object();
-  private static final List<Integer> evenNumbers = new ArrayList<>(); // mutable and doesn't lose increments
+  private static final List<Integer> evenNumbers =
+      Collections.synchronizedList(new ArrayList<>()); // mutable and doesn't lose increments
 
   // to assign sequential request Ids, PKs...
 //  private static AtomicInteger total = new AtomicInteger(0);
@@ -30,9 +31,7 @@ public class RaceBugs {
     for (Integer n : numbers) {
       if (n % 2 == 0) {
         localTotal++;
-        synchronized (evenNumbers) {
-          evenNumbers.add(n);
-        }
+        evenNumbers.add(n);
       }
     }
 //    total += localTotal; // there can still be a race.
