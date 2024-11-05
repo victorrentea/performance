@@ -25,6 +25,8 @@ public class RaceBugs {
     for (Integer n : numbers) {
       if (n % 2 == 0) {
         total++;
+        System.out.println("in"); // or a log.debug they latency (spend time) outside of the risky line
+        // race conditions = heisenbugs (Heisenberg's Uncertainty Principle)
       }
     }
     log.info("End");
