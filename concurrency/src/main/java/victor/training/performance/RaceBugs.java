@@ -16,10 +16,11 @@ import static java.util.concurrent.TimeUnit.MINUTES;
 @SuppressWarnings("ALL")
 @Slf4j
 public class RaceBugs {
+  private static final Object lock = new Object();
   private static List<Integer> evenNumbers = new ArrayList<>(); // mutable and doesn't lose increments
 
+  // to assign sequential request Ids, PKs...
   private static AtomicInteger total = new AtomicInteger(0);
-  private static final Object lock = new Object();
 
   // many parallel threads run this method:
   private static void countEven(List<Integer> numbers) {
