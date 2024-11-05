@@ -18,15 +18,18 @@ public class RaceBugs {
   private static List<Integer> evenNumbers = new ArrayList<>();
 
   private static Integer total = 0;
+  private static final Object lock = new Object();
 
   // many parallel threads run this method:
   private static void countEven(List<Integer> numbers) {
     log.info("Start");
     for (Integer n : numbers) {
       if (n % 2 == 0) {
-        total++;
-        System.out.println("in"); // or a log.debug they latency (spend time) outside of the risky line
-        // race conditions = heisenbugs (Heisenberg's Uncertainty Principle)
+        synchronized (RaceBugs.class) {
+//          total++;
+//          total = total + 1;
+          total = new Integer(total + 1);
+        }
       }
     }
     log.info("End");
