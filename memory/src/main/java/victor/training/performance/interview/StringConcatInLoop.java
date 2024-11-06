@@ -15,7 +15,7 @@ import static victor.training.performance.util.PerformanceUtil.waitForEnter;
 public class StringConcatInLoop {
    public static void main(String[] args) throws IOException {
       PerformanceUtil.printJfrFile();
-      List<String> elements = IntStream.range(1, 50_000)
+      List<String> elements = IntStream.range(1,200_000)
           .mapToObj(n -> "hahaha") // 6 ch x 2 bytes = 12
           .collect(toList());
 
@@ -23,12 +23,14 @@ public class StringConcatInLoop {
       System.out.println("Start writing contents to file!");
       long t0 = System.currentTimeMillis();
 
-      String s = "";
+      StringBuilder s = new StringBuilder();
       for (String element : elements) {
-         s += element;
+         s.append(element);  // mutates the existing StringBuilder which has capacity
+         // StringBuffer is for String what ArrayList<Integer> is for Integer[]
       }
+      //for {string+= memory churn when 'mutating immutable objects'
 
-      FileUtils.writeStringToFile(new File("out.txt"), s, UTF_8);
+      FileUtils.writeStringToFile(new File("out.txt"), s.toString(), UTF_8);
 
       System.out.println("Done. Took " + (System.currentTimeMillis() - t0));
       waitForEnter();

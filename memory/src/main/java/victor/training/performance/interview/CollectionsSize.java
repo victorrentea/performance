@@ -14,6 +14,7 @@ public class CollectionsSize {
       // TODO order the following from lowest->highest memory consumption
 
       // F) int[1M] = 3 MB because:
+      // This is an int[] because it's much smaller and I have to keep this data for long
 //      measureHeap(() -> (int[]) IntStream.range(0, ONE_MILLION).toArray());
 
       // B) long[1M] = 8 MB because:

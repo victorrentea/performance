@@ -1,7 +1,5 @@
 package victor.training.performance.interview;
 
-import org.jetbrains.annotations.NotNull;
-
 import java.util.List;
 import java.util.stream.LongStream;
 
@@ -20,12 +18,12 @@ public class SummingBoxes {
 
         long t1 = System.currentTimeMillis();
         System.out.println("sum = " + sum);
-        System.out.println(t1 - t0);
+        System.out.println((t1 - t0) + " ms");
     }
 
     private static Long sumThemUp(List<Long> list) {
         // TODO Reduce run time by changing 1 character below 😊
-        Long sum = 0L;
+        long sum = 0L;
         for (Long i : list) {
             sum += i;
         }
