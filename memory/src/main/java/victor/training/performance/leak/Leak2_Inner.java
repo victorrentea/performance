@@ -49,6 +49,7 @@ public class Leak2_Inner {
   @GetMapping("map")
   public Map<String, Integer> map() {
     Map<String, Integer> map = new CalculatorFactory().mapInit();
+    // this map keeps a reference to the outer CalculatorFactory instance ( with a BigObject20MB field)
     PerformanceUtil.sleepMillis(20_000); // some long workflow
     return map;
   }
