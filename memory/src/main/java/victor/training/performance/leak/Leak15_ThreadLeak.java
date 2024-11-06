@@ -18,7 +18,12 @@ public class Leak15_ThreadLeak {
       ExecutorService pool = Executors.newFixedThreadPool(2);
       pool.submit(() -> someWorkInParallel(1));
       pool.submit(() -> someWorkInParallel(2));
-      moreWork();
+      try {
+         moreWork();
+      } finally {
+         pool.shutdown();
+         // or even better use a  global Thread Pool  shared across your app
+      }
    }
 
    private static void someWorkInParallel(int i) {
