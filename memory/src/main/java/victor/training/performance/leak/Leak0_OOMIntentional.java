@@ -11,7 +11,7 @@ import java.util.List;
 @RequestMapping("leak0")
 public class Leak0_OOMIntentional {
 
-  static List<int[]> boom = new ArrayList<>();
+  List<int[]> boom = new ArrayList<>();
 
   @GetMapping
   public String endpoint() {
