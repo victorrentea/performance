@@ -45,3 +45,5 @@ capture/
 /jpa/export.txt
 /spring-batch/data*.xml
 /big-entity.csv
+
+*.hprof
