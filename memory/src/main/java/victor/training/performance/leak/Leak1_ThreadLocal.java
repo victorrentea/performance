@@ -14,12 +14,20 @@ public class Leak1_ThreadLocal {
    public String endpoint() {
       BigObject20MB bigObject = new BigObject20MB().setSomeString("john.doe"); // retrived from a network call
 
-      threadLocal.set(bigObject);  // 🛑 ThreadLocal#remove()
-
-//      sleep(100000); // would allow to manifest this from browser
-      businessMethod1();
+      threadLocal.set(bigObject);
+      try {
+         businessMethod1();
+      } finally {
+          threadLocal.remove();
+      }
+      // DO NOT USE ThreadLocal at all. Not for mortals. VERY DANGEROUS.
+      // use instead framework-managed constructs:
+      //  - SecurityContextHolder, @Scope("request" or "session"), Logback MDC, @RequestScope,
+      //  - Opentelemetry baggage that will then even propagate to the next system you will call
 
       return "Magic can do harm.";
+      // once I finish my work the thread does not die,
+      // it goes back to the pool still bound to my 20MB of garbage
    }
 
    private void businessMethod1() { // no username in the signature

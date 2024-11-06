@@ -36,7 +36,10 @@ public class ThreadLocalIntro {
     // - JDBC Connection ± @Transactional
     // - TraceID
     // - SecurityContextHolder (Spring)
+    // like a Map<Thread, it's copy of the data>
+    // It uses a machine-code construct called TLS (Thread Local Storage)
     public static ThreadLocal<String> staticCurrentUser = new ThreadLocal<>();
+    // ThreadLocal vars are always static.
 }
 // ---------- end of framework -----------
 
