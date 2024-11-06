@@ -1,14 +1,12 @@
 package victor.training.performance.interview;
 
-import org.apache.commons.io.FileUtils;
 import victor.training.performance.util.PerformanceUtil;
 
-import java.io.File;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.util.List;
 import java.util.stream.IntStream;
 
-import static java.nio.charset.StandardCharsets.UTF_8;
 import static java.util.stream.Collectors.toList;
 import static victor.training.performance.util.PerformanceUtil.waitForEnter;
 
@@ -23,14 +21,16 @@ public class StringConcatInLoop {
       System.out.println("Start writing contents to file!");
       long t0 = System.currentTimeMillis();
 
-      StringBuilder s = new StringBuilder();
-      for (String element : elements) {
-         s.append(element);  // mutates the existing StringBuilder which has capacity
-         // StringBuffer is for String what ArrayList<Integer> is for Integer[]
-      }
-      //for {string+= memory churn when 'mutating immutable objects'
+     try (FileWriter writer = new FileWriter("out.txt")) {
+       for (String element : elements) {
+         writer.write(element);
+       }
+     } // much better for GC. just pass data through
 
-      FileUtils.writeStringToFile(new File("out.txt"), s.toString(), UTF_8);
+     // any large string you build it ends up on:
+      // disk(file), DB(CLOB/BLOB), HTTP(Response)
+      // Streamlining = pass data through instead of accumulating large memory objects
+//      FileUtils.writeStringToFile(new File("out.txt"), s, UTF_8);
 
       System.out.println("Done. Took " + (System.currentTimeMillis() - t0));
       waitForEnter();
