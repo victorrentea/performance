@@ -18,23 +18,23 @@ public class CollectionsSize {
    public static void main(String[] args) {
       // TODO order the following from lowest->highest memory consumption
 
-      // A) ArrayList[1M] =  MB because:
-      measureHeap(() -> (ArrayList<Long>)LongStream.range(0, ONE_MILLION).boxed().collect(toList()));
+      // A) ArrayList<Long>[1M] =  MB because:
+//      measureHeap(() -> (ArrayList<Long>)LongStream.range(0, ONE_MILLION).boxed().collect(Collectors.toList()));
 
       // B) long[1M] =  MB because:
-      measureHeap(() -> (long[]) LongStream.range(0, ONE_MILLION).toArray());
+//      measureHeap(() -> (long[]) LongStream.range(0, ONE_MILLION).toArray());
 
       // C) HashSet[1M] =  MB because:
-      measureHeap(() -> (HashSet<Long>) LongStream.range(0, ONE_MILLION).boxed().collect(Collectors.toSet()));
+//      measureHeap(() -> (HashSet<Long>) LongStream.range(0, ONE_MILLION).boxed().collect(Collectors.toSet()));
 
       // D) LinkedList[1M] =  MB because:
-      measureHeap(() -> (LinkedList<Long>) LongStream.range(0, ONE_MILLION).boxed().collect(toCollection(LinkedList::new)));
+//      measureHeap(() -> (LinkedList<Long>) LongStream.range(0, ONE_MILLION).boxed().collect(Collectors.toCollection(LinkedList::new)));
 
       // E) Long[1M] =  MB because:
-      measureHeap(() -> (Long[]) LongStream.range(0, ONE_MILLION).boxed().toArray(Long[]::new));
+//      measureHeap(() -> (Long[]) LongStream.range(0, ONE_MILLION).boxed().toArray(Long[]::new));
 
       // F) int[1M] =  MB because:
-      measureHeap(() -> (int[]) IntStream.range(0, ONE_MILLION).toArray());
+//      measureHeap(() -> (int[]) IntStream.range(0, ONE_MILLION).toArray());
 
       // TODO experiment .clear the collections and see if memory is released
    }
