@@ -26,10 +26,17 @@ public class ThreadLocalIntro {
 
     public void httpRequest(String currentUser, String data) {
         log.info("Current user is " + currentUser);
-        staticCurrentUser = currentUser;
+        staticCurrentUser.set(currentUser);
         controller.create(data);
     }
-    public static String staticCurrentUser;
+
+    //despite the fact that it's still a SINGLE INSTANCE ON HEAP reference via a single static variable,
+    // each thread has its own value for it.
+    // Used by:
+    // - JDBC Connection ± @Transactional
+    // - TraceID
+    // - SecurityContextHolder (Spring)
+    public static ThreadLocal<String> staticCurrentUser = new ThreadLocal<>();
 }
 // ---------- end of framework -----------
 
@@ -59,7 +66,7 @@ class AService {
 @Slf4j
 class ARepo {
     public void save(String data) {
-        String currentUser = ThreadLocalIntro.staticCurrentUser;
+        String currentUser = ThreadLocalIntro.staticCurrentUser.get(); //hocus pocus, get the current user from the framework
         log.info("INSERT INTO A (data={}, created_by={}) ", data, currentUser);
     }
 }
