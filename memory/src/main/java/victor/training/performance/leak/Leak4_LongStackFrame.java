@@ -15,7 +15,8 @@ import static victor.training.performance.util.PerformanceUtil.sleepMillis;
 public class Leak4_LongStackFrame {
 	@GetMapping
 	public String endpoint() {
-		String useful = fetchUsefulPart();
+		// also works
+    String useful = apiCallToAnOldSystem().getInterestingPart();
 
 		sleepMillis(10_000); // start a long-running process (eg 20 minutes)
 		if (useful != null) {
