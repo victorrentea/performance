@@ -15,16 +15,18 @@ import static victor.training.performance.util.PerformanceUtil.sleepMillis;
 public class Leak4_LongStackFrame {
 	@GetMapping
 	public String endpoint() {
-		BigObject80MB bigDto = apiCallToAnOldSystem();
-		String useful = bigDto.getInterestingPart();
-		// 🛑 don't reference large objects longer than needed
-		bigDto = null; // !!!!!! DO NOT DELETE THIS, IT FREES UP THE REF. < BAD
+		String useful = fetchUsefulPart();
 
 		sleepMillis(10_000); // start a long-running process (eg 20 minutes)
 		if (useful != null) {
 			log.trace("Using useful part: " + useful);
 		}
 		return "end";
+	}
+
+	private static String fetchUsefulPart() { // Adapter/Anti-corruption layer
+		BigObject80MB bigDto = apiCallToAnOldSystem();
+    return bigDto.getInterestingPart();
 	}
 
 	private static @NotNull BigObject80MB apiCallToAnOldSystem() {
