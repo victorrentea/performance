@@ -6,15 +6,22 @@ import org.springframework.stereotype.Repository;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.concurrent.CompletableFuture;
+
 import static victor.training.performance.util.PerformanceUtil.sleepMillis;
 
 @Slf4j
 public class ThreadLocalIntro {
     private final AController controller = new AController(new AService(new ARepo()));
-    public static void main(String[] args) {
+    public static void main(String[] args) throws InterruptedException {
         ThreadLocalIntro app = new ThreadLocalIntro();
         System.out.println("Imagine incoming HTTP requests...");
-        app.httpRequest("alice", "alice's data");
+//        app.httpRequest("alice", "alice's data");
+        CompletableFuture.runAsync(()->app.httpRequest("alice", "alice's data"));
+        CompletableFuture.runAsync(()->app.httpRequest("bob", "bob's data"));
+        // the threads running my tasks are from ForkJoinPool.commonPool()
+        // which threads are by default daemon threads (not keeping the JVM alive)
+        Thread.sleep(1000);
     }
 
     public void httpRequest(String currentUser, String data) {
