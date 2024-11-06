@@ -1,6 +1,5 @@
 package victor.training.performance.interview;
 
-import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 import java.util.stream.LongStream;

@@ -30,6 +30,7 @@ class Profile10_HttpClient {
       clientHttpRequestFactory.setConnectTimeout(5000);
       // copy-pasted code from Stack Overflow (like a Pro)
       return new RestTemplate(clientHttpRequestFactory);
+      //org/apache/hc/client5/http/classic/HttpClient is from dependency: org.apache.httpcomponents:httpclient5
     }
   }
 
