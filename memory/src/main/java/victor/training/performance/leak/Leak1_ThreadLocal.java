@@ -16,6 +16,7 @@ public class Leak1_ThreadLocal {
 
       threadLocal.set(bigObject);  // 🛑 ThreadLocal#remove()
 
+//      sleep(100000); // would allow to manifest this from browser
       businessMethod1();
 
       return "Magic can do harm.";
