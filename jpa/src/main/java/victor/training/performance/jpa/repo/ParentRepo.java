@@ -11,6 +11,22 @@ import java.util.stream.Stream;
 
 public interface ParentRepo extends JpaRepository<Parent, Long> {
 
+  @Query("""
+        SELECT p
+        FROM Parent p 
+        LEFT JOIN FETCH p.children
+        """) // JPQL not SQL
+  List<Parent> findAllWithChildren();
+
+
+
+
+
+
+
+
+
+
   // Spring generates an implementation of this interface
   interface ParentProjection {
     Long getId();
