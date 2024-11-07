@@ -5,7 +5,7 @@ import java.util.stream.IntStream;
 
 public class StreamsVsFor {
   public static void main(String[] args) {
-    List<Integer> numbers = IntStream.range(0, 1_000).boxed().toList();
+    List<Integer> numbers = IntStream.range(0, 10_000_000).boxed().toList();
 
     long start = System.currentTimeMillis();
     long sum = 0;
