@@ -28,7 +28,7 @@ public class Leak7_Cache {
    @GetMapping("signature")
    public String signature() {
       long requestStartTime = System.currentTimeMillis();
-      BigObject20MB data = cacheService.getContractById(1L , requestStartTime);
+      BigObject20MB data = cacheService.getContractById(1L, requestStartTime);
       return "Contract id:1 = " + data + ", " + PerformanceUtil.getUsedHeap();
    }
 
@@ -37,6 +37,23 @@ public class Leak7_Cache {
       BigObject20MB data = cacheService.getInvoiceByContractAndDate(new InvoiceByDate(13L, 2023, 10));
       return "Invoice = " + data + ", " + PerformanceUtil.getUsedHeap();
    }
+
+//   Map<K,Entry{Value,Timestamp}> cache;
+   // get(key) {
+   //   entry = cache.get(key)
+   //   if (entry.timestamp < now - 1h) { // you might return data 1h old
+   //     return entry.value
+   //   } else {
+   //     cache.remove(key); //tentative fix. wrong. keys no one asked for again are NEVER removed
+   //     real solution : have a timer watchdog looking in the cache eg every minute to remove the expired entries
+   //   }
+   //   v = remoteApi.call(k);
+   //   cache.put(key, new Entry(v, now)); // inserts or updates in the cache
+   //   return v;
+   // }
+   // 1 week later the map had 1GB containin ALL their JDs
+   // on expiration I don't remove the obsolette expired entry from the map
+
 }
 
 @Service
