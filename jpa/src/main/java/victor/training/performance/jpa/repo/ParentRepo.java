@@ -46,4 +46,5 @@ public interface ParentRepo extends JpaRepository<Parent, Long> {
 
   @Query("SELECT p FROM Parent p")
   Stream<Parent> streamAll();
+//  Iterator<Parent> streamAll();
 }

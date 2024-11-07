@@ -33,7 +33,13 @@ public class StringConcatInLoop {
    }
 
    private static Stream<String> fetchSomeData() {
+//      ResultSet rs;
+//      while (rs.next()) {
+
+//      Stream<String> linesStream = Files.lines(new File("in.txt").toPath());
+
       return IntStream.range(1, 200_000)
           .mapToObj(n -> "hahaha"); // 6 ch x 2 bytes = 12;
    }
+//   interface MyEntityRep
 }

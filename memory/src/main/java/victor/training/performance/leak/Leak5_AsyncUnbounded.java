@@ -27,8 +27,12 @@ public class Leak5_AsyncUnbounded {
   public String endpoint(
       @RequestParam(value = "file", required = false)
       MultipartFile multipartFile) throws IOException {
-    byte[] contents = multipartFile.getBytes();
-    worker.processFile(index.incrementAndGet(), contents);
+
+//    byte[] contents = multipartFile.getBytes();
+//    File temp = File.createTempFile("leak5", ".tmp");
+//    temp.deleteOnExit();
+//    IOUtils.copy(multipartFile.getInputStream(), temp);
+//    worker.processFile(index.incrementAndGet(), contents);
     return "Keep calling this 20 times within 10 seconds, then heap dump";
   }
 }
