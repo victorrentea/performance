@@ -31,30 +31,30 @@ public class NPlusOne {
   @Autowired
   EntityManager entityManager;
   @Autowired
-  ParentRepo repo;
+  ParentRepo parentRepo;
   @Autowired
   CountryRepo countryRepo;
 
   @BeforeEach
   void persistData() {
-    repo.deleteAll();
+    parentRepo.deleteAll();
     countryRepo.deleteAll();
     Country romania = countryRepo.save(new Country(1L, "Romania"));
     Country moldavia = countryRepo.save(new Country(2L, "Moldavia"));
-    repo.save(new Parent("Victor")
+    parentRepo.save(new Parent("Victor")
         .setCountry(romania)
         .setAge(36)
         .addChild(new Child("Emma"))
         .addChild(new Child("Vlad"))
     );
-    repo.save(new Parent("Peter")
+    parentRepo.save(new Parent("Peter")
         .setAge(41)
         .setCountry(romania)
         .addChild(new Child("Maria"))
         .addChild(new Child("Paul"))
         .addChild(new Child("Stephan"))
     );
-    repo.save(new Parent("Trofim") // bachelor, no children
+    parentRepo.save(new Parent("Trofim") // bachelor, no children
         .setCountry(moldavia)
         .setAge(42));
     TestTransaction.end(); // force a COMMIT
@@ -75,7 +75,7 @@ public class NPlusOne {
   // ======================= SELECT full @Entity =============================
   @Test
   public void selectFullEntity() {
-    List<Parent> parents = repo.findAll();
+    List<Parent> parents = parentRepo.findAll();
     log.info("Loaded {} parents: {}", parents.size(), parents);
 
     List<ParentDto> results = toSearchResults(parents);
@@ -92,7 +92,7 @@ public class NPlusOne {
   // ======================= @Query(native sql) returning Spring projections ==============
   @Test
   public void nativeQuery() {
-    List<ParentProjection> results = repo.nativeQuery();
+    List<ParentProjection> results = parentRepo.nativeQuery();
     assertResults(results);
   }
 
@@ -101,14 +101,14 @@ public class NPlusOne {
   public void subselect() {
     // TODO pagination
     // TODO filter the original @Entity model
-    List<ParentSubselect> results = repo.subselect();
+    List<ParentSubselect> results = parentRepo.subselect();
     assertResults(results);
   }
 
   // ======================= @Entity mapped on DB VIEW(native sql) =============================
   @Test
   public void view() {
-    List<ParentView> results = repo.view();
+    List<ParentView> results = parentRepo.view();
     assertResults(results);
   }
 
