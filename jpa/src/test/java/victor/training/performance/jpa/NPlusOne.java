@@ -15,6 +15,7 @@ import victor.training.performance.jpa.repo.CountryRepo;
 import victor.training.performance.jpa.repo.ParentRepo;
 import victor.training.performance.jpa.repo.ParentRepo.ParentProjection;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
@@ -78,13 +79,17 @@ public class NPlusOne {
     List<Parent> parents = parentRepo.findAll();
     log.info("Loaded {} parents: {}", parents.size(), parents);
 
-    List<ParentDto> results = toSearchResults(parents);
+    List<ParentDto> results = convertToDtos(parents);
     assertResults(results);
   }
 
-  private List<ParentDto> toSearchResults(Collection<Parent> parents) { // eg, in a Mapper
+  private List<ParentDto> convertToDtos(Collection<Parent> parents) { // eg, in a Mapper
     log.debug("Converting-->Dto START");
-    List<ParentDto> results = parents.stream().map(ParentDto::fromEntity).toList();
+    List<ParentDto> results = new ArrayList<>();
+    for (Parent parent : parents) {
+      ParentDto parentDto = ParentDto.fromEntity(parent); // causes 1 query / parent to lazy load children
+      results.add(parentDto);
+    }
     log.debug("Converting-->Dto DONE");
     return results;
   }

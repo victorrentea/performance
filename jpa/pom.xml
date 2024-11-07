@@ -76,6 +76,9 @@
             <scope>test</scope>
         </dependency>
         <dependency>
+            <!-- you can add this jar to an JAVA app connecting to a SQL DB
+             / by including this jar in the classpath when you start the programm/jboss appserver
+             java ..... -cp p6spy.jar -->
             <groupId>p6spy</groupId>
             <artifactId>p6spy</artifactId>
             <version>3.9.1</version>
