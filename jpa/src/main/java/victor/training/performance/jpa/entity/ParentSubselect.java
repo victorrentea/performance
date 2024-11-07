@@ -17,7 +17,7 @@ import jakarta.persistence.Id;
   from PARENT P
   left join CHILD C on P.ID = C.PARENT_ID
   group by p.ID, P.NAME
-  """)
+  """) // errors in syntax are only detected at runtime (too late)
 @Getter
 public class ParentSubselect {
    @Id

@@ -15,14 +15,14 @@ import static jakarta.persistence.CascadeType.ALL;
 @Entity
 public class Parent {
    @Id
-   @GeneratedValue// TODO ⚠️older versions might do (strategy = GenerationType.SEQUENCE, generator = "parent_seq")
+   @GeneratedValue// ⚠️older Hibernate versions might need (strategy = GenerationType.SEQUENCE, generator = "parent_seq")
    private Long id;
 
    private String name;
    private Integer age;
 
    @OneToMany(mappedBy = "parent", cascade = ALL)
-   // @BatchSize(size=10) // Hibernate magic that avoids N+1 using ID IN (?,?..,?10)
+   // @BatchSize(size=10) // Hibernate magic that avoids N x 'ID=?' using 'ID IN (?,?..,?)'
    private Set<Child> children = new HashSet<>();
 
    @ManyToOne

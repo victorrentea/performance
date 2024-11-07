@@ -27,8 +27,13 @@ public interface ParentRepo extends JpaRepository<Parent, Long> {
       left join child c on p.id = c.parent_id
       group by p.id, p.name
       """)
-  // PostgreSQL ✅, SQL Server (2017+) ✅, MySQL ❌ (use GROUP_CONCAT),
-  // Oracle ❌ (use LISTAGG), SQLite ❌, DB2 ✅
+  // string_agg support (lock-in?):
+  //  ✅ PostgreSQL
+  //  ✅ DB2
+  //  ✅ SQL Server (2017+)
+  //  ❌ MySQL -> use GROUP_CONCAT
+  //  ❌ Oracle -> use LISTAGG
+  //  ❌ SQLite
   List<ParentProjection> nativeQuery();
 
 
@@ -36,14 +41,14 @@ public interface ParentRepo extends JpaRepository<Parent, Long> {
     SELECT ps FROM ParentSubselect ps
     JOIN Parent p ON p.id = ps.id
     WHERE p.age > 10
-    """) // can filter on main @Entity model
+    """) // back in JPQL, so I can use my 💖 @Entity model in WHERE
   List<ParentSubselect> subselect();
 
   @Query("""
     SELECT pv FROM ParentView pv
     JOIN Parent p ON p.id=pv.id
     WHERE p.age > 10
-    """) // VIEW syntax is compiled by DB
+    """) // JPQL + the VIEW is compiled by DB => early error detection
   List<ParentView> view();
 
   @Query("SELECT p FROM Parent p")
