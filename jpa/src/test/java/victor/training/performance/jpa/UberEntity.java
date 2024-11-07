@@ -23,7 +23,6 @@ import java.util.List;
 import java.util.Map;
 
 import static java.util.stream.Collectors.joining;
-import static java.util.stream.Collectors.toList;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.tuple;
 import static org.springframework.test.annotation.DirtiesContext.ClassMode.BEFORE_EACH_TEST_METHOD;
@@ -101,6 +100,10 @@ public class UberEntity {
   public void search() {
     log.info("Searching for a 'very OOP' @Entity...");
 
+    // IT IS ILLEGAL with HIBERNATE/JPA to LOAD THE ENTIRE @ENTITY WHEN SEARCHING (displayed in a grid with 3-10 columns)
+    // INSTEAD
+    // SELECT DTOs directly when searching
+
     UberSearchCriteria criteria = UberSearchCriteria.builder().name("::uberName::").build();
     List<UberSearchResult> dtos = classicSearch(criteria);
 
@@ -114,7 +117,12 @@ public class UberEntity {
   }
 
   private List<UberSearchResult> classicSearch(UberSearchCriteria criteria) {
-    String jpql = "SELECT u FROM Uber u WHERE 1 = 1 ";
+//    String jpql = "SELECT u FROM Uber u WHERE 1 = 1 "; // BAD fetches TOO MUCH DATA
+    // for small DTOs
+    String jpql = "SELECT new victor.training.performance.jpa.UberEntity$UberSearchResult" +
+                  "(u.id, u.name, u.originCountry.name) " +
+//    String jpql = "SELECT u.id, u.name, u.originCountry.name as originCountry " +
+                  "FROM Uber u WHERE 1 = 1 ";
     // alternative implementation: CriteriaAPI, Criteria+Metamodel, QueryDSL, Spring Specifications
     Map<String, Object> params = new HashMap<>();
     if (criteria.name != null) {
@@ -125,7 +133,7 @@ public class UberEntity {
       jpql += " AND u.status = :status ";
       params.put("status", criteria.status);
     }
-    var query = em.createQuery(jpql, Uber.class);
+    var query = em.createQuery(jpql, UberSearchResult.class);
     for (String key : params.keySet()) {
       query.setParameter(key, params.get(key));
     }
@@ -134,7 +142,7 @@ public class UberEntity {
     // OR: Spring Data Repo @Query with a fixed JPQL
 //        results = uberRepo.searchFixedJqpl(criteria.name, criteria.status);
 
-    return results.stream().map(this::toResult).collect(toList());
+    return results;//.stream().map(this::toResult).collect(toList());
   }
 
   private UberSearchResult toResult(Uber entity) {
@@ -148,7 +156,13 @@ public class UberEntity {
   record UberSearchCriteria(String name, Status status, boolean hasPassport) {
   }
 
-  record UberSearchResult(String id, String name, String originCountry) {
-  }
+    record UberSearchResult(String id, String name, String originCountry) {
+    }
+//  @Data
+//  static final class UberSearchResult {
+//    private String id;
+//    private String name;
+//    private String originCountry; // matching the columnNames
+//  }
 }
 

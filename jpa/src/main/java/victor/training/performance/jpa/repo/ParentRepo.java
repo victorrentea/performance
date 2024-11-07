@@ -34,6 +34,7 @@ public interface ParentRepo extends JpaRepository<Parent, Long> {
     String getName(); // property 'name' must match the column name
     String getChildrenNames();
   }
+  // @NativeQuery on @Entity
   @Query(nativeQuery = true, value = """
       select p.id,
              p.name,
@@ -44,14 +45,16 @@ public interface ParentRepo extends JpaRepository<Parent, Long> {
       left join child c on p.id = c.parent_id
       group by p.id, p.name
       """)
+    // PostgreSQL ✅, SQL Server (2017+) ✅, MySQL ❌ (use GROUP_CONCAT), Oracle ❌ (use LISTAGG), SQLite ❌, DB2 ✅
   List<ParentProjection> nativeQuery();
+
 
 
   @Query("""
     SELECT ps FROM ParentSubselect ps
     JOIN Parent p ON p.id = ps.id
     WHERE p.age > 10
-    """) // can filter on main @Entity model
+    """) // back in JPQL so I can filter on my 💖 @Entity model
   List<ParentSubselect> subselect();
 
   @Query("""
