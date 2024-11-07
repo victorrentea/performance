@@ -26,8 +26,14 @@ public class Uber {
 
     @ManyToOne
     private Country originCountry;
-    @ManyToOne
-    private Country nationality;
+
+    // make excessive use of object links between @Entity in a model can degrade performance
+//    @ManyToOne//(fetch = FetchType.LAZY) // #1 option 1 > more magic
+//    private Country nationality;
+
+    // #2 option more towards traditional modeling
+    private Long nationalityId;
+
     @ManyToOne
     private Country fiscalCountry;
     @ManyToOne

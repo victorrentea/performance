@@ -63,7 +63,7 @@ public class UberEntity {
         .setOriginCountry(belgium)
         .setFiscalCountry(romania)
         .setInvoicingCountry(france)
-        .setNationality(serbia)
+        .setNationalityId(serbia.getId())
         .setScope(globalScope)
 //                .setScopeEnum(ScopeEnum.GLOBAL) // TODO enum
         .setCreatedBy(testUser);
@@ -88,6 +88,8 @@ public class UberEntity {
     log.info("Loading a 'very OOP' @Entity by id...");
     Uber uber = uberRepo.findById(uberId).orElseThrow(); // or em.find(UberEntity.class, id); in plain JPA
     log.info("Loaded using findById (inspect the above query):\n" + uber);
+
+    var toSendInDto = uber.getNationalityId(); // 100s of placed
 
     // Use-case: I only loaded UberEntity to get its status
     if (uber.getStatus() == Status.DRAFT) {
