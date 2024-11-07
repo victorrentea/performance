@@ -27,6 +27,8 @@ public interface ParentRepo extends JpaRepository<Parent, Long> {
       left join child c on p.id = c.parent_id
       group by p.id, p.name
       """)
+  // PostgreSQL ✅, SQL Server (2017+) ✅, MySQL ❌ (use GROUP_CONCAT),
+  // Oracle ❌ (use LISTAGG), SQLite ❌, DB2 ✅
   List<ParentProjection> nativeQuery();
 
 
