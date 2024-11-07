@@ -3,6 +3,7 @@ package victor.training.performance.jpa.entity;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
+import org.hibernate.annotations.BatchSize;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -22,7 +23,7 @@ public class Parent {
    private Integer age;
 
    @OneToMany(mappedBy = "parent", cascade = ALL)
-   // @BatchSize(size=10) // Hibernate magic that avoids N+1 using ID IN (?,?..,?10)
+    @BatchSize(size=10) // Hibernate magic that avoids N+1 using ID IN (?,?..,?10)
    private Set<Child> children = new HashSet<>();
 
    @ManyToOne
