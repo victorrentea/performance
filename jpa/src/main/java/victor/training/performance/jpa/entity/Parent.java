@@ -23,7 +23,7 @@ public class Parent {
    // +40 other fields
 
    @OneToMany(mappedBy = "parent", cascade = ALL
-      , fetch = FetchType.EAGER // tell hibernate to load the children when loading the parent EVERYWHERE
+//      , fetch = FetchType.EAGER // tell hibernate to load the children when loading the parent EVERYWHERE
        // STUPID: because many flows might not need the children at all. = you pay memory,CPU,network, hurt the DB
        // the queries are still there.
    )

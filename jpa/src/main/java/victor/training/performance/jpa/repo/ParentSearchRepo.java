@@ -12,7 +12,13 @@ import java.util.Set;
 public interface ParentSearchRepo extends JpaRepository<Parent, Long> {
 
   // A) Retrieve hierarchical data allowing lazy load to trigger
-  @Query("SELECT p FROM Parent p WHERE p.name LIKE ?1")
+  @Query("""
+      SELECT p 
+      FROM Parent p 
+      LEFT JOIN FETCH p.children
+      LEFT JOIN FETCH p.country
+      WHERE p.name LIKE ?1
+      """)
   Page<Parent> searchByNameLike(String namePart, Pageable pageable);
 
   // B) Retrieve hierarchical data via Driving Query
