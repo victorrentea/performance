@@ -16,16 +16,16 @@ public class Leak1_ThreadLocal {
 
       threadLocal.set(bigObject);  // 🛑 ThreadLocal#remove()
 
-      businessMethod1();
+      method1();
 
       return "Magic can do harm.";
    }
 
-   private void businessMethod1() { // no username in the signature
-      businessMethod2();
+   private void method1() { // no username in the signature
+      method2();
    }
 
-   private void businessMethod2() {
+   private void method2() {
       BigObject20MB bigObject = threadLocal.get();
       String currentUsernameOnThisThread = bigObject.someString;
       System.out.println("Business logic using " + currentUsernameOnThisThread);
@@ -41,3 +41,5 @@ public class Leak1_ThreadLocal {
  * - Logback MDC
  * If you insist to use ThreadLocal, after the first .set(), always do try { } finally { .remove(); }
  */
+
+
