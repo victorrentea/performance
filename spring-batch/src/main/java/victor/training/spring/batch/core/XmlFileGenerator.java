@@ -27,7 +27,7 @@ public class XmlFileGenerator {
 
                 String cityName = "City " + cityId;
                 citiesNamesGenerated.add(cityName);
-                writer.write("<person><name>elem"+i+"</name><city>"+cityName+"</city></person>\n");
+                writer.write("<person><name>Person "+i+"</name><city>"+cityName+"</city></person>\n");
             }
             writer.write("</personList>");
         }
