@@ -15,25 +15,27 @@ public class Leak16_ThreadLocalCache {
       return Library.innocentMethod();
    }
 }
+// -- can't change code below this line: part of a library --
 class Library {
    private static final ThreadLocal<ExpensiveResource> cache
        = ThreadLocal.withInitial(ExpensiveResource::new);
+
    public static String innocentMethod() {
-      return cache.get().use();
+      return "Meaning of life: " + cache.get().getMeaningOfLife();
    }
-}
-class ExpensiveResource {
-   // reality = parsed schema (XSD, OpenApi/Swagger), an engine (Nashorn, Groovy)..
-   private final int meaning;
-   private final BigObject20MB bigObject = new BigObject20MB();
+   private static class ExpensiveResource {
+      private final int meaningOfLife;
+      private final BigObject20MB bigObject = new BigObject20MB();
+      // usually a parsed schema (XSD, OpenApi/Swagger), an engine (Nashorn, Groovy)..
 
-   public ExpensiveResource() {
-      System.out.println("Finding meaning of life...");
-      sleepMillis(100); // takes time
-      meaning = 42;
-   }
+      public ExpensiveResource() {
+         System.out.println("Searching for meaning of life...");
+         sleepMillis(100); // takes time to compute
+         meaningOfLife = 42;
+      }
 
-   public String use() {
-      return "Answer is " + meaning;
+      public String getMeaningOfLife() {
+         return "" + meaningOfLife;
+      }
    }
 }

@@ -1,8 +1,8 @@
 package victor.training.performance.assignment.leak1;
 
 import lombok.Data;
-import org.apache.commons.io.output.NullWriter;
 
+import java.io.FileWriter;
 import java.io.IOException;
 import java.io.Writer;
 import java.util.ArrayList;
@@ -34,7 +34,7 @@ public class RunningAverage {
    public static void main(String[] args) throws IOException {
       Stream<List<SomeElement>> pageStream = Stream.generate(RunningAverage::generatePage);
 
-      Writer writer = new NullWriter(); // imagine writing to a file
+      Writer writer = new FileWriter("out.tmp"); // imagine writing to a file
       averageWindow(() -> pageStream.limit(2_000_000).iterator(), 10_000, writer);
    }
 
