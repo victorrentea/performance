@@ -17,10 +17,9 @@ import static java.util.concurrent.TimeUnit.MINUTES;
 @SuppressWarnings("ALL")
 @Slf4j
 public class RaceBugs {
-  private static List<Integer> evenNumbers = new ArrayList<>();
-
 //  private static AtomicInteger total = new AtomicInteger(0);
 //  private static final Object lock = new Object();
+  private static final List<Integer> evenNumbers = Collections.synchronizedList(new ArrayList<>());
 
   // many parallel threads run this method:
   @SneakyThrows
@@ -31,6 +30,9 @@ public class RaceBugs {
     for (Integer n : numbers) {
       if (n % 2 == 0) {
         myTotal++;
+        if (!evenNumbers.contains(n)) {
+          evenNumbers.add(n); // MUTATE DATA = BAD VICTOR
+        }
       }
     }
     log.info("End");

@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Repository;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import static victor.training.performance.util.PerformanceUtil.sleepMillis;
@@ -14,12 +15,12 @@ public class ThreadLocalIntro {
     public static void main(String[] args) {
         ThreadLocalIntro app = new ThreadLocalIntro();
         System.out.println("Imagine incoming HTTP requests...");
-        app.httpRequest("alice", "alice's data");
+        app.securityFilters("alice", "alice's data");
     }
 
-    public void httpRequest(String currentUser, String data) {
-        log.info("Current user is " + currentUser);
-        controller.create(data);
+    public void securityFilters(String currentUser, String data) {
+        log.info("Current user is " + currentUser);// imagine current user was extracted from a JWT or a Http Session
+        controller.create(data, currentUser);
     }
     public static String staticCurrentUser;
 }
@@ -30,9 +31,9 @@ public class ThreadLocalIntro {
 @RequiredArgsConstructor
 class AController {
     private final AService service;
-
-    public void create(String data) {
-        service.create(data);
+    @GetMapping
+    public void create(String data, String currentUser) {
+        service.create(data, currentUser);
     }
 }
 
@@ -42,9 +43,9 @@ class AController {
 class AService {
     private final ARepo repo;
 
-    public void create(String data) {
+    public void create(String data, String currentUser) {
         sleepMillis(10); // some delay, to reproduce the race bug
-        repo.save(data);
+        repo.save(data, currentUser);
     }
 }
 
@@ -52,8 +53,8 @@ class AService {
 @Repository
 @Slf4j
 class ARepo {
-    public void save(String data) {
-        String currentUser = "TODO"; // TODO
+    public void save(String data, String currentUser) {
+//        String currentUser = "TODO"; // TODO
         log.info("INSERT INTO A (data={}, created_by={}) ", data, currentUser);
     }
 }
