@@ -25,10 +25,11 @@ public class ThreadLocalIntro {
 
     public void securityFilters(String currentUser, String data) {
         log.info("Current user is " + currentUser);// imagine current user was extracted from a JWT or a Http Session
-        staticCurrentUser = currentUser;
+        staticCurrentUser.set(currentUser);
         controller.create(data);
     }
-    public static String staticCurrentUser;
+    // Map<Thread, String>
+    public static ThreadLocal<String> staticCurrentUser = new ThreadLocal<>();
 }
 // ---------- end of framework -----------
 
@@ -60,6 +61,7 @@ class AService {
 @Slf4j
 class ARepo {
     public void save(String data) {
-        log.info("INSERT INTO A (data={}, created_by={}) ", data, ThreadLocalIntro.staticCurrentUser);
+        String staticCurrentUser = ThreadLocalIntro.staticCurrentUser.get();
+        log.info("INSERT INTO A (data={}, created_by={}) ", data, staticCurrentUser);
     }
 }
