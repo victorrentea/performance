@@ -20,7 +20,8 @@ public class ParallelStreams {
 //    ForkJoinPool.commonPool() has 9 threads = #CPU -1, global, shared JVM-wide
     var result = list.parallelStream()
         .filter(i -> i % 2 == 0) // 50 left
-        .map(ParallelStreams::fetchFromRemote)
+        .map(ParallelStreams::fetchFromRemote) // BAD practice to do I/O
+        // parallelStream is good for CPU-bound tasks, not for I/O-bound tasks
         .toList();
 
 
