@@ -1,5 +1,6 @@
 package victor.training.performance;
 
+import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 
 import java.util.ArrayList;
@@ -7,6 +8,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.IntStream;
 
 import static java.util.concurrent.TimeUnit.MINUTES;
@@ -17,24 +19,26 @@ import static java.util.concurrent.TimeUnit.MINUTES;
 public class RaceBugs {
   private static List<Integer> evenNumbers = new ArrayList<>();
 
-  private static Integer total = 0;
+  private static AtomicInteger total = new AtomicInteger(0);
   private static final Object lock = new Object();
 
   // many parallel threads run this method:
+  @SneakyThrows
   private static void countEven(List<Integer> numbers) {
     log.info("Start");
     for (Integer n : numbers) {
       if (n % 2 == 0) {
-        synchronized (lock) {
-          total++;
-        }
+//        System.out.println(n); // logging/delays make the race less likely 1000x more than the next line
+        //Thread.yield();Thread.sleep(0); // ==
+//        total++;
+        total.incrementAndGet();
       }
     }
     log.info("End");
   }
 
   public static void main(String[] args) throws Exception {
-    List<Integer> fullList = IntStream.range(0, 10000).boxed().toList();
+    List<Integer> fullList = IntStream.range(0, 100000).boxed().toList();
 
     // [[500elems],[500elems]]
     List<List<Integer>> parts = splitList(fullList, 2);
