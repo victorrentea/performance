@@ -23,6 +23,7 @@ public class ParallelStreams {
         .map(ParallelStreams::fetchFromRemote)
         .toList();
 
+
     long t1 = System.currentTimeMillis();
     log.debug("Took {} ms to get: {}", t1 - t0, result);
   }
