@@ -26,10 +26,15 @@ public class ThreadLocalIntro {
     public void securityFilters(String currentUser, String data) {
         log.info("Current user is " + currentUser);// imagine current user was extracted from a JWT or a Http Session
         staticCurrentUser.set(currentUser);
-        controller.create(data);
+        try {
+            controller.create(data);
+        }finally {
+            staticCurrentUser.remove(); // clear the thread local in case this thread came from a thread pool, reused later
+        }
+
     }
     // Map<Thread, String>
-    public static ThreadLocal<String> staticCurrentUser = new ThreadLocal<>();
+    public static ThreadLocal<String> staticCurrentUser = new InheritableThreadLocal<>();
 }
 // ---------- end of framework -----------
 
@@ -52,7 +57,12 @@ class AService {
 
     public void create(String data) {
         sleepMillis(10); // some delay, to reproduce the race bug
-        repo.save(data);
+        someInnocentSideMethod();
+        new Thread(() -> repo.save(data)).start();
+    }
+
+    private void someInnocentSideMethod() {
+        ThreadLocalIntro.staticCurrentUser.set("🎠");
     }
 }
 
