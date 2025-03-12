@@ -22,7 +22,9 @@ public class SummingBoxes {
 
   private static Long sumThemUp(List<Long> list) {
     // TODO Reduce run time by changing 1 character below 😊
-    Long sum = 0L;
+
+//    new Thread().setDaemon(true); // not keep the process from dying
+    long sum = 0L;
     for (Long i : list) {
       sum += i;
     }

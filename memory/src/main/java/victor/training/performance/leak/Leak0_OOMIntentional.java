@@ -3,7 +3,6 @@ package victor.training.performance.leak;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import victor.training.performance.leak.obj.BigObject20MB;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -16,7 +15,7 @@ public class Leak0_OOMIntentional {
   public String endpoint() {
     List<int[]> boom = new ArrayList<>();
     while (true) boom.add(new int[1000_000]);
-    // throw new OutOfMemoryError("Does not generate heapdump despite the flags");
+//     throw new OutOfMemoryError("Unfortunately, throwing a new OutOfMemoryError does NOT generate a heapdump");
   }
 }
 
