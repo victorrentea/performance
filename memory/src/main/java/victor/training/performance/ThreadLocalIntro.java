@@ -7,20 +7,26 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.concurrent.CompletableFuture;
+
 import static victor.training.performance.util.PerformanceUtil.sleepMillis;
 
 @Slf4j
 public class ThreadLocalIntro {
     private final AController controller = new AController(new AService(new ARepo()));
-    public static void main(String[] args) {
+    public static void main(String[] args) throws InterruptedException {
         ThreadLocalIntro app = new ThreadLocalIntro();
         System.out.println("Imagine incoming HTTP requests...");
-        app.securityFilters("alice", "alice's data");
+        CompletableFuture.runAsync(()->app.securityFilters("alice", "alice's data"));
+        CompletableFuture.runAsync(()->app.securityFilters("bob", "bob's data"));
+
+        Thread.sleep(1000);
     }
 
     public void securityFilters(String currentUser, String data) {
         log.info("Current user is " + currentUser);// imagine current user was extracted from a JWT or a Http Session
-        controller.create(data, currentUser);
+        staticCurrentUser = currentUser;
+        controller.create(data);
     }
     public static String staticCurrentUser;
 }
@@ -32,8 +38,8 @@ public class ThreadLocalIntro {
 class AController {
     private final AService service;
     @GetMapping
-    public void create(String data, String currentUser) {
-        service.create(data, currentUser);
+    public void create(String data) {
+        service.create(data);
     }
 }
 
@@ -43,9 +49,9 @@ class AController {
 class AService {
     private final ARepo repo;
 
-    public void create(String data, String currentUser) {
+    public void create(String data) {
         sleepMillis(10); // some delay, to reproduce the race bug
-        repo.save(data, currentUser);
+        repo.save(data);
     }
 }
 
@@ -53,8 +59,7 @@ class AService {
 @Repository
 @Slf4j
 class ARepo {
-    public void save(String data, String currentUser) {
-//        String currentUser = "TODO"; // TODO
-        log.info("INSERT INTO A (data={}, created_by={}) ", data, currentUser);
+    public void save(String data) {
+        log.info("INSERT INTO A (data={}, created_by={}) ", data, ThreadLocalIntro.staticCurrentUser);
     }
 }
