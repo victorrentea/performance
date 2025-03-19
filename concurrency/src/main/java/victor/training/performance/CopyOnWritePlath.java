@@ -2,8 +2,8 @@ package victor.training.performance;
 
 import victor.training.performance.util.PerformanceUtil;
 
-import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
@@ -11,7 +11,7 @@ import java.util.concurrent.TimeUnit;
 import static java.lang.System.currentTimeMillis;
 
 public class CopyOnWritePlath {
-  static List<String> consumers = new ArrayList<>();
+  static List<String> consumers = new CopyOnWriteArrayList<>();
 
   static public synchronized void connect(String consumer) {
     consumers.add(consumer);
@@ -21,7 +21,7 @@ public class CopyOnWritePlath {
     consumers.remove(consumer);
   }
 
-  static public synchronized void publish(String message) {
+  static public void publish(String message) {
     System.out.println("Start publishing");
     try {
       for (String consumer : consumers) {
