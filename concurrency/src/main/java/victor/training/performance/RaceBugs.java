@@ -18,7 +18,7 @@ public class RaceBugs {
   private static List<Integer> evenNumbers = new ArrayList<>();
 
   private static Integer total = 0;
-
+  private static final Object lock = new Object();
 //  private static final List<String> messages = new ArrayList<>(10000);
   // record JFR events that in mem binary compressed
 
@@ -27,7 +27,7 @@ public class RaceBugs {
     log.info("Start");
     for (Integer n : numbers) {
       if (n % 2 == 0) {
-        synchronized (total) { // WRONG object
+        synchronized (lock) { // WRONG object
           total++;
         }
       }
@@ -36,7 +36,7 @@ public class RaceBugs {
   }
 
   public static void main(String[] args) throws Exception {
-    List<Integer> fullList = IntStream.range(0, 1_000).boxed().toList();
+    List<Integer> fullList = IntStream.range(0, 100_000).boxed().toList();
 
     // [[500elems],[500elems]]
     List<List<Integer>> parts = splitList(fullList, 2);
