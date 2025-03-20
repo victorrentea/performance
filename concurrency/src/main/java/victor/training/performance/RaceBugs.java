@@ -7,6 +7,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.IntStream;
 
 import static java.util.concurrent.TimeUnit.MINUTES;
@@ -17,8 +18,7 @@ import static java.util.concurrent.TimeUnit.MINUTES;
 public class RaceBugs {
   private static List<Integer> evenNumbers = new ArrayList<>();
 
-  private static Integer total = 0;
-  private static final Object lock = new Object();
+  private static AtomicInteger total = new AtomicInteger(); // perfect for sequences
 //  private static final List<String> messages = new ArrayList<>(10000);
   // record JFR events that in mem binary compressed
 
@@ -27,9 +27,7 @@ public class RaceBugs {
     log.info("Start");
     for (Integer n : numbers) {
       if (n % 2 == 0) {
-        synchronized (lock) { // WRONG object
-          total++;
-        }
+        total.incrementAndGet();
       }
     }
     log.info("End");
