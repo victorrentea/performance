@@ -2,6 +2,7 @@ package victor.training.performance;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.client.RestTemplate;
@@ -10,8 +11,6 @@ import victor.training.performance.drinks.DillyDilly;
 import victor.training.performance.drinks.Vodka;
 
 import java.util.concurrent.ExecutionException;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 
 import static java.lang.System.currentTimeMillis;
@@ -21,7 +20,9 @@ import static java.lang.System.currentTimeMillis;
 public class Barman {
   @Autowired
   private RestTemplate rest;
-  ExecutorService threadPool = Executors.newFixedThreadPool(200);
+//  ExecutorService threadPool = Executors.newFixedThreadPool(200);
+  @Autowired
+  private ThreadPoolTaskExecutor threadPool;
 
   @GetMapping("/drink")
   public DillyDilly drink() throws ExecutionException, InterruptedException {

@@ -14,16 +14,16 @@ public class BarmanConfig {
   MeterRegistry meterRegistry;
 
   @Bean
-  public ThreadPoolTaskExecutor poolBar(@Value("${pool.bar.size}") int barPoolSize) {
+  public ThreadPoolTaskExecutor threadPool(@Value("${pool.bar.size}") int barPoolSize) {
     ThreadPoolTaskExecutor executor = new ThreadPoolTaskExecutor();
     executor.setCorePoolSize(barPoolSize); // core == max
     executor.setMaxPoolSize(barPoolSize); // how to decide size?
-
     executor.setQueueCapacity(500); // how to decide?
+//    executor.setRejectedExecutionHandler(new ThreadPoolExecutor.CallerRunsPolicy());
 
     executor.setTaskDecorator(new MonitorQueueWaitingTimeTaskDecorator(meterRegistry.timer("barman-queue-time")));
     executor.setThreadNamePrefix("bar-");
-//    executor.setRejectedExecutionHandler(...);
+    executor.setWaitForTasksToCompleteOnShutdown(true);
     executor.initialize();
     return executor;
   }
