@@ -5,8 +5,6 @@ import victor.training.performance.util.PerformanceUtil;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
-import static victor.training.performance.util.PerformanceUtil.*;
-
 
 public class DeadLockPhilosophersWithLocks {
 	static class ForkWithLock {
@@ -17,6 +15,7 @@ public class DeadLockPhilosophersWithLocks {
 		}
 		public void take() {
 			lock.lock();
+//			lock.tryLock(maxwaiting time);
 		}
 		public void putDown() {
 			lock.unlock();

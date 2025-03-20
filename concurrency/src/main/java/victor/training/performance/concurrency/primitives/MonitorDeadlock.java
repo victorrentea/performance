@@ -1,8 +1,5 @@
 package victor.training.performance.concurrency.primitives;
 
-import victor.training.performance.util.PerformanceUtil;
-
-import static victor.training.performance.util.PerformanceUtil.*;
 import static victor.training.performance.util.PerformanceUtil.log;
 
 
@@ -30,7 +27,6 @@ public class MonitorDeadlock {
 	public static class Thread2 extends Thread {
 		public void run() {
 			try {
-				
 				 // TODO Fix Deadlock
 				synchronized (monitorB) {
 					log("Acquired Monitor B");

@@ -7,6 +7,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.stream.IntStream;
@@ -41,11 +42,13 @@ public class RaceBugs {
   private static AtomicInteger total = new AtomicInteger(); // perfect for sequences
 
   // many parallel threads run this method:
-  private static void countEven(List<Integer> numbers) {
+  private static int countEven(List<Integer> numbers) {
     log.info("Start");
+    int localTotal = 0;
     for (Integer n : numbers) {
       if (n % 2 == 0) {
-        total.incrementAndGet();
+        localTotal++;
+//        total.incrementAndGet(); // changig shared mutable state
 //        while(true){
 //          System.err.println("RETRIED");
 //          Frequency oldFreq = lastFrequency.get();
@@ -57,6 +60,7 @@ public class RaceBugs {
       }
     }
     log.info("End");
+    return localTotal; // return YOUR partial results. no mutalbe state.
   }
 
   public static void main(String[] args) throws Exception {
@@ -66,12 +70,14 @@ public class RaceBugs {
     List<List<Integer>> parts = splitList(fullList, 2);
 
     ExecutorService pool = Executors.newCachedThreadPool();
-    for (List<Integer> part : parts) {
-      pool.submit(()-> countEven(part));
-    }
+    Future<Integer> firstHalfResultsFuture = pool.submit(() -> countEven(parts.get(0)));
+    Future<Integer> secondHalfResultsFuture = pool.submit(() -> countEven(parts.get(1)));
     pool.shutdown();
     pool.awaitTermination(1, MINUTES);
 
+    // let the workers work on their private dataset/counters..
+    // merge their results at the end
+    long mergedTotal = firstHalfResultsFuture.get() + secondHalfResultsFuture.get();
     log.debug("Counted: " + total);
     log.debug("Counted: " + lastFrequency);
     log.debug("List.size: " + evenNumbers.size());
