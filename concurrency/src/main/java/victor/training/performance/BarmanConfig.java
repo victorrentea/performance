@@ -33,7 +33,12 @@ public class BarmanConfig {
         return ()-> {// thread hopping
           // in the worker thread
           MDC.setContextMap(map);
-          task.run();
+          try {
+            task.run();
+          } finally {
+            // PATTERN clear the Thread Local in in a finnally, started right after setting the thread local
+            MDC.clear(); // prevent leak into the next task handled by this same worker thread
+          }
         };
       }
     });
