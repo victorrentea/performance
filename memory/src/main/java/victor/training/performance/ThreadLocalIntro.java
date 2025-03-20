@@ -18,15 +18,16 @@ public class ThreadLocalIntro {
         System.out.println("Imagine incoming HTTP requests...");
         CompletableFuture.runAsync(()->app.httpRequest("alice", "alice's data"));
         CompletableFuture.runAsync(()->app.httpRequest("bob", "bob's data"));
-        Thread.sleep(1000);
+        Thread.sleep(1000); // preventt process from exiting
+        // as how to fix this problem CompletableFuture submit to ForkJoin.commonPool ofcomposed of threads.daemon=true
     }
 
     public void httpRequest(String currentUser, String data) {
         log.info("Current user is " + currentUser);
-        staticCurrentUser = currentUser;
+        staticCurrentUser.set(currentUser);
         controller.create(data,currentUser);
     }
-    public static String staticCurrentUser; // static global variable
+    public static ThreadLocal<String> staticCurrentUser = new ThreadLocal<>(); // static global variable
 }
 // ---------- end of framework -----------
 
@@ -58,6 +59,6 @@ class AService {
 @Slf4j
 class ARepo {
     public void save(String data, String currentUser) {
-        log.info("INSERT INTO A (data={}, created_by={}) ", data, ThreadLocalIntro.staticCurrentUser);
+        log.info("INSERT INTO A (data={}, created_by={}) ", data, ThreadLocalIntro.staticCurrentUser.get());
     }
 }
