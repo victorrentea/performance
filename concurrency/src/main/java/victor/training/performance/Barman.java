@@ -26,14 +26,16 @@ public class Barman {
   public DillyDilly drink() throws ExecutionException, InterruptedException {
     long t0 = currentTimeMillis();
 
-    ExecutorService threadPool = Executors.newFixedThreadPool(2);
+    ExecutorService threadPool = Executors.newFixedThreadPool(2); // #2 I create NEW threads every. I don't reuse
+    // #3 traceIds are not propagated from Tomcat's thread to worker thread
     Future<Beer> futureBeer = threadPool.submit(() -> getBeer());
+    // #4 I waste resources: the tomcat's thread sleeps for 1 second doing nothing wasting memory.
     Future<Vodka> futureVodka = threadPool.submit(() -> getVodka());
     Beer beer = futureBeer.get();
     Vodka vodka = futureVodka.get();
 
     DillyDilly dilly = new DillyDilly(beer, vodka);
-
+//    threadPool.shutdown(); // #1 - thread leak leading to OOME in 2 days > restart every night💖
     log.info("HTTP thread blocked for {} durationMillis", currentTimeMillis() - t0);
     return dilly;
   }
