@@ -4,7 +4,9 @@ import lombok.extern.slf4j.Slf4j;
 
 import java.util.List;
 import java.util.concurrent.ExecutionException;
+import java.util.concurrent.ForkJoinPool;
 import java.util.stream.IntStream;
+import java.util.stream.Stream;
 
 import static victor.training.performance.util.PerformanceUtil.sleepMillis;
 
@@ -18,12 +20,17 @@ public class ParallelStreams {
 
     long t0 = System.currentTimeMillis();
 
-    var result = list.parallelStream()
+    Stream<Integer> stream = list.parallelStream()
         // runs now in ForkJoinPool.commonPool. default size = 9 = #CPU-1(main)
         // main+9 fully saturate my 10 CPUs
         .filter(i -> i % 2 == 0)
-        .map(i -> callApi(i)) // blocking 100ms is BAD because commonPool is supposed to be used for CPU
-        .toList();
+        .map(i -> callApi(i));
+
+    // to run a parallelStream on your own pool:
+    ForkJoinPool myPool = new ForkJoinPool(10);
+
+    // terminate your stream in a task running in this thread pool
+    var result = myPool.submit(()->stream.toList()).get();
 
     long t1 = System.currentTimeMillis();
     log.debug("Took {} ms to get: {}", t1 - t0, result);
