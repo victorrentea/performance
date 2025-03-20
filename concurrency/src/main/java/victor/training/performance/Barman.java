@@ -21,7 +21,7 @@ import static java.lang.System.currentTimeMillis;
 public class Barman {
   @Autowired
   private RestTemplate rest;
-  ExecutorService threadPool = Executors.newFixedThreadPool(2);
+  ExecutorService threadPool = Executors.newFixedThreadPool(200);
 
   @GetMapping("/drink")
   public DillyDilly drink() throws ExecutionException, InterruptedException {
