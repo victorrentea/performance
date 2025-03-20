@@ -19,13 +19,17 @@ public class RaceBugs {
 
   private static Integer total = 0;
 
+//  private static final List<String> messages = new ArrayList<>(10000);
+  // record JFR events that in mem binary compressed
+
   // many parallel threads run this method:
   private static void countEven(List<Integer> numbers) {
     log.info("Start");
     for (Integer n : numbers) {
       if (n % 2 == 0) {
-        total++;
-        System.out.println("total:"+total); // debug makes the race dissapear heisenbug because the relative probability of the critical instructions overalpping is veeeery low now
+        synchronized (total) { // WRONG object
+          total++;
+        }
       }
     }
     log.info("End");
