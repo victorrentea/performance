@@ -16,8 +16,8 @@ import victor.training.performance.drinks.Vodka;
 import victor.training.performance.util.PerformanceUtil;
 
 import java.util.Random;
+import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
-import java.util.concurrent.Future;
 
 import static java.lang.System.currentTimeMillis;
 
@@ -40,9 +40,13 @@ public class Barman {
 
     // #3 traceIds are not propagated from Tomcat's thread to worker thread
     // fork some work in a second thread, but I need its results
-    Future<Beer> futureBeer = threadPool.submit(() -> getBeer());
+//    Future<Beer> futureBeer = threadPool.submit(() -> getBeer());
+//    Future<Beer> futureBeer = CompletableFuture.supplyAsync(() -> getBeer());
+    CompletableFuture<Beer> futureBeer = CompletableFuture.supplyAsync(() -> getBeer())
+        .thenApplyAsync(beer -> beer.setType("ginger"));
     Vodka vodka = getVodka();
     Beer beer = futureBeer.get();
+    beer.setType("ginger");
 
 
     // CR: you need to publish a kafka message for audit purposes
@@ -64,6 +68,7 @@ public class Barman {
   }
 
   private Beer getBeer() {
+    log.info("beggign for beer");
     return rest.getForObject("http://localhost:9999/beer", Beer.class);
   }
 }
