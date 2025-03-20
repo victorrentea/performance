@@ -2,7 +2,9 @@ package victor.training.performance;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.slf4j.MDC;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -13,6 +15,7 @@ import victor.training.performance.drinks.DillyDilly;
 import victor.training.performance.drinks.Vodka;
 import victor.training.performance.util.PerformanceUtil;
 
+import java.util.Random;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 
@@ -26,9 +29,13 @@ public class Barman {
 //  ExecutorService threadPool = Executors.newFixedThreadPool(200);
   @Autowired
   private ThreadPoolTaskExecutor threadPool;
+  @Autowired
+  private SomeOtherClass someOtherClass;
 
   @GetMapping("/drink")
   public DillyDilly drink() throws ExecutionException, InterruptedException {
+    MDC.put("USERID","jdoe"+new Random().nextInt(100));
+    log.info("START");
     long t0 = currentTimeMillis();
 
     // #3 traceIds are not propagated from Tomcat's thread to worker thread
@@ -37,9 +44,11 @@ public class Barman {
     Vodka vodka = getVodka();
     Beer beer = futureBeer.get();
 
+
     // CR: you need to publish a kafka message for audit purposes
     // fire-and-forget
-    threadPool.submit(()->audit("dilly"));
+//    threadPool.submit(()->audit("dilly"));
+    someOtherClass.audit("dilly");
     // Risks:
     // - audit() not called at all because of a JVM crash/kill
     // - exceptions might not be logged
@@ -49,16 +58,6 @@ public class Barman {
     return dilly;
   }
 
-  private void audit(String dilly) {
-    try {
-      log.info("Sending a message to Kafka for analytics");
-      PerformanceUtil.sleepMillis(100); // delays
-      if (Math.random()<.5) throw new RuntimeException("Kafka is down"); // errors
-      log.info("finished sending");
-    } catch (RuntimeException e) {
-      throw new RuntimeException(e);
-    }
-  }
 
   private Vodka getVodka() {
     return rest.getForObject("http://localhost:9999/vodka", Vodka.class);
@@ -73,5 +72,11 @@ public class Barman {
 @RequiredArgsConstructor
 @Service
 class SomeOtherClass {
-
+  @Async("threadPool") // magic but useful
+  public void audit(String dilly) {
+    log.info("Sending a message to Kafka for analytics");
+    PerformanceUtil.sleepMillis(100); // delays
+    if (Math.random()<.5) throw new RuntimeException("Kafka is down"); // errors
+    log.info("finished sending");
+  }
 }
