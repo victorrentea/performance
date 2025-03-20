@@ -19,9 +19,10 @@ public class ThreadLocalIntro {
 
     public void httpRequest(String currentUser, String data) {
         log.info("Current user is " + currentUser);
+        staticCurrentUser = currentUser;
         controller.create(data,currentUser);
     }
-    public static String staticCurrentUser;
+    public static String staticCurrentUser; // static global variable
 }
 // ---------- end of framework -----------
 
@@ -53,6 +54,6 @@ class AService {
 @Slf4j
 class ARepo {
     public void save(String data, String currentUser) {
-        log.info("INSERT INTO A (data={}, created_by={}) ", data, currentUser);
+        log.info("INSERT INTO A (data={}, created_by={}) ", data, ThreadLocalIntro.staticCurrentUser);
     }
 }
