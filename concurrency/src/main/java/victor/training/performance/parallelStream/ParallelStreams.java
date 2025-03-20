@@ -11,15 +11,18 @@ import static victor.training.performance.util.PerformanceUtil.sleepMillis;
 @Slf4j
 public class ParallelStreams {
   public static void main(String[] args) throws ExecutionException, InterruptedException {
-    // OnAServer.otherParallelRequestsAreRunning(); // starve the shared commonPool din JVM
+    //
+     OnAServer.otherParallelRequestsAreRunning(); // starve the shared commonPool din JVM
 
     List<Integer> list = IntStream.range(1, 100).boxed().toList();
 
     long t0 = System.currentTimeMillis();
 
     var result = list.parallelStream()
+        // runs now in ForkJoinPool.commonPool. default size = 9 = #CPU-1(main)
+        // main+9 fully saturate my 10 CPUs
         .filter(i -> i % 2 == 0)
-        .map(i -> callApi(i)) //100ms
+        .map(i -> callApi(i)) // blocking 100ms is BAD because commonPool is supposed to be used for CPU
         .toList();
 
     long t1 = System.currentTimeMillis();
