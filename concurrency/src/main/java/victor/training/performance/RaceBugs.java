@@ -25,6 +25,7 @@ public class RaceBugs {
     for (Integer n : numbers) {
       if (n % 2 == 0) {
         total++;
+        System.out.println("total:"+total); // debug makes the race dissapear heisenbug because the relative probability of the critical instructions overalpping is veeeery low now
       }
     }
     log.info("End");
