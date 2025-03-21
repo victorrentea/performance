@@ -19,7 +19,10 @@ public class Leak14_ShutdownHook {
       return "Added";
    }
 
+   // the lib was expecting to be used in a desktop/console/job app
+   // but it was used on a server
    private void someObscureLib(BigObject20MB big) {
+      // stuff
       Runtime.getRuntime().addShutdownHook(new Thread(()->
               System.out.println("Clean some files: " + big)));
    }

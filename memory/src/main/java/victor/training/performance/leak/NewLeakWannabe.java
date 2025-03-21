@@ -16,7 +16,7 @@ public class NewLeakWannabe {
 
   private static InputStream returningInputStream() {
     return getReader()
-        .map(SlothReader::getInputStream) // *might* create an input stream
+        .map(slothReader -> slothReader.getInputStream()) // *might* create an input stream
         .filter(is -> Math.random() < .5)
         .orElse(null);
   }

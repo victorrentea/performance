@@ -1,5 +1,7 @@
 package victor.training.performance;
 
+import jakarta.servlet.AsyncContext;
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.slf4j.MDC;
@@ -60,6 +62,34 @@ public class Barman {
     DillyDilly dilly = new DillyDilly(beer, vodka);
     log.info("HTTP thread blocked for {} durationMillis", currentTimeMillis() - t0);
     return dilly;
+  }
+
+
+
+  @GetMapping("/drink-nonblocking")
+  public CompletableFuture<DillyDilly> drinkNonBlocking() throws ExecutionException, InterruptedException {
+    CompletableFuture<Beer> futureBeer = CompletableFuture.supplyAsync(() -> getBeer());
+    CompletableFuture<Vodka> futureVodka = getVodkaNonBLocking();
+    return futureBeer.thenCombine(futureVodka, DillyDilly::new);
+  }
+
+
+  @GetMapping("/drink-nonblocking")
+  public void drinkNonBlockingServlet(HttpServletRequest request) throws ExecutionException, InterruptedException {
+    AsyncContext asyncContext = request.startAsync();
+    CompletableFuture<Beer> futureBeer = CompletableFuture.supplyAsync(() -> getBeer());
+    CompletableFuture<Vodka> futureVodka = getVodkaNonBLocking();
+    // this is Servlet 3.0 10+ years ago: async servlet JEP
+//    futureBeer.thenCombine(futureVodka, DillyDilly::new)
+//        .thenAccept(dilly -> {
+//          asyncContext.getResponse().getWriter().write(dilly + "");
+//          asyncContext.complete(); // now the conn is closed.
+//        });
+  }
+
+
+  private CompletableFuture<Vodka> getVodkaNonBLocking() {
+    return CompletableFuture.completedFuture(getVodka());
   }
 
 

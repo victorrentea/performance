@@ -42,9 +42,19 @@ public class Leak5_AsyncUnbounded {
       MultipartFile multipartFile) throws IOException {
     System.out.println("In");
 
+
+
 //    byte[] contents100MB = multipartFile.getBytes(); // OOME risk: concurrent large uploads
     Path tempPath = Files.createTempFile("tmp", "data-" + System.currentTimeMillis() + "-" + UUID.randomUUID());
     IOUtils.copy(multipartFile.getInputStream(), Files.newOutputStream(tempPath)); // can copy 1GB with a few kb of buffer in RAM
+
+//    Files.lines()
+//    BufferedReader br = new BufferedReader(new FileReader(tempPath.toFile()));
+//    try (Stream<String> streamYouHaveToClose = br.lines()) {
+//      streamYouHaveToClose.forEach(System.out::println);
+//    }
+
+    Runtime.getRuntime().addShutdownHook(new Thread(() -> {tempPath.toFile().delete();}));// +1 mem leak
     // next level : Java NIO
 
     myOwnExecutor.submit(() -> worker.processFile(index.incrementAndGet(), tempPath));
