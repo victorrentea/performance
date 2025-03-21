@@ -5,7 +5,6 @@ import victor.training.performance.util.PerformanceUtil;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.Executors;
-import java.util.concurrent.TimeUnit;
 
 public class COWList {
   public static void main(String[] args) throws InterruptedException {
@@ -21,8 +20,8 @@ public class COWList {
 
     var threadPool = Executors.newCachedThreadPool();
     for (int i = 0; i < 100; i++) threadPool.submit(task);
-    consumers.add("B");
+    consumers.add("B"); // concurrent change to the list
+
     threadPool.shutdown();
-    threadPool.awaitTermination(1, TimeUnit.MINUTES);
   }
 }
