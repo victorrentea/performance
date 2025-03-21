@@ -11,6 +11,10 @@ import jakarta.servlet.http.HttpServletRequest;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+
+import static java.util.Collections.list;
+import static java.util.stream.Collectors.toMap;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -19,11 +23,21 @@ import java.util.List;
 public class Leak3_SubList {
    private List<Access> lastTenTimestamps = new ArrayList<>();
 
-   record Access(String ip, LocalDateTime timestamp) {
+   record Access(
+       String ip,
+       Map<String, String> headers,
+       LocalDateTime timestamp) {
    }
    @GetMapping
    public synchronized String endpoint(HttpServletRequest request) {
-      lastTenTimestamps.add(new Access(request.getRemoteAddr()+":"+request.getRemotePort(), LocalDateTime.now()));
+      var headers = list(request.getHeaderNames()).stream()
+          .collect(toMap(name -> name, request::getHeader));
+      Access access = new Access(
+          request.getRemoteAddr() + ":" + request.getRemotePort(),
+          headers,
+          LocalDateTime.now());
+
+      lastTenTimestamps.add(access);
       if (lastTenTimestamps.size() > 10) {
          lastTenTimestamps = lastTenTimestamps.subList(1, lastTenTimestamps.size());
       }
@@ -33,11 +47,11 @@ public class Leak3_SubList {
    @GetMapping("many")
    public String mass(HttpServletRequest request) {
 //      RestTemplate rest = new RestTemplate();
-      for (int i = 0; i < 10_000; i++) {
+      for (int i = 0; i < 1_000; i++) {
 //          rest.getForObject("http://localhost:8080/leak3", String.class);
          endpoint(request); // close enough for our experiment
       }
-      return "The current window size is " + lastTenTimestamps.size() + ": " + lastTenTimestamps;
+      return "The current window size is " + lastTenTimestamps.size();
    }
 }
 
