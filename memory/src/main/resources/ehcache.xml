@@ -15,6 +15,7 @@
     <cache alias="contracts" >
         <resources>
             <heap unit="GB">1</heap>
+<!--            <disk persistent="false" unit="GB">10</disk>-->
         </resources>
     </cache>
     <cache alias="invoices" >
