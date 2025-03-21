@@ -33,7 +33,7 @@ public class RaceBugs {
   public static void main(String[] args) throws Exception {
     List<Integer> fullList = IntStream.range(0, 1_000).boxed().toList();
 
-    // [[500elems],[500elems]]
+    // split in [[1..500],[501..1000]]
     List<List<Integer>> parts = splitList(fullList, 2);
 
     ExecutorService pool = Executors.newCachedThreadPool();
