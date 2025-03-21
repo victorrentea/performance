@@ -24,15 +24,18 @@ public class Leak4_LongStackFrame {
 	}
 
 	private void longWork() {
-		BigObject80MB big = apiCall(); // DTO
-		String useful = big.getInterestingPart();
-		big = null; // please kind soul don't delete this line. It's tries to optimize some mem
+		String useful = fetchWhatINeed();
 
 		sleepMillis(10_000); // imagine a long-running process (eg minutes...)
 
 		if (useful != null) {
 			log.trace("Using useful part: " + useful);
 		}
+	}
+
+	private String fetchWhatINeed() {
+		BigObject80MB big = apiCall(); // DTO
+    return big.getInterestingPart();
 	}
 
 	private BigObject80MB apiCall() {
