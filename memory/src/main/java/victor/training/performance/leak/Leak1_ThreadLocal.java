@@ -8,29 +8,33 @@ import victor.training.performance.leak.obj.BigObject20MB;
 @RestController
 @RequestMapping("leak1")
 public class Leak1_ThreadLocal {
-   private static final ThreadLocal<BigObject20MB> threadLocal = new ThreadLocal<>();
+  private static final ThreadLocal<BigObject20MB> threadLocal = new ThreadLocal<>();
 
-   @GetMapping
-   public String endpoint() {
-      BigObject20MB bigObject = new BigObject20MB().setSomeString("john.doe"); // retrived from a network call
+  @GetMapping
+  public String endpoint() {
+    BigObject20MB bigObject = new BigObject20MB().setSomeString("john.doe"); // retrived from a network call
 
-      threadLocal.set(bigObject);  // 🛑 ThreadLocal#remove()
-
+    threadLocal.set(bigObject);
+    try {
       method1();
+    } finally {
+      threadLocal.remove();
+    }
 
-      return "Magic can do harm.";
-   }
+    return "Magic can do harm.";
+  }
 
-   private void method1() { // no username in the signature
-      method2();
-   }
+  private void method1() { // no username in the signature
+    method2();
+  }
 
-   private void method2() {
-      BigObject20MB bigObject = threadLocal.get();
-      String currentUsernameOnThisThread = bigObject.someString;
-      System.out.println("Business logic using " + currentUsernameOnThisThread);
-      // TODO what if throw new RuntimeException(); ?
-   }
+  private void method2() {
+    BigObject20MB bigObject = threadLocal.get();
+    String currentUsernameOnThisThread = bigObject.someString;
+    System.out.println("Business logic using " + currentUsernameOnThisThread);
+    // TODO what if throw new RuntimeException(); ?
+    if (Math.random() > 0.5) throw new RuntimeException("Oops");
+  }
 }
 
 /**

@@ -1,6 +1,7 @@
 package victor.training.performance.parallelStream;
 
 import lombok.extern.slf4j.Slf4j;
+import org.slf4j.MDC;
 
 import java.util.List;
 import java.util.concurrent.ExecutionException;
@@ -16,6 +17,7 @@ public class ParallelStreams {
     //
      OnAServer.otherParallelRequestsAreRunning(); // starve the shared commonPool din JVM
 
+    MDC.put("meta","me");
     List<Integer> list = IntStream.range(1, 100).boxed().toList();
 
     long t0 = System.currentTimeMillis();
@@ -27,7 +29,7 @@ public class ParallelStreams {
         .map(i -> callApi(i));
 
     // to run a parallelStream on your own pool:
-    ForkJoinPool myPool = new ForkJoinPool(10);
+    ForkJoinPool myPool = new ForkJoinPool();
 
     // terminate your stream in a task running in this thread pool
     var result = myPool.submit(()->stream.toList()).get();
@@ -37,7 +39,7 @@ public class ParallelStreams {
   }
 
   private static int callApi(Integer i) {
-    log.debug("Map " + i);
+    log.debug("Map " + i +MDC.get("meta"));
     sleepMillis(100); // network call (DB, REST, SOAP..) or CPU work
     return i * 2;
   }

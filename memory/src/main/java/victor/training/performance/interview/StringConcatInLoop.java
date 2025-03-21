@@ -31,7 +31,10 @@ public class StringConcatInLoop {
 
       Files.writeString(new File("out.txt").toPath(), s, UTF_8);
 
-      System.out.println("Done. Took " + (System.currentTimeMillis() - t0));
+      String sss = "Done. Took ";
+      sss=null;
+      //=-----
+      System.out.println(sss + (System.currentTimeMillis() - t0));
       waitForEnter();
    }
 }

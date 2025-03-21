@@ -1,20 +1,26 @@
 package victor.training.performance.interview;
 
+import java.util.function.Supplier;
+
 public class Pointers {
   public static void main(String[] args) {
-    unreferenced();
+    var x= unreferenced();
+    x= null;
+    //
     pointersInJava();
   }
 
   // TODO at which point can the instance be GC-ed ?
-  private static void unreferenced() {
+  private static Supplier<String> unreferenced() {
     Pointers p = new Pointers();
-    Pointers p2 = p;
+//    System.out.println(p);
+//    Pointers p2 = p;
     // A
-    p2 = null;
+//    p2 = null;
     // B
-    p = null;
+//    p = null;
     // C
+    return ()->p.toString();
   }
 
   private static void pointersInJava() {
