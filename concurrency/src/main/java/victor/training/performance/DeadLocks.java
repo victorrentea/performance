@@ -1,6 +1,5 @@
 package victor.training.performance;
 
-import lombok.Value;
 import lombok.extern.slf4j.Slf4j;
 import victor.training.performance.util.PerformanceUtil;
 
@@ -8,9 +7,7 @@ import static victor.training.performance.util.PerformanceUtil.log;
 
 @Slf4j
 public class DeadLocks {
-   @Value
-   static class Fork {
-      int id;
+   record Fork(int id) {
    }
 
    static class Philosopher extends Thread {
@@ -24,25 +21,24 @@ public class DeadLocks {
       }
 
       public void run() {
-         Fork firstFork = leftFork;
-         Fork secondFork = rightFork;
+         Fork firstFork = leftFork.id < rightFork.id ? leftFork : rightFork;
+         Fork secondFork = leftFork.id < rightFork.id ? rightFork : leftFork;
 
          for (int i = 0; i < 5000; i++) {
             log("I'm hungry");
 
-            log("Taking fork #" + firstFork.id + "...");
+            log("Taking " + firstFork + "...");
             synchronized (firstFork) {
-               log("Took one fork");
-               log("Taking fork #" + secondFork.id + "...");
+               log("Taking " + secondFork + "...");
                synchronized (secondFork) {
                   log("Eating🌟...");
                   // sleepNanos(10);
-                  log("Done eating. Releasing forks");
+                  log("Done. Releasing forks");
                }
             }
             log("Thinking...");
          }
-         log("NORMAL FINISH (no deadlock happened)");
+         log("✅NORMAL FINISH (no deadlock happened)");
       }
    }
 

@@ -16,12 +16,14 @@ public class Leak14_ShutdownHook {
    public String add() {
       BigObject20MB big = new BigObject20MB();
       someObscureLib(big);
-      return "Added";
+      return "All good";
    }
 
+   // the lib was designed to be used in a desktop/console/job app
    private void someObscureLib(BigObject20MB big) {
+      // stuff
       Runtime.getRuntime().addShutdownHook(new Thread(()->
-              System.out.println("Clean some files: " + big)));
+          System.out.println("Clean some files: " + big)));
    }
 
 }
