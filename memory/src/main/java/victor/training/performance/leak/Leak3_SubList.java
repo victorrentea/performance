@@ -15,7 +15,8 @@ import java.util.*;
 @RestController
 @RequestMapping("leak3")
 public class Leak3_SubList {
-  private Deque<Access> lastTenTimestamps = new LinkedList<>();
+//  private Deque<Access> lastTenTimestamps = new LinkedList<>();
+  private List<Access> lastTenTimestamps = new ArrayList<>();
 
   record Access(
       String ip,
@@ -32,8 +33,8 @@ public class Leak3_SubList {
 
     lastTenTimestamps.add(access);
     if (lastTenTimestamps.size() > 10) {
-      lastTenTimestamps.poll();
-//      lastTenTimestamps = lastTenTimestamps.subList(1, lastTenTimestamps.size());
+//      lastTenTimestamps.poll();
+      lastTenTimestamps = lastTenTimestamps.subList(1, lastTenTimestamps.size());
 //      lastTenTimestamps = lastTenTimestamps.stream().skip(1).limit(10).collect(Collectors.toList());
     }
     return "The current window size is " + lastTenTimestamps.size();
