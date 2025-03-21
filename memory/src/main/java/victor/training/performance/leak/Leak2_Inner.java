@@ -10,7 +10,6 @@ import victor.training.performance.util.PerformanceUtil;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.function.Predicate;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -30,7 +29,7 @@ public class Leak2_Inner {
 
   @GetMapping("inner")
   public String endpoint() {
-    Calculator calculator = new CalculatorFactory().createRightsCalculator();
+    Calculator calculator = new CalculatorFactory(/*1,2,3*/)./*setFlagX(true).*/createRightsCalculator();
     bizLogicUsingCalculator(calculator);
     return "Done";
   }
@@ -56,14 +55,12 @@ public class Leak2_Inner {
     PerformanceUtil.sleepMillis(20_000); // some long workflow
     return map;
   }
-  //</editor-fold>
-
-
+  //</editor-fold
 }
 
 
 class CalculatorFactory {
-  public class Calculator {
+  public static class Calculator {
     public boolean calculate(String data) {
       System.out.println("Simple Code Code");
       // 🛑 what's connects the Calculator instance with the 'bigMac' field ?
@@ -71,33 +68,66 @@ class CalculatorFactory {
     }
   }
 
-  private BigObject20MB bigMac = new BigObject20MB();
+  private BigObject20MB bigMac = new BigObject20MB(); // 🍔
 
   public Calculator createRightsCalculator() {
+//    button.addActionListener(new ActionListener(){
+//      @Override
+//      public void actionPerformed(ActionEvent e) {
+//
+//      }
+//    })
     return new Calculator();
   }
 
   // other related leaks:
 
+  //  static class MyPred implements Predicate
   //<editor-fold desc="Lambdas vs Anonymous implementation">
   public Stream<String> anonymousVsLambdas(List<String> input) {
+    // LEAK: hidden pointer to tge outer instance
     return input.stream()
-            .filter(new Predicate<String>() {
-              @Override
-              public boolean test(String s) {
-                return !s.isBlank();
-              }
-            });
+//            .filter(new Predicate<String>() { // LEAK: hidden pointer to tge outer instance
+//              HashSet<String> previouslySeen;
+//              @Override
+//              public boolean test(String s) {
+//                return !s.isBlank();
+//              }
+//            });
+//            .filter(s -> !s.isBlank()); // a -> lambda captures in its clojure only things it directly references
+//            .filter(Predicate.not(String::isBlank)); // the same
+//            .filter(s -> cleanCode(s)); // references this = leak
+//            .filter(this::cleanCode); // references this = leak
+        .filter(CalculatorFactory::cleanCode); //
+  }
+
+  private static boolean cleanCode(String s) { // TODO make static
+    return !s.isBlank();
   }
   //</editor-fold>
 
   //<editor-fold desc="Map init in Java <= 8">
   public Map<String, Integer> mapInit() {
-    return new HashMap<>() {{
-      put("one", 1);
-      put("two", 2);
-    }};
+//    Map<String, Integer> map = new HashMap<>();
+//    map.put("one", 1);
+//    map.put("two", 2);
+//    return map;
+
+    // WTF is this?
+    // because lazyness/geekness
+//    return new HashMap<>() { // anonymous subclass - keeps a ref to outer instance
+//      { // instance init block ~ constructor
+//        put("one", 1);
+//        put("two", 2);
+//      }
+//    };
+
+//    return Map.of("one", 1, "two", 2); // immutable💖, but can break clients
+
+    return new HashMap<>(Map.of("one", 1, "two", 2)); // to allow old dark code to
+    // continue doing their BAD TERRIBLE PRACTICE of MUTATING COLLECTIONS!
   }
+
   //</editor-fold>
 }
 
