@@ -50,3 +50,4 @@ capture/
 /big-entity.csv
 
 *.hprof
+/file-to-upload.txt

@@ -18,10 +18,9 @@ public class Leak4_LongStackFrame {
 		String useful = big.getInterestingPart();
 		// 🛑 don't reference large objects longer than needed
 
-		sleepMillis(10_000); // start a long-running process (eg 20 minutes)
-		if (useful != null) {
-			log.trace("Using useful part: " + useful);
-		}
+		log.trace("Long processing using: " + useful);
+		sleepMillis(10_000); // to allow you to take a Heap Dump
+
 		return "end";
 	}
 }

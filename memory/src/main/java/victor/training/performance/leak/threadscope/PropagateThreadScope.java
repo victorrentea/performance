@@ -17,7 +17,7 @@ public class PropagateThreadScope implements TaskDecorator {
 	}
 
 	public Runnable decorate(Runnable runnable) {
-		log.debug("Decorating from thread with user id = " + requestContext.getCurrentUser());
+//		log.debug("Decorating from thread with user id = " + requestContext.getCurrentUser());
 		// propagates data in a @Scope("thread") bean (Spring magic on top of ThreadLocal)
 		String callerUser = requestContext.getCurrentUser();
 		String requestId = requestContext.getRequestId(); // runs in the submitter thread
@@ -25,7 +25,7 @@ public class PropagateThreadScope implements TaskDecorator {
 			// later, in the worker thread, restores the current user.
 			requestContext.setRequestId(requestId);
 			requestContext.setCurrentUser(callerUser); //set on the async thread (different ) 
-			log.debug("Restored user id {} on thread", callerUser);
+//			log.debug("Restored user id {} on thread", callerUser);
 			try {
 				runnable.run();
 			} finally {

@@ -21,10 +21,11 @@ public class Leak2_Inner {
   //<editor-fold desc="html">
   @GetMapping
   public String home() {
-    return "Do you know Java?<br>" +
-           "<li><a href='/leak2/inner'>Hidden links</a>" +
-           "<li><a href='/leak2/anon'>Lambdas vs anonymous class</a>" +
-           "<li><a href='/leak2/map'>Map{{</a> ";
+    return """
+        Do you know Java?<br>
+        <li><a href='/leak2/inner'>Hidden links</a>
+        <li><a href='/leak2/anon'>Lambdas vs anonymous class</a>
+        <li><a href='/leak2/map'>Map{{</a>""";
   }
   //</editor-fold>
 
@@ -71,13 +72,13 @@ class CalculatorFactory {
     }
   }
 
-  private BigObject20MB bigMac = new BigObject20MB();
+  private BigObject20MB bigMac = new BigObject20MB(); // 🍔
 
   public Calculator createRightsCalculator() {
     return new Calculator();
   }
 
-  // other related leaks:
+  // related leaks:
 
   //<editor-fold desc="Lambdas vs Anonymous implementation">
   public Stream<String> anonymousVsLambdas(List<String> input) {
@@ -88,6 +89,7 @@ class CalculatorFactory {
                 return !s.isBlank();
               }
             });
+//            TODO experiment ->, this::
   }
   //</editor-fold>
 
