@@ -10,11 +10,10 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
-import java.util.concurrent.ExecutorService;
+import java.util.concurrent.*;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.IntStream;
 
-import static java.util.concurrent.Executors.newFixedThreadPool;
 import static victor.training.performance.util.PerformanceUtil.sleepMillis;
 
 @RestController
@@ -25,7 +24,12 @@ public class Leak5_AsyncUnbounded {
   private static final AtomicInteger index = new AtomicInteger(0);
 // TODO fix index.html
 
-  private static final ExecutorService myOwnExecutor = newFixedThreadPool(5);
+//  private static final ExecutorService myOwnExecutor = newFixedThreadPool(5);
+  private static final ExecutorService myOwnExecutor =new ThreadPoolExecutor(
+    5,
+    5,
+    1, TimeUnit.SECONDS,
+    new ArrayBlockingQueue<>(1));
   @PostMapping
   public String endpoint(
       @RequestParam(value = "file", required = false)
