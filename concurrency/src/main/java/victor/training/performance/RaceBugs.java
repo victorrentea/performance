@@ -1,5 +1,6 @@
 package victor.training.performance;
 
+import com.google.common.collect.ImmutableList;
 import lombok.extern.slf4j.Slf4j;
 
 import java.util.ArrayList;
@@ -17,7 +18,8 @@ import static java.util.concurrent.TimeUnit.MINUTES;
 public class RaceBugs {
   private static List<Integer> evenNumbers = new ArrayList<>();
 
-  private static List<Integer> evens = Collections.synchronizedList(new ArrayList<>());
+  // NEVER DO THIS: clone immutable lists; stupid on purpose
+  private static ImmutableList<Integer> evens = ImmutableList.of();
 
   // many parallel threads run this method:
   private static void countEven(List<Integer> numbers) {
