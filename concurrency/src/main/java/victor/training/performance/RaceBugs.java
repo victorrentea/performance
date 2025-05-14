@@ -7,7 +7,6 @@ import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.IntStream;
 
 import static java.util.concurrent.TimeUnit.MINUTES;
@@ -18,14 +17,14 @@ import static java.util.concurrent.TimeUnit.MINUTES;
 public class RaceBugs {
   private static List<Integer> evenNumbers = new ArrayList<>();
 
-  private static AtomicInteger total = new AtomicInteger(); // CAS
+  private static List<Integer> evens = Collections.synchronizedList(new ArrayList<>());
 
   // many parallel threads run this method:
   private static void countEven(List<Integer> numbers) {
     log.info("Start");
     for (Integer n : numbers) {
       if (n % 2 == 0) {
-        total.incrementAndGet();
+        evens.add(n);
       }
     }
     log.info("End");
@@ -44,7 +43,7 @@ public class RaceBugs {
     pool.shutdown();
     pool.awaitTermination(1, MINUTES);
 
-    log.debug("Counted: " + total);
+    log.debug("Counted: " + evens.size());
     log.debug("List.size: " + evenNumbers.size());
   }
 
