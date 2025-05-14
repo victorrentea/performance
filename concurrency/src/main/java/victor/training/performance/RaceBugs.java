@@ -9,7 +9,6 @@ import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
-import java.util.concurrent.atomic.AtomicReference;
 import java.util.stream.IntStream;
 
 import static java.util.concurrent.TimeUnit.MINUTES;
@@ -20,26 +19,31 @@ import static java.util.concurrent.TimeUnit.MINUTES;
 public class RaceBugs {
   private static List<Integer> evenNumbers = new ArrayList<>();
 
-  private static AtomicReference<ImmutableList<Integer>> evens = new AtomicReference<>(ImmutableList.of());
+
+  // all the solutions youve seen in this class were wrong.
+  // because we are not thinking correctly about concurrent code.
+
+  // the correct philosophy about multithreaded flows is "MAP-REDUCE" / FP
+  // the best approach to multithreaded code is NOT to add to some shared mutable state.
+  // PF: Instead of changing state, return the change (your part of the results).
+
+//  private static AtomicReference<ImmutableList<Integer>> evens = new AtomicReference<>(ImmutableList.of());
 
   // many parallel threads run this method:
-  private static void countEven(List<Integer> numbers) {
+  private static List<Integer> countEven(List<Integer> numbers) {
     log.info("Start");
+    List<Integer> myResults = new ArrayList<>();
     for (Integer n : numbers) {
       if (n % 2 == 0) {
-        // by the time i reassociate the static field to the new immutable object
-        // another thread has already updated that field
-        evens.getAndUpdate(oldValue -> stupidWayToAddToImmutable(oldValue,n));
-        // if by the time you want to point to the change clone,
-        // someone else made the pointer point to another object,
-        // then you retry the land to derive and allocat3e even more memory.
+        myResults.add(n);
       }
     }
     log.info("End");
+    return myResults;
   }
 
   private static ImmutableList<Integer> stupidWayToAddToImmutable(ImmutableList<Integer> evens1, Integer n) {
-        // NEVER DO THIS: clone immutable lists; stupid on purpose
+    // NEVER DO THIS: clone immutable lists; stupid on purpose
     return ImmutableList.<Integer>builder().addAll(evens1).add(n).build();
   }
 
@@ -50,22 +54,26 @@ public class RaceBugs {
     List<List<Integer>> parts = splitList(fullList, 2);
 
     ExecutorService pool = Executors.newCachedThreadPool();
-    List<Future> futures = new ArrayList<>();
+    List<Future<List<Integer>>> futures = new ArrayList<>();
     for (List<Integer> part : parts) {
-      Future<?> future = pool.submit(() -> countEven(part));
+      Future<List<Integer>> future = pool.submit(() -> countEven(part));
       futures.add(future);
     }
 
+    // parent thread
+
+    List<Integer> evens = new ArrayList<>();
     // wait for all tasks to finish
-    for (Future<?> future : futures) {
-      future.get(); // Excetions from worker thread pop in your face
-      // in spring @Async void! methods(){} exceptions are auto-logged
+    for (var future : futures) {
+      var partOfResults = future.get();// Excetions from worker thread pop in your face
+// in spring @Async void! methods(){} exceptions are auto-logged
+      evens.addAll(partOfResults);
     }
 
     pool.shutdown();
     pool.awaitTermination(1, MINUTES);
 
-    log.debug("Counted: " + evens.get().size());
+    log.debug("Counted: " + evens.size());
     log.debug("List.size: " + evenNumbers.size());
   }
 

@@ -1,5 +1,7 @@
 package victor.training.performance;
 
+import lombok.Builder;
+import lombok.With;
 import lombok.extern.slf4j.Slf4j;
 import victor.training.performance.util.PerformanceUtil;
 
@@ -9,6 +11,8 @@ import static victor.training.performance.util.PerformanceUtil.log;
 
 @Slf4j
 public class DeadLocks {
+   @Builder
+   @With
    record Fork(int id, ReentrantLock lock) {
    }
 
