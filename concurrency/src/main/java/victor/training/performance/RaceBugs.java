@@ -8,6 +8,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
 import java.util.stream.IntStream;
 
 import static java.util.concurrent.TimeUnit.MINUTES;
@@ -39,9 +40,18 @@ public class RaceBugs {
     List<List<Integer>> parts = splitList(fullList, 2);
 
     ExecutorService pool = Executors.newCachedThreadPool();
+    List<Future> futures = new ArrayList<>();
     for (List<Integer> part : parts) {
-      pool.submit(()-> countEven(part));
+      Future<?> future = pool.submit(() -> countEven(part));
+      futures.add(future);
     }
+
+    // wait for all tasks to finish
+    for (Future<?> future : futures) {
+      future.get(); // Excetions from worker thread pop in your face
+      // in spring @Async void! methods(){} exceptions are auto-logged
+    }
+
     pool.shutdown();
     pool.awaitTermination(1, MINUTES);
 
