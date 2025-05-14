@@ -9,6 +9,7 @@ import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
+import java.util.concurrent.atomic.AtomicReference;
 import java.util.stream.IntStream;
 
 import static java.util.concurrent.TimeUnit.MINUTES;
@@ -19,7 +20,7 @@ import static java.util.concurrent.TimeUnit.MINUTES;
 public class RaceBugs {
   private static List<Integer> evenNumbers = new ArrayList<>();
 
-  private static ImmutableList<Integer> evens = ImmutableList.of();
+  private static AtomicReference<ImmutableList<Integer>> evens = new AtomicReference<>(ImmutableList.of());
 
   // many parallel threads run this method:
   private static void countEven(List<Integer> numbers) {
@@ -28,7 +29,10 @@ public class RaceBugs {
       if (n % 2 == 0) {
         // by the time i reassociate the static field to the new immutable object
         // another thread has already updated that field
-        evens = stupidWayToAddToImmutable(evens, n);
+        evens.getAndUpdate(oldValue -> stupidWayToAddToImmutable(oldValue,n));
+        // if by the time you want to point to the change clone,
+        // someone else made the pointer point to another object,
+        // then you retry the land to derive and allocat3e even more memory.
       }
     }
     log.info("End");
@@ -61,7 +65,7 @@ public class RaceBugs {
     pool.shutdown();
     pool.awaitTermination(1, MINUTES);
 
-    log.debug("Counted: " + evens.size());
+    log.debug("Counted: " + evens.get().size());
     log.debug("List.size: " + evenNumbers.size());
   }
 
