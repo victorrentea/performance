@@ -25,7 +25,7 @@ Click a link, refresh the page several times, take a heapdump (for example with 
 <script>
     function callNTimes(url, n) {
         for (let i = 0; i < n; i++) {
-            fetch(url)
+            open(url); // fetch is limited to 4-8 / tab
         }
     }
 </script>
