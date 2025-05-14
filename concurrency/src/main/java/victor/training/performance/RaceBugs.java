@@ -19,7 +19,6 @@ import static java.util.concurrent.TimeUnit.MINUTES;
 public class RaceBugs {
   private static List<Integer> evenNumbers = new ArrayList<>();
 
-  // NEVER DO THIS: clone immutable lists; stupid on purpose
   private static ImmutableList<Integer> evens = ImmutableList.of();
 
   // many parallel threads run this method:
@@ -27,10 +26,17 @@ public class RaceBugs {
     log.info("Start");
     for (Integer n : numbers) {
       if (n % 2 == 0) {
-        evens.add(n);
+        // by the time i reassociate the static field to the new immutable object
+        // another thread has already updated that field
+        evens = stupidWayToAddToImmutable(evens, n);
       }
     }
     log.info("End");
+  }
+
+  private static ImmutableList<Integer> stupidWayToAddToImmutable(ImmutableList<Integer> evens1, Integer n) {
+        // NEVER DO THIS: clone immutable lists; stupid on purpose
+    return ImmutableList.<Integer>builder().addAll(evens1).add(n).build();
   }
 
   public static void main(String[] args) throws Exception {
