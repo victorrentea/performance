@@ -1,0 +1,11 @@
+{
+  "request": {
+    "method": "GET",
+    "urlPathPattern": "/100ms"
+  },
+  "response": {
+    "status": 200,
+    "body": "42",
+    "fixedDelayMilliseconds": 100
+  }
+}

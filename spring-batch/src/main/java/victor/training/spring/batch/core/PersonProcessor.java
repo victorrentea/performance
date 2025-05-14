@@ -17,6 +17,8 @@ public class PersonProcessor implements ItemProcessor<PersonXml, Person> {
   public Person process(PersonXml xml) {
     Person entity = new Person();
     entity.setName(xml.getName());
+
+    // insert if not there
     City city = cityRepo.findByName(xml.getCity())
         .orElseGet(() -> cityRepo.save(new City(xml.getCity())));
 
