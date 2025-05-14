@@ -3,11 +3,13 @@ package victor.training.performance;
 import lombok.extern.slf4j.Slf4j;
 import victor.training.performance.util.PerformanceUtil;
 
+import java.util.concurrent.locks.ReentrantLock;
+
 import static victor.training.performance.util.PerformanceUtil.log;
 
 @Slf4j
 public class DeadLocks {
-   record Fork(int id) {
+   record Fork(int id, ReentrantLock lock) {
    }
 
    static class Philosopher extends Thread {
@@ -21,20 +23,28 @@ public class DeadLocks {
       }
 
       public void run() {
-         Fork firstFork = leftFork.id < rightFork.id ? leftFork : rightFork;
-         Fork secondFork = leftFork.id < rightFork.id ? rightFork : leftFork;
+         Fork firstFork = leftFork; //< rightFork.id ? leftFork : rightFork;
+         Fork secondFork = rightFork; //< rightFork.id ? rightFork : leftFork;
 
          for (int i = 0; i < 5000; i++) {
             log("I'm hungry");
 
             log("Taking " + firstFork + "...");
-            synchronized (firstFork) {
+//            synchronized (firstFork) {
+            firstFork.lock.lock();
+            try {
                log("Taking " + secondFork + "...");
-               synchronized (secondFork) {
+//               synchronized (secondFork) {
+               secondFork.lock.lock();
+               try {
                   log("Eating🌟...");
                   // sleepNanos(10);
                   log("Done. Releasing forks");
+               } finally {
+                  secondFork.lock.unlock();
                }
+            } finally {
+               firstFork.lock.unlock();
             }
             log("Thinking...");
          }
@@ -44,7 +54,13 @@ public class DeadLocks {
 
    public static void main(String[] args) {
       DeadLocks.log.debug("Start");
-      Fork[] forks = {new Fork(1), new Fork(2), new Fork(3), new Fork(4), new Fork(5)};
+      Fork[] forks = {
+          new Fork(1,new ReentrantLock()),
+          new Fork(2,new ReentrantLock()),
+          new Fork(3,new ReentrantLock()),
+          new Fork(4,new ReentrantLock()),
+          new Fork(5,new ReentrantLock())}
+          ;
       new Philosopher("Plato", forks[0], forks[1]).start();
       PerformanceUtil.sleepNanos(1);
       new Philosopher("Confucius", forks[1], forks[2]).start();
