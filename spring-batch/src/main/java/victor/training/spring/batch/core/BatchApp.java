@@ -124,7 +124,6 @@ public class BatchApp {
     executor.setMaxPoolSize(8);
     executor.setQueueCapacity(500);
     executor.setThreadNamePrefix("batch-");
-    executor.initialize();
     return executor;
   }
 

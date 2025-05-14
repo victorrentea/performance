@@ -63,7 +63,6 @@ public class PartitionApp  {
       executor.setMaxPoolSize(4);
       executor.setQueueCapacity(500);
       executor.setThreadNamePrefix("partition-");
-      executor.initialize();
       return executor;
    }
 
