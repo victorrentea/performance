@@ -26,12 +26,14 @@ public class RaceBugs {
       if (n % 2 == 0) {
         total++;
       }
+//      sleep(0);
+      log.debug("total {}",total); // Heisenbug: looses time so the relative probability of racing on ++ decreases
     }
     log.info("End");
   }
 
   public static void main(String[] args) throws Exception {
-    List<Integer> fullList = IntStream.range(0, 1_000).boxed().toList();
+    List<Integer> fullList = IntStream.range(0, 1000).boxed().toList();
 
     // split in [[1..500],[501..1000]]
     List<List<Integer>> parts = splitList(fullList, 2);
