@@ -14,12 +14,14 @@ public class Leak14_ShutdownHook {
 
    @GetMapping
    public String add() {
-      someObscureLib();
+      OldLib.stuff();
       return "All good";
    }
 
-   // old lib designed to be used in a desktop/console/job
-   private void someObscureLib() {
+}
+// old lib designed to be used in a desktop/console/job
+class OldLib {
+   public static void stuff() {
       BigObject20MB big = new BigObject20MB(); // create internal stuff
       Runtime.getRuntime().addShutdownHook(new Thread(()->
           System.out.println("Clean some files: " + big)));
