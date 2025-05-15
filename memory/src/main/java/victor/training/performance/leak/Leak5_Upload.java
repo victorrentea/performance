@@ -18,10 +18,12 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import static victor.training.performance.util.PerformanceUtil.sleepMillis;
 
+@Slf4j
 @RestController
 @RequestMapping("leak5/upload")
 public class Leak5_Upload {
@@ -31,6 +33,7 @@ public class Leak5_Upload {
 
   @PostMapping
   public int endpoint(@RequestParam MultipartFile file) throws IOException {
+    log.info("Got file");
     byte[] contents = file.getBytes();
     int taskId = taskIndex.incrementAndGet();
     worker.processFile(taskId, contents);
@@ -42,14 +45,15 @@ public class Leak5_Upload {
 @Service
 class Worker {
   @Async // runs on a thread pool with 8 threads, by default in Spring
-  public void processFile(int taskId, byte[] contents) {
+  public CompletableFuture<Void> processFile(int taskId, byte[] contents) {
     log.debug("Task {} start ...", taskId);
+    if (true) throw new RuntimeException("What if BUG");
     sleepMillis(10_000);
-    //if (true) throw new RuntimeException("What if BUG");
     String contentsString = new String(contents);
 //    long count = IntStream.range(0, contents.length).filter(i -> contents[i] == 17).count();
     long count = contentsString.chars().filter(c -> c == 17).count();
     log.debug("Task {} done = {}", taskId, count);
+    return CompletableFuture.completedFuture(null);
   }
 }
 

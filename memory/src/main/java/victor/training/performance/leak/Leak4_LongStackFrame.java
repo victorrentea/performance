@@ -14,14 +14,20 @@ import static victor.training.performance.util.PerformanceUtil.sleepMillis;
 public class Leak4_LongStackFrame {
 	@GetMapping
 	public String endpoint() {
-		BigObject80MB bigDto = apiCall();
-		String useful = bigDto.getInterestingPart();
-		// 🛑 don't reference large objects longer than needed
+		var useful = getWhatINeedFromAnAdapter();
 
 		log.trace("Long processing using: " + useful);
 		sleepMillis(10_000); // to allow you to take a Heap Dump
 
 		return "end";
+	}
+
+	private String getWhatINeedFromAnAdapter() {
+		// ADAPTER
+		String useful = apiCall().getInterestingPart();
+//		bigDto=null; // !! DO NOT REMOVE. ALLOWS the bigDto to be GCed.
+		// PS: I don't know clean code, or design. or architecture. I'm a contractor.
+		return useful;
 	}
 
 	private BigObject80MB apiCall() {

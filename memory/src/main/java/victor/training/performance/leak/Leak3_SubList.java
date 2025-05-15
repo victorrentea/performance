@@ -22,20 +22,21 @@ import static java.util.stream.Collectors.toMap;
 public class Leak3_SubList {
    private List<Access> lastTenAccesses = new ArrayList<>();
 
-   record Access(
-       String ip,
-       Map<String, String> headers,
-       LocalDateTime timestamp) {
-   }
    @GetMapping
    public synchronized String endpoint(HttpServletRequest request) {
       var access = createAccess(request);
 
       lastTenAccesses.add(access);
-      if (lastTenAccesses.size() > 10) {
-         lastTenAccesses = lastTenAccesses.subList(1, lastTenAccesses.size());
+      while (lastTenAccesses.size() > 10) {
+//         lastTenAccesses = lastTenAccesses.subList(1, lastTenAccesses.size());
+         lastTenAccesses.remove(10);
       }
       return "The current window size is " + lastTenAccesses.size();
+   }
+   record Access(
+       String ip,
+       Map<String, String> headers,
+       LocalDateTime timestamp) {
    }
 
    private Access createAccess(HttpServletRequest request) {
