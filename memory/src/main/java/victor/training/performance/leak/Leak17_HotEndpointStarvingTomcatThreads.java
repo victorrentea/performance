@@ -50,10 +50,10 @@ public class Leak17_HotEndpointStarvingTomcatThreads {
     @Bean
     public ThreadPoolTaskExecutor tensorExecutor() {
       ThreadPoolTaskExecutor executor = new ThreadPoolTaskExecutor();
-      executor.setCorePoolSize(2);
+      executor.setCorePoolSize(1);
       var cpuCount = Runtime.getRuntime().availableProcessors();
-      executor.setMaxPoolSize(cpuCount /*- 1*/);
-      executor.setQueueCapacity(0);
+      executor.setMaxPoolSize(1);
+      executor.setQueueCapacity(500);
       executor.setThreadNamePrefix("tensor-");
       return executor;
     }
