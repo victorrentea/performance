@@ -9,10 +9,10 @@ import org.springframework.web.bind.annotation.RestController;
 import static victor.training.performance.util.PerformanceUtil.sleepMillis;
 
 @Slf4j
-public class ThreadLocalIntro {
+public class ThreadLocals {
     private final AController controller = new AController(new AService(new ARepo()));
     public static void main(String[] args) {
-        ThreadLocalIntro app = new ThreadLocalIntro();
+        ThreadLocals app = new ThreadLocals();
         System.out.println("Imagine incoming HTTP requests...");
         app.httpRequest("alice", "alice's data");
     }

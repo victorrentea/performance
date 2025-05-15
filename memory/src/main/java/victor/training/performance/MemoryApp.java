@@ -27,5 +27,6 @@ public class MemoryApp {
     public void onStart(ApplicationReadyEvent event) {
         long t1 = System.currentTimeMillis();
         log.info("🌟🌟🌟🌟🌟🌟 MemoryApp Started in {} seconds 🌟🌟🌟🌟🌟🌟", (t1-t0)/1000);
+        System.out.println("Open http://localhost:8080");
     }
 }
