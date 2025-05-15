@@ -16,8 +16,10 @@ public class BarmanConfig {
   @Bean
   public ThreadPoolTaskExecutor poolBar(@Value("${pool.bar.size}") int barPoolSize) {
     ThreadPoolTaskExecutor executor = new ThreadPoolTaskExecutor();
-    executor.setCorePoolSize(10); // core == max to not push harder on degrading downstream systems
-    executor.setMaxPoolSize(10); // how to decide size?
+//    executor.setCorePoolSize(10); // core == max to not push harder on degrading downstream systems
+//    executor.setCorePoolSize(10); // core == max to not push harder on degrading downstream systems
+    executor.setCorePoolSize(barPoolSize); // core == max to not push harder on degrading downstream systems
+    executor.setMaxPoolSize(barPoolSize); // how to decide size?
 
     executor.setQueueCapacity(500); // how to decide?
 
