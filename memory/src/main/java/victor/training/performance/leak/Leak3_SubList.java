@@ -29,7 +29,7 @@ public class Leak3_SubList {
    }
    @GetMapping
    public synchronized String endpoint(HttpServletRequest request) {
-      var access = createaAccess(request);
+      var access = createAccess(request);
 
       lastTenAccesses.add(access);
       if (lastTenAccesses.size() > 10) {
@@ -38,7 +38,7 @@ public class Leak3_SubList {
       return "The current window size is " + lastTenAccesses.size();
    }
 
-   private Access createaAccess(HttpServletRequest request) {
+   private Access createAccess(HttpServletRequest request) {
       var headers = list(request.getHeaderNames()).stream()
           .collect(toMap(name -> name, request::getHeader));
      return new Access(
