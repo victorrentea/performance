@@ -20,7 +20,7 @@ import static java.util.stream.Collectors.toMap;
 @RestController
 @RequestMapping("leak3")
 public class Leak3_SubList {
-   private List<Access> lastTenTimestamps = new ArrayList<>();
+   private List<Access> lastTenAccesses = new ArrayList<>();
 
    record Access(
        String ip,
@@ -31,11 +31,11 @@ public class Leak3_SubList {
    public synchronized String endpoint(HttpServletRequest request) {
       var access = createaAccess(request);
 
-      lastTenTimestamps.add(access);
-      if (lastTenTimestamps.size() > 10) {
-         lastTenTimestamps = lastTenTimestamps.subList(1, lastTenTimestamps.size());
+      lastTenAccesses.add(access);
+      if (lastTenAccesses.size() > 10) {
+         lastTenAccesses = lastTenAccesses.subList(1, lastTenAccesses.size());
       }
-      return "The current window size is " + lastTenTimestamps.size();
+      return "The current window size is " + lastTenAccesses.size();
    }
 
    private Access createaAccess(HttpServletRequest request) {
@@ -54,7 +54,7 @@ public class Leak3_SubList {
 //          rest.getForObject("http://localhost:8080/leak3", String.class);
          endpoint(request); // close enough for our experiment
       }
-      return "The current window size is " + lastTenTimestamps.size();
+      return "The current window size is " + lastTenAccesses.size();
    }
 }
 
