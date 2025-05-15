@@ -1,13 +1,12 @@
 package victor.training.performance.leak;
 
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.client.RestTemplate;
 
-import jakarta.servlet.http.HttpServletRequest;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -30,18 +29,22 @@ public class Leak3_SubList {
    }
    @GetMapping
    public synchronized String endpoint(HttpServletRequest request) {
-      var headers = list(request.getHeaderNames()).stream()
-          .collect(toMap(name -> name, request::getHeader));
-      Access access = new Access(
-          request.getRemoteAddr() + ":" + request.getRemotePort(),
-          headers,
-          LocalDateTime.now());
+      var access = createaAccess(request);
 
       lastTenTimestamps.add(access);
       if (lastTenTimestamps.size() > 10) {
          lastTenTimestamps = lastTenTimestamps.subList(1, lastTenTimestamps.size());
       }
       return "The current window size is " + lastTenTimestamps.size();
+   }
+
+   private Access createaAccess(HttpServletRequest request) {
+      var headers = list(request.getHeaderNames()).stream()
+          .collect(toMap(name -> name, request::getHeader));
+     return new Access(
+         request.getRemoteAddr() + ":" + request.getRemotePort(),
+         headers,
+         LocalDateTime.now());
    }
 
    @GetMapping("many")
