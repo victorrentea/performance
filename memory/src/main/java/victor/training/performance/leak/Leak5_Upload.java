@@ -19,6 +19,7 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutionException;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import static victor.training.performance.util.PerformanceUtil.sleepMillis;
@@ -32,11 +33,11 @@ public class Leak5_Upload {
   AtomicInteger taskIndex = new AtomicInteger(0);
 
   @PostMapping
-  public int endpoint(@RequestParam MultipartFile file) throws IOException {
+  public int endpoint(@RequestParam MultipartFile file) throws IOException, ExecutionException, InterruptedException {
     log.info("Got file");
     byte[] contents = file.getBytes();
     int taskId = taskIndex.incrementAndGet();
-    worker.processFile(taskId, contents);
+    worker.processFile(taskId, contents).get();
     return taskId;
   }
 }
