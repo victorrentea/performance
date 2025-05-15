@@ -17,10 +17,10 @@ import org.springframework.web.client.RestTemplate;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
-import java.io.FileOutputStream;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.nio.file.Files;
+import java.time.LocalDateTime;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -40,11 +40,15 @@ public class Leak5_Upload {
     int taskId = taskIndex.incrementAndGet();
     // store the file in a temporary file
 
-    File tempFile = File.createTempFile("leak5-", ".tmp");
-    byte[] contents = file.getBytes();
-    try (FileOutputStream fos = new FileOutputStream(tempFile)) {
-      fos.write(contents);
-    }
+    // add timestamp to delete older than 24h automatically
+    File tempFile = File.createTempFile("leak5" + LocalDateTime.now() + "-", ".tmp");
+//    byte[] contents = file.getBytes();
+//    try (FileOutputStream fos = new FileOutputStream(tempFile)) {
+//      fos.write(contents);
+//    }
+    var uploadByteStream = file.getInputStream();
+    Files.copy(uploadByteStream, tempFile.toPath());
+
     worker.processFile(taskId, tempFile);
     return taskId;
   }
