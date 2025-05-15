@@ -18,9 +18,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.time.LocalDateTime;
 import java.util.concurrent.atomic.AtomicInteger;
-import java.util.stream.IntStream;
 
 import static victor.training.performance.util.PerformanceUtil.sleepMillis;
 
@@ -47,6 +45,7 @@ class Worker {
   public void processFile(int taskId, byte[] contents) {
     log.debug("Task {} start ...", taskId);
     sleepMillis(10_000);
+    //if (true) throw new RuntimeException("What if BUG");
     String contentsString = new String(contents);
 //    long count = IntStream.range(0, contents.length).filter(i -> contents[i] == 17).count();
     long count = contentsString.chars().filter(c -> c == 17).count();
