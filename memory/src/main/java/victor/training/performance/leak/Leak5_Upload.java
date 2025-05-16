@@ -1,6 +1,7 @@
 package victor.training.performance.leak;
 
 import jakarta.annotation.PostConstruct;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.FileSystemResource;
@@ -22,18 +23,22 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 import static victor.training.performance.util.PerformanceUtil.sleepMillis;
 
+@Slf4j
 @RestController
 @RequestMapping("leak5/upload")
 public class Leak5_Upload {
   @Autowired
   private Worker worker;
-  AtomicInteger taskIndex = new AtomicInteger(0);
+
+  private static final AtomicInteger taskIndex = new AtomicInteger(0);
 
   @PostMapping
   public int endpoint(@RequestParam MultipartFile file) throws IOException {
+    log.info("Request ");
     byte[] contents = file.getBytes();
     int taskId = taskIndex.incrementAndGet();
     worker.processFile(taskId, contents);
+    log.info("Task submitted");
     return taskId;
   }
 }
@@ -44,10 +49,9 @@ class Worker {
   @Async // runs on a thread pool with 8 threads, by default in Spring
   public void processFile(int taskId, byte[] contents) {
     log.debug("Task {} start ...", taskId);
-    sleepMillis(10_000);
     //if (true) throw new RuntimeException("What if BUG");
+    sleepMillis(10_000);
     String contentsString = new String(contents);
-//    long count = IntStream.range(0, contents.length).filter(i -> contents[i] == 17).count();
     long count = contentsString.chars().filter(c -> c == 17).count();
     log.debug("Task {} done = {}", taskId, count);
   }
