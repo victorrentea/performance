@@ -20,7 +20,7 @@ public class Leak17_HotEndpointStarvingTomcatThreads {
   private final Semaphore semaphore = new Semaphore(199);
 
   //   @Bulkhead // resilience4j
-  @GetMapping // call 200 times with jMeter to saturate Tomcat's thread pool
+  @GetMapping // call 200 times to saturate Tomcat's thread pool
   public ResponseEntity<Void> hotEndpoint() throws InterruptedException {
     tensorFlow();
     return ok(null);

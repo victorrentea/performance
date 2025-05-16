@@ -20,7 +20,8 @@ Click a link, refresh the page several times, take a heapdump (for example with 
     <li><a href="leak14">14) Obscure lib</a></li>
     <li><a href="leak15">15) Thread Leak</a></li>
     <li><a href="leak16">16) Thread Local Caching (vs Virtual Threads)</a></li>
-    <li><a href="#" onclick="callNTimes('leak17', 200)">17) Hot Endpoint called 200 times</a> Starving Tomcat so <a href="leak17/liveness">this endpoint</a> is hurt</li>
+    <li>17) Hot Endpoint called 200 times (<a href="#" onclick="callNTimes('leak17', 200)">open 200 bro' tabs</a>)
+        to Starving Tomcat so <a href="leak17/liveness">this endpoint</a> is hurt</li>
 </ul>
 <script>
     function callNTimes(url, n) {
