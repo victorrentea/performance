@@ -28,8 +28,7 @@ public class Leak17_HotEndpointStarvingTomcatThreads {
 
   @GetMapping("/liveness")
   public String liveness(HttpServletRequest request) {
-    return "k8s, 🙏 please don't kill me: request at %s, response at %s "
-        .formatted(request.getDateHeader("Date"), LocalDateTime.now());
+    return "k8s, 🙏 please don't kill me! Responded at " + LocalDateTime.now();
   }
 
   private void tensorFlow() {
