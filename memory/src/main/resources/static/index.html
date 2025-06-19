@@ -24,8 +24,10 @@ Click a link, refresh the page several times, take a heapdump (for example with 
         to Starving Tomcat so <a href="leak17/liveness">this endpoint</a> is hurt
     </li>
     <li>18) <a href="leak18">Manual JDBC</a>
-        (<a href="#" onclick="callNTimes('leak17', 200)">x 200</a>)
-        makes <a href="leak18/health">/health</a> unavailable
+        <a href="#" onclick="callNTimes('leak17', 200)">retried many times</a>
+        by an insistent client with a short timeout,
+        takes all instances in cluster down
+        making their <a href="leak18/health">/health</a> unavailable.
     </li>
 </ul>
 <script>
