@@ -15,6 +15,7 @@ public class FrontPollersPaginate {
   @SneakyThrows
   public static void main(String[] args) {
     executor.submit(() -> poll());
+//    Thread.sleep(100);
   }
 
   @SneakyThrows
@@ -22,7 +23,7 @@ public class FrontPollersPaginate {
     var results = apiCall(2);
     System.out.println(results);
     if (results.size() == 2) {
-      executor.submit(() -> poll()).get();
+      executor.submit(() -> poll());
     }
   }
 
