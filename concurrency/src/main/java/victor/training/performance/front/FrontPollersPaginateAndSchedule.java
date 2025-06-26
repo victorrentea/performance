@@ -21,8 +21,9 @@ public class FrontPollersPaginateAndSchedule {
 
     ScheduledExecutorService sched2 = Executors.newScheduledThreadPool(1);
     sched2.scheduleWithFixedDelay(() -> poll("tufis", sched2), 0, 1, SECONDS);
-//    ScheduledExecutorService sched3 = Executors.newSingleThreadScheduledExecutor();
-    sched2.scheduleWithFixedDelay(() -> poll("hartie", sched2), 0, 1, SECONDS);
+
+    ScheduledExecutorService sched3 = Executors.newSingleThreadScheduledExecutor();
+    sched3.scheduleWithFixedDelay(() -> poll("hartie", sched3), 0, 1, SECONDS);
 
     Thread.sleep(2000);
     pervLeft.add("x");
