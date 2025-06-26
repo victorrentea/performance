@@ -5,22 +5,15 @@ import victor.training.performance.util.PerformanceUtil;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
-import static victor.training.performance.util.PerformanceUtil.*;
-
 
 public class DeadLockPhilosophersWithLocks {
 	static class ForkWithLock {
 		public final int id;
-		private final Lock lock = new ReentrantLock();
+		public final Lock lock = new ReentrantLock();
 		public ForkWithLock(int id) {
 			this.id = id;
 		}
-		public void take() {
-			lock.lock();
-		}
-		public void putDown() {
-			lock.unlock();
-		}
+
 	}
 	
 	static class Philosopher extends Thread {
@@ -42,17 +35,17 @@ public class DeadLockPhilosophersWithLocks {
 				PerformanceUtil.log("I'm hungry!");
 				
 				PerformanceUtil.log("Waiting for first fork (" + firstFork.id + ")");
-				firstFork.take();
+				firstFork.lock.lock();
 				PerformanceUtil.log("Took it");
 				PerformanceUtil.sleepSomeTime();
 				PerformanceUtil.log("Taking second fork (" + secondFork.id + ")");
-				secondFork.take();
-				
+				secondFork.lock.lock();
+
 				eat();
-				
-				firstFork.putDown();
+
+				firstFork.lock.unlock();
 				PerformanceUtil.sleepSomeTime();
-				secondFork.putDown();
+				secondFork.lock.unlock();
 				PerformanceUtil.log("Put down forks. Thinking...");
 			}
 		}
