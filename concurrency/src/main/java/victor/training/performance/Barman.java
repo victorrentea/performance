@@ -13,8 +13,6 @@ import victor.training.performance.drinks.Vodka;
 
 import java.util.concurrent.*;
 
-import static java.lang.System.currentTimeMillis;
-
 @Slf4j
 @RestController
 public class Barman {
@@ -35,18 +33,9 @@ public class Barman {
   // http://localhost:8080/drink
   @GetMapping("/drink")
   public CompletableFuture<DillyDilly> drink() throws ExecutionException, InterruptedException {
-    long t0 = currentTimeMillis();
-
-    CompletableFuture<Beer> futureBeer = CompletableFuture.supplyAsync(this::fetchBeer,executor);
-    CompletableFuture<Vodka> futureVodka = CompletableFuture.supplyAsync(this::fetchVodka,executor);
-
-    //    Promise.all
-    CompletableFuture<DillyDilly> futureDilly = futureBeer.thenCombine(futureVodka, DillyDilly::new);
-
-//    CompletableFuture.allOf(List.of(cf2,cf3,c4)).thenAccept(c->cf2.join())
-
-    log.info("HTTP thread blocked for {}ms", currentTimeMillis() - t0);
-    return futureDilly;
+    return CompletableFuture.supplyAsync(this::fetchBeer, executor)
+        .thenCombine(CompletableFuture.supplyAsync(this::fetchVodka, executor),
+            DillyDilly::new);
   }
 
   private Vodka fetchVodka() {
