@@ -10,6 +10,10 @@ import victor.training.performance.drinks.Beer;
 import victor.training.performance.drinks.DillyDilly;
 import victor.training.performance.drinks.Vodka;
 
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+
 import static java.lang.System.currentTimeMillis;
 
 @Slf4j
@@ -22,16 +26,28 @@ public class Barman {
 
   // http://localhost:8080/drink
   @GetMapping("/drink")
-  public DillyDilly drink() {
+  public DillyDilly drink() throws ExecutionException, InterruptedException {
     long t0 = currentTimeMillis();
 
-    Beer beer = rest.getForObject("http://localhost:9999/beer", Beer.class);
-
-    Vodka vodka = rest.getForObject("http://localhost:9999/vodka", Vodka.class);
+    ExecutorService executor = Executors.newFixedThreadPool(2);
+    var futureBeer = executor.submit(() -> fetchBeer());
+    var futureVodka = executor.submit(() -> fetchVodka());
+    Beer beer = futureBeer.get();
+    Vodka vodka = futureVodka.get();
+    // #1 vulnerabil la spike
+    // #2 Thread/Mem Leak (n-ai facut shut down)
 
     DillyDilly dilly = new DillyDilly(beer, vodka);
 
     log.info("HTTP thread blocked for {}ms", currentTimeMillis() - t0);
     return dilly;
+  }
+
+  private Vodka fetchVodka() {
+    return rest.getForObject("http://localhost:9999/vodka", Vodka.class);
+  }
+
+  private Beer fetchBeer() {
+    return rest.getForObject("http://localhost:9999/beer", Beer.class);
   }
 }

@@ -27,6 +27,9 @@ public class RaceBugs {
         total ++;
       }
     }
+    if (Math.random() < .5) {
+      throw new IllegalArgumentException("VAI VAI");
+    }
     log.info("End");
     return total;
   }
@@ -46,7 +49,7 @@ public class RaceBugs {
     }
     // aici zboara 2 threaduri libere
     for (var future : futures) {
-      total += future.get();
+      total += future.get(); // iti arunca ex din worker
     }
     pool.shutdown();
     pool.awaitTermination(1, MINUTES);
