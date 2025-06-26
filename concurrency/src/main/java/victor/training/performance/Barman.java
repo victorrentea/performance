@@ -34,17 +34,19 @@ public class Barman {
 
   // http://localhost:8080/drink
   @GetMapping("/drink")
-  public DillyDilly drink() throws ExecutionException, InterruptedException {
+  public CompletableFuture<DillyDilly> drink() throws ExecutionException, InterruptedException {
     long t0 = currentTimeMillis();
 
     CompletableFuture<Beer> futureBeer = CompletableFuture.supplyAsync(this::fetchBeer,executor);
-    Vodka vodka = fetchVodka(); // tomcat merge dupa vodka
-    Beer beer = futureBeer.get(); // threadu nou intre timp dupa bere
+    CompletableFuture<Vodka> futureVodka = CompletableFuture.supplyAsync(this::fetchVodka,executor);
 
-    DillyDilly dilly = new DillyDilly(beer, vodka);
+    //    Promise.all
+    CompletableFuture<DillyDilly> futureDilly = futureBeer.thenCombine(futureVodka, DillyDilly::new);
+
+//    CompletableFuture.allOf(List.of(cf2,cf3,c4)).thenAccept(c->cf2.join())
 
     log.info("HTTP thread blocked for {}ms", currentTimeMillis() - t0);
-    return dilly;
+    return futureDilly;
   }
 
   private Vodka fetchVodka() {
