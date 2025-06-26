@@ -43,7 +43,6 @@ public class Leak12_Deadlock {
 			sleepMillis(3_000);
 			log("end One.b1()");
 		}
-
 	}
 	static class KillTwo {
 		public static synchronized void entryPoint() {

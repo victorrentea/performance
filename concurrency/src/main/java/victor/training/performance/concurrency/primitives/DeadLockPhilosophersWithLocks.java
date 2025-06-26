@@ -5,6 +5,9 @@ import victor.training.performance.util.PerformanceUtil;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
+import static victor.training.performance.util.PerformanceUtil.log;
+import static victor.training.performance.util.PerformanceUtil.sleepSomeTime;
+
 
 public class DeadLockPhilosophersWithLocks {
 	static class ForkWithLock {
@@ -27,38 +30,41 @@ public class DeadLockPhilosophersWithLocks {
 		}
 
 		public void run() {
+//			ForkWithLock firstFork = leftFork.id < rightFork.id ? leftFork : rightFork;
+//			ForkWithLock secondFork = rightFork.id < leftFork.id ? rightFork : leftFork;
+
 			ForkWithLock firstFork = leftFork;
 			ForkWithLock secondFork = rightFork;
 
-			for (int i=0;i<50;i++) {
-				PerformanceUtil.sleepSomeTime();
-				PerformanceUtil.log("I'm hungry!");
+			for (int i=0;i<5000;i++) {
+				log("I'm hungry!");
 				
-				PerformanceUtil.log("Waiting for first fork (" + firstFork.id + ")");
+				log("Waiting for first fork (" + firstFork.id + ")");
+//				if (!firstFork.lock.tryLock(50, TimeUnit.MILLISECONDS)) { continue; }
 				firstFork.lock.lock();
-				PerformanceUtil.log("Took it");
-				PerformanceUtil.sleepSomeTime();
-				PerformanceUtil.log("Taking second fork (" + secondFork.id + ")");
+				log("Took it");
+				log("Taking second fork (" + secondFork.id + ")");
 				secondFork.lock.lock();
 
-				eat();
-
-				firstFork.lock.unlock();
-				PerformanceUtil.sleepSomeTime();
-				secondFork.lock.unlock();
-				PerformanceUtil.log("Put down forks. Thinking...");
+				try {
+					eat();
+				} finally {
+					firstFork.lock.unlock();
+					secondFork.lock.unlock();
+				}
+				log("Put down forks. Thinking...");
 			}
 		}
 
 		private void eat() {
-			PerformanceUtil.log("Took both forks. Eating...");
-			PerformanceUtil.sleepSomeTime();
-			PerformanceUtil.log("I had enough. I'm putting down the forks");
+			log("Took both forks. Eating...");
+			sleepSomeTime();
+			log("I had enough. I'm putting down the forks");
 		}
 	}
 	
 	public static void main(String[] args) {
-		PerformanceUtil.log("Start");
+		log("Start");
 		ForkWithLock[] forks = new ForkWithLock[] {new ForkWithLock(1), new ForkWithLock(2), new ForkWithLock(3), new ForkWithLock(4), new ForkWithLock(5)};
 		new Philosopher("Plato", forks[0], forks[1]).start();
 		new Philosopher("Konfuzius", forks[1], forks[2]).start();

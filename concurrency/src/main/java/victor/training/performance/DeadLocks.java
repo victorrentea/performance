@@ -24,7 +24,7 @@ public class DeadLocks {
          Fork firstFork = leftFork.id< rightFork.id?leftFork:rightFork;
          Fork secondFork =  leftFork.id< rightFork.id?rightFork:leftFork;
 
-         for (int i = 0; i < 5000; i++) {
+         for (int i = 0; i < 50; i++) {
             log("I'm hungry");
 
             log("Taking " + firstFork + "...");
