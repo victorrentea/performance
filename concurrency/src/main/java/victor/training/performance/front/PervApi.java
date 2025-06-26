@@ -13,7 +13,7 @@ public class PervApi {
     return new PervResponse(List.of("r1","r2"), LocalDateTime.now());
   }
   public static PervResponse fetchToalete(LocalDateTime token, int maxDelta) {
-    PerformanceUtil.sleepMillis(5000);
+    PerformanceUtil.sleepMillis(5*maxDelta);
     return new PervResponse(List.of("w1","w2"), LocalDateTime.now());
   }
 }

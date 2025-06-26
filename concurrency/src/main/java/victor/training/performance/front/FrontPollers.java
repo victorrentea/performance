@@ -24,7 +24,7 @@ public class FrontPollers {
         new NamedThreadFactory("🚽poller"))
         .scheduleWithFixedDelay(() -> {
           try {
-            lowExecutor.submit(() -> pollWC("tufis")).get();
+            lowExecutor.submit(() -> pollWC("tufis", 10000000)).get();
             log.info("Dupa!");
           } catch (Exception e) {
             log.error(e.getMessage(), e);
@@ -34,7 +34,7 @@ public class FrontPollers {
     new ScheduledThreadPoolExecutor(1, new NamedThreadFactory("🚽poller2"))
         .scheduleWithFixedDelay(() -> {
           try {
-            lowExecutor.submit(() -> pollWC("buncar")).get();
+            lowExecutor.submit(() -> pollWC("buncar", 100)).get();
           } catch (InterruptedException | ExecutionException e) {
             throw new RuntimeException(e);
           }
@@ -53,9 +53,9 @@ public class FrontPollers {
   }
 
   static LocalDateTime lastWCToken = null;
-  public static void pollWC(String tip) {
+  public static void pollWC(String tip, int maxDelta) {
     log.info("🚽 start "+tip);
-    var response = PervApi.fetchToalete(lastWCToken, 1000);
+    var response = PervApi.fetchToalete(lastWCToken, maxDelta);
     lastWCToken = response.nextToken();
     log.info("Process: " + response.data());
     log.info("🚽 end");
