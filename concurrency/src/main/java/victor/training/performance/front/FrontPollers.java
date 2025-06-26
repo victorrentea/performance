@@ -59,6 +59,12 @@ public class FrontPollers {
     @Override
     public Thread newThread(Runnable r) {
       var t = new Thread(r);
+      t.setUncaughtExceptionHandler(new Thread.UncaughtExceptionHandler() {
+        @Override
+        public void uncaughtException(Thread t, Throwable e) {
+          log.trace("Just in case, iti scapa o exceptie!", e);
+        }
+      });
       t.setName(name);
       return t;
     }
