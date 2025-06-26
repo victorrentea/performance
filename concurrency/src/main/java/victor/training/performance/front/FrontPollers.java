@@ -15,7 +15,7 @@ public class FrontPollers {
 
   static ExecutorService highExecutor = new ThreadPoolExecutor(5,5,
       1, TimeUnit.MINUTES, new ArrayBlockingQueue<>(50), new NamedThreadFactory("high"));
-  static ExecutorService lowExecutor = new ThreadPoolExecutor(1,1,
+  static ExecutorService lowExecutor = new ThreadPoolExecutor(1,2,
       1, TimeUnit.MINUTES, new ArrayBlockingQueue<>(50), new NamedThreadFactory("low"));
 
   private static final Logger log = LoggerFactory.getLogger("pollere");
@@ -23,8 +23,12 @@ public class FrontPollers {
     new ScheduledThreadPoolExecutor(1,
         new NamedThreadFactory("🚽poller"))
         .scheduleWithFixedDelay(() -> {
-          lowExecutor.submit(() -> pollWC("tufis"));
-          log.info("Dupa!");
+          try {
+            lowExecutor.submit(() -> pollWC("tufis"));
+            log.info("Dupa!");
+          } catch (Exception e) {
+            log.error(e.getMessage(), e);
+          }
         }, 0, 1, TimeUnit.MILLISECONDS);
 
     new ScheduledThreadPoolExecutor(1, new NamedThreadFactory("🚽poller2"))
@@ -37,11 +41,11 @@ public class FrontPollers {
         .scheduleWithFixedDelay(() -> highExecutor.submit(()->pollRocket()), 0, 1, TimeUnit.SECONDS);
   }
 
-  static LocalDateTime wcToken = null;
+  static LocalDateTime lastWCToken = null;
   public static void pollWC(String tip) {
     log.info("🚽 start "+tip);
-    var response = PervApi.fetchToalete(wcToken, 1000);
-    wcToken = response.nextToken();
+    var response = PervApi.fetchToalete(lastWCToken, 1000);
+    lastWCToken = response.nextToken();
     log.info("Process: " + response.data());
     log.info("🚽 end");
   }
@@ -59,12 +63,6 @@ public class FrontPollers {
     @Override
     public Thread newThread(Runnable r) {
       var t = new Thread(r);
-      t.setUncaughtExceptionHandler(new Thread.UncaughtExceptionHandler() {
-        @Override
-        public void uncaughtException(Thread t, Throwable e) {
-          log.trace("Just in case, iti scapa o exceptie!", e);
-        }
-      });
       t.setName(name);
       return t;
     }
