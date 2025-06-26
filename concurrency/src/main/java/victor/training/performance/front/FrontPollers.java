@@ -1,21 +1,41 @@
 package victor.training.performance.front;
 
 import lombok.extern.slf4j.Slf4j;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.time.LocalDateTime;
 import java.util.concurrent.*;
 
 @Slf4j
 public class FrontPollers {
-  static ExecutorService highExecutor = Executors.newFixedThreadPool(5, new NamedThreadFactory("high"));
-  static ExecutorService lowExecutor = Executors.newFixedThreadPool(1, new NamedThreadFactory("low"));
+  // out of mem <== unbounded queue
+//  static ExecutorService highExecutor = Executors.newFixedThreadPool(5, new NamedThreadFactory("high"));
+//  static ExecutorService lowExecutor = Executors.newFixedThreadPool(1, new NamedThreadFactory("low"));
 
+  static ExecutorService highExecutor = new ThreadPoolExecutor(5,5,
+      1, TimeUnit.MINUTES, new ArrayBlockingQueue<>(50), new NamedThreadFactory("high"));
+  static ExecutorService lowExecutor = new ThreadPoolExecutor(1,1,
+      1, TimeUnit.MINUTES, new ArrayBlockingQueue<>(50), new NamedThreadFactory("low"));
+
+  private static final Logger log = LoggerFactory.getLogger("pollere");
   public static void main(String[] args) {
-    new ScheduledThreadPoolExecutor(1, new NamedThreadFactory("🚽poller"))
-        .scheduleWithFixedDelay(() -> lowExecutor.submit(()->pollWC("tufis")), 0, 1, TimeUnit.MILLISECONDS);
+    new ScheduledThreadPoolExecutor(1,
+        new NamedThreadFactory("🚽poller"))
+        .scheduleWithFixedDelay(() -> {
+          try {
+            lowExecutor.submit(() -> pollWC("tufis"));
+            log.info("Dupa!");
+          } catch (Exception e) {
+            log.trace("Oups!", e);
+          }
+        }, 0, 1, TimeUnit.MILLISECONDS);
 
     new ScheduledThreadPoolExecutor(1, new NamedThreadFactory("🚽poller2"))
-        .scheduleWithFixedDelay(() -> lowExecutor.submit(()->pollWC("buncar")), 0, 1, TimeUnit.MILLISECONDS);
+        .scheduleWithFixedDelay(() -> {
+          lowExecutor.submit(() -> pollWC("buncar"));
+          log.info("Dupa!");
+        }, 0, 1, TimeUnit.MILLISECONDS);
 
     new ScheduledThreadPoolExecutor(1, new NamedThreadFactory("🚀poller"))
         .scheduleWithFixedDelay(() -> highExecutor.submit(()->pollRocket()), 0, 1, TimeUnit.SECONDS);
