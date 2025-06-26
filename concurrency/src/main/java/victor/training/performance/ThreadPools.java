@@ -30,13 +30,6 @@ public class ThreadPools {
 //         new ThreadPoolExecutor.CallerRunsPolicy() // o forma primitiva de backpressure
      );
 
-     ScheduledThreadPoolExecutor e = new ScheduledThreadPoolExecutor(1);
-     e.scheduleWithFixedDelay(()->{
-       var racheteList = scarbosssu.getRachete(token, maxDelta:1000 !important);
-       updates=sqllite.merge(racheteList);
-       socket.publish(updates);
-     },0, 5, TimeUnit.SECONDS);
-
     // executor = ExecutorServiceMetrics.monitor(meterRegistry, executor, "my-thread-pool");
     // TODO monitor queue waiting time
     for (int i = 0; i < 40; i++) {
