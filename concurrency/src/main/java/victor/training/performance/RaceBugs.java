@@ -18,14 +18,15 @@ public class RaceBugs {
   private static List<Integer> evenNumbers = new ArrayList<>();
 
   private static Integer total = 0;
+  private static final Object lock = new Object();
 
   // many threads run in parallel this method:
   private static void countEven(List<Integer> numbers) {
     log.info("Start");
     for (Integer n : numbers) {
       if (n % 2 == 0) {
-        synchronized (total) {
-          total = new Integer(total.intValue() + 1);
+        synchronized (lock) {
+          total ++;
         }
       }
     }
@@ -33,7 +34,7 @@ public class RaceBugs {
   }
 
   public static void main(String[] args) throws Exception {
-    List<Integer> fullList = IntStream.range(0, 1_000).boxed().toList();
+    List<Integer> fullList = IntStream.range(0, 10_000).boxed().toList();
 
     // split in [[1..500],[501..1000]]
     List<List<Integer>> parts = splitList(fullList, 2);
