@@ -13,6 +13,8 @@ import victor.training.performance.drinks.Vodka;
 
 import java.util.concurrent.*;
 
+import static java.util.concurrent.CompletableFuture.supplyAsync;
+
 @Slf4j
 @RestController
 public class Barman {
@@ -21,6 +23,8 @@ public class Barman {
   @Autowired
   private WebClient webClient;
 
+//  @Autowired
+//  ThreadPoolTaskExecutor executor;
   private static final ExecutorService executor = Executors.newFixedThreadPool(24);
 
   @PreDestroy
@@ -33,8 +37,8 @@ public class Barman {
   // http://localhost:8080/drink
   @GetMapping("/drink")
   public CompletableFuture<DillyDilly> drink() throws ExecutionException, InterruptedException {
-    return CompletableFuture.supplyAsync(this::fetchBeer, executor)
-        .thenCombine(CompletableFuture.supplyAsync(this::fetchVodka, executor),
+    return supplyAsync(this::fetchBeer, executor)
+        .thenCombine(supplyAsync(this::fetchVodka, executor),
             DillyDilly::new);
   }
 
