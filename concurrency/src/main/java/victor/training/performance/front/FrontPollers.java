@@ -23,12 +23,8 @@ public class FrontPollers {
     new ScheduledThreadPoolExecutor(1,
         new NamedThreadFactory("🚽poller"))
         .scheduleWithFixedDelay(() -> {
-          try {
-            lowExecutor.submit(() -> pollWC("tufis"));
-            log.info("Dupa!");
-          } catch (Exception e) {
-            log.trace("Oups!", e);
-          }
+          lowExecutor.submit(() -> pollWC("tufis"));
+          log.info("Dupa!");
         }, 0, 1, TimeUnit.MILLISECONDS);
 
     new ScheduledThreadPoolExecutor(1, new NamedThreadFactory("🚽poller2"))
