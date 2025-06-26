@@ -38,11 +38,8 @@ public class Barman {
     long t0 = currentTimeMillis();
 
     CompletableFuture<Beer> futureBeer = CompletableFuture.supplyAsync(this::fetchBeer,executor);
-    var futureVodka = executor.submit(this::fetchVodka);
-    Beer beer = futureBeer.get();
-    Vodka vodka = futureVodka.get();
-    // #1 vulnerabil la spike
-    // #2 Thread/Mem Leak (n-ai facut shut down)
+    Vodka vodka = fetchVodka(); // tomcat merge dupa vodka
+    Beer beer = futureBeer.get(); // threadu nou intre timp dupa bere
 
     DillyDilly dilly = new DillyDilly(beer, vodka);
 
