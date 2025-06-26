@@ -60,6 +60,11 @@ public class FrontPollersPaginateAndSchedule {
     var results = apiCall(2);
     log.info("🟢start:"+type);
     Thread.sleep(100);
+
+    // (tokenNou,date) =  STC.fetch(tokenVechi)
+    // hashMap.putAll(nisteDate(data))
+    // static tokenNou
+
     log.info("🔴end:" + type+", got:"+results);
     if (results.size() == 2) {
       // follow-up ca poate mai sunt

@@ -1,5 +1,6 @@
 package victor.training.performance;
 
+import jakarta.annotation.PreDestroy;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -13,6 +14,7 @@ import victor.training.performance.drinks.Vodka;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
 
 import static java.lang.System.currentTimeMillis;
 
@@ -24,14 +26,22 @@ public class Barman {
   @Autowired
   private WebClient webClient;
 
+  private static final ExecutorService executor = Executors.newFixedThreadPool(24);
+
+  @PreDestroy
+  public void onShutdown() throws InterruptedException {
+//    executor.shutdown();
+    executor.shutdownNow(); // daca sunt doar geturi running
+    executor.awaitTermination(1, TimeUnit.MINUTES); // kill SIGTERM
+  }
+
   // http://localhost:8080/drink
   @GetMapping("/drink")
   public DillyDilly drink() throws ExecutionException, InterruptedException {
     long t0 = currentTimeMillis();
 
-    ExecutorService executor = Executors.newFixedThreadPool(2);
-    var futureBeer = executor.submit(() -> fetchBeer());
-    var futureVodka = executor.submit(() -> fetchVodka());
+    var futureBeer = executor.submit(this::fetchBeer);
+    var futureVodka = executor.submit(this::fetchVodka);
     Beer beer = futureBeer.get();
     Vodka vodka = futureVodka.get();
     // #1 vulnerabil la spike
