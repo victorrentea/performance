@@ -11,10 +11,7 @@ import victor.training.performance.drinks.Beer;
 import victor.training.performance.drinks.DillyDilly;
 import victor.training.performance.drinks.Vodka;
 
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.TimeUnit;
+import java.util.concurrent.*;
 
 import static java.lang.System.currentTimeMillis;
 
@@ -40,7 +37,7 @@ public class Barman {
   public DillyDilly drink() throws ExecutionException, InterruptedException {
     long t0 = currentTimeMillis();
 
-    var futureBeer = executor.submit(this::fetchBeer);
+    CompletableFuture<Beer> futureBeer = CompletableFuture.supplyAsync(this::fetchBeer,executor);
     var futureVodka = executor.submit(this::fetchVodka);
     Beer beer = futureBeer.get();
     Vodka vodka = futureVodka.get();
