@@ -15,7 +15,7 @@ public class FrontPollers {
 
   static ExecutorService highExecutor = new ThreadPoolExecutor(5,5,
       1, TimeUnit.MINUTES, new ArrayBlockingQueue<>(50), new NamedThreadFactory("high"));
-  static ExecutorService lowExecutor = new ThreadPoolExecutor(1,2,
+  static ExecutorService lowExecutor = new ThreadPoolExecutor(1,1,
       1, TimeUnit.MINUTES, new ArrayBlockingQueue<>(50), new NamedThreadFactory("low"));
 
   private static final Logger log = LoggerFactory.getLogger("pollere");
@@ -24,7 +24,7 @@ public class FrontPollers {
         new NamedThreadFactory("🚽poller"))
         .scheduleWithFixedDelay(() -> {
           try {
-            lowExecutor.submit(() -> pollWC("tufis"));
+            lowExecutor.submit(() -> pollWC("tufis")).get();
             log.info("Dupa!");
           } catch (Exception e) {
             log.error(e.getMessage(), e);
@@ -33,12 +33,23 @@ public class FrontPollers {
 
     new ScheduledThreadPoolExecutor(1, new NamedThreadFactory("🚽poller2"))
         .scheduleWithFixedDelay(() -> {
-          lowExecutor.submit(() -> pollWC("buncar"));
+          try {
+            lowExecutor.submit(() -> pollWC("buncar")).get();
+          } catch (InterruptedException | ExecutionException e) {
+            throw new RuntimeException(e);
+          }
           log.info("Dupa!");
         }, 0, 1, TimeUnit.MILLISECONDS);
 
     new ScheduledThreadPoolExecutor(1, new NamedThreadFactory("🚀poller"))
-        .scheduleWithFixedDelay(() -> highExecutor.submit(()->pollRocket()), 0, 1, TimeUnit.SECONDS);
+        .scheduleWithFixedDelay(() -> {
+          try {
+            highExecutor.submit(()->pollRocket()).get();
+            // astepti sa termini cererea curenta, intarziind schedule thread pana atunci
+          } catch (InterruptedException | ExecutionException e) {
+            throw new RuntimeException(e);
+          }
+        }, 0, 1, TimeUnit.SECONDS);
   }
 
   static LocalDateTime lastWCToken = null;
