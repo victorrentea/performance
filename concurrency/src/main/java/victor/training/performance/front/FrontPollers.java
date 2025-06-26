@@ -2,42 +2,41 @@ package victor.training.performance.front;
 
 import lombok.extern.slf4j.Slf4j;
 
-import java.util.concurrent.ScheduledThreadPoolExecutor;
-import java.util.concurrent.ThreadFactory;
-import java.util.concurrent.TimeUnit;
+import java.time.LocalDateTime;
+import java.util.concurrent.*;
 
 @Slf4j
 public class FrontPollers {
-
-  //  static Executor highPrioExecutor = new ThreadPoolExecutor(
-//      5,5,
-//      1, TimeUnit.MINUTES,
-//      ??
-//  )
-  static ScheduledThreadPoolExecutor wcScheduler = new ScheduledThreadPoolExecutor(1,
-      new NamedThreadFactory("🚽poller"));
-  static ScheduledThreadPoolExecutor rocketScheduler = new ScheduledThreadPoolExecutor(1,
-      new NamedThreadFactory("🚀poller"));
+  static ExecutorService highExecutor = Executors.newFixedThreadPool(5, new NamedThreadFactory("high"));
+  static ExecutorService lowExecutor = Executors.newFixedThreadPool(1, new NamedThreadFactory("low"));
 
   public static void main(String[] args) {
-    wcScheduler.scheduleWithFixedDelay(() -> {
-      pollWC();
-    }, 0, 1, TimeUnit.SECONDS);
-    wcScheduler.scheduleWithFixedDelay(() -> {
-      pollRocket();
-    }, 0, 1, TimeUnit.SECONDS);
+    new ScheduledThreadPoolExecutor(1, new NamedThreadFactory("🚽poller"))
+        .scheduleWithFixedDelay(() -> lowExecutor.submit(()->pollWC("tufis")), 0, 1, TimeUnit.MILLISECONDS);
+
+    new ScheduledThreadPoolExecutor(1, new NamedThreadFactory("🚽poller2"))
+        .scheduleWithFixedDelay(() -> lowExecutor.submit(()->pollWC("buncar")), 0, 1, TimeUnit.MILLISECONDS);
+
+    new ScheduledThreadPoolExecutor(1, new NamedThreadFactory("🚀poller"))
+        .scheduleWithFixedDelay(() -> highExecutor.submit(()->pollRocket()), 0, 1, TimeUnit.SECONDS);
   }
 
-  public static void pollWC() {
-    log.info("Poll 🚽 start");
-
-    log.info("Poll 🚽 end");
+  static LocalDateTime wcToken = null;
+  public static void pollWC(String tip) {
+    log.info("🚽 start "+tip);
+    var response = PervApi.fetchToalete(wcToken, 1000);
+    wcToken = response.nextToken();
+    log.info("Process: " + response.data());
+    log.info("🚽 end");
   }
 
+  static LocalDateTime rocketToken = null;
   public static void pollRocket() {
-    log.info("Poll 🚀 start");
-
-    log.info("Poll 🚀 end");
+    log.info("🚀 start");
+    var response = PervApi.fetchRachete(rocketToken, 1000);
+    rocketToken = response.nextToken();
+    log.info("Process: " + response.data());
+    log.info("🚀 end");
   }
 
   private record NamedThreadFactory(String name) implements ThreadFactory {

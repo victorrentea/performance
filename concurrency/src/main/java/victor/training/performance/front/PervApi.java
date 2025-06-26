@@ -8,12 +8,12 @@ import java.util.List;
 public class PervApi {
   public record PervResponse(List<String> data, LocalDateTime nextToken){}
 
-  public PervResponse fetchRachete(LocalDateTime token, int maxDelta) {
+  public static PervResponse fetchRachete(LocalDateTime token, int maxDelta) {
     PerformanceUtil.sleepMillis(100);
     return new PervResponse(List.of("r1","r2"), LocalDateTime.now());
   }
-  public PervResponse fetchToalete(LocalDateTime token, int maxDelta) {
-    PerformanceUtil.sleepMillis(100);
+  public static PervResponse fetchToalete(LocalDateTime token, int maxDelta) {
+    PerformanceUtil.sleepMillis(5000);
     return new PervResponse(List.of("w1","w2"), LocalDateTime.now());
   }
 }
