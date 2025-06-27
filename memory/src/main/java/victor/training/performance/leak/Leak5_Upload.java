@@ -1,14 +1,12 @@
 package victor.training.performance.leak;
 
 import jakarta.annotation.PostConstruct;
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.FileSystemResource;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
-import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
@@ -19,6 +17,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import static victor.training.performance.util.PerformanceUtil.sleepMillis;
@@ -36,8 +35,14 @@ public class Leak5_Upload {
   public int endpoint(@RequestParam MultipartFile file) throws IOException {
     log.info("Request ");
     byte[] contents = file.getBytes();
+//    var inputStream = file.getInputStream();
+//    inputStream.transferTo()
+
+    // varsa contentul intr-un fisier temporar pe disc
+//    File tempFile = File.createTempFile("leak5-", ".tmp");
+//    file.transferTo(tempFile);
     int taskId = taskIndex.incrementAndGet();
-    worker.processFile(taskId, contents);
+    CompletableFuture.runAsync(()->worker.processFile(taskId, contents));
     log.info("Task submitted");
     return taskId;
   }
@@ -46,7 +51,7 @@ public class Leak5_Upload {
 @Slf4j
 @Service
 class Worker {
-  @Async // runs on a thread pool with 8 threads, by default in Spring
+  //@Async // runs on a thread pool with 8 threads, by default in Spring
   public void processFile(int taskId, byte[] contents) {
     log.debug("Task {} start ...", taskId);
     //if (true) throw new RuntimeException("What if BUG");

@@ -14,7 +14,8 @@ public class Leak0_OOMIntentional {
   @GetMapping
   public String endpoint() {
     List<int[]> boom = new ArrayList<>();
-    while (true) boom.add(new int[1000_000]); // += 4MB
+    while (true)
+      boom.add(new int[1000_000]); // += 4MB
     // throw new OutOfMemoryError("Does not generate heapdump despite the flags");
   }
 }

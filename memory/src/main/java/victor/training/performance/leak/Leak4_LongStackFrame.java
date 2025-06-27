@@ -14,14 +14,18 @@ import static victor.training.performance.util.PerformanceUtil.sleepMillis;
 public class Leak4_LongStackFrame {
 	@GetMapping
 	public String endpoint() {
-		BigObject80MB bigDto = apiCall();
-		String useful = bigDto.getInterestingPart();
-		// 🛑 don't reference large objects longer than needed
+		var useful = doarCeVreau();
 
 		log.trace("Long processing using: " + useful);
 		sleepMillis(10_000); // to allow you to take a Heap Dump
 
 		return "end";
+	}
+
+	private String doarCeVreau() {
+		BigObject80MB bigDto = apiCall();
+		String useful = bigDto.getInterestingPart();
+		return useful;
 	}
 
 	private BigObject80MB apiCall() {

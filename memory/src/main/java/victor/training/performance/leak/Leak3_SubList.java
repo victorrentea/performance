@@ -32,6 +32,8 @@ public class Leak3_SubList {
       if (lastTenAccesses.size() > 10) {
          // slide the window to right
          lastTenAccesses = lastTenAccesses.subList(1, lastTenAccesses.size());
+         // corect 1: lastTenAccesses = new ArrayList<>(lastTenAccesses.subList(1, lastTenAccesses.size()));
+         // corect 2: lastTenAccesses.remove(0);
       }
       return "The current window size is " + lastTenAccesses.size();
    }

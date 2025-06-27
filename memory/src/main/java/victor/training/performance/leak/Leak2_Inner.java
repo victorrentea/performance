@@ -7,10 +7,8 @@ import victor.training.performance.leak.CalculatorFactory.Calculator;
 import victor.training.performance.leak.obj.BigObject20MB;
 import victor.training.performance.util.PerformanceUtil;
 
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.function.Predicate;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -32,17 +30,15 @@ public class Leak2_Inner {
   @GetMapping("inner")
   public String endpoint() {
     Calculator calculator = new CalculatorFactory().createRightsCalculator();
-    bizLogicUsingCalculator(calculator);
+    bizLogicUsingCalculator(calculator); // takes time
     return "Done";
   }
-
   private void bizLogicUsingCalculator(Calculator calculator) {
     if (!calculator.calculate("launch")) {
       return;
     }
     PerformanceUtil.sleepMillis(20_000); // long flow and/or heavy parallel load
   }
-
   //<editor-fold desc="Entry points of more similar leaks">
   @GetMapping("anon")
   public String anon() {
@@ -58,20 +54,15 @@ public class Leak2_Inner {
     return map;
   }
   //</editor-fold>
-
-
 }
-
-
 class CalculatorFactory {
-  public class Calculator {
+  public static class Calculator {
     public boolean calculate(String data) {
       System.out.println("Simple Code Code");
       // 🛑 what's connects the Calculator instance with the 'bigMac' field ?
       return true;
     }
   }
-
   private BigObject20MB bigMac = new BigObject20MB(); // 🍔
 
   public Calculator createRightsCalculator() {
@@ -83,22 +74,38 @@ class CalculatorFactory {
   //<editor-fold desc="Lambdas vs Anonymous implementation">
   public Stream<String> anonymousVsLambdas(List<String> input) {
     return input.stream()
-            .filter(new Predicate<String>() {
-              @Override
-              public boolean test(String s) {
-                return !s.isBlank();
-              }
-            });
+        // anonymous interface imple care tine ref la clasa din jur
+//            .filter(new Predicate<String>() {
+//              @Override
+//              public boolean test(String s) {
+//                return !s.isBlank();
+//              }
+//            });
+            .filter(s -> !s.isBlank());
 //            TODO experiment ->, this::
   }
   //</editor-fold>
 
   //<editor-fold desc="Map init in Java <= 8">
   public Map<String, Integer> mapInit() {
-    return new HashMap<>() {{
-      put("one", 1);
-      put("two", 2);
-    }};
+    // anonymous subclass care tine pointer ascuns la clasa din jur
+//    return new HashMap<>() {
+//      {
+//        put("one", 1);
+//        put("two", 2);
+//      }
+//    };
+
+    // java 7 babeste (corect, fara leak)
+//    Map<String, Integer> map = new HashMap<>();
+//    map.put("one", 1);
+//    map.put("two", 2);
+//    return map;
+
+    return Map.of(
+            "one", 1,
+            "two", 2
+    ); // java 9+ - no leak, no anonymous class, no parent reference
   }
   //</editor-fold>
 }
