@@ -17,12 +17,20 @@ import static victor.training.performance.util.PerformanceUtil.sleepMillis;
 @RestController
 @RequestMapping("leak17")
 public class Leak17_HotEndpointStarvingTomcatThreads {
-  private final Semaphore semaphore = new Semaphore(199);
+  private final Semaphore semaphore = new Semaphore(
+      Runtime.getRuntime().availableProcessors());
 
   //   @Bulkhead // resilience4j
   @GetMapping // call 200 times to saturate Tomcat's thread pool
   public ResponseEntity<Void> hotEndpoint() throws InterruptedException {
-    tensorFlow();
+    if (!semaphore.tryAcquire()) {
+      throw new IllegalStateException("Drumul e anchis");
+    }
+    try {
+      tensorFlow();
+    } finally {
+      semaphore.release();
+    }
     return ok(null);
   }
 

@@ -28,8 +28,6 @@ public class Leak18_ConnectionLeak {
     log.info("Start work on ✈️{}->{}",
         flight.origin.toUpperCase(),
         flight.destination.toUpperCase());
-    // real work
-    connection.close();
   }
   @GetMapping("health")
   public String health() {

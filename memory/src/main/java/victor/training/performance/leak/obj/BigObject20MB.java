@@ -11,6 +11,10 @@ public class BigObject20MB implements Serializable {
 	@Setter
 	public String someString;
 
+	public BigObject20MB() {
+//		CustomJFREvents
+//		log.trace
+	}
 	public int lookup(int index) {
 		return largeArray[index];
 	}

@@ -12,13 +12,14 @@ import java.util.concurrent.Executors;
 @RestController
 @RequestMapping("leak15")
 public class Leak15_ThreadLeak {
+      ExecutorService pool = Executors.newFixedThreadPool(2);
 
    @GetMapping
    public void endpoint() {
-      ExecutorService pool = Executors.newFixedThreadPool(2);
       pool.submit(() -> someWorkInParallel(1));
       pool.submit(() -> someWorkInParallel(2));
       moreWork();
+//      p.sh
    }
 
    private static void someWorkInParallel(int i) {
