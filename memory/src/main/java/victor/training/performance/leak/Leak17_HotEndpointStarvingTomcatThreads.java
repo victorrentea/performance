@@ -22,7 +22,7 @@ public class Leak17_HotEndpointStarvingTomcatThreads {
   //   @Bulkhead // resilience4j
   @GetMapping // call 200 times to saturate Tomcat's thread pool
   public ResponseEntity<Void> hotEndpoint() throws InterruptedException {
-    tensorFlow();
+    tensorFlow(); // 10+ seconds
     return ok(null);
   }
 
