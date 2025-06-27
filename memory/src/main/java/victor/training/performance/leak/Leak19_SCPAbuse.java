@@ -12,8 +12,8 @@ import java.util.WeakHashMap;
 // WIP
 @Slf4j
 @RestController
-@RequestMapping("leak18")
-public class Leak18_SCPAbuse {
+@RequestMapping("leak19")
+public class Leak19_SCPAbuse {
   @GetMapping
   public List<Integer> internalize(List<String> tokens) throws InterruptedException {
     List<String> canonicalizedTokens = tokens.stream().map(s->canonicalize(s)).toList();
