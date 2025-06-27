@@ -25,7 +25,11 @@ public class ThreadLocals {
         log.info("Current user is " + currentUser);
         controller.create(data,currentUser);
     }
-    public static String staticCurrentUser;
+
+    // variabila globala din care fiecare thread isi vede doar propria valoare.
+    // nu poti sa ai race-uri.
+    // usecase: security context, user session, TraceID = metadate
+    public static ThreadLocal<String> staticCurrentUser = new ThreadLocal<>();
 }
 // ---------- end of framework -----------
 
@@ -36,7 +40,7 @@ class AController {
     private final AService service;
 
     public void create(String data, String user) {
-        ThreadLocals.staticCurrentUser = user;
+        ThreadLocals.staticCurrentUser.set(user);
         service.create(data);
     }
 }
@@ -58,7 +62,7 @@ class AService {
 @Slf4j
 class ARepo {
     public void save(String data) {
-        String currentUser = ThreadLocals.staticCurrentUser;
+        String currentUser = ThreadLocals.staticCurrentUser.get();
         log.info("INSERT INTO A (data={}, created_by={}) ", data, currentUser);
     }
 }
