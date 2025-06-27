@@ -17,12 +17,12 @@ public class ParallelStreams {
 
     long t0 = System.currentTimeMillis();
 
-//    ForkJoinPool.commonPool() // ruleaza TOATE
+//    ForkJoinPool.commonPool() // ruleaza TOATE. size=N_CPU-1
     // a) parallelStream si
     // b) CompletableFuture carora nu le-ai specificat un executor
     var result = list.parallelStream()
         .filter(i -> i % 2 == 0)
-        .map(i -> process(i))
+        .map(i -> process(i)) // NU AI VOIE I/O sau lockuri
         .toList();
 
     long t1 = System.currentTimeMillis();
