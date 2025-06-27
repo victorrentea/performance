@@ -1,6 +1,7 @@
 package victor.training.performance;
 
 import jakarta.annotation.PreDestroy;
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -11,8 +12,10 @@ import victor.training.performance.drinks.Beer;
 import victor.training.performance.drinks.DillyDilly;
 import victor.training.performance.drinks.Vodka;
 
+import java.io.IOException;
 import java.util.concurrent.*;
 
+import static java.util.concurrent.CompletableFuture.delayedExecutor;
 import static java.util.concurrent.CompletableFuture.supplyAsync;
 
 @Slf4j
@@ -25,7 +28,8 @@ public class Barman {
 
 //  @Autowired
 //  ThreadPoolTaskExecutor executor;
-  private static final ExecutorService executor = Executors.newFixedThreadPool(24);
+  private static final ExecutorService executor =
+    Executors.newFixedThreadPool(24);
 
   @PreDestroy
   public void onShutdown() throws InterruptedException {
@@ -36,17 +40,47 @@ public class Barman {
 
   // http://localhost:8080/drink
   @GetMapping("/drink")
+//  @GET @Path
   public CompletableFuture<DillyDilly> drink() throws ExecutionException, InterruptedException {
-    return supplyAsync(this::fetchBeer, executor)
-        .thenCombine(supplyAsync(this::fetchVodka, executor),
-            DillyDilly::new);
+    log.info("before");
+    try {
+      return supplyAsync(this::fetchHarta, executor)
+          .thenCombine(supplyAsync(this::fetchVodka, executor),
+              DillyDilly::new);
+    } finally {
+      log.info("after");
+    }
+  }
+
+  @GetMapping("/drink")
+  // de backup in caz ca var de mai sus nu merge
+  public void drinkAsync(HttpServletRequest request) throws ExecutionException, InterruptedException {
+//    ServerSocket serverSocket
+    // intre timp, pana vine jetty, hai sa pornim 2 x httpnano pe 2 porturi diferite din mainu meu ca sa blocheze separat sofia req de MAPS
+    // posibile emotii cu CORS.
+    var asyncContext = request.startAsync();
+    CompletableFuture.runAsync(() -> {
+      try {
+        asyncContext.getResponse().getWriter().write("salut din viitor");
+        asyncContext.complete();
+      } catch (IOException e) {
+        throw new RuntimeException(e);
+      }
+    }, delayedExecutor(3, TimeUnit.SECONDS));
+
+    log.info("before");
+    try{
+
+    } finally {
+      log.info("after");
+    }
   }
 
   private Vodka fetchVodka() {
     return rest.getForObject("http://localhost:9999/vodka", Vodka.class);
   }
 
-  private Beer fetchBeer() {
+  private Beer fetchHarta() {
     return rest.getForObject("http://localhost:9999/beer", Beer.class);
   }
 }
