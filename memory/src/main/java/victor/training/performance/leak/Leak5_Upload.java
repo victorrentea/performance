@@ -42,7 +42,11 @@ public class Leak5_Upload {
 //    File tempFile = File.createTempFile("leak5-", ".tmp");
 //    file.transferTo(tempFile);
     int taskId = taskIndex.incrementAndGet();
-    CompletableFuture.runAsync(()->worker.processFile(taskId, contents));
+    for (int i = 0; i < 20; i++) {
+      var clonedArray = new byte[contents.length];
+      System.arraycopy(contents, 0, clonedArray, 0, contents.length);
+      CompletableFuture.runAsync(()->worker.processFile(taskId, clonedArray));
+    }
     log.info("Task submitted");
     return taskId;
   }

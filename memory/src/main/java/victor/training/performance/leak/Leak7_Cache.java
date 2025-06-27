@@ -52,6 +52,9 @@ class CacheService {
 
    @Cacheable("contracts")
    public BigObject20MB getContractById(Long contractId, long requestStartTime) {
+
+      // if (cache.get(contractId+"-"+requestTimestamp)!=null) return din cache
+
       log.debug("<{}> Fetch contract id={}", requestStartTime, contractId);
       return new BigObject20MB();
    }
