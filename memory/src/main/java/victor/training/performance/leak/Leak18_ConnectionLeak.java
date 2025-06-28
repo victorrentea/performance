@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.sql.DataSource;
+import java.sql.Connection;
 import java.sql.SQLException;
 
 @Slf4j
@@ -24,10 +25,12 @@ public class Leak18_ConnectionLeak {
 
   @GetMapping
   public void endpoint(Flight flight) throws SQLException {
-    var connection = dataSource.getConnection();
+    Connection connection = dataSource.getConnection();
     log.info("Start work on ✈️{}->{}",
         flight.origin.toUpperCase(),
         flight.destination.toUpperCase());
+    // real work
+    connection.close();
   }
   @GetMapping("health")
   public String health() {

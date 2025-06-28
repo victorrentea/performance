@@ -2,7 +2,10 @@ package victor.training.performance.interview;
 
 import victor.training.performance.util.PerformanceUtil;
 
+import java.util.LinkedList;
 import java.util.function.Supplier;
+import java.util.stream.Collectors;
+import java.util.stream.LongStream;
 
 public class CollectionsSize {
   public static final int ONE_MILLION = 1_000_000;
@@ -10,23 +13,25 @@ public class CollectionsSize {
   public static void main(String[] args) {
     // TODO order the following from lowest->highest memory consumption
 
-    // A) ArrayList<Long>[1M] =  MB because:
-    // measureHeap(() -> (ArrayList<Long>)LongStream.range(0, ONE_MILLION).boxed().collect(Collectors.toList()));
+    // F) int[1M] = 3 MB because:; maxint = 2 miliarde
+//     measureHeap(() -> (int[]) IntStream.range(0, ONE_MILLION).toArray());
 
-    // B) long[1M] =  MB because:
-    // measureHeap(() -> (long[]) LongStream.range(0, ONE_MILLION).toArray());
+    // B) long[1M] = 8 MB because: 8b vs 4b
+//     measureHeap(() -> (long[]) LongStream.range(0, ONE_MILLION).toArray());
 
-    // C) HashSet[1M] =  MB because:
-    // measureHeap(() -> (HashSet<Long>) LongStream.range(0, ONE_MILLION).boxed().collect(Collectors.toSet()));
+    // E) Long[1M] = 26 MB because: acum am pe heap 1M de instante + refcount
+//     measureHeap(() -> (Long[]) LongStream.range(0, ONE_MILLION).boxed().toArray(Long[]::new));
 
-    // D) LinkedList[1M] =  MB because:
-    // measureHeap(() -> (LinkedList<Long>) LongStream.range(0, ONE_MILLION).boxed().collect(Collectors.toCollection(LinkedList::new)));
+    // A) ArrayList<Long>[1M] = 31 MB because: + capacity gol ;
+    // time vs memory tradeoff: BlueGene l-a batut pe Kasparov
+//     measureHeap(() -> (ArrayList<Long>) LongStream.range(0, ONE_MILLION).boxed().collect(Collectors.toList()));
 
-    // E) Long[1M] =  MB because:
-    // measureHeap(() -> (Long[]) LongStream.range(0, ONE_MILLION).boxed().toArray(Long[]::new));
+    // D) LinkedList[1M] = 46 MB because: prev+next
+     measureHeap(() -> (LinkedList<Long>) LongStream.range(0, ONE_MILLION).boxed().collect(Collectors.toCollection(LinkedList::new)));
 
-    // F) int[1M] =  MB because:
-    // measureHeap(() -> (int[]) IntStream.range(0, ONE_MILLION).toArray());
+    // C) HashSet[1M] = 70 MB because: BUCKETS
+//     measureHeap(() -> (HashSet<Long>) LongStream.range(0, ONE_MILLION).boxed().collect(Collectors.toSet()));
+
 
     // TODO extra experiment .clear the collections and see if memory is released
   }
