@@ -36,7 +36,7 @@ import java.io.IOException;
 
 @Slf4j
 @SpringBootApplication
-@EnableBatchProcessing
+@EnableBatchProcessing //?
 @RequiredArgsConstructor
 public class BatchApp {
   private final JobRepository jobRepository;
@@ -55,13 +55,18 @@ public class BatchApp {
   @Bean
   public Step importPersonData() {
     return new StepBuilder("importPersonData", jobRepository)
-        .<PersonXml, Person>chunk(5,transactionManager)
+        .<PersonXml, Person>chunk(50,transactionManager) // incepi cu 200.
+        // mai mult cand recordul e mic
 
-        .reader(xmlReader(null))
+        .reader(xmlReader(null)) // cand chemi dintr-o metoda @Bean alta metoda @Bean dintr-un @Configuration
+        // de fapt nu chemi direct ci Spring o va invoca cand trebuie cu ce param trebuie
+        // asta contravine regulii generale ca "metodele locale nu sunt interceptate"
+
         .processor(personProcessor())
+
         .writer(jpaWriter(null))
 
-        .listener(new LogSqlForFirstChunkListener())
+        .listener(new LogSqlForFirstChunkListener()) // logeaza performantqa
         .listener(progressTrackingChunkListener())
         .listener(countTotalNumberOfRecordsListener())
 
@@ -72,7 +77,7 @@ public class BatchApp {
   @Bean
   @StepScope
   public ItemStreamReader<PersonXml> xmlReader(
-      @Value("#{jobParameters['FILE_PATH']}") File inputFile
+      @Value("#{jobParameters['FILE_PATH']}") File inputFile // expresie SpEL
       // there's a Map in the Spring context as a bean named "jobParameters"
   ) {
     log.info("Reading data from file: {}", inputFile);
@@ -108,7 +113,7 @@ public class BatchApp {
   @Bean
   @StepScope
   public LogProgressListener progressTrackingChunkListener() {
-    return new LogProgressListener();
+    return new LogProgressListener(); // parcurge intai tot fisierul sa numere cate randuri sunt,
   }
 
   @Bean
@@ -149,3 +154,6 @@ public class BatchApp {
     System.out.println("Batch took " + dt + " ms");
   }
 }
+//class SpringPeTacute extends BatchApp {
+//
+//}
