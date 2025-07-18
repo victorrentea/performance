@@ -30,6 +30,7 @@ public class CityProcessor implements ItemProcessor<PersonXml, City>, StepExecut
 
   @Override
   public City process(PersonXml xml) {
+    // SQL: MERGE
     if (!allCitiesInDB.contains(xml.getCity())) {
       allCitiesInDB.add(xml.getCity());
       return new City(xml.getCity());

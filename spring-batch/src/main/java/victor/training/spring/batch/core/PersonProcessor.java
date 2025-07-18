@@ -9,7 +9,6 @@ import victor.training.spring.batch.core.domain.City;
 import victor.training.spring.batch.core.domain.CityRepo;
 import victor.training.spring.batch.core.domain.Person;
 
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -23,6 +22,8 @@ public class PersonProcessor implements ItemProcessor<PersonXml, Person> {
   @Autowired
   private EntityManager em;
 
+  Map<String, Long> cityNamesInDB = new HashMap<>();
+
   @PostConstruct
   void init() {
     cityNamesInDB = cityRepo.streamAll()
@@ -31,28 +32,16 @@ public class PersonProcessor implements ItemProcessor<PersonXml, Person> {
     // TODO @george un @Query care sa scoata doar City: String name si Long id
   }
 
-
-  Map<String, Long> cityNamesInDB = Collections.synchronizedMap(new HashMap<>());
-
   @Override
-  public  Person process(PersonXml xml) {
+  public Person process(PersonXml xml) {
     Person entity = new Person();
     entity.setName(xml.getName());
 
-    City city;
-    if (!cityNamesInDB.containsKey(xml.getCity())) {
-      city = cityRepo.save(new City(xml.getCity()));
-      cityNamesInDB.put(xml.getCity(), city.getId());
-    } else {
-      Long cityId = cityNamesInDB.get(xml.getCity());
-      city = cityRepo.findById(cityId).orElseThrow();
-      // explicatie: 1st level cache al lui Hibernate
-      // fiecare chunk se proceseaza in aceeasi tranzactie
-      // JPA in cadrul aceleasi tranzactii, cand faci
-      // var e = repo.findById(42L); => SELECt
-      // var e = repo.findById(42L); => JPA ti-l serveste din mem
-      // iti da al doilea rez din memorie
-    }
+    Long cityId = cityNamesInDB.get(xml.getCity());
+//    City city = cityRepo.findById(cityId).orElseThrow();
+    City city = cityRepo.getReferenceById(cityId);// NU FACE SELECT
+    // ci iti da un proxy la @Entity pe care
+    // pe care poti s-o pui ca FK al unei alte @Entity
 
     entity.setCity(city);
     return entity;

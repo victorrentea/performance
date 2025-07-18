@@ -47,8 +47,8 @@ public class BatchApp {
     return new JobBuilder("importJob",jobRepository)
         .listener(new CaptureStartTimeListener())
         .incrementer(new RunIdIncrementer())
-        .start(importPersonData())
-//        .start(importCityData()).next(importPersonData()) // TODO 2-pass import
+        .start(importCityData())
+        .next(importPersonData()) // TODO 2-pass import
         .build();
   }
 
@@ -70,7 +70,7 @@ public class BatchApp {
         .listener(progressTrackingChunkListener())
         .listener(countTotalNumberOfRecordsListener())
 
-//        .taskExecutor(batchExecutor()) // TODO insert chunks on multiple threads
+        .taskExecutor(batchExecutor()) // TODO insert chunks on multiple threads
         .build();
   }
 
@@ -125,8 +125,8 @@ public class BatchApp {
   @Bean
   public ThreadPoolTaskExecutor batchExecutor() {
     ThreadPoolTaskExecutor executor = new ThreadPoolTaskExecutor();
-    executor.setCorePoolSize(8);
-    executor.setMaxPoolSize(8);
+    executor.setCorePoolSize(5); // customizezi dupa masuratori
+    executor.setMaxPoolSize(5);
     executor.setQueueCapacity(500);
     executor.setThreadNamePrefix("batch-");
     return executor;
