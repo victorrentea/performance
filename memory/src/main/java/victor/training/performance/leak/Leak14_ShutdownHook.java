@@ -15,16 +15,17 @@ public class Leak14_ShutdownHook {
    @GetMapping
    public String add() {
       OldLib.stuff();
+      // i'm in a server. than [never] shuts down
       return "All good";
    }
-
 }
 
+// --- can't change the lib ---
 class OldLib { // designed to be used in a desktop/console/job app
    public static void stuff() {
-      BigObject20MB big = new BigObject20MB(); // cleanup internal stuff
+      BigObject20MB big = new BigObject20MB();
       Runtime.getRuntime().addShutdownHook(new Thread(()->
-          System.out.println("Clean some files: " + big)));
+          System.out.println("Cleanup at JVM shutdown: " + big)));
    }
 
 }
