@@ -2,10 +2,7 @@ package victor.training.performance;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.stereotype.Repository;
-import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RestController;
 
 import java.util.concurrent.CompletableFuture;
 
@@ -39,7 +36,7 @@ public class ThreadLocalIntro {
 // ---------- end of framework -----------
 
 // ---------- Controller -----------
-@RestController
+//@RestController
 @RequiredArgsConstructor
 class AController {
     private final AService service;
@@ -50,7 +47,7 @@ class AController {
 }
 
 // ----------- Service ------------
-@Service
+//@Service
 @RequiredArgsConstructor
 class AService {
     private final ARepo repo;
@@ -67,7 +64,7 @@ class AService {
 }
 
 // ----------- Repository ------------
-@Repository
+//@Repository
 @Slf4j
 class ARepo {
     public void save(String data) {
