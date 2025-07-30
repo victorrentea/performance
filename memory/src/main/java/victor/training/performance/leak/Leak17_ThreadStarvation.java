@@ -1,6 +1,5 @@
 package victor.training.performance.leak;
 
-import jakarta.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -20,19 +19,18 @@ public class Leak17_ThreadStarvation {
   private final Semaphore semaphore = new Semaphore(199);
 
   //   @Bulkhead // resilience4j
-  @GetMapping // call 200 times to saturate Tomcat's thread pool
-  public ResponseEntity<Void> hotEndpoint() throws InterruptedException {
-    tensorFlow(); // 10+ seconds
+  @GetMapping // call it 500 times to saturate Tomcat's thread pool: 200 in action + 300 in queue
+  public ResponseEntity<Void> hotEndpoint() {
+    slow(); // 10+ seconds
     return ok(null);
   }
 
   @GetMapping("/liveness")
-  public String liveness(HttpServletRequest request) {
+  public String liveness() {
     return "k8s, 🙏 please don't kill me! Responded at " + LocalDateTime.now();
   }
 
-  private void tensorFlow() {
-    sleepMillis(20_000); // pretend CPU
-    sleepMillis(20_000); // or criminal SQL
+  private void slow() {
+    sleepMillis(20_000); // pretend tensorFlow/CPU or criminal SQL
   }
 }
