@@ -24,7 +24,7 @@ public class Leak5_AsyncUnbounded {
   private static final AtomicInteger index = new AtomicInteger(0);
 
   @GetMapping
-  public String endpoint(
+  public String uploadFile(
       @RequestParam(value = "file", required = false)
       MultipartFile multipartFile) throws IOException {
     byte[] contents = multipartFile.getBytes();
