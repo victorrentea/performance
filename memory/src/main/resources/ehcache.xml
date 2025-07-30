@@ -26,9 +26,9 @@
         <expiry>
             <ttl unit="minutes">30</ttl>
         </expiry>
-        <!--<resources>
-            <heap unit="MB">100</heap>
-        </resources>-->
+        <resources>
+            <heap unit="MB">10000</heap>
+        </resources>
     </cache>
 
 </config>

@@ -3,31 +3,35 @@ Click a link, refresh the page several times, take a heapdump (for example with 
 <ul>
     <li><a href="leak0">0) OOME Intentional</a> - make JVM dump heap on OOME</li>
     <li><a href="leak1">1) Magic</a></li>
-    <li><a href="leak2">2) Inside</a></li>
-    <li><a href="leak3">3) SubList</a> Click once -> Java + Retained shows nothing; but <a href="leak3/many-calls">let's call it 10k times</a></li>
+    <li>2) Hidden Links:
+        <a href="leak2/inner">Inner</a>,
+        <a href="leak2/anon">Anonymous Implem</a>,
+        <a href="leak2/map">Map init</a>
+    </li>
+    <li><a href="leak3">3) SubList</a> No suspect on top by retained size >
+        until you <a href="leak3/many-calls">call it 10k times</a></li>
     <li><a href="leak4">4) Long Frame</a></li>
     <li><a href="leak5">5) Upload File</a></li>
-    <!--<li><a href="leak6">6)</a></li>-->
-    <li><a href="leak7">7) Caching</a></li>
-    <li><a href="leak7/signature">7) Caching#2</a></li>
-    <li><a href="leak7/customKey">7) Caching#3</a></li>
+    <li><a href="leak6">6) Unbounded Collection</a></li>
+    <li><a href="leak7">7) Caching:
+        #1</a>,
+        <a href="leak7/signature">#2</a>, and
+        <a href="leak7/customKey">#3</a>
+    </li>
     <li><a href="leak8">8) Profile Allocation</a></li>
-    <li><a href="leak9">9) Session</a></li>
+    <li><a href="leak9">9) Session (stateful)</a></li>
     <li><a href="leak10">10) Hibernate</a></li>
     <li><a href="leak11">11) XML DOM</a></li>
-    <li><a href="leak12">12) Deadlock</a></li>
-    <li><a href="leak13">13) Deadlock HARD</a></li>
-    <li><a href="leak14">14) Obscure lib</a></li>
+    <li><a href="leak12">12) Deadlock</a> and <a href="leak13">a HARD version</a></li>
+    <li><a href="leak14">14) Old lib</a></li>
     <li><a href="leak15">15) Thread Leak</a></li>
     <li><a href="leak16">16) Thread Local Caching (vs Virtual Threads)</a></li>
-    <li>17) Hot Endpoint called 200 times (<a href="#" onclick="callNTimes('leak17', 200)">open 200 bro' tabs</a>)
-        to Starving Tomcat so <a href="leak17/liveness">this endpoint</a> is hurt
+    <li>17) Thread Starvation: Call <a href="leak17">a Hot Endpoint</a> in a short time
+        <a href="#" onclick="callNTimes('leak17', 200)">200 times</a>
+         to get a timeout at <a href="leak17/liveness">/liveness</a> ☠️
     </li>
-    <li>18) <a href="leak18">Manual JDBC</a>
-        <a href="#" onclick="callNTimes('leak17', 200)">retried many times</a>
-        by an insistent client with a short timeout,
-        takes all instances in cluster down
-        making their <a href="leak18/health">/health</a> unavailable.
+    <li>18) Connection Leak: <a href="leak18">call the endpoint</a> 20 times.
+        After that, all endpoints connecting to DB hang.
     </li>
 </ul>
 <script>

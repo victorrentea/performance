@@ -10,52 +10,53 @@ import static victor.training.performance.util.PerformanceUtil.sleepMillis;
 @RestController
 @RequestMapping("leak12")
 public class Leak12_Deadlock {
-
-	// [RO] CATE DOI, CATE DOI ... : https://youtu.be/V798MhKfdZ8
-
-	@GetMapping
-	public String root() throws Exception {
-		return "call <a href='./leak12/one'>/one</a> and <a href='./leak12/two'>/two</a> withing 3 secs..";
-	}
-	
 	@GetMapping("/one")
 	public String one() throws Exception {
-		KillOne.entryPoint();
-		return "--> You didn't call /two within the last 3 secs, didn't you?..";
+		One.entry();
+		return """
+        Refresh the page, then call <a href='two'>/two</a> within 3 seconds to produce the deadlock.<br>
+        Effect: requests in both tabs hang.""";
 	}
 
 	@GetMapping("/two")
 	public String two() throws Exception {
-		KillTwo.entryPoint();
-		return "--> You didn't call /one within the last 3 secs, didn't you?..";
+		Two.entry();
+		return """
+        Refresh the page, then call <a href='one'>/one</a> within 3 seconds to produce the deadlock.<br>
+        Effect: requests in both tabs hang.""";
 	}
 
-	static class KillOne {
-		public static synchronized void entryPoint() {
-			log("start One.a1()");
+	@GetMapping
+	public String home() {
+		return "call <a href='./one'>one</a> and <a href='./two'>two</a> within 3 secs..";
+	}
+
+	static class One {
+		public static synchronized void entry() {
+			log("start One.entry()");
 			sleepMillis(3_000);
-			KillTwo.internalMethod();
-			log("start One.a1()");
+			Two.internal();
+			log("start One.entry()");
 		}
 
-		public static synchronized void internalMethod() {
-			log("start One.b1()");
+		public static synchronized void internal() {
+			log("start One.internal()");
 			sleepMillis(3_000);
-			log("end One.b1()");
+			log("end One.internal()");
 		}
 
 	}
-	static class KillTwo {
-		public static synchronized void entryPoint() {
-			log("start Two.a2()");
+	static class Two {
+		public static synchronized void entry() {
+			log("start Two.entry()");
 			sleepMillis(3_000);
-			KillOne.internalMethod();
-			log("start Two.a2()");
+			One.internal();
+			log("start Two.entry()");
 		}
-		public static synchronized void internalMethod() {
-			log("start Two.b2()");
+		public static synchronized void internal() {
+			log("start Two.internal()");
 			sleepMillis(3_000);
-			log("end Two.b2()");
+			log("end Two.internal()");
 		}
 	}
 

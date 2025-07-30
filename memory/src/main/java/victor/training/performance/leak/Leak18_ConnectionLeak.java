@@ -31,8 +31,4 @@ public class Leak18_ConnectionLeak {
     // real work
     connection.close();
   }
-  @GetMapping("health")
-  public String health() {
-    return "UP";
-  }
 }

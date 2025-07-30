@@ -20,9 +20,8 @@ import static victor.training.performance.util.PerformanceUtil.randomString;
 @Slf4j
 @RestController
 @RequestMapping("leak6")
-public class Leak6_TemporaryGlobal {
-  // or 'static' - the same
-  private final Map<String, UserProfile> userProfiles = new HashMap<>();
+public class Leak6_UnboundedCollection {
+  /*static*/ private final Map<String, UserProfile> userProfiles = new HashMap<>();
 
   @GetMapping
   public String endpoint(@RequestParam(defaultValue = "1") Long id) {

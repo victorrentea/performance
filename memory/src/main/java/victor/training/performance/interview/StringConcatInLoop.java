@@ -19,7 +19,6 @@ public class StringConcatInLoop {
           .mapToObj(n -> "hahaha") // 6 x 2 bytes/char = 12 bytes / element
           .toList();
 
-      waitForEnter();
       System.out.println("Start...");
       long t0 = System.currentTimeMillis();
 
@@ -32,6 +31,5 @@ public class StringConcatInLoop {
       Files.writeString(new File("out.txt").toPath(), s, UTF_8);
 
       System.out.println("Done. Took " + (System.currentTimeMillis() - t0));
-      waitForEnter();
    }
 }

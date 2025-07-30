@@ -18,17 +18,6 @@ import java.util.stream.Stream;
 @RequestMapping("leak2")
 public class Leak2_Inner {
 
-  //<editor-fold desc="html">
-  @GetMapping
-  public String home() {
-    return """
-        Do you know Java?<br>
-        <li><a href='/leak2/inner'>Hidden links</a>
-        <li><a href='/leak2/anon'>Lambdas vs anonymous class</a>
-        <li><a href='/leak2/map'>Map{{</a>""";
-  }
-  //</editor-fold>
-
   @GetMapping("inner")
   public String endpoint() {
     Calculator calculator = new CalculatorFactory().createRightsCalculator();

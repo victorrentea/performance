@@ -15,18 +15,21 @@ public class Leak16_ThreadLocalCache {
       return Library.innocentMethod();
    }
 }
+
 // -- can't change code below this line: part of a library --
 class Library {
    private static final ThreadLocal<ExpensiveResource> cache
        = ThreadLocal.withInitial(ExpensiveResource::new);
+   // evaluates on first .get()
 
    public static String innocentMethod() {
       return "Meaning of life: " + cache.get().getMeaningOfLife();
+      // deliberately no ThreadLocal#clear() as current thread is expected to be pooled and return back later
    }
    private static class ExpensiveResource {
       private final int meaningOfLife;
       private final BigObject20MB bigObject = new BigObject20MB();
-      // usually a parsed schema (XSD, OpenApi/Swagger), an engine (Nashorn, Groovy)..
+      // cached on thread: a parsed schema (XSD, OpenApi/Swagger), an engine (Nashorn, Groovy)..
 
       public ExpensiveResource() {
          System.out.println("Searching for meaning of life...");

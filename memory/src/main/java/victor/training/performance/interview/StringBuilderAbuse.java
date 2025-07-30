@@ -1,6 +1,6 @@
 package victor.training.performance.interview;
 
-public class StringConcatPremature {
+public class StringBuilderAbuse {
   public static void main(String[] args) {
     System.out.println(stringPlusEqual());
     System.out.println(stringBuilderAppend());

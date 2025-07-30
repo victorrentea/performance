@@ -16,7 +16,7 @@ import java.time.format.DateTimeFormatter;
 
 @RestController
 @RequestMapping("leak7")
-public class Leak7_Cache {
+public class Leak7_Caching {
    @Autowired
    private CacheService cacheService;
 
@@ -44,7 +44,7 @@ public class Leak7_Cache {
 @Slf4j
 class CacheService {
    // @Cacheable makes a proxy intercept the method call to
-   // return the previously returned value for those same parameter(s)
+   // return the previously returned value for the same parameter(s)
    @Cacheable("day-cache")
    public BigObject20MB getCachedDataForDay(LocalDateTime date) {
       log.debug("Fetch data for date: {}", date.format(DateTimeFormatter.ISO_DATE));

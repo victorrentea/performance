@@ -37,6 +37,22 @@ public class Leak10_Hibernate {
    private final EntityManager entityManager;
    private final FastInserter fastInserter;
 
+   @GetMapping("export")
+   @Transactional
+   public void export() throws IOException {
+      log.debug("Exporting 500MB from DB to a file...");
+
+      try (Writer writer = new FileWriter("big-entity.txt")) {
+
+         repo.streamAll() // iterate through rows ≈ while(resultSet.next()) { ...
+             .map(BigEntity::getDescription)
+             .forEach(Unchecked.consumer(writer::write));
+      }
+
+      log.debug("Export completed. Sleeping 2 minutes to allow you to get a heapdump...");
+      PerformanceUtil.sleepMillis(120 * 1000);
+   }
+
    @PostConstruct
    public void clearDB() {
       repo.deleteAll();
@@ -44,29 +60,13 @@ public class Leak10_Hibernate {
 
    @GetMapping
    public String html() {
-      return "First <a href=\"/leak10/persist\">persist the data</a>, then <a href=\"/leak10/export\"> export it to a file</a>.<br> Note that after each restart the database is cleared";
+      return "First <a href=\"/leak10/persist\">persist the data</a>,<br> then <a href=\"/leak10/export\"> export it to a file</a>.<br> Note that after each restart the database is cleared";
    }
 
    @GetMapping("persist")
    public String persist() {
       fastInserter.insert(500);
       return "Inserted 500MB of data. Now <a href=\"/leak10/export\">export</a> the file 'big-entity.txt' and check the logs";
-   }
-
-   @GetMapping("export")
-   @Transactional
-   public void export() throws IOException {
-      log.debug("Exporting....");
-
-      try (Writer writer = new FileWriter("big-entity.txt")) {
-         // backed by while(resultSet.next()) { ...
-         repo.streamAll()
-             .map(BigEntity::getDescription)
-             .forEach(Unchecked.consumer(writer::write));
-      }
-
-      log.debug("Export completed. Sleeping 2 minutes to get a heapdump...");
-      PerformanceUtil.sleepMillis(120 * 1000);
    }
 }
 
@@ -90,8 +90,8 @@ interface BigEntityRepo extends JpaRepository<BigEntity, Long> {
 @RequiredArgsConstructor
 @Slf4j
 class FastInserter {
+   //<editor-fold desc="Irrelevant">
    private final DataSource dataSource;
-   //<editor-fold desc="Fast Inserter">
    public void insert(int mb) {
       log.debug("Inserting...");
       long t0 = System.currentTimeMillis();
