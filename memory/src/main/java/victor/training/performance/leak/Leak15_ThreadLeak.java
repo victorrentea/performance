@@ -16,9 +16,14 @@ public class Leak15_ThreadLeak {
    @GetMapping
    public void endpoint() {
       ExecutorService pool = Executors.newFixedThreadPool(2);
-      pool.submit(() -> work(1));
-      pool.submit(() -> work(2));
-      //moreWork();
+      try{
+         pool.submit(() -> work(1));
+         pool.submit(() -> work(2));
+         moreWork();
+      } finally {
+         pool.shutdown();// #1 works
+      }
+      // #2 inject and use a global ThreadPoolTaskExecutor configured with spring
    }
 
    private static void work(int i) {

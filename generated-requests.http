@@ -1,0 +1,8 @@
+###
+GET http://localhost:8080/leak14
+
+###
+POST http://localhost:8080/leak5/upload
+Content-Type: multipart/form-data
+
+file=@pom.xml

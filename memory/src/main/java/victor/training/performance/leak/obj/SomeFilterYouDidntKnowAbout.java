@@ -1,11 +1,10 @@
 package victor.training.performance.leak.obj;
 
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.stereotype.Component;
-import victor.training.performance.leak.obj.BigObject20MB;
-
 import jakarta.servlet.*;
 import jakarta.servlet.http.HttpServletRequest;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.stereotype.Component;
+
 import java.io.IOException;
 
 @Slf4j
@@ -20,7 +19,11 @@ public class SomeFilterYouDidntKnowAbout implements Filter {
          log.debug("doFilter");
          BigObject20MB bigObject = new BigObject20MB();
          someFrameworkThreadLocal.set(bigObject); // mistake: no .remove()
-         chain.doFilter(request, response);
+         try {
+            chain.doFilter(request, response);
+         }finally {
+            someFrameworkThreadLocal.remove();
+         }
       } else {
          chain.doFilter(request, response);
       }
