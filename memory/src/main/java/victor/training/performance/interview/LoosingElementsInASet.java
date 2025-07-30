@@ -7,6 +7,7 @@ import java.util.HashSet;
 public class LoosingElementsInASet {
   public static void main(String[] args) {
     HashSet<Child> hashSet = new HashSet<>();
+    System.out.println(new Object());
 
     Child emma = new Child();
     emma.setName("Emma");
