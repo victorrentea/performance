@@ -5,7 +5,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.client.RestTemplate;
 
 import jakarta.servlet.http.HttpServletRequest;
 import java.time.LocalDateTime;
@@ -17,17 +16,19 @@ import java.util.List;
 @RestController
 @RequestMapping("leak3")
 public class Leak3_SubList {
-   private List<Access> lastTenTimestamps = new ArrayList<>();
+   private List<Access> lastTenAccesses = new ArrayList<>();
 
    record Access(String ip, LocalDateTime timestamp) {
    }
    @GetMapping
    public synchronized String endpoint(HttpServletRequest request) {
-      lastTenTimestamps.add(new Access(request.getRemoteAddr()+":"+request.getRemotePort(), LocalDateTime.now()));
-      if (lastTenTimestamps.size() > 10) {
-         lastTenTimestamps = lastTenTimestamps.subList(1, lastTenTimestamps.size());
+      Access access = new Access(request.getRemoteAddr() + ":" + request.getRemotePort(), LocalDateTime.now());
+
+      lastTenAccesses.add(access);
+      if (lastTenAccesses.size() > 10) {
+         lastTenAccesses = lastTenAccesses.subList(1, lastTenAccesses.size()); // skip first
       }
-      return "The current window size is " + lastTenTimestamps.size();
+      return "The current window size is " + lastTenAccesses.size();
    }
 
    @GetMapping("many")
@@ -37,7 +38,7 @@ public class Leak3_SubList {
 //          rest.getForObject("http://localhost:8080/leak3", String.class);
          endpoint(request); // close enough for our experiment
       }
-      return "The current window size is " + lastTenTimestamps.size() + ": " + lastTenTimestamps;
+      return "The current window size is " + lastTenAccesses.size() + ": " + lastTenAccesses;
    }
 }
 
