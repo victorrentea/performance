@@ -10,8 +10,9 @@ import org.springframework.web.bind.annotation.RestController;
 import victor.training.performance.leak.obj.BigObject20MB;
 import victor.training.performance.util.PerformanceUtil;
 
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.util.Objects;
 
 @RestController
 @RequestMapping("leak7")
@@ -21,7 +22,7 @@ public class Leak7_Cache {
 
    @GetMapping
    public String cacheKey() {
-      BigObject20MB data = cacheService.getCachedDataForDay(LocalDateTime.now());
+      BigObject20MB data = cacheService.getCachedDataForDay(LocalDate.now());
       return "Data from cache for today = " + data + ", " + PerformanceUtil.getUsedHeap();
    }
 
@@ -44,13 +45,15 @@ public class Leak7_Cache {
 class CacheService {
    // @Cacheable makes a proxy intercept the method call and return
    // the previously cached value for that parameter (if any)
-   @Cacheable("day-cache")
-   public BigObject20MB getCachedDataForDay(LocalDateTime date) {
+   @Cacheable("day-cache") // ~static HashMap<LocalDateTime, ...> = infinite no of keys
+   // #1: cache hit ratio = 0% on grafana (metrics)
+   // #2: OOME if not bounded
+   public BigObject20MB getCachedDataForDay(LocalDate date) {
       log.debug("Fetch data for date: {}", date.format(DateTimeFormatter.ISO_DATE));
       return new BigObject20MB();
    }
 
-   @Cacheable("contracts")
+   @Cacheable(value = "contracts",key = "#contractId")
    public BigObject20MB getContractById(Long contractId, long requestStartTime) {
       log.debug("<{}> Fetch contract id={}", requestStartTime, contractId);
       return new BigObject20MB();
@@ -58,6 +61,8 @@ class CacheService {
 
    @Cacheable("invoices")
    public BigObject20MB getInvoiceByContractAndDate(InvoiceByDate param) {
+//      if (cache.get(...)) //perhaps is better to avoid AOP @, and programatically use caches
+//      ..
       log.debug("Fetch invoice for {}", param);
       return new BigObject20MB();
    }
@@ -84,6 +89,18 @@ class InvoiceByDate {
 
    public Long getContractId() {
       return contractId;
+   }
+
+   @Override
+   public boolean equals(Object o) {
+      if (o == null || getClass() != o.getClass()) return false;
+      InvoiceByDate that = (InvoiceByDate) o;
+      return year == that.year && month == that.month && Objects.equals(contractId, that.contractId);
+   }
+
+   @Override
+   public int hashCode() {
+      return Objects.hash(contractId, year, month);
    }
 }
 

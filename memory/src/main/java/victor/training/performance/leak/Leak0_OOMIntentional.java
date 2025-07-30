@@ -11,11 +11,12 @@ import java.util.List;
 @RequestMapping("leak0")
 public class Leak0_OOMIntentional {
 
+    List<int[]> boom = new ArrayList<>();
   @GetMapping
   public String endpoint() {
-    List<int[]> boom = new ArrayList<>();
-    while (true) boom.add(new int[1000_000]);
 //     throw new OutOfMemoryError("Unfortunately, throwing a new OutOfMemoryError does NOT generate a heapdump");
+    /*while (true) */ boom.add(new int[1000_000]); //4MB = 4b x 1M
+    return "done";
   }
 }
 

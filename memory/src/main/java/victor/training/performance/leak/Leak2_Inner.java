@@ -7,10 +7,8 @@ import victor.training.performance.leak.CalculatorFactory.Calculator;
 import victor.training.performance.leak.obj.BigObject20MB;
 import victor.training.performance.util.PerformanceUtil;
 
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.function.Predicate;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -34,14 +32,10 @@ public class Leak2_Inner {
     bizLogicUsingCalculator(calculator);
     return "Done";
   }
-
   private void bizLogicUsingCalculator(Calculator calculator) {
-    if (!calculator.calculate("launch")) {
-      return;
-    }
+    if (!calculator.calculate("launch")) return;
     PerformanceUtil.sleepMillis(20_000); // long flow and/or heavy parallel load
   }
-
   //<editor-fold desc="Entry points of more similar leaks">
   @GetMapping("anon")
   public String anon() {
@@ -57,13 +51,9 @@ public class Leak2_Inner {
     return map;
   }
   //</editor-fold>
-
-
 }
-
-
 class CalculatorFactory {
-  public class Calculator {
+  public static class Calculator { // nested not inner
     public boolean calculate(String data) {
       System.out.println("Simple Code Code");
       // 🛑 what's connects the Calculator instance with the 'bigMac' field ?
@@ -82,21 +72,27 @@ class CalculatorFactory {
   //<editor-fold desc="Lambdas vs Anonymous implementation">
   public Stream<String> anonymousVsLambdas(List<String> input) {
     return input.stream()
-            .filter(new Predicate<String>() {
-              @Override
-              public boolean test(String s) {
-                return !s.isBlank();
-              }
-            });
+            .filter(s-> !s.isBlank()) // no ref
+//            .filter(s-> !s.isBlank() && bigMac!=null) // explicit ref
+//            .filter(new Predicate<String>() { // anonymous interface impl // CalculatorFactory$1
+//              @Override
+//              public boolean test(String s) {
+//                return !s.isBlank();
+//              }
+//            })
+        ;
   }
   //</editor-fold>
 
   //<editor-fold desc="Map init in Java <= 8">
   public Map<String, Integer> mapInit() {
-    return new HashMap<>() {{
-      put("one", 1);
-      put("two", 2);
-    }};
+//    return new HashMap<>() {
+//        // anonymous subclass of hashMap lazyness/geek
+//      { // instance init block ~ constructor
+//        put("one", 1);
+//        put("two", 2);
+//    }};
+    return Map.of("a", 1, "b", 2);
   }
   //</editor-fold>
 }
