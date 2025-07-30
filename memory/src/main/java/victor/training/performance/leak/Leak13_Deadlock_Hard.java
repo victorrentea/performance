@@ -27,18 +27,18 @@ public class Leak13_Deadlock_Hard {
 
   @GetMapping("/one")
   public String one(@RequestParam(defaultValue = "a") String a) throws Exception {
-    mapA.compute(a, (k, v) -> (v == null ? "" : v) + f() + mapB.get(a));
+    mapA.compute(a, (k, v) -> (v == null ? "" : v) + process(a) + mapB.get(a));
     return "--> You didn't call /two within the last 3 secs, didn't you?..";
   }
 
-  private String f() {
+  private String process(String a) {
     sleepMillis(3000);
     return "🤔";
   }
 
   @GetMapping("/two")
   public String two(@RequestParam(defaultValue = "a") String a) throws Exception {
-    mapB.compute(a, (k, v) -> (v == null ? "" : v) + f() + mapA.get(a));
+    mapB.compute(a, (k, v) -> (v == null ? "" : v) + process(a) + mapA.get(a));
     return "--> You didn't call /one within the last 3 secs, didn't you?..";
   }
 }
