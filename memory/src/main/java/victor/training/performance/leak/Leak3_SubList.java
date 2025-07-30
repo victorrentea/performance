@@ -33,9 +33,7 @@ public class Leak3_SubList {
 
    @GetMapping("many")
    public String mass(HttpServletRequest request) {
-//      RestTemplate rest = new RestTemplate();
       for (int i = 0; i < 10_000; i++) {
-//          rest.getForObject("http://localhost:8080/leak3", String.class);
          endpoint(request); // close enough for our experiment
       }
       return "The current window size is " + lastTenAccesses.size() + ": " + lastTenAccesses;
