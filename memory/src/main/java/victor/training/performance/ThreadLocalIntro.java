@@ -26,9 +26,10 @@ public class ThreadLocalIntro {
         staticCurrentUser.set(currentUser);
         controller.create(data);
     }
+
     // each thread sees its own copy of that string.
     // more examples: traceId, @Transactional, tenantId, operatorId, clientTimestamp, SecurityContext
-    public static ThreadLocal<String> staticCurrentUser = new ThreadLocal<>();
+    public static ThreadLocal<String> staticCurrentUser = new InheritableThreadLocal<>();
 }
 // ---------- end of framework -----------
 
@@ -60,7 +61,10 @@ class AService {
 @Slf4j
 class ARepo {
     public void save(String data) {
-        String currentUser = ThreadLocalIntro.staticCurrentUser.get();
-        log.info("INSERT INTO A (data={}, created_by={}) ", data, currentUser);
+        new Thread(()-> {
+            // DON'T. except if spawning Virtual Threads
+            String currentUser = ThreadLocalIntro.staticCurrentUser.get();
+          log.info("INSERT INTO A (data={}, created_by={}) ", data, currentUser);
+        }).start();
     }
 }
