@@ -16,7 +16,7 @@ import static victor.training.performance.util.PerformanceUtil.sleepMillis;
 @Slf4j
 @RestController
 @RequestMapping("leak17")
-public class Leak17_HotEndpointStarvingTomcatThreads {
+public class Leak17_ThreadStarvation {
   private final Semaphore semaphore = new Semaphore(199);
 
   //   @Bulkhead // resilience4j
@@ -33,6 +33,6 @@ public class Leak17_HotEndpointStarvingTomcatThreads {
 
   private void tensorFlow() {
     sleepMillis(20_000); // pretend CPU
-    sleepMillis(20_000); // criminal SQL
+    sleepMillis(20_000); // or criminal SQL
   }
 }

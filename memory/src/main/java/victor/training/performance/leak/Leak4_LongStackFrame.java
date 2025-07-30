@@ -16,7 +16,7 @@ public class Leak4_LongStackFrame {
 	public String endpoint() {
 		BigObject80MB bigDto = apiCall();
 		String useful = bigDto.getInterestingPart();
-		// 🛑 don't reference large objects longer than needed
+		// 🛑 can bigDto be GCed?
 
 		log.trace("Long processing using: " + useful);
 		sleepMillis(10_000); // to allow you to take a Heap Dump

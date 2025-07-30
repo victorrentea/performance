@@ -67,7 +67,7 @@ class CalculatorFactory {
   public class Calculator {
     public boolean calculate(String data) {
       System.out.println("Simple Code Code");
-      // 🛑 what's connects the Calculator instance with the 'bigMac' field ?
+      // 🛑 what connects the Calculator instance with the 'bigMac' object?
       return true;
     }
   }
@@ -78,7 +78,7 @@ class CalculatorFactory {
     return new Calculator();
   }
 
-  // related leaks:
+  // similar leaks:
 
   //<editor-fold desc="Lambdas vs Anonymous implementation">
   public Stream<String> anonymousVsLambdas(List<String> input) {

@@ -19,10 +19,10 @@ public class Leak14_ShutdownHook {
    }
 
 }
-// old lib designed to be used in a desktop/console/job
-class OldLib {
+
+class OldLib { // designed to be used in a desktop/console/job app
    public static void stuff() {
-      BigObject20MB big = new BigObject20MB(); // create internal stuff
+      BigObject20MB big = new BigObject20MB(); // cleanup internal stuff
       Runtime.getRuntime().addShutdownHook(new Thread(()->
           System.out.println("Clean some files: " + big)));
    }

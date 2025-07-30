@@ -1,5 +1,6 @@
 package victor.training.performance.leak;
 
+import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.Cacheable;
@@ -42,8 +43,8 @@ public class Leak7_Cache {
 @Service
 @Slf4j
 class CacheService {
-   // @Cacheable makes a proxy intercept the method call and return
-   // the previously cached value for that parameter (if any)
+   // @Cacheable makes a proxy intercept the method call to
+   // return the previously returned value for those same parameter(s)
    @Cacheable("day-cache")
    public BigObject20MB getCachedDataForDay(LocalDateTime date) {
       log.debug("Fetch data for date: {}", date.format(DateTimeFormatter.ISO_DATE));
@@ -51,18 +52,19 @@ class CacheService {
    }
 
    @Cacheable("contracts")
-   public BigObject20MB getContractById(Long contractId, long requestStartTime) {
+   public BigObject20MB getContractById(Long contractId, long requestStartTime/*added*/) {
       log.debug("<{}> Fetch contract id={}", requestStartTime, contractId);
       return new BigObject20MB();
    }
 
    @Cacheable("invoices")
-   public BigObject20MB getInvoiceByContractAndDate(InvoiceByDate param) {
+   public BigObject20MB getInvoiceByContractAndDate(InvoiceByDate param/*extracted params to a class*/) {
       log.debug("Fetch invoice for {}", param);
       return new BigObject20MB();
    }
 }
 
+@Getter
 class InvoiceByDate {
    private final Long contractId;
    private final int year;
@@ -73,18 +75,7 @@ class InvoiceByDate {
       this.year = year;
       this.month = month;
    }
-
-   public int getMonth() {
-      return month;
-   }
-
-   public int getYear() {
-      return year;
-   }
-
-   public Long getContractId() {
-      return contractId;
-   }
+   // no hashCode/equals
 }
 
 /**

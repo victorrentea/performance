@@ -31,7 +31,7 @@ public class Leak3_SubList {
       return "The current window size is " + lastTenAccesses.size();
    }
 
-   @GetMapping("many")
+   @GetMapping("many-calls")
    public String mass(HttpServletRequest request) {
       for (int i = 0; i < 10_000; i++) {
          endpoint(request); // close enough for our experiment
