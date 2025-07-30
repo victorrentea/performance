@@ -14,9 +14,7 @@ import static victor.training.performance.util.PerformanceUtil.sleepMillis;
 public class Leak4_LongStackFrame {
 	@GetMapping
 	public String endpoint() {
-		BigObject80MB big = fetchFromAnApiALargeDto();
-		String useful = big.getInterestingPart();
-		big=null; //PLEASE DON'T DELETE. saves 80MB
+		String useful = callExtApiThroughAdaptersThatProtectYourCoreLogic();
 
 		// 🛑 don't reference large objects longer than needed
 
@@ -25,6 +23,11 @@ public class Leak4_LongStackFrame {
 			log.trace("Using useful part: " + useful);
 		}
 		return "end";
+	}
+
+	private String callExtApiThroughAdaptersThatProtectYourCoreLogic() {
+		BigObject80MB big = fetchFromAnApiALargeDto();
+    return big.getInterestingPart();
 	}
 
 	private BigObject80MB fetchFromAnApiALargeDto() {
