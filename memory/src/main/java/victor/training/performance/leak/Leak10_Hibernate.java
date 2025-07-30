@@ -54,13 +54,18 @@ public class Leak10_Hibernate {
    }
 
    @GetMapping("export")
-   @Transactional
+   @Transactional(readOnly = true)
    public void export() throws IOException {
       log.debug("Exporting....");
 
       try (Writer writer = new FileWriter("big-entity.txt")) {
          // backed by while(resultSet.next()) { ...
          repo.streamAll()
+             // hibernate gives you instances of @Entity but keeps a copy of their state in its 1st level cache
+             // in case you ask for them again in the same transaction
+
+             .peek(entityManager::detach) // tell Hibernate to remove the entity from its cache
+
              .map(BigEntity::getDescription)
              .forEach(Unchecked.consumer(writer::write));
       }

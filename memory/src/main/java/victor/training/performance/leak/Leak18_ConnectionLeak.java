@@ -15,7 +15,7 @@ import java.sql.SQLException;
 @RequestMapping("leak18")
 // from https://www.amazon.com/Release-Production-Ready-Software-Pragmatic-Programmers/dp/0978739213
 public class Leak18_ConnectionLeak {
-  private final DataSource dataSource;
+  private final DataSource dataSource; // connection pool
 
   public record Flight(
       String origin,
@@ -29,7 +29,7 @@ public class Leak18_ConnectionLeak {
         flight.origin.toUpperCase(),
         flight.destination.toUpperCase());
     // real work
-    connection.close();
+    connection.close(); // release the connection back to pool
   }
   @GetMapping("health")
   public String health() {
