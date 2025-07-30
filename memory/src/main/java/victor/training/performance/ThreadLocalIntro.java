@@ -23,10 +23,12 @@ public class ThreadLocalIntro {
 
     public void httpRequest(String currentUser, String data) {
         log.info("Current user is " + currentUser);
-        staticCurrentUser = currentUser;
+        staticCurrentUser.set(currentUser);
         controller.create(data);
     }
-    public static String staticCurrentUser;
+    // each thread sees its own copy of that string.
+    // more examples: traceId, @Transactional, tenantId, operatorId, clientTimestamp, SecurityContext
+    public static ThreadLocal<String> staticCurrentUser = new ThreadLocal<>();
 }
 // ---------- end of framework -----------
 
@@ -58,7 +60,7 @@ class AService {
 @Slf4j
 class ARepo {
     public void save(String data) {
-        String currentUser = ThreadLocalIntro.staticCurrentUser;
+        String currentUser = ThreadLocalIntro.staticCurrentUser.get();
         log.info("INSERT INTO A (data={}, created_by={}) ", data, currentUser);
     }
 }
