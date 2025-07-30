@@ -26,7 +26,8 @@ public class Leak3_SubList {
 
       lastTenAccesses.add(access);
       if (lastTenAccesses.size() > 10) {
-         lastTenAccesses = lastTenAccesses.subList(1, lastTenAccesses.size()); // skip first
+//         lastTenAccesses = lastTenAccesses.subList(1, lastTenAccesses.size()); // skip first
+         lastTenAccesses.remove(0); //fix
       }
       return "The current window size is " + lastTenAccesses.size();
    }
