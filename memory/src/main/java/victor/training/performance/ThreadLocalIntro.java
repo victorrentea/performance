@@ -2,73 +2,58 @@ package victor.training.performance;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.web.bind.annotation.GetMapping;
-
-import java.util.concurrent.CompletableFuture;
+import org.springframework.stereotype.Repository;
+import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.RestController;
 
 import static victor.training.performance.util.PerformanceUtil.sleepMillis;
 
 @Slf4j
 public class ThreadLocalIntro {
     private final AController controller = new AController(new AService(new ARepo()));
-    public static void main(String[] args) throws InterruptedException {
+    public static void main(String[] args) {
         ThreadLocalIntro app = new ThreadLocalIntro();
         System.out.println("Imagine incoming HTTP requests...");
-        CompletableFuture.runAsync(()->app.securityFilters("alice", "alice's data"));
-        CompletableFuture.runAsync(()->app.securityFilters("bob", "bob's data"));
-
-        Thread.sleep(1000);
+        app.httpRequest("alice", "alice's data");
     }
 
-    public void securityFilters(String currentUser, String data) {
-        log.info("Current user is " + currentUser);// imagine current user was extracted from a JWT or a Http Session
-        staticCurrentUser.set(currentUser);
-        try {
-            controller.create(data);
-        }finally {
-            staticCurrentUser.remove(); // clear the thread local in case this thread came from a thread pool, reused later
-        }
-
+    public void httpRequest(String currentUser, String data) {
+        log.info("Current user is " + currentUser);
+        controller.create(data, currentUser);
     }
-    // Map<Thread, String>
-    public static ThreadLocal<String> staticCurrentUser = new InheritableThreadLocal<>();
+    public static String staticCurrentUser;
 }
 // ---------- end of framework -----------
 
 // ---------- Controller -----------
-//@RestController
+@RestController
 @RequiredArgsConstructor
 class AController {
     private final AService service;
-    @GetMapping
-    public void create(String data) {
-        service.create(data);
+
+    public void create(String data, String username) {
+        service.create(data, username);
     }
 }
 
 // ----------- Service ------------
-//@Service
+@Service
 @RequiredArgsConstructor
 class AService {
     private final ARepo repo;
 
-    public void create(String data) {
+    public void create(String data, String username) {
         sleepMillis(10); // some delay, to reproduce the race bug
-        someInnocentSideMethod();
-        new Thread(() -> repo.save(data)).start();
-    }
-
-    private void someInnocentSideMethod() {
-        ThreadLocalIntro.staticCurrentUser.set("🎠");
+        repo.save(data, username);
     }
 }
 
 // ----------- Repository ------------
-//@Repository
+@Repository
 @Slf4j
 class ARepo {
-    public void save(String data) {
-        String staticCurrentUser = ThreadLocalIntro.staticCurrentUser.get();
-        log.info("INSERT INTO A (data={}, created_by={}) ", data, staticCurrentUser);
+    public void save(String data, String username) {
+        String currentUser = username; // TODO
+        log.info("INSERT INTO A (data={}, created_by={}) ", data, currentUser);
     }
 }
