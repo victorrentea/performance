@@ -16,12 +16,12 @@ public class Leak15_ThreadLeak {
    @GetMapping
    public void endpoint() {
       ExecutorService pool = Executors.newFixedThreadPool(2);
-      pool.submit(() -> someWorkInParallel(1));
-      pool.submit(() -> someWorkInParallel(2));
-      moreWork();
+      pool.submit(() -> work(1));
+      pool.submit(() -> work(2));
+      //moreWork();
    }
 
-   private static void someWorkInParallel(int i) {
+   private static void work(int i) {
       log.info("Work " + i);
    }
 
