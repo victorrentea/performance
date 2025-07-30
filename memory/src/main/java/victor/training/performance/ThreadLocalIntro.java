@@ -61,10 +61,11 @@ class AService {
 @Slf4j
 class ARepo {
     public void save(String data) {
-        new Thread(()-> {
-            // DON'T. except if spawning Virtual Threads
+//        new Thread(()-> { // Allocated .5 MB
+        CompletableFuture.runAsync(()-> {
+            // DON'T. except if spawning Virtual Threads = 1kb Executors.ofVirtual()
             String currentUser = ThreadLocalIntro.staticCurrentUser.get();
           log.info("INSERT INTO A (data={}, created_by={}) ", data, currentUser);
-        }).start();
+        });
     }
 }
