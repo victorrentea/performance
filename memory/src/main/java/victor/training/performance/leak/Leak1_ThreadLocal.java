@@ -4,26 +4,28 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 import victor.training.performance.leak.obj.Big20MB;
 
+import java.time.LocalDateTime;
+
 @RestController
 public class Leak1_ThreadLocal {
   private static final ThreadLocal<RequestContext> threadLocal = new ThreadLocal<>();
 
   record RequestContext(
       String currentUser,
-      Big20MB big
+      Big20MB big // demo
   ) {
   }
 
   @GetMapping("leak1")
   public String controllerMethod() {
-    String currentUser = "john.doe"; // extracted from request headers/http session/JWT
-    RequestContext requestContext = new RequestContext(currentUser, new Big20MB());
+    String currentUsername = "john.doe"; // extracted from request headers/http session/JWT
+    RequestContext requestContext = new RequestContext(currentUsername, new Big20MB());
     threadLocal.set(requestContext);
 
     service();
 
-    return "Magic can hurt";
-  }
+    return "Magic can hurt " + LocalDateTime.now();
+  } // 🔥 Leak1Load
 
   private void service() {
     repo();
@@ -31,8 +33,8 @@ public class Leak1_ThreadLocal {
 
   private void repo() {
     var requestContext = threadLocal.get();
-    String username = requestContext.currentUser();
-    System.out.println("UPDATE .. SET .. MODIFIED_BY=" + username);
+    String currentUsername = requestContext.currentUser();
+    System.out.println("UPDATE .. SET .. MODIFIED_BY=" + currentUsername);
   }
 }
 
