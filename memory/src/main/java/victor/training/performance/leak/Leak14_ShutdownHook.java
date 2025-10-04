@@ -1,36 +1,49 @@
 package victor.training.performance.leak;
 
 
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import victor.training.performance.leak.obj.BigObject20MB;
+import victor.training.performance.leak.obj.Big20MB;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import static victor.training.performance.leak.ShutdownHookCleaner.cleanHooks;
+import java.lang.reflect.Field;
+import java.util.HashSet;
+import java.util.IdentityHashMap;
+import java.util.Set;
 
 @RestController
-@RequestMapping("leak14")
-@Slf4j
 public class Leak14_ShutdownHook {
-
-   @GetMapping
-   public String add() throws Exception {
-      OldLib.stuff();
-      // I'm in a server that never shuts down
-      // TODO @see ShutdownHookCleaner
-      return "All good";
-   }
+  @GetMapping("leak14")
+  public String add() throws Exception {
+    OldLib.stuff();
+    return "♾️ Leak!";
+  }
 }
 
-// --- can't change the lib.jar ---
-class OldLib { // designed to be used in a desktop/console/job app
-   public static void stuff() {
-      BigObject20MB big = new BigObject20MB();
-      Runtime.getRuntime().addShutdownHook(new Thread(()->
-          System.out.println("Cleanup at JVM shutdown: " + big)));
-   }
+class OldLib { // in a .jar you cannot change
+  // lib was designed in early 2000s to be used in a desktop/console/job app
+  public static void stuff() {
+    Big20MB big = new Big20MB();
+    System.out.println("Created " + big);
+    Runtime.getRuntime().addShutdownHook(new Thread(() ->
+        System.out.println("Cleanup (file) at JVM exit " + big)));
+  }
+}
+
+class HackyFix {
+  public static void cleanHooks() throws Exception {
+    Class<?> clazz = Class.forName("java.lang.ApplicationShutdownHooks");
+    Field hooksField = clazz.getDeclaredField("hooks");
+
+    // To work, add to VM args: --add-opens java.base/java.lang=ALL-UNNAMED
+    hooksField.setAccessible(true);
+
+    IdentityHashMap<Thread, Thread> hooks = (IdentityHashMap<Thread, Thread>) hooksField.get(null);
+    if (hooks == null) {
+      return;
+    }
+    Set<Thread> keys = new HashSet<>(hooks.keySet()); // avoid ConcurrentModificationException
+    for (Thread t : keys) {
+      Runtime.getRuntime().removeShutdownHook(t);
+    }
+  }
 }

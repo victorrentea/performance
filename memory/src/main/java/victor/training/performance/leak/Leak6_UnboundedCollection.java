@@ -21,8 +21,12 @@ import static victor.training.performance.util.PerformanceUtil.randomString;
 @RestController
 @RequestMapping("leak6")
 public class Leak6_UnboundedCollection {
+  // TODO idempotency keys seen in a filter (dupa Unknown source)
+
+  // POTI trimite requesturi in bucla cu intelliJ
   /*static*/ private final Map<String, UserProfile> userProfiles = new HashMap<>();
 
+  // userii nu sunt unbounded. idempotency keys sau hash(order)
   @GetMapping
   public String endpoint(@RequestParam(defaultValue = "1") Long id) {
     String currentUser = randomUUID().toString();

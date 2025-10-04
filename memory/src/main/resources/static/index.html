@@ -3,6 +3,7 @@ Click a link, refresh the page several times, take a heapdump (for example with 
 <ul>
     <li><a href="leak0">0) OOME Intentional</a> - make JVM dump heap on OOME</li>
     <li><a href="leak1">1) Magic</a></li>
+    <li><a href="leak1b">16) Thread Local Caching (vs Virtual Threads)</a></li>
     <li>2) Hidden Links:
         <a href="leak2/inner">Inner</a>,
         <a href="leak2/anon">Anonymous Implem</a>,
@@ -16,7 +17,8 @@ Click a link, refresh the page several times, take a heapdump (for example with 
     <li><a href="leak7">7) Caching:
         #1</a>,
         <a href="leak7/signature">#2</a>, and
-        <a href="leak7/customKey">#3</a>
+        <a href="leak7/objectKey">#3</a>
+        <a href="leak7/mutableKey">#4</a>
     </li>
     <li><a href="leak8">8) Profile Allocation</a></li>
     <li><a href="leak9">9) Session (stateful)</a></li>
@@ -25,7 +27,6 @@ Click a link, refresh the page several times, take a heapdump (for example with 
     <li><a href="leak12">12) Deadlock</a> and <a href="leak13">a HARD version</a></li>
     <li><a href="leak14">14) Old lib</a></li>
     <li><a href="leak15">15) Thread Leak</a></li>
-    <li><a href="leak16">16) Thread Local Caching (vs Virtual Threads)</a></li>
     <li>17) Thread Starvation: Call <a href="leak17">a Hot Endpoint</a> in a short time
         <a href="#" onclick="callNTimes('leak17', 200)">200 times</a>
          to get a timeout at <a href="leak17/liveness">/liveness</a> ☠️

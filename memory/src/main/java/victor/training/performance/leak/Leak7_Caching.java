@@ -1,84 +1,139 @@
 package victor.training.performance.leak;
 
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.Id;
+import lombok.Data;
 import lombok.Getter;
+import lombok.RequiredArgsConstructor;
+import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.CacheManager;
 import org.springframework.cache.annotation.Cacheable;
+import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import victor.training.performance.leak.obj.BigObject20MB;
+import victor.training.performance.leak.CacheService.InvoiceByDate;
+import victor.training.performance.leak.obj.Big20MB;
 import victor.training.performance.util.PerformanceUtil;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.UUID;
 
 @RestController
 @RequestMapping("leak7")
+@RequiredArgsConstructor
 public class Leak7_Caching {
-   @Autowired
-   private CacheService cacheService;
+  private final CacheService cacheService;
 
-   @GetMapping
-   public String cacheKey() {
-      BigObject20MB data = cacheService.getCachedDataForDay(LocalDateTime.now());
-      return "Data from cache for today = " + data + ", " + PerformanceUtil.getUsedHeap();
-   }
+  @GetMapping
+  public String key() {
+    Big20MB data = cacheService.getTodayFex(LocalDateTime.now());
+    return "Data from cache for today = " + data + ", " + PerformanceUtil.getUsedHeapPretty();
+  }
 
-   @GetMapping("signature")
-   public String signature() {
-      long requestStartTime = System.currentTimeMillis();
-      BigObject20MB data = cacheService.getContractById(1L , requestStartTime);
-      return "Contract id:1 = " + data + ", " + PerformanceUtil.getUsedHeap();
-   }
+  @GetMapping("signature")
+  public String signature() {
+    long requestStartTime = System.currentTimeMillis();
+    Big20MB data = cacheService.getContractById(1L, requestStartTime);
+    return "Contract id:1 = " + data + ", " + PerformanceUtil.getUsedHeapPretty();
+  }
 
-   @GetMapping("customKey")
-   public String customKey() {
-      BigObject20MB data = cacheService.getInvoiceByContractAndDate(new InvoiceByDate(13L, 2023, 10));
-      return "Invoice = " + data + ", " + PerformanceUtil.getUsedHeap();
-   }
+  @GetMapping("objectKey")
+  public String objectKey() {
+    Big20MB data = cacheService.getInvoice(new InvoiceByDate(null, 2023, 10));
+    return "Invoice = " + data + ", " + PerformanceUtil.getUsedHeapPretty();
+  }
+
+  @GetMapping("mutableKey")
+  public String mutable() {
+    Big20MB data = cacheService.inquiry(new Inquiry().setYear(2025).setMonth(10));
+    return "Invoice = " + data + ", " + PerformanceUtil.getUsedHeapPretty();
+  }
+  // TODO caffeine
 }
 
 @Service
 @Slf4j
+@RequiredArgsConstructor
 class CacheService {
-   // @Cacheable makes a proxy intercept the method call to
-   // return the previously returned value for the same parameter(s)
-   @Cacheable("day-cache")
-   public BigObject20MB getCachedDataForDay(LocalDateTime date) {
-      log.debug("Fetch data for date: {}", date.format(DateTimeFormatter.ISO_DATE));
-      return new BigObject20MB();
-   }
+  private final InquiryRepo inquiryRepo;
 
-   @Cacheable("contracts")
-   public BigObject20MB getContractById(Long contractId, long requestStartTime/*added*/) {
-      log.debug("<{}> Fetch contract id={}", requestStartTime, contractId);
-      return new BigObject20MB();
-   }
+  private Big20MB fetchData() {
+    return new Big20MB();
+  }
 
-   @Cacheable("invoices")
-   public BigObject20MB getInvoiceByContractAndDate(InvoiceByDate param/*extracted params to a class*/) {
-      log.debug("Fetch invoice for {}", param);
-      return new BigObject20MB();
-   }
-}
+  // Note: @Cacheable proxy intercepts the call and
+  // returns the previously returned value for the same parameter(s)
+  @Cacheable("fex-cache")
+  public Big20MB getTodayFex(LocalDateTime date) {
+    log.debug("Fetch data for date: {}", date.format(DateTimeFormatter.ISO_DATE));
+    return fetchData();
+  }
 
-@Getter
-class InvoiceByDate {
-   private final Long contractId;
-   private final int year;
-   private final int month;
+  @Cacheable("signature")
+  public Big20MB getContractById(Long contractId, long requestStartTime/*added*/) {
+    log.debug("Fetch contract id={} at {}", contractId, requestStartTime);
+    return fetchData();
+  }
 
-   InvoiceByDate(Long contractId, int year, int month) {
+  @Getter
+  @Setter
+  static class InvoiceByDate {
+    private UUID contractId;
+    private int year;
+    private int month;
+
+    InvoiceByDate(UUID contractId, int year, int month) {
       this.contractId = contractId;
       this.year = year;
       this.month = month;
-   }
-   // no hashCode/equals
+    }
+  }
+
+  private final CacheManager cacheManager;
+
+  // @Cacheable("invoices") // FP alternative implemented below
+  public Big20MB getInvoice(InvoiceByDate param) {
+    // 'extracted parameters to a class' - commit message by @vibe_coder
+    return cacheManager.getCache("invoices").get(param, () -> {
+      log.debug("Fetch invoice for {}", param);
+      return fetchData();
+    });
+  }
+
+  @Cacheable("inquiries")
+  public Big20MB inquiry(Inquiry param) {
+    inquiryRepo.save(param); // save all new inquiries
+    return fetchData(); // fetched from remote API
+  }
 }
 
+@Data
+@Entity
+class Inquiry {
+  @Id
+  @GeneratedValue
+  Long id;
+  private UUID contractId;
+  @Column(name = "y")
+  private int year;
+  @Column(name = "m")
+  private int month;
+}
+
+interface InquiryRepo extends JpaRepository<Inquiry, Long> {
+}
+
+
 /**
- * KEY POINTS
- * - [ideally] test that your caches work via automated tests (eg @SpringBootTest)
+ * ⭐️ KEY POINTS
+ * ☣️ @Cacheable can be too magic
+ * 👍 test caches work via automated tests
+ * 👍 set prod alarms on cache hit/miss ratio
+ * 👍 non primitive key => immutable + hashCode/equals (record💖)
  */

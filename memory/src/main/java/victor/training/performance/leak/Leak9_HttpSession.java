@@ -9,7 +9,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import victor.training.performance.leak.obj.BigObject1KB;
+import victor.training.performance.leak.obj.Big1KB;
 
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
@@ -25,7 +25,7 @@ import static java.util.stream.Collectors.joining;
 @RequiredArgsConstructor
 public class Leak9_HttpSession {
 	private final UserSession userSession;
-
+//Idea: auto-create sessions for anonymous accesses. Store shown prices in a map+ 30m exp
 	@GetMapping
 	public String usingSessionScope() {
 		if (userSession.getUserPreferences() == null) {
@@ -33,7 +33,7 @@ public class Leak9_HttpSession {
 		}
 
 		String settingsAsString = userSession.getUserPreferences().getSettings().stream()
-			.map(BigObject1KB::getLargeString)
+			.map(Big1KB::getLargeString)
 			.collect(joining("<br>"));
 
 		return "Subtle, hard to find before stress tests.<br>Try 4000 concurrent users with jMeter.<br> " +
@@ -52,7 +52,7 @@ public class Leak9_HttpSession {
 			userPreferences = (UserPreferences )session.getAttribute("lastSearchResults");
 		}
 		return userPreferences.getSettings().stream()
-			.map(BigObject1KB::getLargeString)
+			.map(Big1KB::getLargeString)
 			.collect(joining("<br>"));
 	}
 
@@ -63,11 +63,11 @@ public class Leak9_HttpSession {
 }
 
 class UserPreferences {
-	private List<BigObject1KB> settings = new ArrayList<>();
+	private List<Big1KB> settings = new ArrayList<>();
 	public UserPreferences() {
-		for (int i = 0; i < 100; i++) settings.add(new BigObject1KB());
+		for (int i = 0; i < 100; i++) settings.add(new Big1KB());
 	}
-	public List<BigObject1KB> getSettings() {
+	public List<Big1KB> getSettings() {
 		return settings;
 	}
 }

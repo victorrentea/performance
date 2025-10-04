@@ -14,12 +14,20 @@ import static victor.training.performance.util.PerformanceUtil.sleepMillis;
 @RestController
 @RequestMapping("leak17")
 public class Leak17_ThreadStarvation {
-  private final Semaphore semaphore = new Semaphore(199);
+  // happens if REST calls are handled with Platform Threads (not Virtual)
+  private final Semaphore semaphore = new Semaphore(2);
 
-  //   @Bulkhead // resilience4j
   @GetMapping // call it 500 times to saturate Tomcat's thread pool: 200 in action + 300 in queue
-  public String hotEndpoint() {
-    return slow(); // 10+ seconds
+  public String hotEndpoint() throws InterruptedException {
+    // Fix: acquire a semaphore permit (or use @Bulkhead in resilience4j)
+    semaphore.acquire();
+
+    try {
+      return slow(); // Takes time
+    } finally {
+    semaphore.release();
+
+    }
   }
 
   @GetMapping("/liveness")

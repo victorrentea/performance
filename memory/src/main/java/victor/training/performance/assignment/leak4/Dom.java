@@ -33,7 +33,7 @@ public class Dom {
       System.out.println("Loaded nodes: " + nodes.size());
       // How many instances of DeferredElementImpl (= a parsed XML node) do you expect to have in memory here?
 
-      System.out.println("Used heap: " + PerformanceUtil.getUsedHeap());
+      System.out.println("Used heap: " + PerformanceUtil.getUsedHeapPretty());
       if (PerformanceUtil.getUsedHeapBytes() > 20_000_000) {
          System.err.println("GOAL NOT MET. LEAK STILL PRESENT");
       }

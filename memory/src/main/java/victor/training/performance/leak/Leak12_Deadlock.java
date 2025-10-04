@@ -12,7 +12,7 @@ import static victor.training.performance.util.PerformanceUtil.sleepMillis;
 public class Leak12_Deadlock {
 	@GetMapping("/one")
 	public String one() throws Exception {
-		One.entry();
+		A.entry();
 		return """
         Refresh the page, then call <a href='two'>/two</a> within 3 seconds to produce the deadlock.<br>
         Effect: requests in both tabs hang.""";
@@ -20,7 +20,7 @@ public class Leak12_Deadlock {
 
 	@GetMapping("/two")
 	public String two() throws Exception {
-		Two.entry();
+		B.entry();
 		return """
         Refresh the page, then call <a href='one'>/one</a> within 3 seconds to produce the deadlock.<br>
         Effect: requests in both tabs hang.""";
@@ -31,35 +31,38 @@ public class Leak12_Deadlock {
 		return "call <a href='./one'>one</a> and <a href='./two'>two</a> within 3 secs..";
 	}
 
-	static class One {
+	static class A {
 		public static synchronized void entry() {
-			log("start One.entry()");
+			log("Entered A.entry()");
 			sleepMillis(3_000);
-			Two.internal();
-			log("start One.entry()");
+			B.internal();
+			log("Exiting A.entry()");
 		}
 
 		public static synchronized void internal() {
-			log("start One.internal()");
+			log("Entered A.internal()");
 			sleepMillis(3_000);
-			log("end One.internal()");
+			log("Exiting A.internal()");
 		}
-
 	}
-	static class Two {
+
+
+
+
+	static class B {
 		public static synchronized void entry() {
-			log("start Two.entry()");
+			log("Entered B.entry()");
 			sleepMillis(3_000);
-			One.internal();
-			log("start Two.entry()");
+			A.internal();
+			log("Exiting B.entry()");
 		}
+
 		public static synchronized void internal() {
-			log("start Two.internal()");
+			log("Entered B.internal()");
 			sleepMillis(3_000);
-			log("end Two.internal()");
+			log("Exiting B.internal()");
 		}
 	}
-
 }
 
 

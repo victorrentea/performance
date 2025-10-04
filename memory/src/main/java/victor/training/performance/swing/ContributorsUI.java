@@ -17,8 +17,8 @@ public class ContributorsUI extends JFrame {
    private final DefaultTableModel resultsModel = new DefaultTableModel(COLUMNS, 0);
    private final JTable results = new JTable(resultsModel);
    private final JScrollPane resultsScroll = new JScrollPane(results);
-   private final ImageIcon loadingIcon = new ImageIcon(ContributorsUI.class.getClassLoader().getResource("ajax-loader.gif"));
-   private final JLabel loadingStatus = new JLabel("Start new loading", loadingIcon, SwingConstants.CENTER);
+//   private final ImageIcon loadingIcon = new ImageIcon(ContributorsUI.class.getClassLoader().getResource("ajax-loader.gif"));
+//   private final JLabel loadingStatus = new JLabel("Start new loading", loadingIcon, SwingConstants.CENTER);
 
    {
       cancel.setEnabled(false);

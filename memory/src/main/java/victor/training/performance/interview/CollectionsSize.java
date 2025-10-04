@@ -2,10 +2,10 @@ package victor.training.performance.interview;
 
 import victor.training.performance.util.PerformanceUtil;
 
-import java.util.function.Supplier;
+import java.util.concurrent.Callable;
 
 public class CollectionsSize {
-  public static final int ONE_MILLION = 1_000_000;
+  public static final int N_ELEMENTS = 1_000_000;
 
   public static void main(String[] args) {
     // TODO order the following from lowest->highest memory consumption
@@ -31,12 +31,13 @@ public class CollectionsSize {
     // TODO extra experiment .clear the collections and see if memory is released
   }
 
-  public static void measureHeap(Supplier<Object> allocation) {
-    long heap0 = PerformanceUtil.getUsedHeapBytes();
-    Object x = allocation.get();
-    long heap1 = PerformanceUtil.getUsedHeapBytes();
-    System.out.println(PerformanceUtil.objectToString(x) + " [" + ONE_MILLION + " elements] " +
-                       " occupies: " + (heap1 - heap0) / 1024 / 1024 + " MB");
+  public static void measureHeap(Callable<Object> allocation) {
+    var allocationResult = PerformanceUtil.measureAllocation(allocation);
+    System.out.println(PerformanceUtil.objectToString(allocationResult.result()) +
+                       " [" + N_ELEMENTS + " elements] " +
+                       " occupies: " + allocationResult.deltaHeapBytes() / 1024 / 1024 + " MB");
   }
+
+
 
 }

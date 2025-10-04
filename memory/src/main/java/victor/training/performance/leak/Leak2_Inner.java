@@ -4,8 +4,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import victor.training.performance.leak.CalculatorFactory.Calculator;
-import victor.training.performance.leak.obj.BigObject20MB;
-import victor.training.performance.util.PerformanceUtil;
+import victor.training.performance.leak.obj.Big20MB;
 
 import java.util.HashMap;
 import java.util.List;
@@ -14,70 +13,66 @@ import java.util.function.Predicate;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import static victor.training.performance.util.PerformanceUtil.sleepMillis;
+
 @RestController
 @RequestMapping("leak2")
 public class Leak2_Inner {
-
   @GetMapping("inner")
   public String endpoint() {
-    Calculator calculator = new CalculatorFactory().createRightsCalculator();
-    bizLogicUsingCalculator(calculator);
-    return "Done";
+    Calculator calculator = new CalculatorFactory().create();
+    logic(calculator);
+    return "✔";
   }
 
-  private void bizLogicUsingCalculator(Calculator calculator) {
+  private void logic(Calculator calculator) {
     if (!calculator.calculate("launch")) {
       return;
     }
-    PerformanceUtil.sleepMillis(20_000); // long flow and/or heavy parallel load
+    sleepMillis(20_000); // the rest of the flow
   }
 
-  //<editor-fold desc="Entry points of more similar leaks">
+  //<editor-fold desc="Irrelevant: entry points of related leaks">
   @GetMapping("anon")
   public String anon() {
     Stream<String> supplier = new CalculatorFactory().anonymousVsLambdas(List.of("a"));
-    PerformanceUtil.sleepMillis(20_000); // some long workflow
+    sleepMillis(20_000); // some long workflow
     return supplier.collect(Collectors.toList()).toString();
   }
 
   @GetMapping("map")
   public Map<String, Integer> map() {
     Map<String, Integer> map = new CalculatorFactory().mapInit();
-    PerformanceUtil.sleepMillis(20_000); // some long workflow
+    sleepMillis(20_000); // some long workflow
     return map;
   }
   //</editor-fold>
-
-
 }
-
 
 class CalculatorFactory {
   public class Calculator {
     public boolean calculate(String data) {
       System.out.println("Simple Code Code");
-      // 🛑 what connects the Calculator instance with the 'bigMac' object?
+      // TODO what connects this Calculator instance with bigMac🍔?
       return true;
     }
   }
 
-  private BigObject20MB bigMac = new BigObject20MB(); // 🍔
+  private Big20MB bigMac = new Big20MB(); // 🍔
 
-  public Calculator createRightsCalculator() {
+  public Calculator create() {
     return new Calculator();
   }
-
-  // similar leaks:
 
   //<editor-fold desc="Lambdas vs Anonymous implementation">
   public Stream<String> anonymousVsLambdas(List<String> input) {
     return input.stream()
-            .filter(new Predicate<String>() {
-              @Override
-              public boolean test(String s) {
-                return !s.isBlank();
-              }
-            });
+        .filter(new Predicate<String>() {
+          @Override
+          public boolean test(String s) {
+            return !s.isBlank();
+          }
+        });
 //            TODO experiment ->, this::
   }
   //</editor-fold>
@@ -93,8 +88,8 @@ class CalculatorFactory {
 }
 
 /**
- * KEY POINTS
- * - Anonymous subclasses or implementations keep a reference to the parent instance: use `->` and `Map.of`
- * - Avoid nested classes, or make them 'static'
- * - Avoid keeping heavy state
+ * ⭐️ KEY POINTS
+ * - 👍 Instead of inner classes, prefer nested (static) or in a separate file
+ * - 😱 new Class(){} and new Interface(){} reference the instance of the containing class
+ * - 👍 Stateless Logic: Don't keep request state in fields of classes holding logic
  */

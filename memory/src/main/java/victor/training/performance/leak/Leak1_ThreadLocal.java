@@ -1,47 +1,48 @@
 package victor.training.performance.leak;
 
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import victor.training.performance.leak.obj.BigObject20MB;
+import victor.training.performance.leak.obj.Big20MB;
 
 @RestController
-@RequestMapping("leak1")
 public class Leak1_ThreadLocal {
-   private static final ThreadLocal<BigObject20MB> threadLocal = new ThreadLocal<>();
+  private static final ThreadLocal<Big20MB> threadLocal = new ThreadLocal<>();
 
-   @GetMapping
-   public String endpoint() {
-      BigObject20MB bigObject = new BigObject20MB().setSomeString("john.doe"); // retrived from a network call
+  @GetMapping("leak1")
+  public String controllerMethod() {
+    String currentUser = "john.doe"; // extracted from request headers (pretend)
+    // TODO why thread locals?
+    Big20MB requestMetadata = new Big20MB();
+    requestMetadata.setCurrentUser(currentUser);
+    threadLocal.set(requestMetadata);
 
-      threadLocal.set(bigObject);
+    serviceMethod();
 
-      method1();
+    return "Magic can hurt you";
+  }
 
-      // 🛑 finally { ThreadLocal#remove()
+  private void serviceMethod() {
+    repoMethod();
+  }
 
-      return "Magic can do harm.";
-   }
-
-   private void method1() { // no username in the signature
-      method2();
-   }
-
-   private void method2() {
-      BigObject20MB bigObject = threadLocal.get();
-      String currentUsernameOnThisThread = bigObject.someString;
-      System.out.println("Business logic using " + currentUsernameOnThisThread);
-      // TODO what if throw new RuntimeException(); ?
-   }
+  private void repoMethod() {
+    var requestMetadata = threadLocal.get();
+    String username = requestMetadata.getCurrentUser();
+    System.out.println("UPDATE .. SET .. MODIFIED_BY=" + username);
+  }
 }
 
-/**
- * KEY POINTS:
- * !! Avoid creating ThreadLocal variables yourself - use the safe ones managed by framework:
- * - SecurityContextHolder, @Scope("request" or "session")
- * - @Transactional, Persistence Context, JDBC Connection
- * - Logback MDC
- * If you insist on using ThreadLocal, after the first .set(), always do try { } finally { .remove(); }
+/** ⭐️ KEY POINTS
+ * 🧠 ThreadLocal is used to propagate metadata:
+ *   - Security Principal & Rights -> SecurityContextHolder
+ *   - Observability Log Metadata (MDC) / OTEL Baggage / TraceID
+ *   - Transaction + JDBC Connection + Hibernate Session -> @Transactional
+ * ☢️ ThreadLocal are dangerous:
+ *   - Can leak to next task of a worker thread in a thread pool
+ *   - Can make Virtual Threads heavy again (later on that)
+ *   - Might not propagate from submitter thread to worker thread
+ * 👍 Use framework-managed ThreadLocals over creating your own
+ * 👍 On your own ThreadLocal tl, after tl.set(..); do try { .. } finally{tl.remove();}
  */
 
 
