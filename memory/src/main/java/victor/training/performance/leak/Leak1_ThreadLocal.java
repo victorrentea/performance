@@ -16,7 +16,7 @@ public class Leak1_ThreadLocal {
   @GetMapping("leak1")
   public String controllerMethod() {
     String currentUsername = "john.doe"; // extracted from request headers/http session/JWT
-    threadLocal.set(new RequestContext(currentUsername,new Big20MB()));
+    threadLocal.set(new RequestContext(currentUsername, new Big20MB()));
 
     service();
 
