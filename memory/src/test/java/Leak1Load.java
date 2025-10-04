@@ -17,5 +17,4 @@ public class Leak1Load extends Simulation {
         .protocols(http.baseUrl("http://localhost:8080"))
         .assertions(global().successfulRequests().percent().gt(99.0));
   }
-
 }

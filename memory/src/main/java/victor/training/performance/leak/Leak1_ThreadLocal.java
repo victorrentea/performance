@@ -10,17 +10,13 @@ import java.time.LocalDateTime;
 public class Leak1_ThreadLocal {
   private static final ThreadLocal<RequestContext> threadLocal = new ThreadLocal<>();
 
-  record RequestContext(
-      String currentUser,
-      Big20MB big // demo
-  ) {
+  record RequestContext(String currentUser, Big20MB big) {
   }
 
   @GetMapping("leak1")
   public String controllerMethod() {
     String currentUsername = "john.doe"; // extracted from request headers/http session/JWT
-    RequestContext requestContext = new RequestContext(currentUsername, new Big20MB());
-    threadLocal.set(requestContext);
+    threadLocal.set(new RequestContext(currentUsername,new Big20MB()));
 
     service();
 
@@ -32,9 +28,8 @@ public class Leak1_ThreadLocal {
   }
 
   private void repo() {
-    var requestContext = threadLocal.get();
-    String currentUsername = requestContext.currentUser();
-    System.out.println("UPDATE .. SET .. MODIFIED_BY=" + currentUsername);
+    String currentUsername = threadLocal.get().currentUser();
+    System.out.println("UPDATE ... MODIFIED_BY=" + currentUsername);
   }
 }
 

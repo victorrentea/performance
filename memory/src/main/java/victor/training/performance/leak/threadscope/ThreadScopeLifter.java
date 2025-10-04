@@ -10,9 +10,9 @@ import org.springframework.stereotype.Component;
 @Slf4j
 @Component
 public class ThreadScopeLifter implements TaskDecorator {
-	private final MyRequestContext requestContext;
+	private final RequestScoped requestContext;
 
-	public ThreadScopeLifter(MyRequestContext requestContext) {
+	public ThreadScopeLifter(RequestScoped requestContext) {
 		this.requestContext = requestContext;
 	}
 

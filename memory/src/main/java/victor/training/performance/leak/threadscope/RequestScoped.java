@@ -8,7 +8,7 @@ import org.springframework.stereotype.Service;
 @Data
 @Service
 @Scope(scopeName = "thread", proxyMode = ScopedProxyMode.TARGET_CLASS)
-public class MyRequestContext {
+public class RequestScoped {
     private String currentUser;
     private String requestId;
 }
