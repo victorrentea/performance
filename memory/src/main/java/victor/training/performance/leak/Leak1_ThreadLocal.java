@@ -15,7 +15,7 @@ public class Leak1_ThreadLocal {
 
   @GetMapping("leak1")
   public String controllerMethod() {
-    String currentUsername = "john.doe"; // extracted from request headers/http session/JWT
+    String currentUsername = "john.doe"; // from request header/JWT/http session
     threadLocal.set(new RequestContext(currentUsername, new Big20MB()));
 
     service();
@@ -34,16 +34,16 @@ public class Leak1_ThreadLocal {
 }
 
 /** ⭐️ KEY POINTS
- * 🧠 ThreadLocal (TL) is used in BE to propagate invisible 'metadata':
- *   - Security Principal & Rights -> SecurityContextHolder
- *   - Observability: Log Metadata (MDC) / OTEL Baggage / TraceID
- *   - Transaction + JDBC Connection + Hibernate Session by @Transactional
- * 👍 Keep it small ⚠️
- * ☢️ TL might remain attached to worker thread in a pool ~> Leak
- * ☢️ TL might leak to the next task of worker
- * ☢️ TL might not propagate from submitter thread to worker thread
- * 👍 Use framework-managed ThreadLocal data over creating your own: MDC, Baggage, SecurityContextHolder
- * 👍 On your own ThreadLocal tl: tl.set(..); then try { ... } finally{tl.remove();}
+ * 🧠 ThreadLocal is used in BE to propagate invisible 'metadata':
+ *   - Security Principal ± Rights
+ *   - Observability: Logback MDC / Trace ID / OTEL Baggage
+ *   - @Transactional/JDBC Connection ± Hibernate Session
+ * 👍 Keep it small
+ * ☢️ TL might remain attached to idle worker thread in a pool ~> Memory Leak
+ * ☢️ TL might leak to the next task of the same worker
+ * ☢️ TL might not propagate from submitter thread to worker thread(s)
+ * 👍 Prefer framework-managed ThreadLocal data over creating your own: MDC, Baggage, SecurityContextHolder
+ * 👍 On your own ThreadLocal: #set(..); try { <work> } finally {#remove();}
  */
 
 
