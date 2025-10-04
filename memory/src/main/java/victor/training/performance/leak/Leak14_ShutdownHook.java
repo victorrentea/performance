@@ -20,7 +20,7 @@ public class Leak14_ShutdownHook {
 }
 
 class OldLib { // in a .jar you cannot change
-  // lib was designed in early 2000s to be used in a desktop/console/job app
+  // lib was designed in the early 2000s to be used in a desktop/console/job app
   public static void stuff() {
     Big20MB big = new Big20MB();
     System.out.println("Created " + big);

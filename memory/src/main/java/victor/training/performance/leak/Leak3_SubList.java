@@ -14,7 +14,7 @@ import java.util.List;
 @RestController
 @RequestMapping("leak3")
 public class Leak3_SubList {
-  private List<Access> lastTenAccesses = new ArrayList<>();
+  private List<Access> lastTen = new ArrayList<>();
 
   record Access(String ip, LocalDateTime timestamp) {
   }
@@ -23,25 +23,22 @@ public class Leak3_SubList {
   public synchronized String endpoint(HttpServletRequest request) {
     Access access = new Access(request.getRemoteAddr() + ":" + request.getRemotePort(), LocalDateTime.now());
 
-    lastTenAccesses.add(access);
-    if (lastTenAccesses.size() > 10) {
-      lastTenAccesses = lastTenAccesses.subList(1, lastTenAccesses.size()); // skip first
+    lastTen.add(access);
+    if (lastTen.size() > 10) {
+      lastTen = lastTen.subList(lastTen.size() - 10, lastTen.size()); // remove first
     }
-    return "The current window size is " + lastTenAccesses.size();
+    return "lastTen.size = " + lastTen.size();
   }
+  // TODO
+  //  - give this endpoint some heat🔥 using Leak3Load.java
+  //  - IntelliJ > Memory Snapshot > Biggest Object >
+  //    1st > right-click: Open in new tab > Dominator Tree tab
 
-  @GetMapping("many-calls")
-  public String mass(HttpServletRequest request) {
-    for (int i = 0; i < 10_000; i++) {
-      endpoint(request); // close enough for our experiment
-    }
-    return "The current window size is " + lastTenAccesses.size() + ": " + lastTenAccesses;
-  }
 }
 
 /**
  * ⭐️ KEY POINTS
- * - 🧠 Retained Heap = "How much does this object keep alive?"
+ * - 🧠 Retained Heap = "How much heap does this object keep alive?"
  * - 😱 .subList() returns a view referencing the original list -> add/remove to a LinkedList/Queue
  * - 👍 Read the apidoc
  */

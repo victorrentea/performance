@@ -13,16 +13,18 @@ public class Leak0_OOME_OnPurpose {
     List<int[]> boom = new ArrayList<>();
     while (true) boom.add(new int[1000_000]);
 
-    // TODO
-    //  - add JVM arg: -XX:+HeapDumpOnOutOfMemoryError
-    //  - add JVM arg: -XX:HeapDumpPath=/path/to/folder
-    //  ± add JVM arg: -XX:+ExitOnOutOfMemoryError
-    //  - Open in browser http://localhost:8080/leak0
-    //  - Find the .hprof file in /path/to/folder
-    //  - Open it in IntelliJ, VisualVM, jProfiler or MemoryAnalyzer
-    //  - Experiment: turn variable into field
+    // TODO + in your prod
+    //  + JVM arg: -XX:+HeapDumpOnOutOfMemoryError
+    //  + JVM arg: -XX:HeapDumpPath=/path/to/folder
+    //  ± JVM arg: -XX:+ExitOnOutOfMemoryError
+    //  > Open in browser http://localhost:8080/leak0
+    //  > Find the .hprof file in /path/to/folder
+    //  > Load it in IntelliJ, VisualVM, jProfiler or MemoryAnalyzer(MAT)
+    //  > Experiment: turn variable into field - what changes
   }
 }
 /** ⭐️ KEY POINTS
- * 👍 Check that OOME in Prod kills instance + you can get the heapdump.hprof
+ * 👍 OOME should kill the process
+ * 👍 OOME should heap dump
+ * ⚠️ Check you can get that heapdump.hprof from production
  */

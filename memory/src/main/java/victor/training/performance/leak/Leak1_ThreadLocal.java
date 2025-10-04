@@ -6,43 +6,47 @@ import victor.training.performance.leak.obj.Big20MB;
 
 @RestController
 public class Leak1_ThreadLocal {
-  private static final ThreadLocal<Big20MB> threadLocal = new ThreadLocal<>();
+  private static final ThreadLocal<RequestContext> threadLocal = new ThreadLocal<>();
+
+  record RequestContext(
+      String currentUser,
+      Big20MB big
+  ) {
+  }
 
   @GetMapping("leak1")
   public String controllerMethod() {
-    String currentUser = "john.doe"; // extracted from request headers (pretend)
-    // TODO why thread locals?
-    Big20MB requestMetadata = new Big20MB();
-    requestMetadata.setCurrentUser(currentUser);
-    threadLocal.set(requestMetadata);
+    String currentUser = "john.doe"; // extracted from request headers/http session/JWT
+    RequestContext requestContext = new RequestContext(currentUser, new Big20MB());
+    threadLocal.set(requestContext);
 
-    serviceMethod();
+    service();
 
-    return "Magic can hurt you";
+    return "Magic can hurt";
   }
 
-  private void serviceMethod() {
-    repoMethod();
+  private void service() {
+    repo();
   }
 
-  private void repoMethod() {
-    var requestMetadata = threadLocal.get();
-    String username = requestMetadata.getCurrentUser();
+  private void repo() {
+    var requestContext = threadLocal.get();
+    String username = requestContext.currentUser();
     System.out.println("UPDATE .. SET .. MODIFIED_BY=" + username);
   }
 }
 
 /** ⭐️ KEY POINTS
- * 🧠 ThreadLocal is used to propagate metadata:
+ * 🧠 ThreadLocal (TL) is used in BE to propagate invisible 'metadata':
  *   - Security Principal & Rights -> SecurityContextHolder
- *   - Observability Log Metadata (MDC) / OTEL Baggage / TraceID
- *   - Transaction + JDBC Connection + Hibernate Session -> @Transactional
- * ☢️ ThreadLocal are dangerous:
- *   - Can leak to next task of a worker thread in a thread pool
- *   - Can make Virtual Threads heavy again (later on that)
- *   - Might not propagate from submitter thread to worker thread
- * 👍 Use framework-managed ThreadLocals over creating your own
- * 👍 On your own ThreadLocal tl, after tl.set(..); do try { .. } finally{tl.remove();}
+ *   - Observability: Log Metadata (MDC) / OTEL Baggage / TraceID
+ *   - Transaction + JDBC Connection + Hibernate Session by @Transactional
+ * 👍 Keep it small ⚠️
+ * ☢️ TL might remain attached to worker thread in a pool ~> Leak
+ * ☢️ TL might leak to the next task of worker
+ * ☢️ TL might not propagate from submitter thread to worker thread
+ * 👍 Use framework-managed ThreadLocal data over creating your own: MDC, Baggage, SecurityContextHolder
+ * 👍 On your own ThreadLocal tl: tl.set(..); then try { ... } finally{tl.remove();}
  */
 
 

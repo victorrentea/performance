@@ -21,15 +21,12 @@ public class Leak2_Inner {
   @GetMapping("inner")
   public String endpoint() {
     Calculator calculator = new CalculatorFactory().create();
-    logic(calculator);
+    work(calculator);
     return "✔";
   }
 
-  private void logic(Calculator calculator) {
-    if (!calculator.calculate("launch")) {
-      return;
-    }
-    sleepMillis(20_000); // the rest of the flow
+  private void work(Calculator calculator) {
+    sleepMillis(20_000);
   }
 
   //<editor-fold desc="Irrelevant: entry points of related leaks">
@@ -58,7 +55,7 @@ class CalculatorFactory {
     }
   }
 
-  private Big20MB bigMac = new Big20MB(); // 🍔
+  private final Big20MB bigMac = new Big20MB(); // 🍔
 
   public Calculator create() {
     return new Calculator();

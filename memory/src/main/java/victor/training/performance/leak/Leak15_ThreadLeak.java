@@ -12,20 +12,22 @@ import java.util.concurrent.Executors;
 @Slf4j
 @RestController
 public class Leak15_ThreadLeak {
-   @GetMapping("leak15")
-   public String endpoint() throws ExecutionException, InterruptedException {
-      ExecutorService pool = Executors.newFixedThreadPool(2);
-      var f1 = pool.submit(() -> apiCall(1));
-      var f2 = pool.submit(() -> apiCall(2));
-      return f1.get() + f2.get();
-   }
+  @GetMapping("leak15")
+  public String endpoint() throws ExecutionException, InterruptedException {
+    ExecutorService pool = Executors.newFixedThreadPool(2);
+    var f1 = pool.submit(() -> apiCall(1));
+    var f2 = pool.submit(() -> apiCall(2));
+    return f1.get() + f2.get();
+  }
 
-   private static String apiCall(int i) {
-      log.info("Call " + i);
-      return "Data " +i;
-   }
+  private static String apiCall(int i) {
+    log.info("Call " + i);
+    return "Data " + i;
+  }
 }
 
-// TODO avoid creating new Thread Pools per request
-// 1. thread pool not #shutdown()
-// 2. Better: autowire and use a Spring-managed ThreadPoolTaskExecutor
+/** ⭐️ KEY POINTS
+ * ☣️ Fixed thread pool not #shutdown() keeps worker threads alive forever
+ * 👍 try-with-resource your thread pools
+ * 👍👍 Better: inject and use a singleton Spring-managed ThreadPoolTaskExecutor
+ */

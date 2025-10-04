@@ -26,54 +26,45 @@ import static victor.training.performance.util.PerformanceUtil.sleepMillis;
 @Slf4j
 @RestController
 @RequiredArgsConstructor
-public class Leak5_Files {
+public class Leak6_Files {
   private final FileProcessor processor;
 
   private static final AtomicInteger counter = new AtomicInteger(0);
 
-  @PostMapping("leak5/upload")
+  @PostMapping("leak6/upload")
   public int upload(@RequestParam MultipartFile file) throws IOException {
     byte[] fileContents = file.getBytes();
     log.info("Uploaded bytes: " + fileContents.length);
     // spring.servlet.multipart.max-file-size=30MB
     // spring.servlet.multipart.max-request-size=30MB
-    return launch(new String(fileContents));
+    return processAsync(new String(fileContents));
   }
 
-  // For some heat, see Leak5Load
-  @GetMapping("leak5/download")
+
+  @GetMapping("leak6/download") // 🔥 Leak6Load.java
   public int download() {
     String fileContents = RestClient.create()
-        .get().uri("http://localhost:8080/leak5/file?mb=10")
+        .get().uri("http://localhost:8080/leak6/file?mb=10")
         .retrieve()
         .body(String.class);
     log.info("Downloaded bytes: " + fileContents.getBytes().length);
-    return launch(fileContents);
+    return processAsync(fileContents);
   }
 
-  private int launch(String fileContents) {
+  private int processAsync(String fileContents) {
     int taskId = counter.incrementAndGet();
-    // Avoided blocking caller http thread for the duration of the processing
     CompletableFuture.runAsync(() -> processor.process(fileContents, taskId));
-    // 1) completableFuture -> unbounded queue: kill with gatling
-    //   --- how to metric FJP ?
-    //   --- how to log all exceptions?
-    // 2) bounded queue: ThreadPoolTaskExecutor / @Async
     log.info("Task submitted: " + taskId);
     return taskId;
   }
 }
 
-
-
-
 @Slf4j
 @Service
 class FileProcessor {
-  //  @Async
   public void process(String contents, int taskId) {
     log.debug("Task {} started ...", taskId);
-    //if (true) throw new RuntimeException("What if BUG");
+    //if (true) throw new RuntimeException("Invisible Bug");
     sleepMillis(10_000);
     long newLinesCount = contents.chars().filter(c -> c == 10).count();
     log.debug("Task {} completed: lines = {}", taskId, newLinesCount);
@@ -82,8 +73,10 @@ class FileProcessor {
 
 /**
  * ⭐️ KEY POINTS
+ * ☣️ CompletableFuture.xyzAsync(->) uses an unbounded queue
  * 👍 Offload large objects from memory to (eg) disk/S3🪣
  * 👍 Use bounded queues for thread pools
+ * 👍 ForkJoinPool.commonPool() can me monitored (see below)
  * 👍 Pass a Spring executor to any CompletableFuture.*Async(,executor)
  */
 
@@ -91,7 +84,7 @@ class FileProcessor {
 // === === === === === === === Support code  === === === === === === ===
 
 @Configuration
-class Leak5Config {
+class Leak6Config {
   @SuppressWarnings("resource")
   @Bean
   MeterBinder exposeMetrics_ofCommonForkJoinPool() {
@@ -117,8 +110,8 @@ class Leak5Config {
 
 
 @RestController
-@RequestMapping("leak5")
-class Leak5_Tester {
+@RequestMapping("leak6")
+class Leak6_Tester {
   private final File file = new File("file-to-upload.txt");
 
   @PostConstruct
@@ -136,15 +129,15 @@ class Leak5_Tester {
         <h3>Upload a file to process</h3>
         <ol>
         <li>Paste in terminal<br> 
-        curl -F "file=@%s" http://localhost:8080/leak5/upload
+        curl -F "file=@%s" http://localhost:8080/leak6/upload
         <li>
-          <form action='/leak5/upload' method='post' enctype='multipart/form-data' style='display:inline'>
+          <form action='/leak6/upload' method='post' enctype='multipart/form-data' style='display:inline'>
           Or upload your own file:<input type='file' name='file' /> <input type='submit' value='Upload' />
           </form>
         </ol>
         
         <h3>Download a file on server to process</h3>
-        <a href="/leak5/download">Click here</a>
+        <a href="/leak6/download">Click here</a>
         `<hr>
         Do this 20 times within 10 seconds, then study the heap dump
         """.formatted(file.getAbsolutePath());

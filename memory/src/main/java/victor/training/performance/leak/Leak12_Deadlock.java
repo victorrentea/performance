@@ -13,22 +13,13 @@ public class Leak12_Deadlock {
 	@GetMapping("/one")
 	public String one() throws Exception {
 		A.entry();
-		return """
-        Refresh the page, then call <a href='two'>/two</a> within 3 seconds to produce the deadlock.<br>
-        Effect: requests in both tabs hang.""";
+		return printHowtoDeadlockMessage("two");
 	}
 
 	@GetMapping("/two")
 	public String two() throws Exception {
 		B.entry();
-		return """
-        Refresh the page, then call <a href='one'>/one</a> within 3 seconds to produce the deadlock.<br>
-        Effect: requests in both tabs hang.""";
-	}
-
-	@GetMapping
-	public String home() {
-		return "call <a href='./one'>one</a> and <a href='./two'>two</a> within 3 secs..";
+		return printHowtoDeadlockMessage("one");
 	}
 
 	static class A {
@@ -47,8 +38,6 @@ public class Leak12_Deadlock {
 	}
 
 
-
-
 	static class B {
 		public static synchronized void entry() {
 			log("Entered B.entry()");
@@ -63,6 +52,20 @@ public class Leak12_Deadlock {
 			log("Exiting B.internal()");
 		}
 	}
+
+// === === === === === === === Support code  === === === === === === ===
+
+  @GetMapping
+  public String home() {
+    return "call <a href='./one'>one</a> and <a href='./two'>two</a> within 3 secs..";
+  }
+
+  private String printHowtoDeadlockMessage(String other) {
+    return """
+        Refresh the page, then <a href='%s' target='_blank'>call /%s</a> 
+        within 3 seconds to produce the deadlock.<br>
+        Expected Effect: both tabs hang (never finish loading).""".formatted(other,other);
+  }
 }
 
 
@@ -71,7 +74,7 @@ public class Leak12_Deadlock {
 
 /**
  * KEY POINTS
- * - avoid playing with synchronized
- * - synchronized methods calling other synchronized methods - yuck
- * - Bad Design: bidirectional coupling: A->B->A !
+ * ☣️ avoid 'synchronized' to guard mutable data. Prefer Map-reduce
+ * ☣️ synchronized methods calling other synchronized methods - yuck
+ * ☣️ Bad Design: bidirectional coupling: A->B->A !
  */

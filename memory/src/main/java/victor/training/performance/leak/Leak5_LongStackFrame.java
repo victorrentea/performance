@@ -9,17 +9,16 @@ import static victor.training.performance.util.PerformanceUtil.sleepMillis;
 
 @Slf4j
 @RestController
-public class Leak4_LongStackFrame {
-	@GetMapping("leak4")
+public class Leak5_LongStackFrame {
+	@GetMapping("leak5")
 	public String endpoint() {
 		Big100MB bigDto = apiCall();
 		String useful = bigDto.getInterestingPart();
 
-    log.info("Processing only using a tiny {} part", useful);
+    log.info("Work only using a tiny {} part", useful);
 		sleepMillis(10_000);
-    // TODO keep less memory occupied during this flow
 
-		return "done";
+		return "✔️";
 	}
 
 	private Big100MB apiCall() {

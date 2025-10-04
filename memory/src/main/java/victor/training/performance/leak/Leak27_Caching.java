@@ -1,13 +1,9 @@
 package victor.training.performance.leak;
 
-import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
-import lombok.Data;
-import lombok.Getter;
-import lombok.RequiredArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.cache.CacheManager;
 import org.springframework.cache.annotation.Cacheable;
@@ -25,9 +21,9 @@ import java.time.format.DateTimeFormatter;
 import java.util.UUID;
 
 @RestController
-@RequestMapping("leak7")
+@RequestMapping("leak27")
 @RequiredArgsConstructor
-public class Leak7_Caching {
+public class Leak27_Caching {
   private final CacheService cacheService;
 
   @GetMapping
@@ -51,10 +47,9 @@ public class Leak7_Caching {
 
   @GetMapping("mutableKey")
   public String mutable() {
-    Big20MB data = cacheService.inquiry(new Inquiry().setYear(2025).setMonth(10));
+    Big20MB data = cacheService.inquiry(new Inquiry().setYearValue(2025).setMonthValue(10));
     return "Invoice = " + data + ", " + PerformanceUtil.getUsedHeapPretty();
   }
-  // TODO caffeine
 }
 
 @Service
@@ -97,19 +92,19 @@ class CacheService {
 
   private final CacheManager cacheManager;
 
-  // @Cacheable("invoices") // FP alternative implemented below
+  @Cacheable("invoices")
   public Big20MB getInvoice(InvoiceByDate param) {
     // 'extracted parameters to a class' - commit message by @vibe_coder
-    return cacheManager.getCache("invoices").get(param, () -> {
-      log.debug("Fetch invoice for {}", param);
-      return fetchData();
-    });
+    log.debug("Fetch invoice for {}", param);
+    return fetchData();
   }
 
-  @Cacheable("inquiries")
   public Big20MB inquiry(Inquiry param) {
-    inquiryRepo.save(param); // save all new inquiries
-    return fetchData(); // fetched from remote API
+    return cacheManager.getCache("inquiries")
+        .get(param, () -> { // instead of @Cacheable("inquiries")
+          inquiryRepo.save(param);
+          return fetchData();
+        });
   }
 }
 
@@ -119,11 +114,9 @@ class Inquiry {
   @Id
   @GeneratedValue
   Long id;
-  private UUID contractId;
-  @Column(name = "y")
-  private int year;
-  @Column(name = "m")
-  private int month;
+  UUID contractId;
+  int yearValue;
+  int monthValue;
 }
 
 interface InquiryRepo extends JpaRepository<Inquiry, Long> {
@@ -133,7 +126,7 @@ interface InquiryRepo extends JpaRepository<Inquiry, Long> {
 /**
  * ⭐️ KEY POINTS
  * ☣️ @Cacheable can be too magic
- * 👍 test caches work via automated tests
- * 👍 set prod alarms on cache hit/miss ratio
- * 👍 non primitive key => immutable + hashCode/equals (record💖)
+ * 👍 write automated @Tests for cache use
+ * 👍 monitor+alarm on prod cache hit/miss ratio
+ * 👍 non-primitive key should be immutable + hashCode/equals (record💖)
  */

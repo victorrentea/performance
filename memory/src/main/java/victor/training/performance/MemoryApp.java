@@ -7,11 +7,13 @@ import org.springframework.boot.context.event.ApplicationReadyEvent;
 import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.context.event.EventListener;
 import org.springframework.scheduling.annotation.EnableAsync;
+import org.springframework.scheduling.annotation.EnableScheduling;
 
 @SuppressWarnings({"NullableProblems"})
 @Slf4j
 @EnableAsync
 @EnableCaching
+@EnableScheduling
 @SpringBootApplication
 public class MemoryApp {
   public static void main(String[] args) {
@@ -20,6 +22,6 @@ public class MemoryApp {
 
   @EventListener
   public void onStart(ApplicationReadyEvent event) {
-    log.info("🌟🌟🌟🌟🌟🌟 MemoryApp at http://localhost:8080 PID:{} 🌟🌟🌟🌟🌟🌟", ProcessHandle.current().pid());
+    log.info("🌟🌟🌟🌟🌟🌟 MemoryApp at http://localhost:8080 pid {} 🌟🌟🌟🌟🌟🌟", ProcessHandle.current().pid());
   }
 }

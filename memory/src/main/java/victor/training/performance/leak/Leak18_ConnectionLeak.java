@@ -23,13 +23,14 @@ public class Leak18_ConnectionLeak {
   ) {}
 
   @GetMapping
-  public void endpoint(Flight flight) throws SQLException {
+  public String endpoint(Flight flight) throws SQLException {
     var connection = dataSource.getConnection();
     log.info("Start work on ✈️{}->{}",
         flight.origin.toUpperCase(),
         flight.destination.toUpperCase());
     // real work
     connection.close();
+    return "✔️";
   }
   //TODO redis/mongo  conneciton leak ?
 }

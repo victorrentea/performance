@@ -29,24 +29,22 @@ import static victor.training.performance.util.PerformanceUtil.sleepMillis;
 @Slf4j
 @RequiredArgsConstructor
 @RestController
-@RequestMapping("leak10")
 public class Leak10_Hibernate {
   private final BigEntityRepo repo;
   private final EntityManager entityManager;
 
-  @GetMapping("export")
+  @GetMapping("leak10/export")
   @Transactional
   public void export() throws IOException {
-    log.debug("Exporting 500MB from DB to a file...");
-
+    log.debug("Start export from DB to a file...");
     try (PrintWriter writer = new PrintWriter("big-entity.txt")) {
       repo.streamAll() // iterates rows w/o loading all ≈ while(resultSet.next()) {👴🏻
           .map(BigEntity::getDescription)
           .forEach(writer::write);
     }
 
-    log.debug("Export completed. Pause 1 minute to allow you to get a heapdump...");
-    sleepMillis(60 * 1000);
+    log.debug("Export completed");
+    sleepMillis(60 * 1000); // take a heap dump
   }
 }
 
@@ -78,7 +76,7 @@ class Leak10_Support {
 
   @GetMapping("persist")
   public String persist() {
-    fastInserter.insert(500);
+    fastInserter.insert(600);
     return "Inserted 500MB of data. Now <a href=\"/leak10/export\">export</a> the file 'big-entity.txt' and check the logs";
   }
 }

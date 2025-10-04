@@ -17,10 +17,6 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
-import static java.util.concurrent.CompletableFuture.delayedExecutor;
-import static java.util.concurrent.CompletableFuture.runAsync;
-import static java.util.concurrent.TimeUnit.SECONDS;
-
 public class GatlingEngine {
   public static void main(String[] args) {
     String[] gatlingArgs = new String[] {
@@ -32,10 +28,6 @@ public class GatlingEngine {
   public static void startClass(Class<?> clazz) {
     waitForApp();
 
-//    clearGlowrootData();
-    // clear JFR after Gatling starts to give time to JVM to warmup
-    runAsync(GatlingEngine::clearGlowrootData, delayedExecutor(3, SECONDS));
-
     String[] gatlingArgs = new String[] {
         "-s", clazz.getCanonicalName(),
         "-rf", resultsDirectory().toString()
@@ -44,9 +36,6 @@ public class GatlingEngine {
     if (code != 0) {
       System.err.println("❌❌❌ Some Requests were in ERROR (exit code=" + code + ") ❌❌❌");
     }
-
-    System.out.println("You can access Glowroot at http://localhost:4000");
-    System.out.println("Flamegraph🔥🔥🔥 at http://localhost:4000/transaction/thread-flame-graph?transaction-type=Web 🔥🔥🔥");
   }
 
   private static int runGatlingInFork(String[] gatlingArgs) {

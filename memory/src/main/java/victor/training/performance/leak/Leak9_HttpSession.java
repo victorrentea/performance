@@ -1,23 +1,23 @@
 package victor.training.performance.leak;
 
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpSession;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Scope;
-import org.springframework.context.annotation.ScopedProxyMode;
 import org.springframework.stereotype.Component;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import victor.training.performance.leak.obj.Big1KB;
 
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpSession;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
 import static java.util.stream.Collectors.joining;
+import static org.springframework.context.annotation.ScopedProxyMode.TARGET_CLASS;
 
 @Slf4j
 @RestController
@@ -25,7 +25,8 @@ import static java.util.stream.Collectors.joining;
 @RequiredArgsConstructor
 public class Leak9_HttpSession {
 	private final UserSession userSession;
-//Idea: auto-create sessions for anonymous accesses. Store shown prices in a map+ 30m exp
+
+  // Auto-create sessions for anonymous accesses? Eg: store display prices in a map+ for 30 minutes
 	@GetMapping
 	public String usingSessionScope() {
 		if (userSession.getUserPreferences() == null) {
@@ -74,7 +75,7 @@ class UserPreferences {
 
 @Data
 @Component
-@Scope(scopeName = "session", proxyMode = ScopedProxyMode.TARGET_CLASS)
+@Scope(scopeName = "session", proxyMode = TARGET_CLASS)
 class UserSession implements Serializable {
 	private UserPreferences userPreferences;
 }
