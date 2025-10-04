@@ -10,10 +10,10 @@ import java.util.concurrent.CompletableFuture;
 
 @Slf4j
 @RestController
-public class Leak19_OffHeap {
+public class Leak16_OffHeap {
   public static final int MB100 = 100 * 1024 * 1024;
 
-  @GetMapping("leak19")
+  @GetMapping("leak16")
   public String offHeap() {
     CompletableFuture.runAsync(() -> {
       log.info("start");

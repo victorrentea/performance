@@ -10,31 +10,34 @@ Click a link, refresh the page several times, take a heapdump (for example with 
         <a href="leak2/map">Map init {{</a>
     </li>
     <li><a href="leak3">3) SubList</a> 🔥</li>
-    <li><a href="leak5">4) Long Frame</a></li>
-    <li><a href="leak6">5) Blobs in memory</a></li>
-    <li><a href="leak17">7) Caching:
-        #1</a>,
-        <a href="leak17/signature">#2</a>, and
-        <a href="leak17/objectKey">#3</a>
-        <a href="leak17/mutableKey">#4</a>
+    <li><a href="leak4">4) XML DOM</a></li>
+    <li><a href="leak5">5) Long Frame</a></li>
+    <li><a href="leak6">6) Blobs in memory</a></li>
+    <li><a href="leak7">7) TLeak</a></li>
+    <li><a href="leak8">8) Deadlock</a> and <a href="leak9">a HARD version</a></li>
+    <li><a href="leak10">10) Old lib</a></li>
+    <li><a href="leak11/caller">11) Invisible Source</a>🔥</li>
+    <li>12) Caching:
+        <a href="leak12">#1</a>,
+        <a href="leak12/signature">#2</a>, and
+        <a href="leak12/objectKey">#3</a>
+        <a href="leak12/mutableKey">#4</a>
     </li>
-    <li><a href="leak28/caller">8) Invisible Source</a>🔥</li>
-    <li><a href="leak9">9) Session (stateful)</a></li>
-    <li><a href="leak10">10) Hibernate</a></li>
-    <li><a href="leak4">11) XML DOM</a></li>
-    <li><a href="leak12">12) Deadlock</a> and <a href="leak13">a HARD version</a></li>
-    <li><a href="leak14">14) Old lib</a></li>
-    <li><a href="leak15">15) Thread Leak</a></li>
+    <li><a href="leak13">13) Hibernate</a></li>
+    <li>14) GUI Observer</li>
+    <li><a href="leak15">15) ClassLoader Leak</a></li>
+
     <li>17) Thread Starvation: Call <a href="leak17">a Hot Endpoint</a>🔥 in a short time
         <a href="#" onclick="callNTimes('leak17', 200)">200 times</a>
          to get a timeout at <a href="leak17/liveness">/liveness</a> ☠️
     </li>
-    <li>18) Connection Leak (early 2000s):
+    <li>18) Manual Connections (early 2000s):
         <a href="leak18?origin=jfk&destination=otp">Good✅</a>,
         <a href="leak18?destination=otp">BAD❌</a>,
         After 10 BAD❌ calls, JDBC pool remains empty -> the app cannot reach DB anymore. <a href="/actuator/health">/health</a>
     </li>
-    <li><a href="leak21">21) ClassLoader Leak</a></li>
+    <li><a href="leak29">29) Session (stateful)</a></li>
+
 </ul>
 <script>
     function callNTimes(url, n) {

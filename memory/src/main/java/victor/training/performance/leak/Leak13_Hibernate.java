@@ -29,11 +29,11 @@ import static victor.training.performance.util.PerformanceUtil.sleepMillis;
 @Slf4j
 @RequiredArgsConstructor
 @RestController
-public class Leak10_Hibernate {
+public class Leak13_Hibernate {
   private final BigEntityRepo repo;
   private final EntityManager entityManager;
 
-  @GetMapping("leak10/export")
+  @GetMapping("leak13/export")
   @Transactional
   public void export() throws IOException {
     log.debug("Start export from DB to a file...");
@@ -58,9 +58,9 @@ public class Leak10_Hibernate {
 // === === === === === === === Support code  === === === === === === ===
 
 @RestController
-@RequestMapping("leak10")
+@RequestMapping("leak13")
 @RequiredArgsConstructor
-class Leak10_Support {
+class Leak13_Support {
   private final BigEntityRepo repo;
   private final FastInserter fastInserter;
 
@@ -71,13 +71,13 @@ class Leak10_Support {
 
   @GetMapping
   public String html() {
-    return "First <a href=\"/leak10/persist\">persist the data</a>,<br> then <a href=\"/leak10/export\"> export it to a file</a>.<br> Note that after each restart the database is cleared";
+    return "First <a href=\"/leak13/persist\">persist the data</a>,<br> then <a href=\"/leak13/export\"> export it to a file</a>.<br> Note that after each restart the database is cleared";
   }
 
   @GetMapping("persist")
   public String persist() {
     fastInserter.insert(600);
-    return "Inserted 500MB of data. Now <a href=\"/leak10/export\">export</a> the file 'big-entity.txt' and check the logs";
+    return "Inserted 500MB of data. Now <a href=\"/leak13/export\">export</a> the file 'big-entity.txt' and check the logs";
   }
 }
 

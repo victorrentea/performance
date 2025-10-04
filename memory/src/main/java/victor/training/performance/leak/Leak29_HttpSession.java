@@ -21,9 +21,9 @@ import static org.springframework.context.annotation.ScopedProxyMode.TARGET_CLAS
 
 @Slf4j
 @RestController
-@RequestMapping("leak9")
+@RequestMapping("leak29")
 @RequiredArgsConstructor
-public class Leak9_HttpSession {
+public class Leak29_HttpSession {
 	private final UserSession userSession;
 
   // Auto-create sessions for anonymous accesses? Eg: store display prices in a map+ for 30 minutes

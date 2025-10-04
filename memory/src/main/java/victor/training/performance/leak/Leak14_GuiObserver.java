@@ -8,7 +8,7 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.Random;
 
-public class Leak20_GuiObserver {
+public class Leak14_GuiObserver {
   public static void main(String[] args) {
     JFrame mainFrame = new JFrame("Observer Leak");
     JButton button = new JButton("Open dialog");

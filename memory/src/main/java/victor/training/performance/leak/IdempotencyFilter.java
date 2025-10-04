@@ -24,7 +24,7 @@ public class IdempotencyFilter extends HttpFilter {
 
   @Override
   protected void doFilter(HttpServletRequest request, HttpServletResponse response, FilterChain chain) throws IOException, ServletException {
-    if (request.getRequestURI().endsWith("leak28")) {
+    if (request.getRequestURI().endsWith("leak11")) {
       String idempotencyKey = request.getHeader("Idempotency-Key");
       if (idempotencyKey == null) {
         response.setStatus(400);

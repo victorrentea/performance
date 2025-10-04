@@ -1,4 +1,4 @@
-package base;
+package gatling;
 
 import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;

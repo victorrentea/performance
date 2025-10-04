@@ -11,8 +11,8 @@ import java.util.concurrent.Executors;
 @SuppressWarnings("resource")
 @Slf4j
 @RestController
-public class Leak15_ThreadLeak {
-  @GetMapping("leak15")
+public class Leak7_ThreadLeak {
+  @GetMapping("leak7")
   public String endpoint() throws ExecutionException, InterruptedException {
     ExecutorService pool = Executors.newFixedThreadPool(2);
     var f1 = pool.submit(() -> apiCall(1));

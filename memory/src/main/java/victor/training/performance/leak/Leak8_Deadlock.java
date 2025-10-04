@@ -8,8 +8,8 @@ import static victor.training.performance.util.PerformanceUtil.log;
 import static victor.training.performance.util.PerformanceUtil.sleepMillis;
 
 @RestController
-@RequestMapping("leak12")
-public class Leak12_Deadlock {
+@RequestMapping("leak8")
+public class Leak8_Deadlock {
 	@GetMapping("/one")
 	public String one() throws Exception {
 		A.entry();

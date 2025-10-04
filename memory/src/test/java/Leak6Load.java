@@ -1,4 +1,4 @@
-import base.GatlingEngine;
+import gatling.GatlingEngine;
 import io.gatling.javaapi.core.Simulation;
 
 import static io.gatling.javaapi.core.CoreDsl.*;

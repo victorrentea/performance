@@ -21,9 +21,9 @@ import java.time.format.DateTimeFormatter;
 import java.util.UUID;
 
 @RestController
-@RequestMapping("leak27")
+@RequestMapping("leak12")
 @RequiredArgsConstructor
-public class Leak27_Caching {
+public class Leak12_Caching {
   private final CacheService cacheService;
 
   @GetMapping

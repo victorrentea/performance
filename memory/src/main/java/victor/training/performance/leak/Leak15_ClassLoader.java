@@ -18,7 +18,7 @@ import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
-public class Leak21_ClassLoader {
+public class Leak15_ClassLoader {
   public File compilePlugin(int version) throws IOException {
     // We have to compile a class on the fly so that
     // it's NOT in target/classes, otherwise the call to URLClassCoader.loadClass(
@@ -43,7 +43,7 @@ public class Leak21_ClassLoader {
                   timer.cancel();
                 }
                 public static void register() {
-                  //victor.training.performance.leak.Leak21_ClassLoader.registerPlugin(this);
+                  //victor.training.performance.leak.Leak15_ClassLoader.registerPlugin(this);
                   // TODO to compile, must have my SPI in its javac classpath
                 }
             }
@@ -60,7 +60,7 @@ public class Leak21_ClassLoader {
 
   int currentVersion = 0;
 
-  @GetMapping("leak21")
+  @GetMapping("leak15")
   public String uploadNewPluginVersion() throws Exception {
     currentVersion++;
     File classFile = compilePlugin(currentVersion);
@@ -91,26 +91,6 @@ public class Leak21_ClassLoader {
   private static Class<?> classLoadPlugin(String className) throws MalformedURLException, ClassNotFoundException {
     URLClassLoader loader = URLClassLoader.newInstance(new URL[]{new File(".").toURI().toURL()});
     return Class.forName(className, true, loader);
-  }
-
-  @GetMapping("leak21")
-  public String load() throws Exception {
-    currentVersion++;
-    File classFile = compilePlugin(currentVersion);
-    Class<?> clazz = classLoadPlugin("Plugin");
-
-    // Type1: an instance of a class in Plugin jar is added to a list
-//    plugins.add(clazz.newInstance());
-//    clazz.getMethod("register").invoke(clazz.newInstance());
-
-    // Type2: plugin starts a thread
-    clazz.getMethod("start").invoke(null);
-    // FIX: stop the plugin thread
-//    if (lastPluginClass != null) lastPluginClass.getMethod("stop").invoke(null);
-    lastPluginClass = clazz;
-
-    return "Uploaded new plugin version " + currentVersion +
-           " from compiled class " + classFile;
   }
 
 }

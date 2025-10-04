@@ -16,15 +16,16 @@ public class Leak0_OOME_OnPurpose {
     // TODO + in your prod
     //  + JVM arg: -XX:+HeapDumpOnOutOfMemoryError
     //  + JVM arg: -XX:HeapDumpPath=/path/to/folder
+    //  > Experiment: turn variable into field - what changes?
     //  ± JVM arg: -XX:+ExitOnOutOfMemoryError
     //  > Open in browser http://localhost:8080/leak0
     //  > Find the .hprof file in /path/to/folder
     //  > Load it in IntelliJ, VisualVM, jProfiler or MemoryAnalyzer(MAT)
-    //  > Experiment: turn variable into field - what changes
   }
 }
 /** ⭐️ KEY POINTS
  * 👍 OOME should kill the process
- * 👍 OOME should heap dump
- * ⚠️ Check you can get that heapdump.hprof from production
+ * 👍 OOME should dump the heap on disk
+ * ⚠️ You can get that heapdump.hprof from production
+ * 😎 Sensitive prod data -> https://github.com/paypal/heap-dump-tool
  */

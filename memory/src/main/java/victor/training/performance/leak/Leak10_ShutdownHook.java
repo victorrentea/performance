@@ -11,8 +11,8 @@ import java.util.IdentityHashMap;
 import java.util.Set;
 
 @RestController
-public class Leak14_ShutdownHook {
-  @GetMapping("leak14")
+public class Leak10_ShutdownHook {
+  @GetMapping("leak10")
   public String add() throws Exception {
     OldLib.stuff();
     return "♾️ Leak!";

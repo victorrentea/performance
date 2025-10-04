@@ -15,8 +15,8 @@ import static victor.training.performance.util.PerformanceUtil.sleepMillis;
 
 @Slf4j
 @RestController
-@RequestMapping("leak13")
-public class Leak13_Deadlock_Pro {
+@RequestMapping("leak9")
+public class Leak9_Deadlock_Pro {
   private static final Map<String, String> mapA = Collections.synchronizedMap(new HashMap<>());
   private static final Map<String, String> mapB = Collections.synchronizedMap(new HashMap<>());
 
@@ -45,7 +45,7 @@ public class Leak13_Deadlock_Pro {
 
   @GetMapping
   public String home() {
-    return "call <a href='/leak13/one'>one</a> and <a href='/leak13/two'>two</a> within 3 secs..";
+    return "call <a href='/leak9/one'>one</a> and <a href='/leak9/two'>two</a> within 3 secs..";
   }
 
   private String printHowtoDeadlockMessage(String other) {

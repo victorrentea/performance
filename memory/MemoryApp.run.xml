@@ -2,7 +2,7 @@
   <configuration default="false" name="MemoryApp" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot" nameIsGenerated="true">
     <module name="memory" />
     <option name="SPRING_BOOT_MAIN_CLASS" value="victor.training.performance.MemoryApp" />
-    <option name="VM_PARAMETERS" value="-XX:+HeapDumpOnOutOfMemoryError&#10;-XX:HeapDumpPath=$PROJECT_DIR$/../performance&#10;-Xmx500m" />
+    <option name="VM_PARAMETERS" value="-XX:+HeapDumpOnOutOfMemoryError -XX:+ExitOnOutOfMemoryError -XX:HeapDumpPath=$PROJECT_DIR$ -Xmx500m" />
     <extension name="coverage">
       <pattern>
         <option name="PATTERN" value="victor.training.performance.*" />
