@@ -31,7 +31,6 @@ import static victor.training.performance.util.PerformanceUtil.sleepSeconds;
 public class Leak6_Files {
   private final FileProcessor processor;
   private static final AtomicInteger counter = new AtomicInteger(0);
-  private final ThreadPoolTaskExecutor myExecutor;
 
   @GetMapping("leak6/download") // 🔥 Leak6Load.java
   public String download() {
