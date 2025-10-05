@@ -3,15 +3,17 @@ package victor.training.performance.leak;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.time.LocalDateTime;
+import static victor.training.performance.util.PerformanceUtil.done;
 
 @RestController
 public class Leak11_UnknownSource {
   @GetMapping("leak11")
   public String endpoint() {
-    return "✔️ Money transferred at " + LocalDateTime.now();
+    return "Money transferred" + done();
   }
 }
+
+
 
 
 // === === === === === === === Support code  === === === === === === ===
@@ -26,7 +28,7 @@ class Leak11_Caller {
          <p>
          But a <a href='/leak11'>direct call</a> gets rejected 
          if it doesn't contain a new 'Idempotency-Key' header.<p>
-           The same header value <button onclick='call("same-ik")'>Should Fail</button>
+           Sending the same header value 'same-ik' <button onclick='call("same-ik")'>Should Fail after first call</button>
         <p> 
          Give it some 🔥 with Leak11Load
           <script type='text/javascript'>

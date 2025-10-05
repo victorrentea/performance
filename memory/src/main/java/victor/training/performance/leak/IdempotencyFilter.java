@@ -27,21 +27,23 @@ public class IdempotencyFilter extends HttpFilter {
     if (request.getRequestURI().endsWith("leak11")) {
       String idempotencyKey = request.getHeader("Idempotency-Key");
       if (idempotencyKey == null) {
-        response.setStatus(400);
-        response.setContentType("text/plain");
-        response.getWriter().write("Missing request header 'Idempotency-Key'");
+        reject(response, "Missing request header 'Idempotency-Key'");
         return;
       }
       boolean newIK = previousCalls.add(new Call(idempotencyKey));
       if (!newIK) {
-        response.setStatus(400);
-        response.setContentType("text/plain");
-        response.getWriter().write("Duplicate call rejected!");
+        reject(response, "Duplicate call rejected!");
         return;
       }
     }
 
     chain.doFilter(request, response);
+  }
+
+  private void reject(HttpServletResponse response, String message) throws IOException {
+    response.setStatus(400);
+    response.setContentType("text/plain");
+    response.getWriter().write(message);
   }
 }
 

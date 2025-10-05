@@ -14,27 +14,27 @@ import java.util.Set;
 public class Leak10_ShutdownHook {
   @GetMapping("leak10")
   public String add() throws Exception {
-    OldLib.stuff();
-    return "♾️ Leak!";
+    return "♾️ Leak doing " + OldLib.doWork();
   }
 }
 
-class OldLib { // in a .jar you cannot change
+// 🔽 in a .jar you cannot change
+class OldLib {
   // lib was designed in the early 2000s to be used in a desktop/console/job app
-  public static void stuff() {
+  public static String doWork() {
     Big20MB big = new Big20MB();
-    System.out.println("Created " + big);
     Runtime.getRuntime().addShutdownHook(new Thread(() ->
-        System.out.println("Cleanup (file) at JVM exit " + big)));
+        System.out.println("Cleanup: " + big)));
+    return "Work";
   }
 }
 
 class HackyFix {
-  public static void cleanHooks() throws Exception {
+  public static void cleanHooksUsingReflection() throws Exception {
     Class<?> clazz = Class.forName("java.lang.ApplicationShutdownHooks");
     Field hooksField = clazz.getDeclaredField("hooks");
 
-    // To work, add to VM args: --add-opens java.base/java.lang=ALL-UNNAMED
+    // Requires VM args: --add-opens java.base/java.lang=ALL-UNNAMED
     hooksField.setAccessible(true);
 
     IdentityHashMap<Thread, Thread> hooks = (IdentityHashMap<Thread, Thread>) hooksField.get(null);
