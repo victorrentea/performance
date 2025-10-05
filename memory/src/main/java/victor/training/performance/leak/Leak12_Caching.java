@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.RestController;
 import victor.training.performance.leak.obj.Big20MB;
 import victor.training.performance.util.PerformanceUtil;
 
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.UUID;
 
 @RestController
@@ -23,7 +23,7 @@ public class Leak12_Caching {
 
   @GetMapping
   public String key() {
-    Big20MB data = cacheService.getTodayFex(LocalDate.now());
+    Big20MB data = cacheService.getTodayFex(LocalDateTime.now());
     return "Data from cache for today = " + data + ", " + PerformanceUtil.getUsedHeapPretty();
   }
 
@@ -58,7 +58,7 @@ class CacheService {
   // Note: @Cacheable proxy intercepts the call and
   // returns the previously returned value for the same parameter(s)
   @Cacheable("fex-cache")
-  public Big20MB getTodayFex(LocalDate date) {
+  public Big20MB getTodayFex(LocalDateTime date) {
     log.debug("Fetch data for date: {}", date);
     return fetchData();
   }
