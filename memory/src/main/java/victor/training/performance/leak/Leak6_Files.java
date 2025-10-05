@@ -6,8 +6,10 @@ import jakarta.annotation.PostConstruct;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.slf4j.MDC;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.*;
@@ -22,7 +24,7 @@ import java.util.concurrent.ForkJoinPool;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import static victor.training.performance.leak.Leak6_Helper.fetchData;
-import static victor.training.performance.util.PerformanceUtil.sleepMillis;
+import static victor.training.performance.util.PerformanceUtil.sleepSeconds;
 
 @Slf4j
 @RestController
@@ -30,30 +32,46 @@ import static victor.training.performance.util.PerformanceUtil.sleepMillis;
 public class Leak6_Files {
   private final FileProcessor processor;
   private static final AtomicInteger counter = new AtomicInteger(0);
+  private final ThreadPoolTaskExecutor myExecutor;
 
   @GetMapping("leak6/download") // 🔥 Leak6Load.java
   public String download() {
-    String data = fetchData(10_000_000);
     int taskId = counter.incrementAndGet();
+    MDC.put("traceId","#Trace"+counter);
+    String data = fetchData(10_000_000);
+    log.info("Got {} bytes", data.length());
     CompletableFuture.runAsync(() -> processor.process(data, taskId));
-    return "Task (30s) submitted: " + taskId + "<br>" +
+    return "Task (10s) submitted: " + taskId + "<br>" +
            "Data.bytes: " + data.length() + " <br>" +
-           "Look for 'fjp' in <a href='http://localhost:8080/actuator/prometheus'>metrics</a>";
+           "Look in <a href='http://localhost:8080/actuator/prometheus'>metrics</a> for 'fjp'";
   }
 }
 
 @Slf4j
 @Service
 class FileProcessor {
+  @Async("myExecutor")
   public void process(String contents, int taskId) {
     log.debug("Task {} started ...", taskId);
-    //if (true) throw new RuntimeException("Invisible Bug");
-    sleepMillis(10_000);
+    if (true) throw new RuntimeException("Invisible Bug");
+    sleepSeconds(10);
     long newLinesCount = contents.chars().filter(c -> c == 10).count();
     log.debug("Task {} completed: lines = {}", taskId, newLinesCount);
   }
 }
 
+
+/**
+ * ⭐️ KEY POINTS
+ * ☣️ CompletableFuture.xyzAsync(->) uses an unbounded queue
+ * 👍 Offload large objects from memory to (eg) disk/S3🪣
+ * 👍 Use bounded queues for thread pools
+ * 👍 ForkJoinPool.commonPool() can me monitored (see below)
+ * 👍 Pass a Spring executor to any CompletableFuture.*Async(,executor)
+ */
+
+
+// === === === === === === === Support code  === === === === === === ===
 
 @Slf4j
 @RestController
@@ -70,18 +88,6 @@ class Leak6_FilesUpload {
     return taskId;
   }
 }
-
-/**
- * ⭐️ KEY POINTS
- * ☣️ CompletableFuture.xyzAsync(->) uses an unbounded queue
- * 👍 Offload large objects from memory to (eg) disk/S3🪣
- * 👍 Use bounded queues for thread pools
- * 👍 ForkJoinPool.commonPool() can me monitored (see below)
- * 👍 Pass a Spring executor to any CompletableFuture.*Async(,executor)
- */
-
-
-// === === === === === === === Support code  === === === === === === ===
 
 @Configuration
 class Leak6Config {
@@ -104,6 +110,17 @@ class Leak6Config {
     executor.setQueueCapacity(5); // rejects tasks when the queue is full
     executor.setThreadNamePrefix("myexec-");
     executor.initialize();
+    executor.setTaskDecorator(task -> {
+      var submitterMDC = MDC.getCopyOfContextMap(); // de pe threadul părinte
+      return () -> {
+        try {
+          MDC.setContextMap(submitterMDC);
+          task.run();
+        } finally {
+          MDC.clear();
+        }
+      };
+    });
     return executor;
   }
 }

@@ -17,12 +17,11 @@ public class Leak7_ThreadLeak {
     ExecutorService pool = Executors.newFixedThreadPool(2);
     var f1 = pool.submit(() -> apiCall(1));
     var f2 = pool.submit(() -> apiCall(2));
-    return f1.get() + f2.get();
+    return f1.get() + " " + f2.get();
   }
 
   private static String apiCall(int i) {
-    log.info("Call " + i);
-    return "Data " + i;
+    return "Response" + i;
   }
 }
 
