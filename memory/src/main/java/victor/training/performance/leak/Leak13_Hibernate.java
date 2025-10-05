@@ -24,6 +24,7 @@ import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
 import static java.util.stream.Collectors.toList;
+import static victor.training.performance.util.PerformanceUtil.done;
 import static victor.training.performance.util.PerformanceUtil.sleepMillis;
 
 @Slf4j
@@ -35,22 +36,23 @@ public class Leak13_Hibernate {
 
   @GetMapping("leak13/export")
   @Transactional
-  public void export() throws IOException {
-    log.debug("Start export from DB to a file...");
-    try (PrintWriter writer = new PrintWriter("big-entity.txt")) {
+  public String export() throws IOException {
+    log.debug("Exporting from DB to a file...");
+    try (PrintWriter writer = new PrintWriter("big-entity-export.txt")) {
       repo.streamAll() // iterates rows w/o loading all ≈ while(resultSet.next()) {👴🏻
           .map(BigEntity::getDescription)
           .forEach(writer::write);
     }
 
     log.debug("Export completed");
-    sleepMillis(60 * 1000); // take a heap dump
+//    sleepMillis(60 * 1000); // take a heap dump
+    return done();
   }
 }
 
 /**
  * ⭐️ KEY POINTS:
- * 🧠 You can Stream data from DB (within a @Transactional)
+ * 🧠 You can Stream data from DB within a @Transactional
  * ☣️ A copy of all @Entities given to you is kept in Hibernate's 1st level cache
  * 👍 entityManager#detach(entity) removes it from there
  */
@@ -77,7 +79,7 @@ class Leak13_Support {
   @GetMapping("persist")
   public String persist() {
     fastInserter.insert(600);
-    return "Inserted 500MB of data. Now <a href=\"/leak13/export\">export</a> the file 'big-entity.txt' and check the logs";
+    return "Inserted 600MB of data. Now <a href=\"/leak13/export\">export</a> the file 'big-entity-export.txt' and check the logs";
   }
 }
 

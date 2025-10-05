@@ -18,10 +18,16 @@ import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
-public class Leak15_ClassLoader {
+public class Leak14_ClassLoader {
+  private static Class<?> classLoadPlugin(File classFile) throws MalformedURLException, ClassNotFoundException {
+    URL currentFolderUrl = classFile.getParentFile().toURI().toURL();
+    ClassLoader classLoader = URLClassLoader.newInstance(new URL[]{currentFolderUrl});
+    return Class.forName("Plugin", true, classLoader);
+  }
+
   public File compilePlugin(int version) throws IOException {
-    // We have to compile a class on the fly so that
-    // it's NOT in target/classes, otherwise the call to URLClassCoader.loadClass(
+    // We have to compile a .class on the fly so that it's NOT in target/classes,
+    // otherwise the call to URLClassCoader.loadClass("Plugin")
     // would be served by the top level app classloader - the class never loaded by the new URLClassLoader.
     File file = Files.writeString(Path.of("Plugin.java"), """
             public class Plugin {
@@ -43,7 +49,7 @@ public class Leak15_ClassLoader {
                   timer.cancel();
                 }
                 public static void register() {
-                  //victor.training.performance.leak.Leak15_ClassLoader.registerPlugin(this);
+                  //victor.training.performance.leak.Leak14_ClassLoader.registerPlugin(this);
                   // TODO to compile, must have my SPI in its javac classpath
                 }
             }
@@ -51,6 +57,7 @@ public class Leak15_ClassLoader {
     return compile(file);
   }
 
+  /** @return .class compiled file */
   private File compile(File file) {
     JavaCompiler compiler = ToolProvider.getSystemJavaCompiler();
     int result = compiler.run(null, null, null, file.getPath());
@@ -60,22 +67,24 @@ public class Leak15_ClassLoader {
 
   int currentVersion = 0;
 
-  @GetMapping("leak15")
+  @GetMapping("leak14")
   public String uploadNewPluginVersion() throws Exception {
     currentVersion++;
     File classFile = compilePlugin(currentVersion);
-    Class<?> clazz = classLoadPlugin("Plugin");
+    Class<?> clazz = classLoadPlugin(classFile);
 
-    // Type1: an instance of a class in Plugin jar is added to a list
-//    plugins.add(clazz.newInstance());
-//    clazz.getMethod("register").invoke(clazz.newInstance());
-
-    // Type2: plugin starts a thread
+    // Case1: plugin starts a thread
     clazz.getMethod("start").invoke(null);
-    // FIX: stop the plugin thread
+    // FIX: stop the old plugin
 //    if (lastPluginClass != null) lastPluginClass.getMethod("stop").invoke(null);
-    lastPluginClass = clazz;
 
+    // Case2: an instance of a class in Plugin jar is added to a list
+//    plugins.add(clazz.newInstance());
+
+    // FIX: dereference the old plugin
+//    if (lastPluginClass != null) plugins.clear();
+
+    lastPluginClass = clazz;
     return "Uploaded new plugin version " + currentVersion +
            " from compiled class " + classFile;
   }
@@ -86,11 +95,6 @@ public class Leak15_ClassLoader {
 
   public static void registerPlugin(Object plugin) {
     plugins.add(plugin);
-  }
-
-  private static Class<?> classLoadPlugin(String className) throws MalformedURLException, ClassNotFoundException {
-    URLClassLoader loader = URLClassLoader.newInstance(new URL[]{new File(".").toURI().toURL()});
-    return Class.forName(className, true, loader);
   }
 
 }

@@ -27,7 +27,7 @@ hs_err_pid*
 .idea
 *.iml
 target
-big-entity.txt
+big-entity-export.txt
 data.txt
 big.json
 
@@ -47,7 +47,8 @@ capture/
 /spring-batch/data.xml
 /jpa/export.txt
 /spring-batch/data*.xml
-/big-entity.csv
+/big-entity-export.csv
 
 *.hprof
 /file-to-upload.txt
+/Plugin.java

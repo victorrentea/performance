@@ -30,7 +30,6 @@ class Leak11_Caller {
          if it doesn't contain a new 'Idempotency-Key' header.<p>
            Sending the same header value 'same-ik' <button onclick='call("same-ik")'>Should Fail after first call</button>
         <p> 
-         Give it some 🔥 with Leak11Load
           <script type='text/javascript'>
               function call(idempotencyKey) {
                   fetch('/leak11', {

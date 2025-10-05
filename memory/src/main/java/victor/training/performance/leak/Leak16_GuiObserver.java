@@ -8,7 +8,7 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.Random;
 
-public class Leak14_GuiObserver {
+public class Leak16_GuiObserver {
   public static void main(String[] args) {
     JFrame mainFrame = new JFrame("Observer Leak");
     JButton button = new JButton("Open dialog");
@@ -27,12 +27,22 @@ public class Leak14_GuiObserver {
       LeakyFrame leakyFrame = new LeakyFrame();
 
       // ☣️ main frame linked to the new (disposable) frame
-      mainFrame.addMouseMotionListener(new MouseAdapter() {
+      MouseAdapter listener = new MouseAdapter() {
         @Override
         public void mouseMoved(MouseEvent e) {
           leakyFrame.changeColor();
         }
-      });
+      };
+      mainFrame.addMouseMotionListener(listener);
+
+      //region solution
+      //      leakyFrame.addWindowListener(new WindowAdapter() {
+//        @Override
+//        public void windowClosed(WindowEvent e) {
+//          mainFrame.removeMouseMotionListener(listener);
+//        }
+//      });
+      //endregion
     });
   }
 
@@ -63,6 +73,5 @@ public class Leak14_GuiObserver {
           random.nextInt(256)
       );
     }
-
   }
 }

@@ -9,7 +9,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.slf4j.MDC;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.scheduling.annotation.Async;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.*;
@@ -37,23 +36,24 @@ public class Leak6_Files {
   @GetMapping("leak6/download") // 🔥 Leak6Load.java
   public String download() {
     int taskId = counter.incrementAndGet();
-    MDC.put("traceId","#Trace"+counter);
+    MDC.put("traceId", "#Trace" + counter);
     String data = fetchData(10_000_000);
     log.info("Got {} bytes", data.length());
     CompletableFuture.runAsync(() -> processor.process(data, taskId));
-    return "Task (10s) submitted: " + taskId + "<br>" +
-           "Data.bytes: " + data.length() + " <br>" +
-           "Look in <a href='http://localhost:8080/actuator/prometheus'>metrics</a> for 'fjp'";
+    return """
+        Task (10s) submitted: %d<br>
+        Data: %,d bytes<br>
+        Look in <a href='http://localhost:8080/actuator/prometheus'>metrics</a> for 'fjp'"""
+        .formatted(taskId, data.length());
   }
 }
 
 @Slf4j
 @Service
 class FileProcessor {
-  @Async("myExecutor")
   public void process(String contents, int taskId) {
     log.debug("Task {} started ...", taskId);
-    if (true) throw new RuntimeException("Invisible Bug");
+    //if (true) throw new RuntimeException("Invisible Bug");
     sleepSeconds(10);
     long newLinesCount = contents.chars().filter(c -> c == 10).count();
     log.debug("Task {} completed: lines = {}", taskId, newLinesCount);
