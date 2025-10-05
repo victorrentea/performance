@@ -31,24 +31,23 @@ public class Leak6_Files {
 
   private static final AtomicInteger counter = new AtomicInteger(0);
 
-  @PostMapping("leak6/upload")
+  @GetMapping("leak6/download") // 🔥 Leak6Load.java
+  public String download() {
+    String fileContents = RestClient.create()
+        .get().uri("http://localhost:8080/leak6/file?mb=10")
+        .retrieve()
+        .body(String.class);
+    log.info("Downloaded bytes: " + fileContents.getBytes().length);
+    return processAsync(fileContents) + " repeat 20x within 10 seconds, then heap dump";
+  }
+
+  @PostMapping("leak6/upload") // FIXME delete for devoxx.be
   public int upload(@RequestParam MultipartFile file) throws IOException {
     byte[] fileContents = file.getBytes();
     log.info("Uploaded bytes: " + fileContents.length);
     // spring.servlet.multipart.max-file-size=30MB
     // spring.servlet.multipart.max-request-size=30MB
     return processAsync(new String(fileContents));
-  }
-
-
-  @GetMapping("leak6/download") // 🔥 Leak6Load.java
-  public int download() {
-    String fileContents = RestClient.create()
-        .get().uri("http://localhost:8080/leak6/file?mb=10")
-        .retrieve()
-        .body(String.class);
-    log.info("Downloaded bytes: " + fileContents.getBytes().length);
-    return processAsync(fileContents);
   }
 
   private int processAsync(String fileContents) {
@@ -111,7 +110,7 @@ class Leak6Config {
 
 @RestController
 @RequestMapping("leak6")
-class Leak6_Tester {
+class Leak6_Helper {
   private final File file = new File("file-to-upload.txt");
 
   @PostConstruct
@@ -128,18 +127,13 @@ class Leak6_Tester {
     return """
         <h3>Upload a file to process</h3>
         <ol>
-        <li>Paste in terminal<br> 
+        <li>Paste in terminal<br>
         curl -F "file=@%s" http://localhost:8080/leak6/upload
         <li>
           <form action='/leak6/upload' method='post' enctype='multipart/form-data' style='display:inline'>
           Or upload your own file:<input type='file' name='file' /> <input type='submit' value='Upload' />
           </form>
         </ol>
-        
-        <h3>Download a file on server to process</h3>
-        <a href="/leak6/download">Click here</a>
-        `<hr>
-        Do this 20 times within 10 seconds, then study the heap dump
         """.formatted(file.getAbsolutePath());
   }
 

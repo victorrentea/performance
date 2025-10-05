@@ -10,6 +10,7 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
+@SuppressWarnings("FieldMayBeFinal")
 @Slf4j
 @RestController
 @RequestMapping("leak3")
@@ -25,21 +26,23 @@ public class Leak3_SubList {
 
     lastTen.add(access);
     if (lastTen.size() > 10) {
-      lastTen = lastTen.subList(lastTen.size() - 10, lastTen.size()); // remove first
+      lastTen = lastTen.subList(1, lastTen.size()); // remove first
     }
     return "lastTen.size = " + lastTen.size();
   }
   // TODO
   //  - give this endpoint some heat🔥 using Leak3Load.java
-  //  - IntelliJ > Memory Snapshot > Biggest Object >
-  //    1st > right-click: Open in new tab > Dominator Tree tab
-
+  //  - analyze retained heap using
+  //    - visualVM
+  //    - IntelliJ > Memory Snapshot > Biggest Objects >
+  //      1st > [Enter] > 'Dominator Tree' tab
 }
 
 /**
  * ⭐️ KEY POINTS
  * - 🧠 Retained Heap = "How much heap does this object keep alive?"
- * - 😱 .subList() returns a view referencing the original list -> add/remove to a LinkedList/Queue
+ * - 😱 .subList() returns a view referencing the original list
+ *   👍 add/remove to a LinkedList/Queue
  * - 👍 Read the apidoc
  */
 

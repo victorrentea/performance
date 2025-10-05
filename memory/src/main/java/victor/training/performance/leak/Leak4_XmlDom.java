@@ -20,7 +20,7 @@ import java.io.FileInputStream;
 import java.util.ArrayList;
 import java.util.List;
 
-import static victor.training.performance.util.PerformanceUtil.sleepMillis;
+import static victor.training.performance.util.PerformanceUtil.sleepSeconds;
 
 @RestController
 @Slf4j
@@ -45,14 +45,17 @@ public class Leak4_XmlDom {
     // <modelVersion>4.0.0</modelVersion>
 
     log.info("Found {} nodes", modelVersion.size());
-    log.info("First: " + modelVersion.get(0) + ", text: " + modelVersion.get(0).getTextContent());
+    Node first = modelVersion.get(0);
+    log.info("First: class={}, {}, text: {}",
+        first.getClass().getSimpleName(),
+        first,
+        first.getTextContent());
 
-    sleepMillis(100_000); // time to take a heap dump
-
-    // TODO how many instances of DeferredElementImpl are in heapdump? Justify?
-
-    // eg RUN this in OQL in jvisualVM: select x.name from com.sun.org.apache.xerces.internal.dom.DeferredElementImpl x
+    sleepSeconds(30); // time to take a heap dump
   }
+
+  // TODO how many instances of DeferredElementImpl are in heapdump? Justify?
+  // eg RUN this in OQL in jvisualVM: select x.name from com.sun.org.apache.xerces.internal.dom.DeferredElementImpl x
 
   // === === === === === === === Support code  === === === === === === ===
 

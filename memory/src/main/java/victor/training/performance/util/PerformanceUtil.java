@@ -10,12 +10,14 @@ import java.io.InputStream;
 import java.lang.management.ManagementFactory;
 import java.lang.management.RuntimeMXBean;
 import java.text.SimpleDateFormat;
+import java.time.LocalTime;
 import java.util.*;
 import java.util.concurrent.Callable;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import static java.lang.System.currentTimeMillis;
+import static java.time.format.DateTimeFormatter.ofPattern;
 
 public class PerformanceUtil {
   static Random random = new Random();
@@ -65,6 +67,9 @@ public class PerformanceUtil {
       }
     }
     System.out.println("<JFR not started>");
+  }
+  public static void sleepSeconds(long seconds) {
+    sleepMillis(seconds * 1000);
   }
 
   /**
@@ -165,6 +170,10 @@ public class PerformanceUtil {
 
   public static String objectToString(Object x) {
     return x.getClass().getName() + "@" + Integer.toHexString(System.identityHashCode(x));
+  }
+
+  public static String done() {
+    return "✔ " + LocalTime.now().format(ofPattern("hh:mm:ss"));
   }
 
   public record AllocationResult<T>(T result, long deltaHeapBytes) {}

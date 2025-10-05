@@ -6,7 +6,6 @@ import org.springframework.web.bind.annotation.RestController;
 import victor.training.performance.leak.CalculatorFactory.Calculator;
 import victor.training.performance.leak.obj.Big20MB;
 
-import java.time.LocalTime;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -14,8 +13,8 @@ import java.util.function.Predicate;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import static java.time.format.DateTimeFormatter.ofPattern;
-import static victor.training.performance.util.PerformanceUtil.sleepMillis;
+import static victor.training.performance.util.PerformanceUtil.done;
+import static victor.training.performance.util.PerformanceUtil.sleepSeconds;
 
 @RestController
 @RequestMapping("leak2")
@@ -24,25 +23,25 @@ public class Leak2_Inner {
   public String endpoint() {
     Calculator calculator = new CalculatorFactory().create();
     work(calculator);
-    return "✔ " + LocalTime.now().format(ofPattern("hh:mm:ss")); // TODO extract method
+    return done(); // TODO extract method
   }
 
   private void work(Calculator calculator) {
-    sleepMillis(20_000);
+    sleepSeconds(30);
   }
 
   //<editor-fold desc="Similar entry points /anon /map">
   @GetMapping("anon")
   public String anon() {
     Stream<String> supplier = new CalculatorFactory().anonymousVsLambdas(List.of("a"));
-    sleepMillis(30_000); // some long workflow
+    sleepSeconds(30); // some long workflow
     return supplier.collect(Collectors.toList()).toString();
   }
 
   @GetMapping("map")
   public Map<String, Integer> map() {
     Map<String, Integer> map = new CalculatorFactory().mapInit();
-    sleepMillis(20_000); // some long workflow
+    sleepSeconds(30); // some long workflow
     return map;
   }
   //</editor-fold>
@@ -51,26 +50,15 @@ public class Leak2_Inner {
 class CalculatorFactory {
   private final Big20MB bigMac = new Big20MB(); // 🍔
 
-  public class Calculator {
-    public boolean calculate(String data) {
-      System.out.println("Simple Code ");
-      // TODO what connects this Calculator instance with bigMac🍔?
-      return true;
+  public class Calculator {// TODO what connection to bigMac🍔?
+    public int calculate() {
+      return 42;
     }
   }
 
   public Calculator create() {
     return new Calculator();
   }
-
-  //<editor-fold desc="Map init in Java <= 8">
-  public Map<String, Integer> mapInit() {
-    return new HashMap<>() {{
-      put("one", 1);
-      put("two", 2);
-    }};
-  }
-  //</editor-fold>
 
   //<editor-fold desc="Lambdas vs Anonymous implementation">
   public Stream<String> anonymousVsLambdas(List<String> input) {
@@ -81,14 +69,23 @@ class CalculatorFactory {
             return !s.isBlank();
           }
         });
-    // TODO how about ->, this::
+    // TODO how about ->, ::
+  }
+  //</editor-fold>
+
+  //<editor-fold desc="Map init in Java <= 8">
+  public Map<String, Integer> mapInit() {
+    return new HashMap<>() {{
+      put("one", 1);
+      put("two", 2);
+    }};
   }
   //</editor-fold>
 }
 
 /**
  * ⭐️ KEY POINTS
- * - 👍 Instead of inner classes, prefer nested (static) or in a separate file
+ * - 👍 Prefer nested (static) over inner classes. Better: move to a separate .java file
  * - 😱 new Class(){} and new Interface(){} reference the instance of the containing class
- * - 👍 Stateless Logic: Don't keep request state in fields of classes holding logic
+ * - 😎 javac ≥21 ftw
  */

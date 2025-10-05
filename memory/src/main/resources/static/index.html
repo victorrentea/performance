@@ -1,5 +1,4 @@
-<h1>Memory Leaks</h1>
-Click a link, refresh the page several times, analyze the heapdump (in VisualVM, IntelliJ, jProfiler...) then trace the memory leak.
+<!--<h3>Memory Leaks</h3>-->
 <ul>
     <li><a href="leak0">0) OOME Intentional</a> 👉 JVM should dump and die☠️</li>
     <li><a href="leak1">1) Magic 🪄✨</a></li>
@@ -8,13 +7,18 @@ Click a link, refresh the page several times, analyze the heapdump (in VisualVM,
         <ul>
             <li><a href="leak2/inner">Inner Class 🧩</a> ≤ javac 17</li>
             <li><a href="leak2/anon">Anonymous Implementation</a> ≤ javac 17</li>
-            <li><a href="leak2/map">new Map() {{</a></li>
+            <li><a href="leak2/map">new HashMap() {{</a></li>
         </ul>
     </li>
     <li><a href="leak3">3) SubList</a> 🔥</li>
     <li><a href="leak4">4) XML DOM</a></li>
     <li><a href="leak5">5) Long Frame</a></li>
-    <li><a href="leak6">6) Blobs in memory</a></li>
+    <li>6) File Handling on server after
+        <ul>
+        <li><a href="leak6/download">Download</a></li>
+        <li><a href="leak6">Upload</a></li>
+        </ul>
+    </li>
     <li><a href="leak7">7) TLeak</a></li>
     <li><a href="leak8">8) Deadlock</a> and <a href="leak9">a HARD version</a></li>
     <li><a href="leak10">10) Old lib</a></li>
@@ -41,6 +45,8 @@ Click a link, refresh the page several times, analyze the heapdump (in VisualVM,
     <li><a href="leak29">29) Session (stateful)</a></li>
 
 </ul>
+Click a link, refresh the page several times, analyze the heapdump (in VisualVM, IntelliJ, jProfiler...) then trace the memory leak.
+
 <script>
     function callNTimes(url, n) {
         for (let i = 0; i < n; i++) {

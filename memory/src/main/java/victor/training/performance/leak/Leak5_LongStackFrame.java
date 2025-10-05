@@ -5,7 +5,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 import victor.training.performance.leak.obj.Big100MB;
 
-import static victor.training.performance.util.PerformanceUtil.sleepMillis;
+import static victor.training.performance.util.PerformanceUtil.*;
 
 @Slf4j
 @RestController
@@ -13,12 +13,13 @@ public class Leak5_LongStackFrame {
 	@GetMapping("leak5")
 	public String endpoint() {
 		Big100MB bigDto = apiCall();
-		String useful = bigDto.getInterestingPart();
+		String a = bigDto.getA();
+		String b = bigDto.getA();
 
-    log.info("Work only using a tiny {} part", useful);
-		sleepMillis(10_000);
+    log.info("Work only using a tiny {} and {} part", a, b);
+		sleepSeconds(30);
 
-		return "✔️";
+		return done();
 	}
 
 	private Big100MB apiCall() {
@@ -28,6 +29,6 @@ public class Leak5_LongStackFrame {
 
 /**
  * ⭐️ KEY POINTS
- * 👍 Keep strictly necessary memory during longer flows
- * 👍 Extract useful data from large external data structures (Adapter pattern)
+ * 👍 Keep only the strictly necessary objects during longer flows
+ * 👍 Call external API via an Adapter returning your own data structures
  */
