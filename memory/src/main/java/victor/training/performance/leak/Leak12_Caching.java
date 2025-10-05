@@ -1,23 +1,18 @@
 package victor.training.performance.leak;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.Id;
-import lombok.*;
+import lombok.Data;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.cache.CacheManager;
 import org.springframework.cache.annotation.Cacheable;
-import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import victor.training.performance.leak.CacheService.InvoiceByDate;
 import victor.training.performance.leak.obj.Big20MB;
 import victor.training.performance.util.PerformanceUtil;
 
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
+import java.time.LocalDate;
 import java.util.UUID;
 
 @RestController
@@ -28,20 +23,20 @@ public class Leak12_Caching {
 
   @GetMapping
   public String key() {
-    Big20MB data = cacheService.getTodayFex(LocalDateTime.now());
+    Big20MB data = cacheService.getTodayFex(LocalDate.now());
     return "Data from cache for today = " + data + ", " + PerformanceUtil.getUsedHeapPretty();
   }
 
   @GetMapping("signature")
   public String signature() {
-    long requestStartTime = System.currentTimeMillis();
-    Big20MB data = cacheService.getContractById(1L, requestStartTime);
+    Big20MB data = cacheService.getContractById(1L);
     return "Contract id:1 = " + data + ", " + PerformanceUtil.getUsedHeapPretty();
   }
 
   @GetMapping("objectKey")
   public String objectKey() {
-    Big20MB data = cacheService.getInvoice(new InvoiceByDate(null, 2023, 10));
+    UUID contractId = UUID.fromString("123e4567-e89b-12d3-a456-426614174000");
+    Big20MB data = cacheService.getInvoice(contractId, 2023, 10);
     return "Invoice = " + data + ", " + PerformanceUtil.getUsedHeapPretty();
   }
 
@@ -56,8 +51,6 @@ public class Leak12_Caching {
 @Slf4j
 @RequiredArgsConstructor
 class CacheService {
-  private final InquiryRepo inquiryRepo;
-
   private Big20MB fetchData() {
     return new Big20MB();
   }
@@ -65,61 +58,37 @@ class CacheService {
   // Note: @Cacheable proxy intercepts the call and
   // returns the previously returned value for the same parameter(s)
   @Cacheable("fex-cache")
-  public Big20MB getTodayFex(LocalDateTime date) {
-    log.debug("Fetch data for date: {}", date.format(DateTimeFormatter.ISO_DATE));
+  public Big20MB getTodayFex(LocalDate date) {
+    log.debug("Fetch data for date: {}", date);
     return fetchData();
   }
 
   @Cacheable("signature")
-  public Big20MB getContractById(Long contractId, long requestStartTime/*added*/) {
-    log.debug("Fetch contract id={} at {}", contractId, requestStartTime);
+  public Big20MB getContractById(Long contractId) {
+    log.debug("Fetch contract id={}", contractId);
     return fetchData();
-  }
-
-  @Getter
-  @Setter
-  static class InvoiceByDate {
-    private UUID contractId;
-    private int year;
-    private int month;
-
-    InvoiceByDate(UUID contractId, int year, int month) {
-      this.contractId = contractId;
-      this.year = year;
-      this.month = month;
-    }
   }
 
   private final CacheManager cacheManager;
 
   @Cacheable("invoices")
-  public Big20MB getInvoice(InvoiceByDate param) {
-    // 'extracted parameters to a class' - commit message by @vibe_coder
-    log.debug("Fetch invoice for {}", param);
+  public Big20MB getInvoice(UUID contractId, int year, int month) {
+    log.debug("Fetch invoice for {} {} {}", contractId, year, month);
     return fetchData();
   }
 
   public Big20MB inquiry(Inquiry param) {
-    return cacheManager.getCache("inquiries")
-        .get(param, () -> { // instead of @Cacheable("inquiries")
-          inquiryRepo.save(param);
-          return fetchData();
-        });
+    return cacheManager.getCache("inquiries") // ≈ @Cacheable("inquiries")
+        .get(param, () -> fetchData());
   }
 }
 
 @Data
-@Entity
 class Inquiry {
-  @Id
-  @GeneratedValue
   Long id;
   UUID contractId;
   int yearValue;
   int monthValue;
-}
-
-interface InquiryRepo extends JpaRepository<Inquiry, Long> {
 }
 
 
