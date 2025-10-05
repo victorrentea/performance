@@ -1,7 +1,9 @@
 package victor.training.performance.leak;
 
 import lombok.Data;
+import lombok.Getter;
 import lombok.RequiredArgsConstructor;
+import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.cache.CacheManager;
 import org.springframework.cache.annotation.Cacheable;
@@ -9,6 +11,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import victor.training.performance.leak.CacheService.InvoiceParams;
 import victor.training.performance.leak.obj.Big20MB;
 import victor.training.performance.util.PerformanceUtil;
 
@@ -37,7 +40,7 @@ public class Leak12_Caching {
   @GetMapping("objectKey")
   public String objectKey() {
     UUID contractId = UUID.fromString("123e4567-e89b-12d3-a456-426614174000");
-    Big20MB data = cacheService.getInvoice(contractId, 2023, 10);
+    Big20MB data = cacheService.getInvoice(new InvoiceParams(contractId, 2023, 10));
     return "Invoice = " + data + ", " + PerformanceUtil.getUsedHeapPretty();
   }
 
@@ -72,9 +75,18 @@ class CacheService {
 
   private final CacheManager cacheManager;
 
+  @RequiredArgsConstructor
+  @Getter
+  @Setter
+  static class InvoiceParams{
+    private final UUID contractId;
+    private final int year;
+    private final int month;
+  }
+
   @Cacheable("invoices")
-  public Big20MB getInvoice(UUID contractId, int year, int month) {
-    log.debug("Fetch invoice for {} {} {}", contractId, year, month);
+  public Big20MB getInvoice(InvoiceParams params) {
+    log.debug("Fetch invoice for {} {} {}", params.getContractId(), params.getYear(), params.getMonth());
     return fetchData();
   }
 
