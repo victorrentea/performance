@@ -14,13 +14,21 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import victor.training.performance.leak.CacheService.InvoiceParams;
 import victor.training.performance.leak.obj.Big20MB;
 import victor.training.performance.util.PerformanceUtil;
 
-import java.time.LocalDateTime;
+import java.time.LocalDate;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.UUID;
+
+import static java.util.stream.Collectors.joining;
+import static java.util.stream.IntStream.range;
+import static victor.training.performance.util.PerformanceUtil.done;
 
 @RestController
 @RequestMapping("leak12")
@@ -29,9 +37,15 @@ public class Leak12_Caching {
   private final CacheService cacheService;
 
   @GetMapping
-  public String key() {
-    Big20MB data = cacheService.getTodayFex(LocalDateTime.now());
-    return "Data from cache for today = " + data + ", " + PerformanceUtil.getUsedHeapPretty();
+  public String key(@RequestParam(required = false) LocalDate date) {
+    if (date == null) {
+      date = LocalDate.now();
+    }
+    Big20MB data = cacheService.getTodayFex(date);
+    return "Data from cache for today = " + data + ", " + PerformanceUtil.getUsedHeapPretty() + "<br>" +
+           "also try Jan " +
+           range(1,30).mapToObj("<a href='leak12?date=2025-01-%1$02d'>%1$s</a>, "::formatted).collect(joining()) +
+           " " + done();
   }
 
   @GetMapping("signature")
@@ -65,14 +79,17 @@ class CacheService {
     return new Big20MB();
   }
 
-  // Note: @Cacheable proxy intercepts the call and
-  // returns the previously returned value for the same parameter(s)
-  @Cacheable("fex-cache")
-  public Big20MB getTodayFex(LocalDateTime date) {
-    log.debug("Fetch data for date: {}", date);
-    return fetchData();
+  Map<LocalDate, Big20MB> fex = Collections.synchronizedMap(new HashMap<>());
+
+  public Big20MB getTodayFex(LocalDate date) {
+    return fex.computeIfAbsent(date, d -> {
+      log.debug("Fetch data for date: {}", date);
+      return fetchData();
+    });
   }
 
+  // Note: @Cacheable proxy intercepts the call and
+  // returns the previously returned value for the same parameter(s)
   @Cacheable("signature")
   public Big20MB getContractById(Long contractId, long requestTime) {
     log.debug("Fetch contract id={} at {}", contractId, requestTime);
@@ -84,7 +101,7 @@ class CacheService {
   @RequiredArgsConstructor
   @Getter
   @Setter
-  static class InvoiceParams{
+  static class InvoiceParams {
     private final UUID contractId;
     private final int year;
     private final int month;
@@ -115,6 +132,7 @@ class Inquiry {
   int yearValue;
   int monthValue;
 }
+
 interface InquiryRepo extends JpaRepository<Inquiry, Long> {
 }
 
