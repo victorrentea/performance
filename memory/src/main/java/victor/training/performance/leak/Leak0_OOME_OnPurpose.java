@@ -27,5 +27,6 @@ public class Leak0_OOME_OnPurpose {
  * 👍 OOME should kill the process
  * 👍 OOME should dump the heap on disk
  * ⚠️ You can get that heapdump.hprof from production
- * 😎 Sensitive prod data -> https://github.com/paypal/heap-dump-tool
+ * 😎 Sanitize/Anonymize heapdump with https://github.com/paypal/heap-dump-tool
+ * ☣️ Instance fields of singleton are permanent ≈ 'static'
  */

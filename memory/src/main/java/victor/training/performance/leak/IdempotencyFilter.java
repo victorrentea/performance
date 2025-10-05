@@ -20,7 +20,7 @@ public class IdempotencyFilter extends HttpFilter {
 
   record Call(String idempotencyKey) {}
 
-  // FIXME: clear every second calls older than 2 seconds (dedup window)
+  // FIXME: clear every second calls older than 3 seconds (dedup window)
 
   @Override
   protected void doFilter(HttpServletRequest request, HttpServletResponse response, FilterChain chain) throws IOException, ServletException {
@@ -50,8 +50,7 @@ public class IdempotencyFilter extends HttpFilter {
 /**
  * ⭐️ KEY POINTS
  * ☣️ Most leaks occur in libraries or unknown code
- * ☣️ Instance fields of singleton are permanent ≈ 'static'
- * ☣️ Set a max size to any permanent unbounded collection: List, Set, Map<♾️keys
- * 👍 For a cache: use a library with max-count/key-ttl
+ * ☣️ Set a max size to any permanent collection: List, Set, Map<♾️keys
+ * 👍 For a cache: use a library with key max-count/ttl
  */
 
