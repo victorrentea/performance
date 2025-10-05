@@ -1,5 +1,8 @@
 package victor.training.performance.leak;
 
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.Id;
 import lombok.Data;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
@@ -7,6 +10,7 @@ import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.cache.CacheManager;
 import org.springframework.cache.annotation.Cacheable;
+import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -55,6 +59,8 @@ public class Leak12_Caching {
 @Slf4j
 @RequiredArgsConstructor
 class CacheService {
+  private final InquiryRepo inquiryRepo;
+
   private Big20MB fetchData() {
     return new Big20MB();
   }
@@ -92,16 +98,24 @@ class CacheService {
 
   public Big20MB inquiry(Inquiry param) {
     return cacheManager.getCache("inquiries") // ≈ @Cacheable("inquiries")
-        .get(param, () -> fetchData());
+        .get(param, () -> {
+          inquiryRepo.save(param);
+          return fetchData();
+        });
   }
 }
 
 @Data
+@Entity
 class Inquiry {
+  @GeneratedValue
+  @Id
   Long id;
   UUID contractId;
   int yearValue;
   int monthValue;
+}
+interface InquiryRepo extends JpaRepository<Inquiry, Long> {
 }
 
 
