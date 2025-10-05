@@ -12,8 +12,8 @@ public class Leak1LibLoad extends Simulation {
 
   {
     setUp(scenario(getClass().getSimpleName())
-        .exec(http("").get("/leak1lib"))
-        .injectClosed(constantConcurrentUsers(1000).during(ofSeconds(5))))
+        .exec(http("").get("/leak1/lib"))
+        .injectClosed(constantConcurrentUsers(4000).during(ofSeconds(5))))
         .protocols(http.baseUrl("http://localhost:8080"))
         .assertions(global().successfulRequests().percent().gt(99.0));
   }

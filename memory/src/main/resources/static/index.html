@@ -1,13 +1,15 @@
 <h1>Memory Leaks</h1>
-Click a link, refresh the page several times, take a heapdump (for example with VisualVM) then trace the memory leak.
+Click a link, refresh the page several times, analyze the heapdump (in VisualVM, IntelliJ, jProfiler...) then trace the memory leak.
 <ul>
     <li><a href="leak0">0) OOME Intentional</a> 👉 JVM should dump and die☠️</li>
     <li><a href="leak1">1) Magic 🪄✨</a></li>
-    <li><a href="leak1/lib">1/lib) ThreadLocal Cache</a> 🔥</li>
+    <li><a href="leak1/lib">1) ThreadLocal Cache by Lib</a> 🔥</li>
     <li>2) Hidden Links:
-        <a href="leak2/inner">Inner 🔎</a>,
-        <a href="leak2/anon">Anonymous Implementation</a>,
-        <a href="leak2/map">Map init {{</a>
+        <ul>
+            <li><a href="leak2/inner">Inner Class 🧩</a> ≤ javac 17</li>
+            <li><a href="leak2/anon">Anonymous Implementation</a> ≤ javac 17</li>
+            <li><a href="leak2/map">new Map() {{</a></li>
+        </ul>
     </li>
     <li><a href="leak3">3) SubList</a> 🔥</li>
     <li><a href="leak4">4) XML DOM</a></li>

@@ -1,5 +1,6 @@
 <component name="ProjectRunConfigurationManager">
   <configuration default="false" name="MemoryApp" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot" nameIsGenerated="true">
+    <option name="ALTERNATIVE_JRE_PATH" value="17" />
     <module name="memory" />
     <option name="SPRING_BOOT_MAIN_CLASS" value="victor.training.performance.MemoryApp" />
     <option name="VM_PARAMETERS" value="-XX:+HeapDumpOnOutOfMemoryError -XX:+ExitOnOutOfMemoryError -XX:HeapDumpPath=$PROJECT_DIR$ -Xmx500m" />

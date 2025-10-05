@@ -8,8 +8,8 @@ import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.context.event.EventListener;
 import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.scheduling.annotation.EnableScheduling;
+import victor.training.performance.util.PerformanceUtil;
 
-@SuppressWarnings({"NullableProblems"})
 @Slf4j
 @EnableAsync
 @EnableCaching
@@ -22,6 +22,8 @@ public class MemoryApp {
 
   @EventListener
   public void onStart(ApplicationReadyEvent event) {
-    log.info("🌟🌟🌟🌟🌟🌟 MemoryApp at http://localhost:8080 pid {} 🌟🌟🌟🌟🌟🌟", ProcessHandle.current().pid());
+    log.info("🌟🌟🌟 MemoryApp at http://localhost:8080 pid {} {} 🌟🌟🌟",
+        ProcessHandle.current().pid(),
+        PerformanceUtil.getJavacVersion(MemoryApp.class));
   }
 }

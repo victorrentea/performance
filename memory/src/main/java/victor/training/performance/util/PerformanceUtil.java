@@ -2,7 +2,11 @@ package victor.training.performance.util;
 
 import lombok.SneakyThrows;
 import org.apache.commons.lang.RandomStringUtils;
+import victor.training.performance.MemoryApp;
 
+import java.io.DataInputStream;
+import java.io.IOException;
+import java.io.InputStream;
 import java.lang.management.ManagementFactory;
 import java.lang.management.RuntimeMXBean;
 import java.text.SimpleDateFormat;
@@ -173,4 +177,37 @@ public class PerformanceUtil {
     long deltaHeap = heap1 - heap0;
     return new AllocationResult(x, deltaHeap);
   }
+
+  public static void main(String[] args) throws IOException {
+    String className = MemoryApp.class.getName();
+    String resource = "/" + className.replace('.', '/') + ".class";
+    try (InputStream in = MemoryApp.class.getResourceAsStream(resource)) {
+      DataInputStream dis = new DataInputStream(in);
+      int magic = dis.readInt(); // 0xCAFEBABE
+      int minor = dis.readUnsignedShort();
+      int major = dis.readUnsignedShort();
+      System.out.println(className + " compiled for major=" + major + " minor=" + minor);
+    }
+  }
+
+  @SneakyThrows
+  public static String getJavacVersion(Class<?> clazz) {
+    Map<Integer, String> JAVA_CLASS_VERSION_MAP = Map.of(
+        52, "javac 8",
+        55, "javac 11",
+        61, "javac 17",
+        65, "javac 21",
+        69, "javac 25"
+    );
+    String resource = "/" + clazz.getName().replace('.', '/') + ".class";
+    try (InputStream in = clazz.getResourceAsStream(resource)) {
+      DataInputStream dis = new DataInputStream(in);
+      dis.readInt();
+      int minor = dis.readUnsignedShort();
+      int major = dis.readUnsignedShort();
+      return JAVA_CLASS_VERSION_MAP.getOrDefault(major, "non-LTS:"+major);
+    }
+  }
+
+
 }

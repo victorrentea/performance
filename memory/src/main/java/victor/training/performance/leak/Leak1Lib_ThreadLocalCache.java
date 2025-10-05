@@ -17,7 +17,7 @@ public class Leak1Lib_ThreadLocalCache {
   @GetMapping("leak1/lib")
   public String endpoint() {
     String work = Library.method();
-    sleepMillis(300); // application logic
+    sleepMillis(1000); // application logic
     return "Manifests under high RPS on Virtual Threads";
   }
 }
