@@ -21,14 +21,44 @@ import java.util.List;
 public class Leak14_ClassLoader {
   private static Class<?> classLoadPlugin(File classFile) throws MalformedURLException, ClassNotFoundException {
     URL currentFolderUrl = classFile.getParentFile().toURI().toURL();
+    // separate classloader prevents classname conflicts
     ClassLoader classLoader = URLClassLoader.newInstance(new URL[]{currentFolderUrl});
     return Class.forName("Plugin", true, classLoader);
   }
+
+  @GetMapping("leak14")
+  public String uploadNewPluginVersion() throws Exception {
+    currentVersion++;
+    File classFile = compilePlugin(currentVersion);
+    Class<?> clazz = classLoadPlugin(classFile);
+
+    // Case1: plugin starts a thread
+    clazz.getMethod("start").invoke(null);
+    // FIX: stop the old plugin
+//    if (lastPluginClass != null) lastPluginClass.getMethod("stop").invoke(null);
+
+    // Case2: an instance of a class in Plugin jar is added to a list
+//    plugins.add(clazz.newInstance());
+
+    // FIX: dereference the old plugin
+//    if (lastPluginClass != null) plugins.clear();
+
+    lastPluginClass = clazz;
+    return "Uploaded new plugin version " + currentVersion + " from: " + classFile;
+  }
+
+  int currentVersion = 0;
+
+  static Class<?> lastPluginClass; // to stop or remove on classload new
+
+  static List<Object> plugins = new ArrayList<>();
 
   public File compilePlugin(int version) throws IOException {
     // We have to compile a .class on the fly so that it's NOT in target/classes,
     // otherwise the call to URLClassCoader.loadClass("Plugin")
     // would be served by the top level app classloader - the class never loaded by the new URLClassLoader.
+
+    //language=java
     File file = Files.writeString(Path.of("Plugin.java"), """
             public class Plugin {
                 static int[] data = new int[5*1024*1024]; // 10MB
@@ -65,36 +95,5 @@ public class Leak14_ClassLoader {
     return new File(file.getAbsolutePath().replace(".java", ".class"));
   }
 
-  int currentVersion = 0;
-
-  @GetMapping("leak14")
-  public String uploadNewPluginVersion() throws Exception {
-    currentVersion++;
-    File classFile = compilePlugin(currentVersion);
-    Class<?> clazz = classLoadPlugin(classFile);
-
-    // Case1: plugin starts a thread
-    clazz.getMethod("start").invoke(null);
-    // FIX: stop the old plugin
-//    if (lastPluginClass != null) lastPluginClass.getMethod("stop").invoke(null);
-
-    // Case2: an instance of a class in Plugin jar is added to a list
-//    plugins.add(clazz.newInstance());
-
-    // FIX: dereference the old plugin
-//    if (lastPluginClass != null) plugins.clear();
-
-    lastPluginClass = clazz;
-    return "Uploaded new plugin version " + currentVersion +
-           " from compiled class " + classFile;
-  }
-
-  static Class<?> lastPluginClass; // to cancel on unload
-
-  static List<Object> plugins = new ArrayList<>();
-
-  public static void registerPlugin(Object plugin) {
-    plugins.add(plugin);
-  }
 
 }

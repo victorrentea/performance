@@ -17,7 +17,7 @@ public class Leak5Lib_ThreadLocalCache {
     // what TODO ?
     sleepMillis(300); // my application logic
     boolean vt = false;
-    vt = Thread.currentThread().isVirtual();
+//    vt = Thread.currentThread().isVirtual();
     return "Manifests under high RPS on Virtual Threads"
            + (vt ? "" : "<br>⚠️⚠️⚠️ <span style='color:red'>NOT RUNNING ON A VIRTUAL THREAD ⚠️⚠️⚠️</span>")
         ;

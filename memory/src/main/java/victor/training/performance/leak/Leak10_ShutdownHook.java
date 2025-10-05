@@ -10,11 +10,13 @@ import java.util.HashSet;
 import java.util.IdentityHashMap;
 import java.util.Set;
 
+import static victor.training.performance.util.PerformanceUtil.done;
+
 @RestController
 public class Leak10_ShutdownHook {
   @GetMapping("leak10")
   public String add() throws Exception {
-    return "♾️ Leak doing " + OldLib.doWork();
+    return "♾️ Leak doing " + OldLib.doWork() + " " + done();
   }
 }
 

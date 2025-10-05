@@ -13,13 +13,13 @@ public class Leak8_Deadlock {
 	@GetMapping("/one")
 	public String one() throws Exception {
 		A.entry();
-		return printHowtoDeadlockMessage("two");
+		return howtoDeadlockInstructions("two");
 	}
 
 	@GetMapping("/two")
 	public String two() throws Exception {
 		B.entry();
-		return printHowtoDeadlockMessage("one");
+		return howtoDeadlockInstructions("one");
 	}
 
 	static class A {
@@ -60,7 +60,7 @@ public class Leak8_Deadlock {
     return "call <a href='./one'>one</a> and <a href='./two'>two</a> within 3 secs..";
   }
 
-  private String printHowtoDeadlockMessage(String other) {
+  private String howtoDeadlockInstructions(String other) {
     return """
         Refresh the page, then <a href='%s' target='_blank'>call /%s</a> 
         within 3 seconds to produce the deadlock.<br>

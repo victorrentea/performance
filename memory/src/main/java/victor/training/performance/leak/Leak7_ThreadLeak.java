@@ -8,6 +8,7 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
+import static victor.training.performance.util.PerformanceUtil.done;
 import static victor.training.performance.util.PerformanceUtil.sleepMillis;
 
 @SuppressWarnings("resource")
@@ -19,7 +20,7 @@ public class Leak7_ThreadLeak {
     ExecutorService pool = Executors.newFixedThreadPool(2);
     var f1 = pool.submit(() -> apiCallA());
     var f2 = pool.submit(() -> apiCallB());
-    return f1.get() + f2.get();
+    return f1.get() + f2.get() + " " + done();
   }
 
   private static String apiCallA() {

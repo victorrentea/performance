@@ -29,7 +29,7 @@ import static victor.training.performance.util.PerformanceUtil.sleepSeconds;
 @Slf4j
 @RestController
 @RequiredArgsConstructor
-public class Leak6_Files {
+public class Leak6_Async {
   private final FileProcessor processor;
   private static final AtomicInteger counter = new AtomicInteger(0);
 
@@ -41,7 +41,7 @@ public class Leak6_Files {
     log.info("Got {} bytes", data.length());
     CompletableFuture.runAsync(() -> processor.process(data, taskId));
     return """
-        Task (10s) submitted #%d<br>
+        Task submitted: #%d<br>
         Data: %,d bytes<br>
         Look in <a href='http://localhost:8080/actuator/prometheus'>metrics</a> for 'fjp'"""
         .formatted(taskId, data.length());

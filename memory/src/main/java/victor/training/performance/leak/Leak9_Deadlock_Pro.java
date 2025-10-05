@@ -25,14 +25,14 @@ public class Leak9_Deadlock_Pro {
     Big1KB obj = new Big1KB();
     log.info("Start one with {} on stack", obj);
     mapA.compute(a, (k, v) -> (v == null ? "" : v) + process(a) + mapB.get(a));
-    return printHowtoDeadlockMessage("two");
+    return howtoDeadlockInstructions("two");
   }
 
   @GetMapping("/two")
   public String two(@RequestParam(defaultValue = "a") String a) {
     log.info("Start two");
     mapB.compute(a, (k, v) -> (v == null ? "" : v) + process(a) + mapA.get(a));
-    return printHowtoDeadlockMessage("one");
+    return howtoDeadlockInstructions("one");
   }
 
   //TODO take a thread (core) dump ± Virtual Threads
@@ -48,7 +48,7 @@ public class Leak9_Deadlock_Pro {
     return "call <a href='/leak9/one'>one</a> and <a href='/leak9/two'>two</a> within 3 secs..";
   }
 
-  private String printHowtoDeadlockMessage(String other) {
+  private String howtoDeadlockInstructions(String other) {
     return """
         Refresh the page, then <a href='%s' target='_blank'>call /%s</a> 
         within 3 seconds to produce the deadlock.<br>
