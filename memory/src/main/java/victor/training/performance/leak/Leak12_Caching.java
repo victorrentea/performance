@@ -21,11 +21,11 @@ import victor.training.performance.leak.obj.Big20MB;
 import victor.training.performance.util.PerformanceUtil;
 
 import java.time.LocalDate;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 
+import static java.util.Collections.synchronizedMap;
 import static java.util.stream.Collectors.joining;
 import static java.util.stream.IntStream.range;
 import static victor.training.performance.util.PerformanceUtil.done;
@@ -79,10 +79,10 @@ class CacheService {
     return new Big20MB();
   }
 
-  Map<LocalDate, Big20MB> fex = Collections.synchronizedMap(new HashMap<>());
+  Map<LocalDate, Big20MB> fexCache = synchronizedMap(new HashMap<>());
 
   public Big20MB getTodayFex(LocalDate date) {
-    return fex.computeIfAbsent(date, d -> {
+    return fexCache.computeIfAbsent(date, d -> {
       log.debug("Fetch data for date: {}", date);
       return fetchData();
     });
