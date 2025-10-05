@@ -29,7 +29,8 @@ public class Leak12_Caching {
 
   @GetMapping("signature")
   public String signature() {
-    Big20MB data = cacheService.getContractById(1L);
+    long requestTime = System.currentTimeMillis();
+    Big20MB data = cacheService.getContractById(1L, requestTime);
     return "Contract id:1 = " + data + ", " + PerformanceUtil.getUsedHeapPretty();
   }
 
@@ -64,8 +65,8 @@ class CacheService {
   }
 
   @Cacheable("signature")
-  public Big20MB getContractById(Long contractId) {
-    log.debug("Fetch contract id={}", contractId);
+  public Big20MB getContractById(Long contractId, long requestTime) {
+    log.debug("Fetch contract id={} at {}", contractId, requestTime);
     return fetchData();
   }
 
