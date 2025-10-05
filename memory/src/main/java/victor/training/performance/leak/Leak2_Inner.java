@@ -10,7 +10,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Predicate;
-import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import static victor.training.performance.util.PerformanceUtil.done;
@@ -30,16 +29,16 @@ public class Leak2_Inner {
     sleepSeconds(30);
   }
 
-  //<editor-fold desc="Similar entry points /anon /map">
-  @GetMapping("anon")
-  public String anon() {
+  //<editor-fold desc="Similar entry points /implem /subclass">
+  @GetMapping("implem")
+  public String implem() {
     Stream<String> supplier = new CalculatorFactory().anonymousVsLambdas(List.of("a"));
     sleepSeconds(30); // some long workflow
-    return supplier.collect(Collectors.toList()).toString();
+    return supplier.toList().toString();
   }
 
-  @GetMapping("map")
-  public Map<String, Integer> map() {
+  @GetMapping("subclass")
+  public Map<String, Integer> subclass() {
     Map<String, Integer> map = new CalculatorFactory().mapInit();
     sleepSeconds(30); // some long workflow
     return map;

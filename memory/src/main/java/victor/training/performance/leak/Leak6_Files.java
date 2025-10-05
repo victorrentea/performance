@@ -23,6 +23,7 @@ import java.util.concurrent.ForkJoinPool;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import static victor.training.performance.leak.Leak6_Helper.fetchData;
+import static victor.training.performance.util.PerformanceUtil.MB;
 import static victor.training.performance.util.PerformanceUtil.sleepSeconds;
 
 @Slf4j
@@ -35,12 +36,12 @@ public class Leak6_Files {
   @GetMapping("leak6/download") // 🔥 Leak6Load.java
   public String download() {
     int taskId = counter.incrementAndGet();
-    MDC.put("traceId", "#Trace" + counter);
-    String data = fetchData(10_000_000);
+    MDC.put("traceId", "#" + counter);
+    String data = fetchData(MB(10));
     log.info("Got {} bytes", data.length());
     CompletableFuture.runAsync(() -> processor.process(data, taskId));
     return """
-        Task (10s) submitted: %d<br>
+        Task (10s) submitted #%d<br>
         Data: %,d bytes<br>
         Look in <a href='http://localhost:8080/actuator/prometheus'>metrics</a> for 'fjp'"""
         .formatted(taskId, data.length());
@@ -52,21 +53,21 @@ public class Leak6_Files {
 class FileProcessor {
   public void process(String contents, int taskId) {
     log.debug("Task {} started ...", taskId);
-    //if (true) throw new RuntimeException("Invisible Bug");
+    //if (true) throw new RuntimeException("Bug🪲");
     sleepSeconds(10);
     long newLinesCount = contents.chars().filter(c -> c == 10).count();
-    log.debug("Task {} completed: lines = {}", taskId, newLinesCount);
+    log.debug("Task {} completed: counted {} lines", taskId, newLinesCount);
   }
 }
 
 
 /**
  * ⭐️ KEY POINTS
- * ☣️ CompletableFuture.xyzAsync(->) uses an unbounded queue
  * 👍 Offload large objects from memory to (eg) disk/S3🪣
- * 👍 Use bounded queues for thread pools
- * 👍 ForkJoinPool.commonPool() can me monitored (see below)
- * 👍 Pass a Spring executor to any CompletableFuture.*Async(,executor)
+ * 👍 Use bounded queues (eg for thread pools)
+ * ☣️ CompletableFuture.xyzAsync(->) run on FJP.commonPool(), which has an unbounded queue
+ * 👍 ForkJoinPool.commonPool() can be monitored (see below how)
+ * 👍 Pass a Spring executor to any CompletableFuture.*Async(,👉executor)
  */
 
 

@@ -176,6 +176,16 @@ public class PerformanceUtil {
     return "✔ " + LocalTime.now().format(ofPattern("hh:mm:ss"));
   }
 
+  /** @return in bytes */
+  public static int MB(int mb) {
+    return mb * 1024 * 1024;
+  }
+
+  /** @return in bytes */
+  public static int kb(int kb) {
+    return kb * 1024;
+  }
+
   public record AllocationResult<T>(T result, long deltaHeapBytes) {}
 
   @SneakyThrows

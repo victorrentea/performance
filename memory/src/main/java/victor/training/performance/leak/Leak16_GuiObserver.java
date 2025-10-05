@@ -26,14 +26,14 @@ public class Leak16_GuiObserver {
     button.addActionListener(e -> {
       LeakyFrame leakyFrame = new LeakyFrame();
 
-      // ☣️ main frame linked to the new (disposable) frame
-      MouseAdapter listener = new MouseAdapter() {
+      MouseAdapter mouseListener = new MouseAdapter() {
         @Override
         public void mouseMoved(MouseEvent e) {
           leakyFrame.changeColor();
         }
       };
-      mainFrame.addMouseMotionListener(listener);
+      // ☣️ new (disposable) frame permanently linked to main frame
+      mainFrame.addMouseMotionListener(mouseListener);
 
       //region solution
       //      leakyFrame.addWindowListener(new WindowAdapter() {

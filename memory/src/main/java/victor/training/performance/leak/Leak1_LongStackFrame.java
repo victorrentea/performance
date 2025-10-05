@@ -9,14 +9,14 @@ import static victor.training.performance.util.PerformanceUtil.*;
 
 @Slf4j
 @RestController
-public class Leak5_LongStackFrame {
-	@GetMapping("leak5")
+public class Leak1_LongStackFrame {
+	@GetMapping("leak1")
 	public String endpoint() {
 		Big100MB bigDto = apiCall();
 		String a = bigDto.getA();
 		String b = bigDto.getA();
 
-    log.info("Work only using a tiny {} and {} part", a, b);
+    log.info("Work only using {} and {}", a, b);
 		sleepSeconds(30);
 
 		return done();

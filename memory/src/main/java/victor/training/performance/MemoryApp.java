@@ -10,6 +10,10 @@ import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import victor.training.performance.util.PerformanceUtil;
 
+import static java.util.concurrent.CompletableFuture.delayedExecutor;
+import static java.util.concurrent.CompletableFuture.runAsync;
+import static java.util.concurrent.TimeUnit.SECONDS;
+
 @Slf4j
 @EnableAsync
 @EnableCaching
@@ -25,5 +29,6 @@ public class MemoryApp {
     log.info("🌟🌟🌟 MemoryApp at http://localhost:8080 pid {} {} 🌟🌟🌟",
         ProcessHandle.current().pid(),
         PerformanceUtil.getJavacVersion(MemoryApp.class));
+    runAsync(System::gc, delayedExecutor(2, SECONDS));
   }
 }

@@ -7,13 +7,13 @@ import victor.training.performance.leak.obj.Big20MB;
 import java.time.LocalDateTime;
 
 @RestController
-public class Leak1_ThreadLocal {
+public class Leak5_ThreadLocal {
   private static final ThreadLocal<RequestContext> threadLocal = new ThreadLocal<>();
 
   record RequestContext(String currentUser, Big20MB big) {
   }
 
-  @GetMapping("leak1")
+  @GetMapping("leak5")
   public String controllerMethod() {
     String currentUsername = "john.doe"; // from request header/JWT/http session
     threadLocal.set(new RequestContext(currentUsername, new Big20MB()));
