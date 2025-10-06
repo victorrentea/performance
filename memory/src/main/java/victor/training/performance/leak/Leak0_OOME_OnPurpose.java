@@ -11,13 +11,13 @@ public class Leak0_OOME_OnPurpose {
   @GetMapping("leak0")
   public String causeOOME() {
     List<int[]> boom = new ArrayList<>();
-    while (true) boom.add(new int[1000_000]);
+    while (true) boom.add(new int[100_000]);
 
     // TODO + in your prod
+    //  + JVM arg: -XX:+ExitOnOutOfMemoryError
     //  + JVM arg: -XX:+HeapDumpOnOutOfMemoryError
-    //  + JVM arg: -XX:HeapDumpPath=/path/to/folder
+    //  + JVM arg: -XX:HeapDumpPath=/Users/victorrentea/workspace/performance
     //  > Experiment: turn variable into field - what changes?
-    //  ± JVM arg: -XX:+ExitOnOutOfMemoryError
     //  > Open in browser http://localhost:8080/leak0
     //  > Find the .hprof file in /path/to/folder
     //  > Load it in IntelliJ, VisualVM, jProfiler or MemoryAnalyzer(MAT)
