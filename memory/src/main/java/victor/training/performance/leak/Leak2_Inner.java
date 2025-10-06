@@ -26,21 +26,21 @@ public class Leak2_Inner {
   }
 
   private void work(Calculator calculator) {
-    sleepSeconds(30);
+    sleepSeconds(30); // time to take a heap dump
   }
 
   //<editor-fold desc="Similar entry points /implem /subclass">
   @GetMapping("implem")
   public String implem() {
     Stream<String> supplier = new CalculatorFactory().anonymousVsLambdas(List.of("a"));
-    sleepSeconds(30); // some long workflow
+    sleepSeconds(30); // time to take a heap dump
     return supplier.toList().toString();
   }
 
   @GetMapping("subclass")
   public Map<String, Integer> subclass() {
     Map<String, Integer> map = new CalculatorFactory().mapInit();
-    sleepSeconds(30); // some long workflow
+    sleepSeconds(30); // time to take a heap dump
     return map;
   }
   //</editor-fold>

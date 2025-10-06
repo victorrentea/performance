@@ -46,10 +46,7 @@ public class Leak4_XmlDom {
 
     log.info("Found {} nodes", modelVersion.size());
     Node first = modelVersion.get(0);
-    log.info("First: class={}, {}, text: {}",
-        first.getClass().getSimpleName(),
-        first,
-        first.getTextContent());
+    log.info("First: class={}, text: {}", first.getClass().getSimpleName(), first.getTextContent());
 
     sleepSeconds(30); // time to take a heap dump
   }
