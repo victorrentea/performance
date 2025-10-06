@@ -33,12 +33,12 @@ public class Leak14_ClassLoader {
     Class<?> clazz = classLoadPlugin(classFile);
 
     // Case1: plugin.jar/webapp.war starts a thread
-    clazz.getMethod("start").invoke(null);
+//    clazz.getMethod("start").invoke(null);
     // TODO FIX: stop the old plugin
 //    if (lastPluginClass != null) lastPluginClass.getMethod("stop").invoke(null);
 
     // Case2: an instance of a class in Plugin jar is added to a list
-//    plugins.add(clazz.newInstance());
+    plugins.add(clazz.newInstance());
 
     // TODO FIX: dereference the old plugin
 //    if (lastPluginClass != null) plugins.clear();
