@@ -31,7 +31,7 @@ public class Leak5_ThreadLocal {
     String currentUsername = threadLocal.get().currentUser();
     System.out.println("UPDATE ... MODIFIED_BY=" + currentUsername);
   }
-} // 🔥 Leak1Load
+}
 
 /** ⭐️ KEY POINTS
  * 🧠 ThreadLocal is used in BE to propagate invisible 'metadata':
