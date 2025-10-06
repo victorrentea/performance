@@ -5,6 +5,7 @@ import org.springframework.web.bind.annotation.RestController;
 import victor.training.performance.leak.obj.Big20MB;
 
 import static victor.training.performance.util.PerformanceUtil.done;
+import static victor.training.performance.util.PerformanceUtil.getUsedHeapHuman;
 
 @RestController
 public class Leak5_ThreadLocal {
@@ -20,7 +21,7 @@ public class Leak5_ThreadLocal {
 
     service();
 
-    return "Magic can hurt " + done();
+    return "Magic can hurt " + done() + "<p>" + getUsedHeapHuman();
   }
 
   private void service() {
