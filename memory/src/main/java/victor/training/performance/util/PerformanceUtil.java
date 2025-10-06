@@ -182,7 +182,7 @@ public class PerformanceUtil {
   }
 
   /** @return in bytes */
-  public static int kb(int kb) {
+  public static int KB(int kb) {
     return kb * 1024;
   }
 

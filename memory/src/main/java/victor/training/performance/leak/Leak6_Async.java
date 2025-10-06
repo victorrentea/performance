@@ -33,17 +33,19 @@ public class Leak6_Async {
   private final FileProcessor processor;
   private static final AtomicInteger counter = new AtomicInteger(0);
 
-  @GetMapping("leak6/download") // 🔥 Leak6Load.java
+  @GetMapping("leak6/download")
   public String download() {
     int taskId = counter.incrementAndGet();
-    MDC.put("traceId", "#" + counter);
-    String data = fetchData(MB(10));
+    MDC.put("traceId", "" + taskId);
+    String data = fetchData(MB(10)); // Exaggeration ?
     log.info("Got {} bytes", data.length());
     CompletableFuture.runAsync(() -> processor.process(data, taskId));
+    // Bad for: unbounded queue, no lifting of ThreadLocal, exceptions lost
     return """
-        Task submitted: #%d<br>
-        Data: %,d bytes<br>
-        Look in <a href='http://localhost:8080/actuator/prometheus'>metrics</a> for 'fjp'"""
+        Long task submitted: #%d<br>
+        Data in memory: %,d bytes<br>
+        Reload 20x, then look in <a href='http://localhost:8080/actuator/prometheus' target='_blank'>metrics</a> for 'fjp'<br>
+        Keep reloading page for OOME :)"""
         .formatted(taskId, data.length());
   }
 }
@@ -110,8 +112,9 @@ class Leak6Config {
     executor.setQueueCapacity(5); // rejects tasks when the queue is full
     executor.setThreadNamePrefix("myexec-");
     executor.initialize();
+    // lift ThreadLocal data from the submitter thread:
     executor.setTaskDecorator(task -> {
-      var submitterMDC = MDC.getCopyOfContextMap(); // de pe threadul părinte
+      var submitterMDC = MDC.getCopyOfContextMap();
       return () -> {
         try {
           MDC.setContextMap(submitterMDC);

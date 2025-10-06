@@ -65,7 +65,7 @@ class Library {
   private static LibContext init() {
     log.info("Init Lib⏱️ ...");
     sleepMillis(30); // takes a tiny bit of time
-    return new LibContext(42, new Big(kb(100)));
+    return new LibContext(42, new Big(KB(100)));
   }
 
   private record LibContext(
