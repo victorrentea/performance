@@ -16,23 +16,12 @@ import static victor.training.performance.util.PerformanceUtil.done;
 public class Leak10_ShutdownHook {
   @GetMapping("leak10")
   public String add() throws Exception {
-    return "♾️ Leak doing " + OldLib.doWork() + done();
+    String result = OldLib.doWork();
+    return "♾️ Leak doing " + result + done();
   }
-}
 
-// 🔽 in a .jar you cannot change
-class OldLib {
-  // lib was designed in the early 2000s to be used in a desktop/console/job app
-  public static String doWork() {
-    Big20MB big = new Big20MB();
-    Runtime.getRuntime().addShutdownHook(new Thread(() ->
-        System.out.println("Cleanup: " + big)));
-    return "Work";
-  }
-}
-
-class HackyFix {
-  public static void cleanHooksUsingReflection() throws Exception {
+  //region Solution (you won't like it)
+  public static void clearHooksUsingReflection() throws Exception {
     Class<?> clazz = Class.forName("java.lang.ApplicationShutdownHooks");
     Field hooksField = clazz.getDeclaredField("hooks");
 
@@ -47,5 +36,17 @@ class HackyFix {
     for (Thread t : keys) {
       Runtime.getRuntime().removeShutdownHook(t);
     }
+  }
+  //endregion
+}
+
+// 🔽 in a .jar you cannot change
+class OldLib {
+  // lib was designed in the early 2000s to be used in a desktop/console/job app
+  public static String doWork() {
+    Big20MB someUsedData = new Big20MB();
+    Runtime.getRuntime().addShutdownHook(new Thread(() ->
+        System.out.println("Cleanup: " + someUsedData)));
+    return "Work";
   }
 }

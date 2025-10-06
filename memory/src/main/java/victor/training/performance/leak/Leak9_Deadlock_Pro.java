@@ -25,6 +25,7 @@ public class Leak9_Deadlock_Pro {
     Big1KB obj = new Big1KB();
     log.info("Start one with {} on stack", obj);
     mapA.compute(a, (k, v) -> (v == null ? "" : v) + process(a) + mapB.get(a));
+    log.info("End one");
     return howtoDeadlockInstructions("two");
   }
 
@@ -32,6 +33,7 @@ public class Leak9_Deadlock_Pro {
   public String two(@RequestParam(defaultValue = "a") String a) {
     log.info("Start two");
     mapB.compute(a, (k, v) -> (v == null ? "" : v) + process(a) + mapA.get(a));
+    log.info("End two");
     return howtoDeadlockInstructions("one");
   }
 
@@ -54,7 +56,8 @@ public class Leak9_Deadlock_Pro {
         within 3 seconds to produce the deadlock.<br>
         Expected Effect: both tabs hang (never finish loading).<br>
         Extra fun: load test it then go to homepage<br>
-        What if I use Virtual Threads?""".formatted(other,other);
+        What if I use Virtual Threads?<p>
+        ... on Java25?""".formatted(other,other);
   }
 }
 

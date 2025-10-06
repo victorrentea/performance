@@ -12,6 +12,10 @@ public class Big1KB implements Serializable {
    public Big1KB() {
       largeString = counter.incrementAndGet() + " - " + RandomStringUtils.random(500, true, false);
    }
+  @Override
+  public String toString() {
+    return "Big1KB";
+  }
 
    public String getLargeString() {
       return largeString;
