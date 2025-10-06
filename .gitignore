@@ -52,3 +52,4 @@ capture/
 *.hprof
 /file-to-upload.txt
 /Plugin.java
+/big-entity.txt
