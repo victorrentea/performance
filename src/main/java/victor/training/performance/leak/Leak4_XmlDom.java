@@ -35,7 +35,7 @@ public class Leak4_XmlDom {
 
   @GetMapping("leak4")
   public void countPlugins() {
-    File xmlFile = new File("memory/pom.xml");
+    File xmlFile = new File("pom.xml");
     log.info("Opening xml: " + xmlFile.getAbsolutePath());
 
     List<Node> modelVersion = new ArrayList<>();
