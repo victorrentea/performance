@@ -37,7 +37,7 @@ public class Leak6_Async {
   public String download() {
     int taskId = counter.incrementAndGet();
     MDC.put("traceId", "" + taskId);
-    String data = fetchData(MB(10)); // Exaggeration ? = smaller hit at higher RPS
+    String data = fetchData(MB(10)); // Exaggeration? = same as smaller hit at higher RPS
     log.info("Got {} bytes", data.length());
     CompletableFuture.runAsync(() -> processor.process(data, taskId));
     // Bad for: unbounded queue, no lifting of ThreadLocal, exceptions lost
@@ -75,22 +75,6 @@ class FileProcessor {
 
 // === === === === === === === Support code  === === === === === === ===
 
-@Slf4j
-@RestController
-@RequiredArgsConstructor
-class Leak6_FilesUpload {
-  private static final AtomicInteger counter = new AtomicInteger(0);
-  private final FileProcessor processor;
-
-  @PostMapping("leak6/upload")
-  public int upload(@RequestParam MultipartFile file) throws IOException {
-    byte[] fileContents = file.getBytes();
-    int taskId = counter.incrementAndGet();
-    CompletableFuture.runAsync(() -> processor.process(new String(fileContents), taskId));
-    return taskId;
-  }
-}
-
 @Configuration
 class Leak6Config {
   @SuppressWarnings("resource")
@@ -125,6 +109,24 @@ class Leak6Config {
       };
     });
     return executor;
+  }
+}
+
+
+
+@Slf4j
+@RestController
+@RequiredArgsConstructor
+class Leak6_FilesUpload {
+  private static final AtomicInteger counter = new AtomicInteger(0);
+  private final FileProcessor processor;
+
+  @PostMapping("leak6/upload")
+  public int upload(@RequestParam MultipartFile file) throws IOException {
+    byte[] fileContents = file.getBytes();
+    int taskId = counter.incrementAndGet();
+    CompletableFuture.runAsync(() -> processor.process(new String(fileContents), taskId));
+    return taskId;
   }
 }
 
