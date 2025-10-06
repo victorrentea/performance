@@ -1,5 +1,7 @@
 package victor.training.performance.leak;
 
+import io.micrometer.core.instrument.Gauge;
+import io.micrometer.core.instrument.binder.MeterBinder;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
@@ -10,6 +12,7 @@ import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.cache.CacheManager;
 import org.springframework.cache.annotation.Cacheable;
+import org.springframework.context.annotation.Bean;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -44,7 +47,8 @@ public class Leak12_Caching {
     Big20MB data = cacheService.getTodayFex(date);
     return "Data from cache for today = " + data + ", " + PerformanceUtil.getUsedHeapPretty() + "<br>" +
            "also try Jan " +
-           range(1,30).mapToObj("<a href='leak12?date=2025-01-%1$02d'>%1$s</a>, "::formatted).collect(joining()) +
+           range(1, 30).mapToObj("<a href='leak12?date=2025-01-%1$02d'>%1$s</a>, "::formatted).collect(joining()) +
+           "<p>should be in <a href='/actuator/prometheus' target='_blank'>metrics</a>" +
            done();
   }
 
@@ -79,6 +83,7 @@ class CacheService {
     return new Big20MB();
   }
 
+  // === ❌Anti-Pattern: Manual Cache ===
   Map<LocalDate, Big20MB> fexCache = synchronizedMap(new HashMap<>());
 
   public Big20MB getTodayFex(LocalDate date) {
@@ -88,15 +93,22 @@ class CacheService {
     });
   }
 
-  // Note: @Cacheable proxy intercepts the call and
-  // returns the previously returned value for the same parameter(s)
+  @Bean
+  MeterBinder fexCacheMetrics() {// 🔔ALARM on this
+    return registry -> Gauge.builder("fex_cache_size", fexCache, Map::size).register(registry);
+  }
+
+  // === ❌ Cache Key Mess-up #1 ===
+
+  //  @Cacheable proxy returns the previously returned value for the same parameter(s)
   @Cacheable("signature")
   public Big20MB getContractById(Long contractId, long requestTime) {
     log.debug("Fetch contract id={} at {}", contractId, requestTime);
     return fetchData();
   }
 
-  private final CacheManager cacheManager;
+
+  // === ❌ Cache Key Mess-up #2 ===
 
   @RequiredArgsConstructor
   @Getter
@@ -106,12 +118,15 @@ class CacheService {
     private final int year;
     private final int month;
   }
-
   @Cacheable("invoices")
   public Big20MB getInvoice(InvoiceParams params) {
     log.debug("Fetch invoice for {} {} {}", params.getContractId(), params.getYear(), params.getMonth());
     return fetchData();
   }
+
+  // === ❌ Cache Key Mess-up #3 ===
+
+  private final CacheManager cacheManager;
 
   public Big20MB inquiry(Inquiry param) {
     return cacheManager.getCache("inquiries") // ≈ @Cacheable("inquiries")
