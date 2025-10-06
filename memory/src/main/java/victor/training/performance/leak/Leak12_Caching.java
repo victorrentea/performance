@@ -33,46 +33,6 @@ import static java.util.stream.Collectors.joining;
 import static java.util.stream.IntStream.range;
 import static victor.training.performance.util.PerformanceUtil.done;
 
-@RestController
-@RequestMapping("leak12")
-@RequiredArgsConstructor
-public class Leak12_Caching {
-  private final CacheService cacheService;
-
-  @GetMapping
-  public String key(@RequestParam(required = false) LocalDate date) {
-    if (date == null) {
-      date = LocalDate.now();
-    }
-    Big20MB data = cacheService.getTodayFex(date);
-    return "Data from cache for today = " + data + ", " + PerformanceUtil.getUsedHeapPretty() + "<br>" +
-           "also try Jan " +
-           range(1, 30).mapToObj("<a href='leak12?date=2025-01-%1$02d'>%1$s</a>, "::formatted).collect(joining()) +
-           "<p>should be in <a href='/actuator/prometheus' target='_blank'>metrics</a>" +
-           done();
-  }
-
-  @GetMapping("signature")
-  public String signature() {
-    long requestTime = System.currentTimeMillis();
-    Big20MB data = cacheService.getContractById(1L, requestTime);
-    return "Contract id:1 = " + data + ", " + PerformanceUtil.getUsedHeapPretty();
-  }
-
-  @GetMapping("objectKey")
-  public String objectKey() {
-    UUID contractId = UUID.fromString("123e4567-e89b-12d3-a456-426614174000");
-    Big20MB data = cacheService.getInvoice(new InvoiceParams(contractId, 2023, 10));
-    return "Invoice = " + data + ", " + PerformanceUtil.getUsedHeapPretty();
-  }
-
-  @GetMapping("mutableKey")
-  public String mutable() {
-    Big20MB data = cacheService.inquiry(new Inquiry().setYearValue(2025).setMonthValue(10));
-    return "Invoice = " + data + ", " + PerformanceUtil.getUsedHeapPretty();
-  }
-}
-
 @Service
 @Slf4j
 @RequiredArgsConstructor
@@ -151,6 +111,47 @@ class Inquiry {
 interface InquiryRepo extends JpaRepository<Inquiry, Long> {
 }
 
+
+
+@RestController
+@RequestMapping("leak12")
+@RequiredArgsConstructor
+public class Leak12_Caching {
+  private final CacheService cacheService;
+
+  @GetMapping
+  public String key(@RequestParam(required = false) LocalDate date) {
+    if (date == null) {
+      date = LocalDate.now();
+    }
+    Big20MB data = cacheService.getTodayFex(date);
+    return "Data from cache for today = " + data + ", " + PerformanceUtil.getUsedHeapPretty() + "<br>" +
+           "also try Jan " +
+           range(1, 30).mapToObj("<a href='leak12?date=2025-01-%1$02d'>%1$s</a>, "::formatted).collect(joining()) +
+           "<p>should be in <a href='/actuator/prometheus' target='_blank'>metrics</a>" +
+           done();
+  }
+
+  @GetMapping("signature")
+  public String signature() {
+    long requestTime = System.currentTimeMillis();
+    Big20MB data = cacheService.getContractById(1L, requestTime);
+    return "Contract id:1 = " + data + ", " + PerformanceUtil.getUsedHeapPretty();
+  }
+
+  @GetMapping("objectKey")
+  public String objectKey() {
+    UUID contractId = UUID.fromString("123e4567-e89b-12d3-a456-426614174000");
+    Big20MB data = cacheService.getInvoice(new InvoiceParams(contractId, 2023, 10));
+    return "Invoice = " + data + ", " + PerformanceUtil.getUsedHeapPretty();
+  }
+
+  @GetMapping("mutableKey")
+  public String mutable() {
+    Big20MB data = cacheService.inquiry(new Inquiry().setYearValue(2025).setMonthValue(10));
+    return "Invoice = " + data + ", " + PerformanceUtil.getUsedHeapPretty();
+  }
+}
 
 /**
  * ⭐️ KEY POINTS
