@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.sql.DataSource;
+import java.io.File;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.List;
@@ -24,8 +25,7 @@ import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
 import static java.util.stream.Collectors.toList;
-import static victor.training.performance.util.PerformanceUtil.done;
-import static victor.training.performance.util.PerformanceUtil.sleepMillis;
+import static victor.training.performance.util.PerformanceUtil.*;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -37,8 +37,9 @@ public class Leak13_Hibernate {
   @GetMapping("leak13/export")
   @Transactional
   public String export() throws IOException {
-    log.debug("Exporting from DB to a file...");
-    try (PrintWriter writer = new PrintWriter("big-entity-export.txt")) {
+    File file = new File("big-entity-export.txt");
+    log.debug("Exporting from DB to {}...", file.getAbsolutePath());
+    try (PrintWriter writer = new PrintWriter(file)) {
       repo.streamAll() // iterates rows w/o loading all ≈ while(resultSet.next()) {👴🏻
           .map(BigEntity::getDescription)
           .forEach(writer::write);
@@ -46,7 +47,8 @@ public class Leak13_Hibernate {
 
     log.debug("Export completed");
 //    sleepMillis(60 * 1000); // take a heap dump
-    return done();
+    return "Exported " + humanSize(file.length()) + " in " + file.getAbsolutePath()
+    + "<br>" + done();
   }
 }
 

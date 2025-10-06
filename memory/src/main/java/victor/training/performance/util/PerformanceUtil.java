@@ -141,11 +141,11 @@ public class PerformanceUtil {
   }
 
   public static String getUsedHeapHuman() {
-    return "Used Heap: " + human(getUsedHeapBytes());
+    return "Used Heap: " + humanSize(getUsedHeapBytes());
   }
 
   public static String getProcessMemoryHuman() {
-    return "Process RAM: " + human(osRssBytes()) + "=RSS";
+    return "Process RAM: " + humanSize(osRssBytes()) + "=RSS";
   }
 
   public static long osRssBytes() {
@@ -193,7 +193,7 @@ public class PerformanceUtil {
     }
   }
 
-  public static String human(long bytes) {
+  public static String humanSize(long bytes) {
     double v = bytes;
     String[] u = {"B","KB","MB","GB","TB"};
     int i = 0;
