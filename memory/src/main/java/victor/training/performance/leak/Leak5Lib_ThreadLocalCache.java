@@ -15,15 +15,7 @@ public class Leak5Lib_ThreadLocalCache {
     String work = Library.method();
     // no further use of lib on this flow
     sleepMillis(300); // my application logic
-    return message();
-  }
-
-  private String message() {
-    boolean vt = false;
-    vt = Thread.currentThread().isVirtual();
-    return "Manifests under high RPS on Virtual Threads"
-           + (vt ? "" : "<br>⚠️⚠️⚠️ <span style='color:red'>NOT RUNNING ON A VIRTUAL THREAD ⚠️⚠️⚠️</span>") +
-           done();
+    return "Manifests under high RPS on Virtual Threads<br>Now on thread: " + Thread.currentThread() + done();
   }
 
   //region Solution (you won't like it)
