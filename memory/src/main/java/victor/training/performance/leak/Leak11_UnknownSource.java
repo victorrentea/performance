@@ -23,13 +23,13 @@ class Leak11_Caller {
   @GetMapping("leak11/caller")
   public String endpoint() {
     return """
-          <button onclick='call(self.crypto.randomUUID())'>Call it✅</button>
+          <button onclick='call(self.crypto.randomUUID())'>Call it ✅</button>
           <div id='response'></div>
          <p>
-         But a <a href='/leak11'>direct call❌</a> gets rejected 
+         But a <a href='/leak11'>direct call ❌</a> gets rejected 
          if it doesn't contain a new 'Idempotency-Key' header.<p>
            Sending the same header value 'same-ik' 
-           <button onclick='call("same-ik")'>Should Fail❌ after first call</button>
+           <button onclick='call("same-ik")'>Should Fail ❌ after first call</button>
         <p> 
           <script type='text/javascript'>
               function call(idempotencyKey) {
