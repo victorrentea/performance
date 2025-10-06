@@ -3,7 +3,6 @@
     <option name="ALTERNATIVE_JRE_PATH" value="21-openjdk" />
     <module name="memory" />
     <option name="SPRING_BOOT_MAIN_CLASS" value="victor.training.performance.MemoryApp" />
-    <option name="VM_PARAMETERS" value="-XX:+HeapDumpOnOutOfMemoryError -XX:+ExitOnOutOfMemoryError -XX:HeapDumpPath=$PROJECT_DIR$ -Xmx500m --add-opens java.base/java.lang=ALL-UNNAMED" />
     <extension name="coverage">
       <pattern>
         <option name="PATTERN" value="victor.training.performance.*" />
