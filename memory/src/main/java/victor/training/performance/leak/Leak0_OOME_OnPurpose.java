@@ -13,7 +13,7 @@ public class Leak0_OOME_OnPurpose {
     List<int[]> boom = new ArrayList<>();
     while (true) boom.add(new int[1000_000]);
 
-    // TODO + in your prod
+    // TODO
     //  + JVM arg: -Xmx500m
     //  > Experiment: turn variable into field
     //  + JVM arg: -XX:+ExitOnOutOfMemoryError
