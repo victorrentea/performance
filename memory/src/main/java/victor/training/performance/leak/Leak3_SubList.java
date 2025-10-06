@@ -10,6 +10,8 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
+import static victor.training.performance.util.PerformanceUtil.done;
+
 @SuppressWarnings("FieldMayBeFinal")
 @Slf4j
 @RestController
@@ -28,7 +30,7 @@ public class Leak3_SubList {
     if (lastTen.size() > 10) {
       lastTen = lastTen.subList(1, lastTen.size()); // remove first
     }
-    return "lastTen.size = " + lastTen.size();
+    return "lastTen.size = " + lastTen.size() + done();
   }
   // TODO
   //  - give this endpoint some heat🔥 using Leak3Load.java

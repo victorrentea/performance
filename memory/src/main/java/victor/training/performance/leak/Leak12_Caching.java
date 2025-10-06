@@ -45,7 +45,7 @@ public class Leak12_Caching {
     return "Data from cache for today = " + data + ", " + PerformanceUtil.getUsedHeapPretty() + "<br>" +
            "also try Jan " +
            range(1,30).mapToObj("<a href='leak12?date=2025-01-%1$02d'>%1$s</a>, "::formatted).collect(joining()) +
-           " " + done();
+           done();
   }
 
   @GetMapping("signature")

@@ -20,7 +20,7 @@ public class Leak7_ThreadLeak {
     ExecutorService pool = Executors.newFixedThreadPool(2);
     var f1 = pool.submit(() -> apiCallA());
     var f2 = pool.submit(() -> apiCallB());
-    return f1.get() + f2.get() + " " + done();
+    return f1.get() + f2.get() + done();
   }
 
   private static String apiCallA() {

@@ -173,7 +173,7 @@ public class PerformanceUtil {
   }
 
   public static String done() {
-    return "✔ " + LocalTime.now().format(ofPattern("hh:mm:ss"));
+    return " ✔ " + LocalTime.now().format(ofPattern("hh:mm:ss"));
   }
 
   /** @return in bytes */

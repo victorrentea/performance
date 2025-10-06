@@ -16,7 +16,7 @@ import static victor.training.performance.util.PerformanceUtil.done;
 public class Leak10_ShutdownHook {
   @GetMapping("leak10")
   public String add() throws Exception {
-    return "♾️ Leak doing " + OldLib.doWork() + " " + done();
+    return "♾️ Leak doing " + OldLib.doWork() + done();
   }
 }
 
