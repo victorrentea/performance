@@ -13,6 +13,7 @@ public class Leak5Lib_ThreadLocalCache {
   @GetMapping("leak5/lib")
   public String endpoint() throws NoSuchFieldException, IllegalAccessException {
     String work = Library.method();
+    // no further use of lib
     sleepMillis(300); // my application logic
     return message();
   }
@@ -47,31 +48,27 @@ class Library {
   private static final Logger log = LoggerFactory.getLogger(Library.class);
 
   public static String method() {
-    return "A bit of work using " + getLifeContextCachedOnThread();
+    return "A bit of work using " + getContextCachedOnThread();
   }
 
-  private static final ThreadLocal<LifeContext> threadLocal = new ThreadLocal<>();
+  private static final ThreadLocal<LibContext> threadLocal = new ThreadLocal<>();
 
-  private static LifeContext getLifeContextCachedOnThread() {
+  private static LibContext getContextCachedOnThread() {
     if (threadLocal.get() != null) {
       return threadLocal.get();
     }
-    LifeContext lifeContext = initLife();
-    threadLocal.set(lifeContext); // JIRA-006 2010-03 client threads should return later as they are *probably* pooled
-    return lifeContext;
+    LibContext context = init();
+    threadLocal.set(context); // JIRA-006 2010-03 client threads should return later as they are *probably* pooled
+    return context;
   }
 
-  private static LifeContext initLife() {
-    try {
-      log.info("Searching for the Meaning of Life ...");
-      sleepMillis(30); // takes a bit of time
-      return new LifeContext(42, new Big(kb(100)));
-    } catch (Exception e) {
-      throw new RuntimeException(e);
-    }
+  private static LibContext init() {
+    log.info("Init Lib⏱️ ...");
+    sleepMillis(30); // takes a tiny bit of time
+    return new LibContext(42, new Big(kb(100)));
   }
 
-  private record LifeContext(
+  private record LibContext(
       int meaningOfLife,
       Big knowledgeSchema) {}
 }
