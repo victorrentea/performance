@@ -16,7 +16,7 @@ public class Leak1_LongStackFrame {
 		String a = bigDto.getA();
 		String b = bigDto.getA();
 
-    log.info("Work only using {} and {}", a, b);
+    log.info("Work only using {} and {} ...", a, b);
 		sleepSeconds(30);
 
 		return done();

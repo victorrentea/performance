@@ -22,7 +22,7 @@ public class Leak2_Inner {
   public String endpoint() {
     Calculator calculator = new CalculatorFactory().create();
     work(calculator);
-    return done(); // TODO extract method
+    return done();
   }
 
   private void work(Calculator calculator) {
@@ -50,8 +50,8 @@ class CalculatorFactory {
   private final Big20MB bigMac = new Big20MB(); // 🍔
 
   public class Calculator {// TODO what connection to bigMac🍔?
-    public int calculate() {
-      return 42;
+    public String calculate() {
+      return "Answer: " + 42;
     }
   }
 
