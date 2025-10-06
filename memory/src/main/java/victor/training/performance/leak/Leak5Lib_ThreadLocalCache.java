@@ -13,14 +13,14 @@ public class Leak5Lib_ThreadLocalCache {
   @GetMapping("leak5/lib")
   public String endpoint() throws NoSuchFieldException, IllegalAccessException {
     String work = Library.method();
-    // no further use of lib
+    // no further use of lib on this flow
     sleepMillis(300); // my application logic
     return message();
   }
 
   private String message() {
     boolean vt = false;
-//    vt = Thread.currentThread().isVirtual();
+    vt = Thread.currentThread().isVirtual();
     return "Manifests under high RPS on Virtual Threads"
            + (vt ? "" : "<br>⚠️⚠️⚠️ <span style='color:red'>NOT RUNNING ON A VIRTUAL THREAD ⚠️⚠️⚠️</span>") +
            done();
