@@ -25,8 +25,7 @@ import java.util.concurrent.ForkJoinPool;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import static victor.training.performance.leak.Leak6_Helper.fetchData;
-import static victor.training.performance.util.PerformanceUtil.MB;
-import static victor.training.performance.util.PerformanceUtil.sleepSeconds;
+import static victor.training.performance.util.PerformanceUtil.*;
 
 @Slf4j
 @RestController
@@ -49,8 +48,9 @@ public class Leak6_Async {
         Long task submitted: #%d<br>
         Data in memory: %,d bytes<br>
         Reload 20x, then look in <a href='http://localhost:8080/actuator/prometheus' target='_blank'>metrics</a> for 'fjp'<br>
-        Keep reloading page for OOME :)"""
-        .formatted(taskId, data.length());
+        Keep reloading page for OOME :)<p>
+        %s"""
+        .formatted(taskId, data.length(), getUsedHeapHuman());
   }
 }
 
