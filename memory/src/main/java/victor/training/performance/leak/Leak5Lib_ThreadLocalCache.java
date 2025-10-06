@@ -46,19 +46,17 @@ class Library {
   private static final Logger log = LoggerFactory.getLogger(Library.class);
 
   public static String method() {
-    return "A bit of work using " + getCachedLifeContext();
+    return "A bit of work using " + getLifeContextCachedOnThread();
   }
 
   private static final ThreadLocal<LifeContext> threadLocal = new ThreadLocal<>();
 
-  private static LifeContext getCachedLifeContext() {
-    // JIRA-006 2010-03 Client threads probably return later as they are *probably* pooled
-    //  => we will cache LifeContext in ThreadLocal
+  private static LifeContext getLifeContextCachedOnThread() {
     if (threadLocal.get() != null) {
       return threadLocal.get();
     }
     LifeContext lifeContext = initLife();
-    threadLocal.set(lifeContext);
+    threadLocal.set(lifeContext); // JIRA-006 2010-03 client threads should return later as they are *probably* pooled
     return lifeContext;
   }
 
