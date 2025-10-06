@@ -1,5 +1,6 @@
 package victor.training.performance.leak;
 
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -14,6 +15,7 @@ import static victor.training.performance.util.PerformanceUtil.sleepMillis;
 @SuppressWarnings("resource")
 @Slf4j
 @RestController
+@RequiredArgsConstructor
 public class Leak7_ThreadLeak {
   @GetMapping("leak7")
   public String endpoint() throws ExecutionException, InterruptedException {
