@@ -37,7 +37,7 @@ public class Leak6_Async {
   public String download() {
     int taskId = counter.incrementAndGet();
     MDC.put("traceId", "" + taskId);
-    String data = fetchData(MB(10)); // Exaggeration ?
+    String data = fetchData(MB(10)); // Exaggeration ? = smaller hit at higher RPS
     log.info("Got {} bytes", data.length());
     CompletableFuture.runAsync(() -> processor.process(data, taskId));
     // Bad for: unbounded queue, no lifting of ThreadLocal, exceptions lost
