@@ -33,11 +33,12 @@ public class Leak3_SubList {
     return "lastTen.size = " + lastTen.size() + done();
   }
   // TODO
-  //  - give this endpoint some heat🔥 using Leak3Load.java
+  //  - leak appears under load🔥
   //  - analyze retained heap using
-  //    - visualVM
-  //    - IntelliJ > Memory Snapshot > Biggest Objects >
-  //      1st > [Enter] > 'Dominator Tree' tab
+  //    - VisualVM - too slow 🚫
+  //    - Eclipse MemoryAnalyzer 👴
+  //    - IntelliJ > 'Dominator Tree' tab 🫤
+  //    - jProfiler 💰
 }
 
 /**
