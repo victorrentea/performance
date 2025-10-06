@@ -11,8 +11,10 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 
 import java.io.File;
 import java.io.FileWriter;
@@ -57,7 +59,6 @@ public class Leak6_Async {
 class FileProcessor {
   public void process(String contents, int taskId) {
     log.debug("Task {} started ...", taskId);
-    //if (true) throw new RuntimeException("Bug🪲");
     sleepSeconds(10);
     long newLinesCount = contents.chars().filter(c -> c == 10).count();
     log.debug("Task {} completed: counted {} lines", taskId, newLinesCount);
@@ -117,20 +118,20 @@ class Leak6Config {
 
 
 @Slf4j
-@RestController
-@RequiredArgsConstructor
-class Leak6_FilesUpload {
-  private static final AtomicInteger counter = new AtomicInteger(0);
-  private final FileProcessor processor;
-
-  @PostMapping("leak6/upload")
-  public int upload(@RequestParam MultipartFile file) throws IOException {
-    byte[] fileContents = file.getBytes();
-    int taskId = counter.incrementAndGet();
-    CompletableFuture.runAsync(() -> processor.process(new String(fileContents), taskId));
-    return taskId;
-  }
-}
+//@RestController
+//@RequiredArgsConstructor
+//class Leak6_FilesUpload {
+//  private static final AtomicInteger counter = new AtomicInteger(0);
+//  private final FileProcessor processor;
+//
+//  @PostMapping("leak6/upload")
+//  public int upload(@RequestParam MultipartFile file) throws IOException {
+//    byte[] fileContents = file.getBytes();
+//    int taskId = counter.incrementAndGet();
+//    CompletableFuture.runAsync(() -> processor.process(new String(fileContents), taskId));
+//    return taskId;
+//  }
+//}
 
 
 @RestController
