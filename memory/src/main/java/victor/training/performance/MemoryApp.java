@@ -30,5 +30,6 @@ public class MemoryApp {
         ProcessHandle.current().pid(),
         PerformanceUtil.getJavacVersion(MemoryApp.class));
     runAsync(System::gc, delayedExecutor(2, SECONDS));
+    runAsync(System::gc, delayedExecutor(4, SECONDS));
   }
 }
