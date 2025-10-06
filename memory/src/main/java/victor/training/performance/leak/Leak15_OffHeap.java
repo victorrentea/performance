@@ -6,7 +6,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.nio.ByteBuffer;
 
-import static victor.training.performance.util.PerformanceUtil.sleepSeconds;
+import static victor.training.performance.util.PerformanceUtil.*;
 
 @Slf4j
 @RestController
@@ -17,7 +17,7 @@ public class Leak15_OffHeap {
   public String offHeap() {
     log.info("start");
     ByteBuffer byteBuffer = ByteBuffer.allocateDirect(MB10);
-    sleepSeconds(10);
-    return "Heap doesn't grow much " + byteBuffer;
+    sleepSeconds(2);
+    return "Heap doesn't grow much " + byteBuffer + "<p>"+ done() + "<p>" + getUsedHeapHuman() + "<p>" + getProcessMemoryHuman();
   }
 }

@@ -2,10 +2,8 @@ package victor.training.performance.util;
 
 import lombok.SneakyThrows;
 import org.apache.commons.lang.RandomStringUtils;
-import victor.training.performance.MemoryApp;
 
 import java.io.DataInputStream;
-import java.io.IOException;
 import java.io.InputStream;
 import java.lang.management.ManagementFactory;
 import java.lang.management.RuntimeMXBean;
@@ -139,16 +137,68 @@ public class PerformanceUtil {
   public static void waitForEnter() {
     System.out.println("[ENTER] to continue");
     new Scanner(System.in).nextLine();
-    System.out.println("Continue...");
+    System.out.println("Resuming...");
   }
 
-  public static void printUsedHeap(String label) {
-    System.out.println(label + ": " + getUsedHeapPretty());
+  public static String getUsedHeapHuman() {
+    return "Used Heap: " + human(getUsedHeapBytes());
   }
 
-  public static String getUsedHeapPretty() {
-    System.gc();
-    return "Used heap: " + formatSize(getUsedHeapBytes()).replace(",", " ");
+  public static String getProcessMemoryHuman() {
+    return "Process RAM: " + human(osRssBytes()) + "=RSS";
+  }
+
+  public static long osRssBytes() {
+    long pid = ProcessHandle.current().pid();
+    String os = System.getProperty("os.name").toLowerCase();
+
+    // 1) Linux: /proc/self/status -> VmRSS: <KB>
+    if (os.contains("linux")) {
+      try {
+        var lines = java.nio.file.Files.readAllLines(java.nio.file.Path.of("/proc/self/status"));
+        for (var l : lines) {
+          if (l.startsWith("VmRSS:")) {
+            var m = java.util.regex.Pattern.compile("\\d+").matcher(l);
+            if (m.find()) return Long.parseLong(m.group()) * 1024L; // kB -> bytes
+          }
+        }
+      } catch (Exception ignore) { /* fall back */ }
+    }
+
+    // 2) macOS/Linux fallback: ps -o rss= -p <pid>  (RSS in kB)
+    if (!os.contains("win")) {
+      try {
+        var out = runAndRead("ps", "-o", "rss=", "-p", String.valueOf(pid));
+        if (!out.isBlank()) return Long.parseLong(out.trim()) * 1024L;
+      } catch (Exception ignore) { /* fall back */ }
+    }
+
+    // 3) Windows: PowerShell (WorkingSet64 in bytes)
+    try {
+      var out = runAndRead("powershell", "-NoProfile", "-Command",
+          "(Get-Process -Id " + pid + ").WorkingSet64");
+      if (!out.isBlank()) return Long.parseLong(out.trim());
+    } catch (Exception ignore) { /* last resort */ }
+
+    throw new IllegalStateException("Nu pot determina RSS (OS-level) pentru acest sistem.");
+  }
+
+  static String runAndRead(String... cmd) throws Exception {
+    var pb = new ProcessBuilder(cmd).redirectErrorStream(true);
+    var p = pb.start();
+    try (var in = p.getInputStream()) {
+      var s = new String(in.readAllBytes(), java.nio.charset.StandardCharsets.UTF_8);
+      p.waitFor();
+      return s;
+    }
+  }
+
+  public static String human(long bytes) {
+    double v = bytes;
+    String[] u = {"B","KB","MB","GB","TB"};
+    int i = 0;
+    while (v >= 1024 && i < u.length - 1) { v /= 1024; i++; }
+    return String.format(java.util.Locale.ROOT, "%.2f %s", v, u[i]);
   }
 
   public static String formatSize(long usedHeapBytes) {
@@ -156,8 +206,11 @@ public class PerformanceUtil {
   }
 
   public static long getUsedHeapBytes() {
-    System.gc(); // to free the intermediary allocated [] when ArrayList grows
+    System.gc();
     return ManagementFactory.getMemoryMXBean().getHeapMemoryUsage().getUsed();
+  }
+  public static long getTotalHeapBytes() {
+    return ManagementFactory.getMemoryMXBean().getHeapMemoryUsage().getCommitted();
   }
 
   public static void onEnterExit() {
@@ -186,43 +239,20 @@ public class PerformanceUtil {
     return kb * 1024;
   }
 
-  public record AllocationResult<T>(T result, long deltaHeapBytes) {}
-
-  @SneakyThrows
-  public static <T> AllocationResult<T> measureAllocation(Callable<T> supplier) {
-    long heap0 = PerformanceUtil.getUsedHeapBytes();
-    Object x = supplier.call();
-    long heap1 = PerformanceUtil.getUsedHeapBytes();
-    long deltaHeap = heap1 - heap0;
-    return new AllocationResult(x, deltaHeap);
-  }
-
-  public static void main(String[] args) throws IOException {
-    String className = MemoryApp.class.getName();
-    String resource = "/" + className.replace('.', '/') + ".class";
-    try (InputStream in = MemoryApp.class.getResourceAsStream(resource)) {
-      DataInputStream dis = new DataInputStream(in);
-      int magic = dis.readInt(); // 0xCAFEBABE
-      int minor = dis.readUnsignedShort();
-      int major = dis.readUnsignedShort();
-      System.out.println(className + " compiled for major=" + major + " minor=" + minor);
-    }
-  }
-
   @SneakyThrows
   public static String getJavacVersion(Class<?> clazz) {
     Map<Integer, String> JAVA_CLASS_VERSION_MAP = Map.of(
-        52, "javac 8",
-        55, "javac 11",
-        61, "javac 17",
-        65, "javac 21",
-        69, "javac 25"
+        52, "8",
+        55, "11",
+        61, "17",
+        65, "21",
+        69, "25"
     );
     String resource = "/" + clazz.getName().replace('.', '/') + ".class";
     try (InputStream in = clazz.getResourceAsStream(resource)) {
       DataInputStream dis = new DataInputStream(in);
-      dis.readInt();
-      int minor = dis.readUnsignedShort();
+      dis.readInt();  // 0xCAFEBABE
+      int minor = dis.readUnsignedShort(); // skipped
       int major = dis.readUnsignedShort();
       return JAVA_CLASS_VERSION_MAP.getOrDefault(major, "non-LTS:"+major);
     }

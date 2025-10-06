@@ -8,11 +8,11 @@ import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.context.event.EventListener;
 import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.scheduling.annotation.EnableScheduling;
-import victor.training.performance.util.PerformanceUtil;
 
 import static java.util.concurrent.CompletableFuture.delayedExecutor;
 import static java.util.concurrent.CompletableFuture.runAsync;
 import static java.util.concurrent.TimeUnit.SECONDS;
+import static victor.training.performance.util.PerformanceUtil.getJavacVersion;
 
 @Slf4j
 @EnableAsync
@@ -26,9 +26,9 @@ public class MemoryApp {
 
   @EventListener
   public void onStart(ApplicationReadyEvent event) {
-    log.info("🌟🌟🌟 MemoryApp at http://localhost:8080 pid {} {} 🌟🌟🌟",
+    log.info("🌟🌟🌟 MemoryApp at http://localhost:8080 pid {} javac {} 🌟🌟🌟",
         ProcessHandle.current().pid(),
-        PerformanceUtil.getJavacVersion(MemoryApp.class));
+        getJavacVersion(MemoryApp.class));
     runAsync(System::gc, delayedExecutor(2, SECONDS));
     runAsync(System::gc, delayedExecutor(4, SECONDS));
   }

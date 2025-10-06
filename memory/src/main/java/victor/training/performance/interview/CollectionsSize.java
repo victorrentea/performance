@@ -1,5 +1,6 @@
 package victor.training.performance.interview;
 
+import lombok.SneakyThrows;
 import victor.training.performance.util.PerformanceUtil;
 
 import java.util.concurrent.Callable;
@@ -32,12 +33,23 @@ public class CollectionsSize {
   }
 
   public static void measureHeap(Callable<Object> allocation) {
-    var allocationResult = PerformanceUtil.measureAllocation(allocation);
+    var allocationResult = measureAllocation(allocation);
     System.out.println(PerformanceUtil.objectToString(allocationResult.result()) +
                        " [" + N_ELEMENTS + " elements] " +
                        " occupies: " + allocationResult.deltaHeapBytes() / 1024 / 1024 + " MB");
   }
 
+  public record AllocationResult<T>(T result, long deltaHeapBytes) {}
+
+
+  @SneakyThrows
+  public static <T> AllocationResult<T> measureAllocation(Callable<T> supplier) {
+    long heap0 = PerformanceUtil.getUsedHeapBytes();
+    Object x = supplier.call();
+    long heap1 = PerformanceUtil.getUsedHeapBytes();
+    long deltaHeap = heap1 - heap0;
+    return new AllocationResult(x, deltaHeap);
+  }
 
 
 }
