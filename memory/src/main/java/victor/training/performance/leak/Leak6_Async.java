@@ -40,9 +40,9 @@ public class Leak6_Async {
     String data = fetchData(MB(10)); // Exaggeration? = same as smaller hit at higher RPS
     log.info("Got {} bytes", data.length());
     CompletableFuture.runAsync(() -> processor.process(data, taskId));
-    // Bad .commonPool(): unbounded queue, no lifting of ThreadLocal
+    // Bad .commonPool(): unbounded queue, no lifting of ThreadLocal, competition vs other CF + parallelStream
     // Bad CompletableFuture: exceptions lost
-    // Bad large blobs in memory
+    // Bad: large blobs in memory
     return """
         Long task submitted: #%d<br>
         Data in memory: %,d bytes<br>
