@@ -26,7 +26,8 @@ public class Leak5Lib_ThreadLocalCache {
   }
 
   //region Solution (you won't like it)
-  private void clearThreadLocalsViaReflection() throws NoSuchFieldException, IllegalAccessException {
+  private void clearLibraryThreadLocalsViaReflection() throws NoSuchFieldException, IllegalAccessException {
+    // TODO first: try to upgrade the lib
     var field = Library.class.getDeclaredField("threadLocal");
     field.setAccessible(true);
     ThreadLocal<?> tl = (ThreadLocal<?>) field.get(null);
