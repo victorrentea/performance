@@ -24,7 +24,7 @@ class Leak11_Caller {
   public String endpoint() {
     return """
           <button onclick='call(self.crypto.randomUUID())'>Call it ✅</button>
-          <div id='response'></div>
+          <div id='response' style='background: lightyellow'></div>
          <p>
          But a <a href='/leak11'>direct call ❌</a> gets rejected 
          if it doesn't contain a new 'Idempotency-Key' header.<p>
