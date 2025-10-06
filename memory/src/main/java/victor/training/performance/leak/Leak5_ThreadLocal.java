@@ -4,7 +4,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 import victor.training.performance.leak.obj.Big20MB;
 
-import java.time.LocalDateTime;
+import static victor.training.performance.util.PerformanceUtil.done;
 
 @RestController
 public class Leak5_ThreadLocal {
@@ -20,7 +20,7 @@ public class Leak5_ThreadLocal {
 
     service();
 
-    return "Magic can hurt " + LocalDateTime.now();
+    return "Magic can hurt " + done();
   } // 🔥 Leak1Load
 
   private void service() {
