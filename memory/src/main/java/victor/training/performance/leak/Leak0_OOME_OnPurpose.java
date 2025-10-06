@@ -14,10 +14,10 @@ public class Leak0_OOME_OnPurpose {
     while (true) boom.add(new int[100_000]);
 
     // TODO + in your prod
+    //  + JVM arg: -Xmx500m
     //  + JVM arg: -XX:+ExitOnOutOfMemoryError
     //  + JVM arg: -XX:+HeapDumpOnOutOfMemoryError
     //  + JVM arg: -XX:HeapDumpPath=/Users/victorrentea/workspace/performance
-    //  + JVM arg: -Xmx500m
     //  > Experiment: turn variable into field - what changes?
     //  > Open in browser http://localhost:8080/leak0
     //  > Find the .hprof file in /path/to/folder
