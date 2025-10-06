@@ -30,7 +30,11 @@
     <li>16) GUI Observer (standalone)
     <hr>
     </li>
-
+</ul>
+<a href="/actuator/health">health</a> <br>
+<a href="/actuator/prometheus">metrics</a>
+<!--
+<ul>
     <li>17) Thread Starvation: Call <a href="leak17">a Hot Endpoint</a>🔥 in a short time
         <a href="#" onclick="callNTimes('leak17', 200)">200 times</a>
          to get a timeout at <a href="leak17/liveness">/liveness</a> ☠️
@@ -43,7 +47,6 @@
     <li><a href="leak29">29) Session (stateful)</a></li>
 
 </ul>
-Click a link, refresh the page several times, analyze the heapdump (in VisualVM, IntelliJ, jProfiler...) then trace the memory leak.
 
 <script>
     function callNTimes(url, n) {
@@ -75,3 +78,4 @@ and then open glowroot on this app: <a href="http://localhost:4000" target="_bla
     <li><a href="profile/tlab">Allocate large contiguous objects</a></li>
     <li><a href="profile/httpclient">Unexpected bottleneck in unknown framework</a></li>
 </ul>
+-->
