@@ -6,21 +6,23 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 import victor.training.performance.leak.obj.Big;
 
-import static victor.training.performance.util.PerformanceUtil.kb;
-import static victor.training.performance.util.PerformanceUtil.sleepMillis;
+import static victor.training.performance.util.PerformanceUtil.*;
 
 @RestController
 public class Leak5Lib_ThreadLocalCache {
   @GetMapping("leak5/lib")
   public String endpoint() throws NoSuchFieldException, IllegalAccessException {
     String work = Library.method();
-    // what TODO ?
     sleepMillis(300); // my application logic
+    return message();
+  }
+
+  private String message() {
     boolean vt = false;
 //    vt = Thread.currentThread().isVirtual();
     return "Manifests under high RPS on Virtual Threads"
-           + (vt ? "" : "<br>⚠️⚠️⚠️ <span style='color:red'>NOT RUNNING ON A VIRTUAL THREAD ⚠️⚠️⚠️</span>")
-        ;
+           + (vt ? "" : "<br>⚠️⚠️⚠️ <span style='color:red'>NOT RUNNING ON A VIRTUAL THREAD ⚠️⚠️⚠️</span>") +
+           done();
   }
 
   //region Solution (you won't like it)
