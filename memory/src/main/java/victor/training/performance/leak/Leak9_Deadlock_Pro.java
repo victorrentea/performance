@@ -52,7 +52,9 @@ public class Leak9_Deadlock_Pro {
     return """
         Refresh the page, then <a href='%s' target='_blank'>call /%s</a> 
         within 3 seconds to produce the deadlock.<br>
-        Expected Effect: both tabs hang (never finish loading).""".formatted(other,other);
+        Expected Effect: both tabs hang (never finish loading).<br>
+        Extra fun: load test it then go to homepage<br>
+        What if I use Virtual Threads?""".formatted(other,other);
   }
 }
 
