@@ -33,7 +33,7 @@ import static org.springframework.test.annotation.DirtiesContext.ClassMode.BEFOR
 @Transactional
 @Rollback(false) // don't wipe the data after each test (for debugging)
 @DirtiesContext(classMode = BEFORE_EACH_TEST_METHOD) // recreate DB schema before each test
-public class UberEntity {
+public class UberEntityTest {
   @Autowired
   private CountryRepo countryRepo;
   @Autowired
