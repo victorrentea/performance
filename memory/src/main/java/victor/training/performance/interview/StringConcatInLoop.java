@@ -2,8 +2,10 @@ package victor.training.performance.interview;
 
 import victor.training.performance.util.PerformanceUtil;
 
+import java.io.BufferedWriter;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.Writer;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
@@ -19,7 +21,7 @@ public class StringConcatInLoop {
 
 
       // TODO: OPINIONS about this code ?
-     try (FileWriter fileWriter = new FileWriter("out.txt")) {
+     try (Writer fileWriter = new BufferedWriter(new FileWriter("out.txt"))) {
        fromDb().forEach(element-> {
          try {
            fileWriter.write(element);
@@ -30,6 +32,7 @@ public class StringConcatInLoop {
 //       for (String element : elements) {
 //         fileWriter.write(element);
 //       }
+//       for(e:list){s+=e} //bad ~> symptom: CPU burns: GC,malloc
      }
 
       System.out.println("Done. Took " + (System.currentTimeMillis() - t0));
