@@ -17,22 +17,24 @@ import static java.util.concurrent.TimeUnit.MINUTES;
 public class RaceBugs {
   private static List<Integer> evenNumbers = new ArrayList<>();
 
+//  private static AtomicInteger total = new AtomicInteger(0);
   private static Integer total = 0;
-
+  private static final Object LOCK = new Object();
   // many parallel threads run this method:
   private static void countEven(List<Integer> numbers) {
     log.info("Start");
     for (Integer n : numbers) {
       if (n % 2 == 0) {
-        total++;
+        synchronized (LOCK) {
+          total++;
+        }
       }
     }
     log.info("End");
   }
 
   public static void main(String[] args) throws Exception {
-    List<Integer> fullList = IntStream.range(0, 1_000).boxed().toList();
-
+    List<Integer> fullList = IntStream.range(0, 10000).boxed().toList();
     // split in [[1..500],[501..1000]]
     List<List<Integer>> parts = splitList(fullList, 2);
 
