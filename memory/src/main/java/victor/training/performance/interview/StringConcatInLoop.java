@@ -2,13 +2,10 @@ package victor.training.performance.interview;
 
 import victor.training.performance.util.PerformanceUtil;
 
-import java.io.File;
+import java.io.FileWriter;
 import java.io.IOException;
-import java.nio.file.Files;
 import java.util.List;
 import java.util.stream.IntStream;
-
-import static java.nio.charset.StandardCharsets.UTF_8;
 
 public class StringConcatInLoop {
    public static void main(String[] args) throws IOException {
@@ -22,16 +19,11 @@ public class StringConcatInLoop {
       long t0 = System.currentTimeMillis();
 
       // TODO: OPINIONS about this code ?
-      StringBuilder s = new StringBuilder(); // is what ArrayList<Integer> is to Integer[] ~unused capacity
-      for (String element : elements) {
-         s.append(element); // less malloc
-      }
-
-
-
-
-
-      Files.writeString(new File("out.txt").toPath(), s.toString(), UTF_8);
+     try (FileWriter fileWriter = new FileWriter("out.txt")) {
+       for (String element : elements) {
+         fileWriter.write(element);
+       }
+     }
 
       System.out.println("Done. Took " + (System.currentTimeMillis() - t0));
    }
