@@ -13,19 +13,23 @@ public class ParallelStreams {
   public static void main(String[] args) throws ExecutionException, InterruptedException {
     // OnAServer.otherParallelRequestsAreRunning(); // starve the shared commonPool din JVM
 
-    List<Integer> list = IntStream.range(1, 100).boxed().toList();
+    List<Integer> list = IntStream.rangeClosed(1, 100).boxed().toList();
 
     long t0 = System.currentTimeMillis();
 
-    var result = list.stream()
+    var result = list.parallelStream()
         .filter(i -> i % 2 == 0)
-        .map(i -> {
-          log.debug("Map " + i);
-          sleepMillis(100); // network call (DB, REST, SOAP..) or CPU work
-          return i * 2;
-        }).toList();
+        .map(id -> networkCall(id))
+        // runs on ForkJoinPool.commonCommon pool with 9 threads on vic's mac= 10CPU -1 (requestor)
+        .toList();
 
     long t1 = System.currentTimeMillis();
     log.debug("Took {} ms to get: {}", t1 - t0, result);
+  }
+
+  private static int networkCall(Integer i) {
+    log.debug("Map " + i);
+    sleepMillis(100); // network call (DB, REST, SOAP..) or CPU work
+    return i * 2;
   }
 }
