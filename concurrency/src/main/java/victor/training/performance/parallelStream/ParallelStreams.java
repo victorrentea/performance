@@ -11,7 +11,7 @@ import static victor.training.performance.util.PerformanceUtil.sleepMillis;
 @Slf4j
 public class ParallelStreams {
   public static void main(String[] args) throws ExecutionException, InterruptedException {
-    // OnAServer.otherParallelRequestsAreRunning(); // starve the shared commonPool din JVM
+     OnAServer.otherParallelRequestsAreRunning(); // starve the shared commonPool din JVM
 
     List<Integer> list = IntStream.rangeClosed(1, 100).boxed().toList();
 
@@ -22,6 +22,9 @@ public class ParallelStreams {
         .map(id -> networkCall(id))
         // runs on ForkJoinPool.commonCommon pool with 9 threads on vic's mac= 10CPU -1 (requestor)
         .toList();
+    // knowing that the common pool has N_CPU - 1 threads,
+    // what kind of tasks should you run on parallel stream?
+    // => CPU-bound tasks!!! no i/o: DB/API call/Redis/Files
 
     long t1 = System.currentTimeMillis();
     log.debug("Took {} ms to get: {}", t1 - t0, result);
