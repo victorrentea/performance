@@ -47,6 +47,8 @@ public class BatchApp {
     return new JobBuilder("importJob",jobRepository)
         .listener(new CaptureStartTimeListener())
         .incrementer(new RunIdIncrementer())
+//        .start(unzipXml())
+//        .next(checksum())
         .start(importPersonData())
 //        .start(importCityData()).next(importPersonData()) // TODO 2-pass import
         .build();
@@ -55,15 +57,23 @@ public class BatchApp {
   @Bean
   public Step importPersonData() {
     return new StepBuilder("importPersonData", jobRepository)
-        .<PersonXml, Person>chunk(5,transactionManager)
+        .<PersonXml, Person>chunk(500,transactionManager) //⚠️ nu ai voie sa controlezi TU @Transactional/threaduri
+        // Spring Batch face commit dupa fiecare chunk!
+        // 🤔 Daca pica un rand dintr-un chunk, Spring Batch reincepe chunkul RAND CU RAND (chunkSize:1) + COMMIT dupa fiecare
+        // ⭐️ By default lasa in DB ce-a putut importa;
+        //    => poti da "resume" de la 95% (salvand 20m de munca⭐️)
+        // ⭐️ Poti spune: anumite erori => fail fisier; toleram sub <5% lines in error
+        // ⭐️ DELETE tot la failul oricarui rand (100% randuri sau numic) => Listener dupa la fail face DELETE WHERE JOB_START_TIME=..
+        //    ⚠️Daca ai facut UPDATE => INSERT + delete alea vechi dupa ce ai terminat
 
-        .reader(xmlReader(null))
-        .processor(personProcessor())
-        .writer(jpaWriter(null))
+
+        .reader(xmlReader(null)) // Extract: from < .xls .csv .jsonl; for i=1..chunkSize: in=read()
+        .processor(personProcessor()) // Transform: convert reader data object => for i=1..chunkSize: out=f(in)
+        .writer(jpaWriter(null)) // Load: > jdbc, mongo, file..; write(List<Out>)
 
         .listener(new LogSqlForFirstChunkListener())
-        .listener(progressTrackingChunkListener())
         .listener(countTotalNumberOfRecordsListener())
+        .listener(progressTrackingChunkListener())
 
 //        .taskExecutor(batchExecutor()) // TODO insert chunks on multiple threads
         .build();

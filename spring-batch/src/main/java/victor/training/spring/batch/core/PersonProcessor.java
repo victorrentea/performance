@@ -9,6 +9,7 @@ import victor.training.spring.batch.core.domain.Person;
 
 @Slf4j
 // 1 instance per job run
+  // => poti sa-ti lasi date in fielduri specifice rularii curente
 public class PersonProcessor implements ItemProcessor<PersonXml, Person> {
   @Autowired
   private CityRepo cityRepo;
