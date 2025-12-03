@@ -48,9 +48,10 @@ public class BatchApp {
         .listener(new CaptureStartTimeListener())
         .incrementer(new RunIdIncrementer())
 //        .start(unzipXml())
+//        .start(disableIndexes()) // cu re-enable dupa! Sper ca nu dai SELECT in timpul jobului
 //        .next(checksum())
-        .start(importPersonData())
-//        .start(importCityData()).next(importPersonData()) // TODO 2-pass import
+//        .start(importPersonData())
+        .start(importCityData()).next(importPersonData()) // TODO 2-pass import
         .build();
   }
 
@@ -75,7 +76,7 @@ public class BatchApp {
         .listener(countTotalNumberOfRecordsListener())
         .listener(progressTrackingChunkListener())
 
-//        .taskExecutor(batchExecutor()) // TODO insert chunks on multiple threads
+        .taskExecutor(batchExecutor()) // TODO insert chunks on multiple threads
         .build();
   }
 
@@ -130,15 +131,15 @@ public class BatchApp {
   @Bean
   public ThreadPoolTaskExecutor batchExecutor() {
     ThreadPoolTaskExecutor executor = new ThreadPoolTaskExecutor();
-    executor.setCorePoolSize(8);
-    executor.setMaxPoolSize(8);
+    executor.setCorePoolSize(1);
+    executor.setMaxPoolSize(1);
     executor.setQueueCapacity(500);
     executor.setThreadNamePrefix("batch-");
     return executor;
   }
 
   @Bean
-  public Step importCityData() {
+  public Step importCityData() { // 1 thread
     return new StepBuilder("importCityData",jobRepository)
         .<PersonXml, City>chunk(1000, transactionManager)
         .reader(xmlReader(null))
