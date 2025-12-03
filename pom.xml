@@ -22,7 +22,6 @@
         <!--<module>wiremock</module>-->
         <!--<module>jpa</module>-->
         <!--<module>concurrency</module>-->
-        <!--<module>spring-batch</module>-->
         <!--<module>gatling</module>-->
     </modules>
 
