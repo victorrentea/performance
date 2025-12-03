@@ -9,7 +9,6 @@ import java.util.List;
 import java.util.stream.IntStream;
 
 import static java.nio.charset.StandardCharsets.UTF_8;
-import static victor.training.performance.util.PerformanceUtil.waitForEnter;
 
 public class StringConcatInLoop {
    public static void main(String[] args) throws IOException {
