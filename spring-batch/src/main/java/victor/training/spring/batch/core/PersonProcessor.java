@@ -39,6 +39,8 @@ public class PersonProcessor implements ItemProcessor<PersonXml, Person> {
 
     City city = citiesMap.get(cityName);
     if (city == null) {
+      // rulezi si tu ca omu batch noaptea (out of hours)
+      // intai un cityRepo.findById()// ca poate intre timp altcineva a inserat?
       city = cityRepo.save(new City(cityName));
       citiesMap.put(cityName, city);
     }
