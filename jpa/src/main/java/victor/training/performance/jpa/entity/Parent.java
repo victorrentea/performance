@@ -3,6 +3,7 @@ package victor.training.performance.jpa.entity;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
+import org.hibernate.annotations.BatchSize;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -21,8 +22,11 @@ public class Parent {
    private String name;
    private Integer age;
 
-   @OneToMany(mappedBy = "parent", cascade = ALL)
-   // @BatchSize(size=10) // Hibernate magic that avoids N x 'ID=?' using 'ID IN (?,?..,?)'
+   @OneToMany(mappedBy = "parent", cascade = ALL
+//       , fetch = FetchType.EAGER // nu rezolva N+1 ci doar lazy loading ex ca n-ai sesiune. waste altundeva
+   )
+   @BatchSize(size=10) // Hibernate magic that avoids N x 'ID=?' using 'ID IN (?,?..,?)'
+   // N+1 => N/10 + 1
    private Set<Child> children = new HashSet<>();
 
    @ManyToOne

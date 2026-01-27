@@ -43,9 +43,9 @@ public class NPlusOne {
     Country moldavia = countryRepo.save(new Country(2L, "Moldavia"));
     repo.save(new Parent("Victor")
         .setCountry(romania)
-        .setAge(36)
-        .addChild(new Child("Emma"))
+        .setAge(40)
         .addChild(new Child("Vlad"))
+        .addChild(new Child("Emma"))
     );
     repo.save(new Parent("Peter")
         .setAge(41)
@@ -54,7 +54,7 @@ public class NPlusOne {
         .addChild(new Child("Paul"))
         .addChild(new Child("Stephan"))
     );
-    repo.save(new Parent("Trofim") // bachelor, no children
+    repo.save(new Parent("Trofim") // bachelor, no children, 4 pisici
         .setCountry(moldavia)
         .setAge(42));
     TestTransaction.end(); // force a COMMIT
@@ -74,17 +74,19 @@ public class NPlusOne {
 
   // ======================= SELECT full @Entity =============================
   @Test
+  // imagineaza-ti @GetMapping search
   public void selectFullEntity() {
     List<Parent> parents = repo.findAll();
-    log.info("Loaded {} parents: {}", parents.size(), parents);
-
+//    List<Parent> parents = repo.findAllLeftJoinFetchChildren();✅ => 1 @Query("...LEFT JOIN FETCH...")
+    log.info("Loaded {} parents", parents.size());
     List<ParentDto> results = toSearchResults(parents);
     assertResults(results);
   }
 
   private List<ParentDto> toSearchResults(Collection<Parent> parents) { // eg, in a Mapper
     log.debug("Converting-->Dto START");
-    List<ParentDto> results = parents.stream().map(ParentDto::fromEntity).toList();
+    List<ParentDto> results = parents.stream()
+        .map(ParentDto::fromEntity).toList();
     log.debug("Converting-->Dto DONE");
     return results;
   }

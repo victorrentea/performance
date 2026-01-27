@@ -11,6 +11,10 @@ import java.util.stream.Stream;
 
 public interface ParentRepo extends JpaRepository<Parent, Long> {
 
+
+
+
+
   // Spring generates an implementation of this interface
   interface ParentProjection {
     Long getId();
