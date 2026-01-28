@@ -12,15 +12,23 @@ import java.util.stream.Stream;
 public interface ParentRepo extends JpaRepository<Parent, Long> {
 
 
+  // max 1 "AND"
+  Parent findByNameLikeIgnoreCaseAndAgeBetween(
+      String namePart, int ageFrom, int ageTo);
 
 
 
-  // Spring generates an implementation of this interface
-  interface ParentProjection {
-    Long getId();
-    String getName(); // property 'name' must match the column name
-    String getChildrenNames();
-  }
+  // Spring generates an implementation of this interface at runtime
+//  interface ParentProjection { // cam multa magie🤢
+//    Long getId();
+//    String getName(); // property 'name' must match the column name
+//    String getChildrenNames();
+//  }
+
+  // sau mai traditie,
+  record ParentProjection(Long id, String name, String childrenNames) {
+  } // sau @lobmok.Value class ..
+
   @Query(nativeQuery = true, value = """
       select p.id,
              p.name,
@@ -52,6 +60,7 @@ public interface ParentRepo extends JpaRepository<Parent, Long> {
     SELECT pv FROM ParentView pv
     JOIN Parent p ON p.id=pv.id
     WHERE p.age > 10
+    
     """) // JPQL + the VIEW is compiled by DB => early error detection
   List<ParentView> view();
 

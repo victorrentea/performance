@@ -23,7 +23,6 @@ import java.util.List;
 import java.util.Map;
 
 import static java.util.stream.Collectors.joining;
-import static java.util.stream.Collectors.toList;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.tuple;
 import static org.springframework.test.annotation.DirtiesContext.ClassMode.BEFORE_EACH_TEST_METHOD;
@@ -61,7 +60,7 @@ public class UberEntityTest {
     Uber uber = new Uber()
         .setName("::uberName::")
         .setStatus(Status.SUBMITTED)
-        .setOriginCountry(belgium)
+        .setOriginCountryId(belgium.getId())
         .setFiscalCountry(romania)
         .setInvoicingCountry(france)
         .setNationality(serbia)
@@ -77,8 +76,8 @@ public class UberEntityTest {
 
   @Test
   public void jpql() {
-    log.info("SELECTING a 'very OOP' @Entity with JPQL ...");
-    List<Uber> list = uberRepo.findAll();
+    log.info("SELECT a 'very OOP' @Entity with JPQL ...");
+    List<Uber> list = uberRepo.findAll(); // search // => 1 + 1 + 4 +1 = multe queryyri
 //        List<UberEntity> list = uberRepo.findAllWithQuery();// EQUIVALENT
 //        List<UberEntity> list = uberRepo.findByName("::uberName::");// EQUIVALENT
     log.info("Loaded using JPQL (see how many queries are above):\n" + list);
@@ -114,7 +113,14 @@ public class UberEntityTest {
   }
 
   private List<UberSearchResult> classicSearch(UberSearchCriteria criteria) {
-    String jpql = "SELECT u FROM Uber u WHERE 1 = 1 ";
+    String jpql =
+//        "SELECT u " +     // ❌GRESIT. searchurile hot🔥 nu trebuie sa aduca @ENtity intregi
+//        "SELECT u.id, u.name, u.originCountry.name " +   // -> Object[]❌
+        "SELECT new victor.training.performance.jpa.UberEntityTest$UberSearchResult(" +
+            "u.id, u.name, originCountry.name) " +   // -> Object[]❌
+        "FROM Uber u " +
+        "JOIN Country originCountry ON originCountry.id = u.originCountryId " +
+        "WHERE 1 = 1 ";
     // alternative implementation: CriteriaAPI, Criteria+Metamodel, QueryDSL, Spring Specifications
     Map<String, Object> params = new HashMap<>();
     if (criteria.name != null) {
@@ -125,24 +131,26 @@ public class UberEntityTest {
       jpql += " AND u.status = :status ";
       params.put("status", criteria.status);
     }
-    var query = em.createQuery(jpql, Uber.class);
+    var query = em.createQuery(jpql, UberSearchResult.class);
     for (String key : params.keySet()) {
       query.setParameter(key, params.get(key));
     }
     var results = query.getResultList();
 
     // OR: Spring Data Repo @Query with a fixed JPQL
-//        results = uberRepo.searchFixedJqpl(criteria.name, criteria.status);
+//    results = uberRepo.searchFixedJqpl(criteria.name, criteria.status);
 
-    return results.stream().map(this::toResult).collect(toList());
+//    return results.stream().map(this::toResult).collect(toList());
+    return  results;
   }
 
-  private UberSearchResult toResult(Uber entity) {
-    return new UberSearchResult(
-        entity.getId(),
-        entity.getName(),
-        entity.getOriginCountry().getName());
-  }
+//  private UberSearchResult toResult(Uber entity) {
+//    return new UberSearchResult(
+//        entity.getId(),
+//        entity.getName(),
+//        // countryRepo.fbi( entity.getOriginCountryId())
+//        entity.getOriginCountry().getName());
+//  }
 
   @Builder
   record UberSearchCriteria(String name, Status status, boolean hasPassport) {

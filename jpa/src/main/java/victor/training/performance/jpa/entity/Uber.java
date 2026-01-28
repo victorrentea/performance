@@ -24,8 +24,13 @@ public class Uber {
     private String ssn;
     private String passportNumber;
 
-    @ManyToOne
-    private Country originCountry;
+    // Așa modelează un proaspăt absolvent al cursului de OOP domeniul aplicației tale.
+    private Long  originCountryId; //✅ pastrand FK in DB
+//    private String originCountryName; // 💩NF4 doamne ferestre, trebuie
+    // un ADR f solid pt aceasta speță
+
+//    @ManyToOne
+//    private Country originCountry;❌
     @ManyToOne
     private Country nationality;
     @ManyToOne
