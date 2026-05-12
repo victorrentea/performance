@@ -18,10 +18,10 @@
         <java.version>21</java.version>
     </properties>
     <modules>
-        <module>memory</module>
+        <!--<module>memory</module>-->
         <!--<module>wiremock</module>-->
         <!--<module>jpa</module>-->
-        <!--<module>concurrency</module>-->
+        <module>concurrency</module>
         <!--<module>gatling</module>-->
     </modules>
 
