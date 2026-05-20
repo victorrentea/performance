@@ -7,6 +7,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
 import java.util.stream.IntStream;
 
 import static java.util.concurrent.TimeUnit.MINUTES;
@@ -17,20 +18,26 @@ import static java.util.concurrent.TimeUnit.MINUTES;
 public class RaceBugs {
   private static List<Integer> evenNumbers = new ArrayList<>();
 
-//  private static AtomicInteger total = new AtomicInteger(0);
-  private static int total=0;
+//  private static final Object lock = new Object(); // on which synchronzied ⭐️1
+//  private static int total=0;
+
+//  private static AtomicInteger total = new AtomicInteger(0);// ⭐️2
+
+  //map-reduce with pure functions [FP-style] ⭐️3 return the value; less mutable state
 
   // many parallel threads run this method:
-  private  static void countEven(List<Integer> numbers) {
+  private static int countEven(List<Integer> numbers) {
+    int myTotal = 0;
     log.info("Start");
     for (Integer n : numbers) {
-      log.debug("Lemme " + n); // 99.9%
+//      log.debug("Lemme " + n); // 99.9%
       if (n % 2 == 0) {
 //         total.incrementAndGet(); // CAS
-        total++;
+        myTotal++;
       }
     }
     log.info("End");
+    return myTotal;
   }
 
   public static void main(String[] args) throws Exception {
@@ -40,11 +47,21 @@ public class RaceBugs {
     List<List<Integer>> parts = splitList(fullList, 2);
 
     ExecutorService pool = Executors.newCachedThreadPool();
+    List<Future<Integer>> futures = new ArrayList<>();
     for (List<Integer> part : parts) {
-      pool.submit(()-> countEven(part));
+      Future<Integer> futureResult = pool.submit(() -> countEven(part));
+      futures.add(futureResult);
     }
     pool.shutdown();
     pool.awaitTermination(1, MINUTES);
+
+    int total = futures.stream().mapToInt(f -> {
+      try {
+        return f.get();
+      } catch (Exception e) {
+        throw new RuntimeException(e);
+      }
+    }).sum();
 
 //    synchronized (lock) {
     log.debug("Counted: " + total);
