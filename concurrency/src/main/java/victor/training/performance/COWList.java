@@ -11,11 +11,18 @@ public class COWList {
     List<String> consumers = new CopyOnWriteArrayList<>();
     consumers.add("A");
     Runnable task = () -> {
-      System.out.println("Start publishing");
-      for (String consumer : consumers) {
-        PerformanceUtil.sleepMillis(2);
+      try {
+        System.out.println("Start publishing");
+        int count = 0;
+//        for (Iterator<String> iterator = consumers.iterator(); iterator.hasNext(); ) {
+        for (String consumer : consumers) {
+          PerformanceUtil.sleepMillis(2);
+          count++;
+        }
+        System.out.println("Published to consumers count: " + count);
+      } catch (Exception e) {
+        e.printStackTrace();
       }
-      System.out.println("End publishing");
     };
 
     var threadPool = Executors.newCachedThreadPool();

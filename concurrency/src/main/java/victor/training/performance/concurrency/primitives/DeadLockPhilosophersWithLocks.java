@@ -1,77 +1,68 @@
 package victor.training.performance.concurrency.primitives;
 
+import lombok.SneakyThrows;
 import victor.training.performance.util.PerformanceUtil;
 
-import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
-
-import static victor.training.performance.util.PerformanceUtil.*;
 
 
 public class DeadLockPhilosophersWithLocks {
-	static class ForkWithLock {
-		public final int id;
-		private final Lock lock = new ReentrantLock();
-		public ForkWithLock(int id) {
-			this.id = id;
-		}
-		public void take() {
-			lock.lock();
-		}
-		public void putDown() {
-			lock.unlock();
-		}
-	}
-	
-	static class Philosopher extends Thread {
-		private final ForkWithLock leftFork;
-		private final ForkWithLock rightFork;
-		
-		public Philosopher(String name, ForkWithLock leftFork, ForkWithLock rightFork) {
-			super(name);
-			this.leftFork = leftFork;
-			this.rightFork = rightFork;
-		}
+  static class Philosopher extends Thread {
+    private final ReentrantLock leftFork;
+    private final ReentrantLock rightFork;
 
-		public void run() {
-			ForkWithLock firstFork = leftFork;
-			ForkWithLock secondFork = rightFork;
+    public Philosopher(String name, int leftId, ReentrantLock leftFork, int rightId, ReentrantLock rightFork) {
+      super(name);
+      this.leftFork = leftFork;
+      this.rightFork = rightFork;
+    }
 
-			for (int i=0;i<50;i++) {
-				PerformanceUtil.sleepSomeTime();
-				PerformanceUtil.log("I'm hungry!");
-				
-				PerformanceUtil.log("Waiting for first fork (" + firstFork.id + ")");
-				firstFork.take();
-				PerformanceUtil.log("Took it");
-				PerformanceUtil.sleepSomeTime();
-				PerformanceUtil.log("Taking second fork (" + secondFork.id + ")");
-				secondFork.take();
-				
-				eat();
-				
-				firstFork.putDown();
-				PerformanceUtil.sleepSomeTime();
-				secondFork.putDown();
-				PerformanceUtil.log("Put down forks. Thinking...");
-			}
-		}
+    @SneakyThrows
+    public void run() {
 
-		private void eat() {
-			PerformanceUtil.log("Took both forks. Eating...");
-			PerformanceUtil.sleepSomeTime();
-			PerformanceUtil.log("I had enough. I'm putting down the forks");
-		}
-	}
-	
-	public static void main(String[] args) {
-		PerformanceUtil.log("Start");
-		ForkWithLock[] forks = new ForkWithLock[] {new ForkWithLock(1), new ForkWithLock(2), new ForkWithLock(3), new ForkWithLock(4), new ForkWithLock(5)};
-		new Philosopher("Plato", forks[0], forks[1]).start();
-		new Philosopher("Konfuzius", forks[1], forks[2]).start();
-		new Philosopher("Socrates", forks[2], forks[3]).start();
-		new Philosopher("Voltaire", forks[3], forks[4]).start();
-		PerformanceUtil.sleepMillis(1000);
-		new Philosopher("Descartes", forks[4], forks[0]).start();
-	}
+      for (int i = 0; i < 50; i++) {
+//        PerformanceUtil.sleepSomeTime();
+        PerformanceUtil.log("I'm hungry!");
+
+        PerformanceUtil.log("Waiting for first fork");
+//        if (!leftFork.tryLock(50, TimeUnit.MILLISECONDS)) continue; // Redis.lock
+        leftFork.lock();
+        try {
+          PerformanceUtil.log("Took it");
+          PerformanceUtil.sleepSomeTime();
+          PerformanceUtil.log("Taking second fork");
+//          if (!rightFork.tryLock(50, TimeUnit.MILLISECONDS)) continue;
+          rightFork.lock();
+          try {
+
+            eat();
+
+          } finally {
+            rightFork.unlock();
+          }
+//          PerformanceUtil.sleepSomeTime();
+        } finally {
+          leftFork.unlock();
+        }
+        PerformanceUtil.log("Put down forks. Thinking...");
+      }
+    }
+
+    private void eat() {
+      PerformanceUtil.log("Took both forks. Eating...");
+      PerformanceUtil.sleepSomeTime();
+      PerformanceUtil.log("I had enough. I'm putting down the forks");
+    }
+  }
+
+  public static void main(String[] args) {
+    PerformanceUtil.log("Start");
+    ReentrantLock[] forks = new ReentrantLock[]{new ReentrantLock(), new ReentrantLock(), new ReentrantLock(), new ReentrantLock(), new ReentrantLock()};
+    new Philosopher("Plato", 1, forks[0], 2, forks[1]).start();
+    new Philosopher("Konfuzius", 2, forks[1], 3, forks[2]).start();
+    new Philosopher("Socrates", 3, forks[2], 4, forks[3]).start();
+    new Philosopher("Voltaire", 4, forks[3], 5, forks[4]).start();
+    PerformanceUtil.sleepMillis(1000);
+    new Philosopher("Descartes", 5, forks[4], 1, forks[0]).start();
+  }
 }
