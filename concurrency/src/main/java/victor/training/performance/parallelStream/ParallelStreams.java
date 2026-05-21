@@ -17,15 +17,19 @@ public class ParallelStreams {
 
     long t0 = System.currentTimeMillis();
 
-    var result = list.stream()
+    var result = list.parallelStream() //🤔 DOS☢️
         .filter(i -> i % 2 == 0)
-        .map(i -> {
+        .map(i -> { // runs on main + NCPU-1
           log.debug("Map " + i);
-          sleepMillis(100); // network call (DB, REST, SOAP..) or CPU work
+          apiCall();
           return i * 2;
         }).toList();
 
     long t1 = System.currentTimeMillis();
     log.debug("Took {} ms to get: {}", t1 - t0, result);
+  }
+
+  private static void apiCall() {
+    sleepMillis(100); // network call (DB, REST, SOAP..) or CPU work
   }
 }

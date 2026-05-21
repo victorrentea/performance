@@ -102,7 +102,7 @@ public class PerformanceUtil {
         int PAD_SIZE = 20;
         String line = new SimpleDateFormat("hh:mm:ss.SSS").format(new Date()) + " ";
         String pad;
-        String threadName = Thread.currentThread().getName();
+        String threadName = Thread.currentThread().toString();
         if (position.contains(threadName)) {
             pad = String.format("%" + (1 + position.indexOf(threadName) * PAD_SIZE) + "s", "");
         } else {

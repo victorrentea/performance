@@ -19,7 +19,7 @@
     </properties>
     <modules>
         <!--<module>memory</module>-->
-        <!--<module>wiremock</module>-->
+        <module>wiremock</module>
         <!--<module>jpa</module>-->
         <module>concurrency</module>
         <!--<module>gatling</module>-->

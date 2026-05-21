@@ -98,6 +98,7 @@ class Leak6Config {
     executor.setMaxPoolSize(4);
     executor.setQueueCapacity(5); // rejects tasks when the queue is full
     executor.setThreadNamePrefix("myexec-");
+//    executor.setRejectedExecutionHandler();
     executor.initialize();
     // lift ThreadLocal data from the submitter thread:
     executor.setTaskDecorator(task -> {
