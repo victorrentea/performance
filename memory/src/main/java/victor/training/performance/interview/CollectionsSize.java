@@ -1,55 +1,50 @@
 package victor.training.performance.interview;
 
-import lombok.SneakyThrows;
 import victor.training.performance.util.PerformanceUtil;
 
-import java.util.concurrent.Callable;
+import java.awt.*;
+import java.util.Deque;
+import java.util.LinkedList;
+import java.util.function.Supplier;
+import java.util.stream.Collectors;
+import java.util.stream.LongStream;
 
 public class CollectionsSize {
-  public static final int N_ELEMENTS = 1_000_000;
+  public static final int ONE_MILLION = 1_000_000;
 
   public static void main(String[] args) {
     // TODO order the following from lowest->highest memory consumption
 
-    // A) ArrayList<Long>[1M] =  MB because:
-    // measureHeap(() -> (ArrayList<Long>)LongStream.range(0, ONE_MILLION).boxed().collect(Collectors.toList()));
+    // F) int[1M] = 3 MB because:; maxint = 2 miliarde
+//     measureHeap(() -> (int[]) IntStream.range(0, ONE_MILLION).toArray());
 
-    // B) long[1M] =  MB because:
-    // measureHeap(() -> (long[]) LongStream.range(0, ONE_MILLION).toArray());
+    // B) long[1M] = 8 MB because: 8b vs 4b
+//     measureHeap(() -> (long[]) LongStream.range(0, ONE_MILLION).toArray());
 
-    // C) HashSet[1M] =  MB because:
-    // measureHeap(() -> (HashSet<Long>) LongStream.range(0, ONE_MILLION).boxed().collect(Collectors.toSet()));
+    // E) Long[1M] = 26 MB because: acum am pe heap 1M de instante + refcount
+//     measureHeap(() -> (Long[]) LongStream.range(0, ONE_MILLION).boxed().toArray(Long[]::new));
 
-    // D) LinkedList[1M] =  MB because:
-    // measureHeap(() -> (LinkedList<Long>) LongStream.range(0, ONE_MILLION).boxed().collect(Collectors.toCollection(LinkedList::new)));
+    Deque<Point> workQueue = new LinkedList<>(); // for flood filly
+    // A) ArrayList<Long>[1M] = 31 MB because: + capacity empty ;
+    // time vs memory tradeoff: BlueGene l-a batut pe Kasparov
+//     measureHeap(() -> (ArrayList<Long>) LongStream.range(0, ONE_MILLION).boxed().collect(Collectors.toList()));
 
-    // E) Long[1M] =  MB because:
-    // measureHeap(() -> (Long[]) LongStream.range(0, ONE_MILLION).boxed().toArray(Long[]::new));
+    // D) LinkedList[1M] = 46 MB because: prev+next
+     measureHeap(() -> (LinkedList<Long>) LongStream.range(0, ONE_MILLION).boxed().collect(Collectors.toCollection(LinkedList::new)));
 
-    // F) int[1M] =  MB because:
-    // measureHeap(() -> (int[]) IntStream.range(0, ONE_MILLION).toArray());
+    // C) HashSet[1M] = 70 MB because: BUCKETS
+//     measureHeap(() -> (HashSet<Long>) LongStream.range(0, ONE_MILLION).boxed().collect(Collectors.toSet()));
+
 
     // TODO extra experiment .clear the collections and see if memory is released
   }
 
-  public static void measureHeap(Callable<Object> allocation) {
-    var allocationResult = measureAllocation(allocation);
-    System.out.println(PerformanceUtil.objectToString(allocationResult.result()) +
-                       " [" + N_ELEMENTS + " elements] " +
-                       " occupies: " + allocationResult.deltaHeapBytes() / 1024 / 1024 + " MB");
-  }
-
-  public record AllocationResult<T>(T result, long deltaHeapBytes) {}
-
-
-  @SneakyThrows
-  public static <T> AllocationResult<T> measureAllocation(Callable<T> supplier) {
+  public static void measureHeap(Supplier<Object> allocation) {
     long heap0 = PerformanceUtil.getUsedHeapBytes();
-    Object x = supplier.call();
+    Object x = allocation.get();
     long heap1 = PerformanceUtil.getUsedHeapBytes();
-    long deltaHeap = heap1 - heap0;
-    return new AllocationResult(x, deltaHeap);
+    System.out.println(PerformanceUtil.objectToString(x) + " [" + ONE_MILLION + " elements] " +
+                       " occupies: " + (heap1 - heap0) / 1024 / 1024 + " MB");
   }
-
 
 }

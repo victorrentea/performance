@@ -21,7 +21,14 @@ public class Leak17_ThreadStarvation {
   public String hotEndpoint() throws InterruptedException {
     // FIXME semaphore.acquire()/.release()
 
-    return slow();
+//    return slow();
+
+    semaphore.acquire(); // sa arunce 422 "ia-ti o pauza" doar useridului cu botu
+    try {
+      return slow();
+    } finally {
+      semaphore.release();
+    }
   }
 
   @GetMapping("/liveness")
